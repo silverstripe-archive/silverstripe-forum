@@ -1,0 +1,26 @@
+07 July 2007
+
+This is v0.1 of Forum module to help developers learn about how to create a SilverStripe module,
+and to allow adventureous hackers to try out and improve the forum. More documentation will follow shortly.
+
+This release should be considered beta-quality.
+
+To install:
+
+1. Place this directory in the root of your SilverStripe installation
+I.e. you will now have the following root folders
+
+assets
+mysite
+cms
+jsparty
+forum
+
+2. Run /db/build/
+
+3. The CMS should now have "Forum Holder" and "Forum" page types.
+Add these and visit them on the public site.
+
+Please raise issues, bugs, contributions in the silverstripe.com forum...
+
+sigurd@silverstripe.com
