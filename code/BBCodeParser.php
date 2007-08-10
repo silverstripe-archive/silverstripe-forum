@@ -11,32 +11,42 @@ class BBCodeParser extends TextParser {
 		return new DataObjectSet(
 			new ArrayData(array(
 				"Title" => "Bold Text",
-				"Example" => "[b]Text[/b]"
+				"Example" => "[b]<b>Bold</b>[/b]"
 			)),
 			new ArrayData(array(
 				"Title" => "Italic Text",
-				"Example" => "[i]Text[/i]"
+				"Example" => "[i]<i>Italics</i>[/i]"
 			)),
 			new ArrayData(array(
 				"Title" => "Underlined Text",
-				"Example" => "[u]Text[/u]"
+				"Example" => "[u]<u>Underlined</u>[/u]"
 			)),
 			new ArrayData(array(
 				"Title" => "Struck-out Text",
-				"Example" => "[s]Text[/s]"
+				"Example" => "[s]<s>Struck-out</s>[/s]"
 			)),
 			
 			new ArrayData(array(
 				"Title" => "Website link",
 				"Description" => "Link to another website or URL",
-				"Example" => "[url]http://www.website.com/[/url] <strong>OR</strong> [url=http://www.website.com/]Some website[/url]"
+				"Example" => "[url]http://www.website.com/[/url]"
 			)),
+			new ArrayData(array(
+				"Title" => "Website link",
+				"Description" => "Link to another website or URL",
+				"Example" => "[url=http://www.website.com/]Some website[/url]"
+			)),			
 			new ArrayData(array(
 				"Title" => "Email link",
 				"Description" => "Create link to an email address",
-				"Example" => "[email]you@yoursite.com[/email] <strong>OR</strong> [email=you@yoursite.com]email me[/email]"
+				"Example" => "[email]you@yoursite.com[/email]"
 			)),
-			
+				new ArrayData(array(
+				"Title" => "Email link",
+				"Description" => "Create link to an email address",
+				"Example" => "[email=you@yoursite.com]email me[/email]"
+			)),		
+
 			new ArrayData(array(
 				"Title" => "Image",
 				"Description" => "Show an image in your post",
@@ -46,20 +56,38 @@ class BBCodeParser extends TextParser {
 			new ArrayData(array(
 				"Title" => "Code Block",
 				"Description" => "Unformatted code block",
-				"Example" => "[code]Text[/code]"
+				"Example" => "[code]Code bock[/code]"
 			)),
 			new ArrayData(array(
 				"Title" => "HTML Code Block",
 				"Description" => "HTML-formatted code block",
-				"Example" => "[html]Text[/html] <strong>OR</strong> [code html]Text[/code]"
+				"Example" => "[html]HTML code block[/html]"
+			)),
+			new ArrayData(array(
+				"Title" => "HTML Code Block",
+				"Description" => "HTML-formatted code block",
+				"Example" => "[code html]HTML code block[/code]"
+			)),				
+			new ArrayData(array(
+				"Title" => "PHP Code Block",
+				"Description" => "PHP-formatted code block",
+				"Example" => "[php]PHP code block[/php]"
 			)),
 			new ArrayData(array(
 				"Title" => "PHP Code Block",
 				"Description" => "PHP-formatted code block",
-				"Example" => "[php]Text[/php] <strong>OR</strong> [code php]Text[/code]"
-			))
-			
+				"Example" => "[code php]PHP code block[/code]"
+			))			
+					
 		);
+	}
+	
+	function useable_tagsHTML(){
+		$useabletags = "<ul class='bbcodeExamples'>";
+		foreach($this->usable_tags()->toArray() as $tag){
+			$useabletags = $useabletags."<li>".$tag->Example."</li>";
+		}
+		return $useabletags."</ul>";
 	}
 	
 	/**
