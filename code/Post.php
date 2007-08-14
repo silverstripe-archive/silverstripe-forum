@@ -159,7 +159,8 @@ class Post extends DataObject {
 	}
 	
 	function RSSContent() {
-		return Convert::raw2xml($this->Content) . '<br><br>Posted to: ' . $this->Topic()->Title;
+		$parser = new BBCodeParser($this->Content);
+		return $parser->parse() . '<br><br>Posted to: ' . $this->Topic()->Title;
 	}
 	function RSSAuthor() {
 		$author = $this->Author();
