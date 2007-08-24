@@ -42,10 +42,7 @@ class Forum extends Page {
 			$group->write();
 			
 			Permission::grant( $group->ID, $code );
-			
-			if(!Database::$supressOutput) {
-				echo "<li style=\"color: green\">Forum Members group created</li>";
-			}
+			Database::alteration_message("Forum Members group created","created");
 		}
 		else if( DB::query( "SELECT * FROM Permission WHERE `GroupID` = '$forumGroup->ID' AND `Code` LIKE '$code'" )->numRecords() == 0 ) {
 			Permission::grant( $forumGroup->ID, $code );
@@ -59,6 +56,7 @@ class Forum extends Page {
 			$forumholder->Status = "Published";
 			$forumholder->write();
 			$forumholder->publish("Stage", "Live");
+			Database::alteration_message("ForumHolder page created","created");
 
 			$forum = new Forum();
 			$forum->Title = "General Discussion";
@@ -68,11 +66,8 @@ class Forum extends Page {
 			$forum->Status = "Published";
 			$forum->write();
 			$forum->publish("Stage", "Live");
+			Database::alteration_message("Forum page created","created");
 			
-			if(!Database::$supressOutput) {
-				echo "<li style=\"color: green\">ForumHolder page created</li>";
-				echo "<li style=\"color: green\">Forum page created</li>";
-			}
 		}
 	}
 	
