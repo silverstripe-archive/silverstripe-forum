@@ -44,7 +44,7 @@ class Forum extends Page {
 			Permission::grant( $group->ID, $code );
 			
 			if(!Database::$supressOutput) {
-				echo "<li style=\"color: orange\">Forum Members group created</li>";
+				echo "<li style=\"color: green\">Forum Members group created</li>";
 			}
 		}
 		else if( DB::query( "SELECT * FROM Permission WHERE `GroupID` = '$forumGroup->ID' AND `Code` LIKE '$code'" )->numRecords() == 0 ) {
@@ -70,8 +70,8 @@ class Forum extends Page {
 			$forum->publish("Stage", "Live");
 			
 			if(!Database::$supressOutput) {
-				echo "<li style=\"color: orange\">ForumHolder page created</li>";
-				echo "<li style=\"color: orange\">Forum page created</li>";
+				echo "<li style=\"color: green\">ForumHolder page created</li>";
+				echo "<li style=\"color: green\">Forum page created</li>";
 			}
 		}
 	}
