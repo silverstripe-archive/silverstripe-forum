@@ -1,0 +1,10 @@
+Forum ChangeLog
+
+
+0.1.1
+  - Security fix: Breadcrumbs are not escaped properly and can be misused for CSRF or XSS attacks.
+  - Parse bbcode in RSS feed
+  - BBCode parser moved into SilverStripe core
+
+0.1
+  - Initial release
