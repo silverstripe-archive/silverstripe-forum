@@ -245,8 +245,7 @@ JS
 
 		Requirements::css("jsparty/tree/tree.css");
 		
-		if(Director::fileExists(project()."/css/forum.css")) Requirements::css(project()."/css/forum.css");
-		else Requirements::css("forum/css/Forum.css");
+		Requirements::themedCSS('Forum');
 
 		RSSFeed::linkToFeed($this->Link("rss"), "Posts to the '$this->Title' forum");
 		RSSFeed::linkToFeed($this->Parent->Link("rss"), "Posts to all forums");

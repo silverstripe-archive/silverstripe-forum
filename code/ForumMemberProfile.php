@@ -6,8 +6,7 @@ class ForumMemberProfile extends Page_Controller {
 	}
 	
 	function init() {
-		if(Director::fileExists(project()."/css/forum.css")) Requirements::css(project()."/css/forum.css");
-		else Requirements::css("forum/css/Forum.css");
+		Requirements::themedCSS('Forum');
 		parent::init();
  	}
  	
