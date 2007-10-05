@@ -147,7 +147,11 @@
 		else return "Anonymous user";
 	}
 	
-	
+	function forgotNickname(){
+		$e = new ForumMember_ForgotNicknameEmail();
+		$e->populateTemplate($this->owner);
+		$e->send();
+	}	
  }
  
  class ForumMember_Validator extends Member_Validator {
@@ -209,6 +213,16 @@ class ForumMember_TopicNotification extends Email_Template {
 		
 		parent::__construct();
 	}
+}
+
+/**
+ * For the system that Nickname is used for logging in, instead of Email
+ */
+class ForumMember_ForgotNicknameEmail extends Email_Template{
+	protected $from = '';
+    protected $subject = "Your Username";
+    protected $ss_template = 'ForumMember_ForgotNicknameEmail';
+    protected $to = '$Email';
 }
 
 ?>
