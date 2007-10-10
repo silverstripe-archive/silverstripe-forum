@@ -25,6 +25,10 @@ class Post extends DataObject {
 		"Author" => "Member",
 	);
 	
+	static $has_many = array(
+		"Children" => "Post" //All Posts one-level below this Post
+	);
+	
 	static $extensions = array(
 		"Hierarchy",
 	);
@@ -134,6 +138,10 @@ class Post extends DataObject {
 		else{
 			return $ascendants;
 		}
+	}
+	
+	function getAllPostsUnderThisTopic() {
+		return DataObject::get("Post", "TopicID = $this->TopicID AND ParentID <> 0 AND Status = 'Moderated'");
 	}
 	
 	function LatestPost() {
