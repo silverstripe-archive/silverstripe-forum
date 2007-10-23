@@ -1,51 +1,130 @@
 <?php
 
-class ForumAdmin extends GenericDataAdmin{
+class ForumAdmin extends LeftAndMain{
+	
+	static $tree_class = 'Post';
+	
+	public function init() {
+		parent::init();
+	}
+	
 	public function Link($action=null) {
-		if(!$action) $action = "index";
-		return "admin/forum/$action/" . $this->currentPageID();
+		return "admin/forum/$action";
 	}
 	
-	public function performSearch(){
-	}
-	
-	public function getSearchFields(){
-	}
-	
-	public function getLink(){
-	}
 	
 	/**
 	 * Return the entire site tree as a nested set of ULs
 	*/
-	public function Results() {
-		$obj = singleton('Forum');
-		$obj->setMarkingFilter("ClassName", "Forum");
-		$obj->markPartialTree();
+	public function SiteTreeAsUL() {		
+		$link = $this->Link();
+		$forums = DataObject::get("Forum");
+		if($forums&&$forums->count()){
+			$ret .= "<ul>";
+			foreach($forums as $forum){
+				$ret .= <<<HTML
+				<li id="record-$forum->ID" class="Forum closed">Forum: $forum->Title
+HTML;
+				$ret .= "<ul>";
+				
+				$topics = $forum->getTopicsByStatus('Moderated');
+				if($topics&&$topics->count()){
+					$ret .= "<li>Active Topics";
+					$ret .= "<ul>";
+					foreach($topics as $topic){
+						$ret .= <<<HTML
+						<li id="record-$topic->ID" class="Post unexpanded closed">
+						<a class="contents" href="$link
+HTML;
+						$ret .= <<<HTML
+						show/$topic->ID">Topic: $topic->Title</a>
+						</li>
+HTML;
+					}
+					$ret .= "</ul>";
+					$ret .= "</li>";
+				}
+				
+				$topics = $forum->getTopicsByStatus('Awaiting');
+				if($topics&&$topics->count()){
+					$ret .= "<li>Awaiting Topics";
+					$ret .= "<ul>";
+					foreach($topics as $topic){
+						$ret .= <<<HTML
+						<li id="record-$topic->ID" class="Post unexpanded closed">
+						<a class="contents" href="$link
+HTML;
+						$ret .= <<<HTML
+						show/$topic->ID">Topic: $topic->Title</a>
+						</li>
+HTML;
+					}
+					$ret .= "</ul>";
+					$ret .= "</li>";
+				}
+				
+				$topics = $forum->getTopicsByStatus('Rejected');
+				if($topics&&$topics->count()){
+					$ret .= "<li>Rejected Topics";
+					$ret .= "<ul>";
+					foreach($topics as $topic){
+						$ret .= <<<HTML
+						<li id="record-$topic->ID" class="Post unexpanded closed">
+						<a class="contents" href="$link
+HTML;
+						$ret .= <<<HTML
+						show/$topic->ID">Topic: $topic->Title</a>
+						</li>
+HTML;
+					}
+					$ret .= "</ul>";
+					$ret .= "</li>";
+				}
+				
+				$topics = $forum->getTopicsByStatus('Archived');
+				if($topics&&$topics->count()){
+					$ret .= "<li>Archived Topics";
+					$ret .= "<ul>";
+					foreach($topics as $topic){
+						$ret .= <<<HTML
+						<li id="record-$topic->ID" class="Post unexpanded closed">
+						<a class="contents" href="$link
+HTML;
+						$ret .= <<<HTML
+						show/$topic->ID">Topic: $topic->Title</a>
+						</li>
+HTML;
+					}
+					$ret .= "</ul>";
+					$ret .= "</li>";
+				}
+				
+				$ret .="</ul>";
+				$ret .= "</li>";
+			}
+			$ret .= "</ul>";
+		}
 		
-		if($p = $this->currentPage()) $obj->markToExpose($p);
+		return $ret;
+	}
+	
+	function getEditForm($id){
+	
+		$topic = DataObject::get_by_id("Post", $id);
 
-		// getChildrenAsUL is a flexible and complex way of traversing the tree
+		$fields = (method_exists($topic, 'getCMSFields')) ? $topic->getCMSFields() : new FieldSet();
 
-		$siteTree = $obj->getChildrenAsUL("",
+		if(!$fields->dataFieldByName('ID')) {
 
-					' "<li id=\"record-$child->ID\" class=\"$child->class" . $child->markingClasses() .  ($extraArg->isCurrentPage($child) ? " current" : "") . "\">" . ' .
+			$fields->push($idField = new HiddenField("ID","ID",$id));
+			$idField->setValue($id);
+		}
 
-					' "<a href=\"" . Director::link(substr($extraArg->Link(),0,-1), "show", $child->ID) . "\" class=\"" . ($child->hasChildren() ? " contents" : "") . "\" >" . $child->Title . "</a>" ',
+		$actions = $topic->getCMSActions();
+		$form = new Form($this, "EditForm", $fields, $actions); 
+		
+		$form->loadDataFrom($topic);
 
-					$this, true);
-					
-
-		// Wrap the root if needs be.
-
-		$rootLink = $this->Link() . 'show/root';
-
-		if(!isset($rootID)) $siteTree = "<ul id=\"sitetree\" class=\"tree unformatted\"><li id=\"record-root\" class=\"Root\"><a href=\"$rootLink\">http://www.yoursite.com/assets</a>"
-
-					. $siteTree . "</li></ul>";
-
-
-		return $siteTree;
-
+		return $form;
 	}
 }
