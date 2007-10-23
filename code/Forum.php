@@ -177,6 +177,44 @@ class Forum extends Page {
 		return DataObject::get("Post", "ForumID = $this->ID and ParentID = 0 and Status = 'Moderated'");
 	}
 	
+	function getTopicsByStatus($status){
+		return DataObject::get("Post", "ForumID = $this->ID and ParentID = 0 and Status = '$status'");
+	}
+	
+	function hasChildren() {
+		return $this->NumPosts();
+	}
+	
+	function getChildrenAsUL($attributes = "", $titleEval = '"<li>" . $child->Title', $extraArg = null, $limitToMarked = false, $rootCall = false){
+		if($limitToMarked && $rootCall) {
+			$this->markingFinished();
+		}
+		
+		$children = $this->Topics();
+		if($children) {
+			if($attributes) {
+				$attributes = " $attributes";
+			}
+			
+			$output = "<ul$attributes>\n";
+			foreach($children as $child) {
+				if(!$limitToMarked || $child->isMarked()) {
+					$foundAChild = true;
+					$output .= eval("return $titleEval;") . "\n" . 
+					$child->getChildrenAsUL("", $titleEval, $extraArg, false, false) . "</li>\n";
+				}
+			}
+			
+			$output .= "</ul>\n";
+		}
+		
+		if(isset($foundAChild) && $foundAChild) {
+			return $output;
+		}
+	}
+	
+	
+	
 	/**
 	 * Checks to see if the currently logged in user has permissions to view this forum
 	 * 
