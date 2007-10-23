@@ -3,7 +3,7 @@ class Post extends DataObject {
 	static $db = array(
 		"Title" => "Varchar(255)",
 		"Content" => "Text",
-		"Status" => "Enum('Awaiting, Moderated, Rejected', 'Moderated')",
+		"Status" => "Enum('Awaiting, Moderated, Rejected, Archived', 'Moderated')",
 		"NumViews" => "Int",
 	);
 	static $default_sort = "LastEdited DESC";
@@ -16,6 +16,7 @@ class Post extends DataObject {
 		"Updated" => "Datetime",
 		"RSSContent" => "HTMLText",
 		"RSSAuthor" => "Varchar",
+		"Content" => "Text"
 	);
 	
 	static $has_one = array(
@@ -33,13 +34,21 @@ class Post extends DataObject {
 		"Hierarchy",
 	);
 	
-	function beforeWrite() {
-		if($this->ParentID == 0) {
-			$this->TopicID = $this->ID;
-		} else {
+	function hasChildren(){
+		$children = $this->Children();
+		return($children&&$children->count());
+
+	}
+	function onBeforeWrite() {
+		if(!$this->ParentID && !$this->TopicID) {
+			if($this->ID){
+				$this->TopicID = $this->ID;
+			}
+		} elseif($this->ParentID && !$this->TopicID){
 			$this->TopicID = $this->Parent->TopicID;
 		}
-		parent::beforeWrite();
+		
+		parent::onBeforeWrite();
 	}
 	
 	function AuthorFullName(){
@@ -196,6 +205,147 @@ class Post extends DataObject {
 		if($this->ParentID == 0) return $baseLink . "show/" . $this->ID;
 		else return $baseLink . "show/" . $this->TopicID  . '?showPost=' . $this->ID;
 	}
+	
+	function getCMSFields(){ //Topic is-a Post, so here we are getting all the posts for that topic
+		$authors = DataObject::get("Member");
+		
+		$ret = new FieldSet(
+			new TabSet("Main",
+				new Tab("Topic Details",
+					new ReadonlyField("Created", "Date/Time Topic Created"),
+					new ReadonlyField("LastEdited", "Date/Time Topic Created"),
+					new TextField("Title", "Title"),
+					new TextareaField("Content", "Content"),
+					new DropdownField("Status", "Status", array(
+						'Awaiting' => 'Awaiting',
+						'Moderated' => 'Moderated',
+						'Rejected' => 'Rejected',
+						'Archived' => 'Archived'
+					)),
+					new DropdownField("AuthorID", "Author", $authors->map())
+				),
+				new Tab("Active Posts", 
+					$activePosts = new ComplexTableField(
+						$controller = null,
+						$name = "ActivePosts",
+						$sourceClass = "Post",
+						$fieldList = array(
+							"Created"=>"Created",
+							"LastEdited" => "Last Edited",
+							"Title" => "Title",
+							"Status" => "Status",
+							"Content" => "Content"
+						),
+						$fieldList = "getCMSFields_forPopup",
+						$sourceFilter = "TopicID = '$this->ID' AND ParentID <> 0 AND Status = 'Moderated'",
+						"Created DESC"
+					)
+				),
+
+				new Tab("Awaiting Posts",
+					$awaitingPosts = new ComplexTableField(
+						$controller = null,
+						$name = "AwaitingPosts",
+						$sourceClass = "Post",
+						$fieldList = array(
+							"Created"=>"Created",
+							"LastEdited" => "Last Edited",
+							"Title" => "Title",
+							"Status" => "Status",
+							"Content" => "Content"
+						),
+						$fieldList = "getCMSFields_forPopup",
+						$sourceFilter = "TopicID = '$this->ID' AND ParentID <> 0 AND Status = 'Awaiting'",
+						"Created DESC"
+					)
+				),
+				new Tab("Rejected Posts",
+					$rejectedPosts = new ComplexTableField(
+						$controller = null,
+						$name = "RejectedPosts",
+						$sourceClass = "Post",
+						$fieldList = array(
+							"Created"=>"Created",
+							"LastEdited" => "Last Edited",
+							"Title" => "Title",
+							"Content" => "Content"
+						),
+						$fieldList = "getCMSFields_forPopup",
+						$sourceFilter = "TopicID = '$this->ID' AND ParentID <> 0 AND Status = 'Rejected'",
+						"Created DESC"
+					)
+				)
+			)
+		);
+		$activePosts->setFieldCasting(
+			array(
+				"Content" => "Text->LimitWordCountPlainText(20)"
+			)
+		);
+		$activePosts->setPermissions(
+			array("show")
+		);
+		
+		$awaitingPosts->setFieldCasting(
+			array(
+				"Content" => "Text->LimitWordCountPlainText(20)"
+			)
+		);
+		$awaitingPosts->setPermissions(
+			array("add", "edit", "show")
+		);
+		
+		$rejectedPosts->setFieldCasting(
+			array(
+				"Content" => "Text->LimitWordCountPlainText(20)"
+			)
+		);
+		$rejectedPosts->setPermissions(
+			array("show")
+		);
+		
+		return $ret;
+	}
+	
+	function getCMSFields_forPopup(){
+		$authors = DataObject::get("Member");
+		
+		$topicID = $this->TopicID?$this->TopicID:$this->ParentID;
+		$postsExceptMyselft = DataObject::get("Post", "TopicID = '$topicID' AND (ParentID <> 0 AND ID <> '$this->ID' OR ParentID = 0) AND Status = 'Moderated'");
+		if(!$postsExceptMyselft||!$postsExceptMyselft->count()){
+			$postsExceptMyselft = new DataObjectSet();
+		}
+		$ret = new FieldSet(
+			new DropdownField("AuthorID", "Posted By", $authors->map()),
+			new DropdownField("ParentID", "Post Replied To", $postsExceptMyselft->map()),
+			new TextField("Title", "Title"),
+			new TextareaField("Content", "Content"),
+			new DropdownField("Status", "Status", 
+				array(
+					"Awaiting"=>"Awaiting", 
+					"Moderated"=>"Moderated",
+					"Rejected"=>"Rejected"
+				)
+			),
+			new HiddenField("TopicID", "", $topicID)
+		);
+		
+		return $ret;
+	}
+	
+	function getCMSActions(){
+		return new FieldSet(
+			new FormAction('save', 'Save','ajaxAction-save'),
+			new FormAction("archive", "Archive", 'ajaxAction->archive')
+		);
+	}
+	
+	function LimitWordCountPlainText($numWords){
+		/*debug::show($this->Countent.LimitWordCountPlainText($numWords));
+		die*/
+		return $this->Countent;
+	}
+		
 }
 
 /**
@@ -260,6 +410,8 @@ class Post_Subscription extends DataObject {
 			}
 		}
 	}
+	
+	
 }
 
 /**
