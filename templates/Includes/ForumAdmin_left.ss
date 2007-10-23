@@ -1,28 +1,19 @@
-<style>
-#left_separator	{
-	border-bottom: 3px solid #d4d0c8;
-}
+<div class="title"><div style="background-image : url(cms/images/panels/MySite.png)">My Site</div></div>
 
-#SearchFrom_holder{
-	border-bottom: 1px solid #808080;
-}
-
-</style>
-
-<div id="LeftPane">
-	<h2>Add Listing</h2>
-	<div id="SearchForm_holder" class="lefttop" style="overflow:auto">
-		$AddForm
+	<div id="treepanes">
+	
+		<div id="sitetree_holder">
+	
+		
+			
+<!--
+ 			<div id="publication_key" style="border-bottom: 1px #CCC solid; background-color: #EEE; padding: 3px;">
+				Key:
+				<ins style="cursor: help" title="Added to the stage site and not published yet">new</ins>
+				<del style="cursor: help" title="Deleted from the stage site but still on the live site">deleted</del>
+				<span style="cursor: help" title="Edited on the stage site and not published yet" class="modified">changed</span>
+			</div>
+-->
+		$SiteTreeAsUL
+		</div>
 	</div>
-	<h2>Search Listings</h2>
-	<div id="SearchForm_holder" class="leftbottom" style="overflow:auto">
-		$SearchForm
-	</div>
-	<div id="left_separator">
-	&nbsp;
-	</div>
-	<h2>Search Results</h2>
-	<div id="ResultTable_holder" class="leftbottom" style="overflow:auto">
-		$Results
-	</div>
-</div>
