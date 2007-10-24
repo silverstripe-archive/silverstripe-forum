@@ -212,8 +212,8 @@ class Post extends DataObject {
 		$ret = new FieldSet(
 			new TabSet("Main",
 				new Tab("Topic Details",
-					new ReadonlyField("Created", "Date/Time Topic Created"),
-					new ReadonlyField("LastEdited", "Date/Time Topic Created"),
+					new ReadonlyField("Created", "Topic Created"),
+					new ReadonlyField("LastEdited", "Topic Last Edited"),
 					new TextField("Title", "Title"),
 					new TextareaField("Content", "Content"),
 					new DropdownField("Status", "Status", array(
