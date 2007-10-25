@@ -113,7 +113,7 @@ class Forum extends Page {
        $nonPageParts = array();
        $parts = array();
        
-       $controller = Controller::currentController();
+       $controller = Controller::curr();
        $params = $controller->getURLParams();
        
        $SQL_id = $params['ID'];
