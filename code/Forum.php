@@ -251,7 +251,6 @@ class Forum_Controller extends Page_Controller {
 			);
 
 			Security::permissionFailure($this, $messageSet);
-			exit;
  		}
  		
  		// Delete any posts that don't have a Title set (This cleans up posts created by the ReplyForm method that aren't saved)
