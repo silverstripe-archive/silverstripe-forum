@@ -106,7 +106,6 @@
 			$fields->insertAfter( new TextField( "Occupation", "Occupation" ), "Surname" );
 			$fields->insertAfter( new CountryDropdownField( "Country", "Country" ), "Occupation" );
 
-			$fields->push( new PasswordField( "ConfirmPassword", "Confirm Password" ) );
 			$fields->push( new ImageField( "Avatar", "Upload avatar" ) );
 			$fields->push( new DropdownField( "ForumRank", "User rating", array(
 				"Community Member" => "Community Member",
