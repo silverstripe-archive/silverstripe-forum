@@ -29,7 +29,7 @@ HTML;
 				
 				$topics = $forum->getTopicsByStatus('Moderated');
 				if($topics&&$topics->count()){
-					$ret .= "<li>Active Topics";
+					$ret .= "<li>Moderated Topics";
 					$ret .= "<ul>";
 					foreach($topics as $topic){
 						$ret .= <<<HTML
