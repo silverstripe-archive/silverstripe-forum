@@ -54,7 +54,7 @@
 		padding:5px;
 	}
 
-	.message.bad {
+	.message.bad, .message.error {
 		background:#ffc1c1 !important;
 		border:1px solid #ff8b8b !important;
 	}
