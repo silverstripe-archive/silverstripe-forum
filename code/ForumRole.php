@@ -132,14 +132,14 @@ class ForumRole extends DataObjectDecorator {
 
 
 	function updateCMSFields(FieldSet &$fields) {
-		if( Permission::checkMember( $this->owner->ID, "ACCESS_FORUM" ) ) {
-			$fields->insertBefore( new TextField( "Nickname", "Nickname" ), "FirstName" );
-			$fields->insertAfter( new TextField( "Occupation", "Occupation" ), "Surname" );
-			$fields->insertAfter( new CountryDropdownField( "Country", "Country" ), "Occupation" );
+		if(Permission::checkMember($this->owner->ID, "ACCESS_FORUM")) {
+			$fields->insertBefore(new TextField("Nickname", "Nickname"), "FirstName");
+			$fields->insertAfter(new TextField("Occupation", "Occupation"), "Surname");
+			$fields->insertAfter(new CountryDropdownField("Country", "Country"), "Occupation");
 
-			$fields->push( new PasswordField( "ConfirmPassword", "Confirm Password" ) );
-			$fields->push( new ImageField( "Avatar", "Upload avatar" ) );
-			$fields->push( new DropdownField( "ForumRank", "User rating", array(
+			$fields->insertAfter(new PasswordField("ConfirmPassword", "Confirm Password"), "Password");
+			$fields->push(new ImageField("Avatar", "Upload avatar"));
+			$fields->push(new DropdownField("ForumRank", "User rating", array(
 				"Community Member" => "Community Member",
 				"Administrator" => "Administrator",
 				"Moderator" => "Moderator",
@@ -150,16 +150,6 @@ class ForumRole extends DataObjectDecorator {
 				"Lead Developer" => "Lead Developer"
 			)));
 		}
-	}
-
-
-	/**
-	 * Get the validator
-	 *
-	 * @return ForumMember_Validator Returns the validator
-	 */
-	function getValidator() {
-		return new ForumMember_Validator();
 	}
 
 
@@ -193,29 +183,26 @@ class ForumRole extends DataObjectDecorator {
 
 
 /**
- * ForumMember_Validator
+ * ForumRole_Validator
  *
  * This class is used to validate the new fields added by the
- * {@link ForumRole} decorator.
- *
- * @todo This class is useless at the moment since sapphire doesn't support
- *       validators on DataObjectDecorators at the moment.
+ * {@link ForumRole} decorator in the CMS backend.
  */
-class ForumMember_Validator extends Member_Validator {
+class ForumRole_Validator extends Extension {
 
 	/**
 	 * Client-side validation code
 	 *
+	 * @param string $js The javascript validation code
 	 * @return string Returns the needed javascript code for client-side
 	 *                validation.
 	 */
-	function javascript() {
-		$js = parent::javascript();
+	function updateJavascript(&$js, &$form) {
 
-		$formID = $this->form->FormName();
-		$passwordFieldName = $this->form->dataFieldByName('Password')->id();
+		$formID = $form->FormName();
+		$passwordFieldName = $form->dataFieldByName('Password')->id();
 		$passwordConfirmFieldName =
-			$this->form->dataFieldByName('ConfirmPassword')->id();
+			$form->dataFieldByName('ConfirmPassword')->id();
 
 
 		$passwordcheck = <<<JS
@@ -225,9 +212,10 @@ Behaviour.register({
 			var passEl = _CURRENT_FORM.elements['Password'];
 			var confEl = _CURRENT_FORM.elements['ConfirmPassword'];
 
-			if(passEl.value == confEl.value)
+			if(passEl.value == confEl.value) {
+			  clearErrorMessage(confEl.parentNode);
 				return true;
-			else {
+			} else {
 				validationError(confEl, "Passwords don't match.", "error");
 				return false;
 			}
