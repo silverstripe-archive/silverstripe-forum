@@ -1,9 +1,7 @@
 <div id="Forum">
 	<% include ForumHeader %>
-
 	<% if Content %><div class="typography">$Content</div><% end_if %>
 	<a href="{$Link}starttopic" title="Click here to start a new topic"><img src="forum/images/forum_startTopic.gif" alt="Start new topic" /></a>
-
 	<div class="forumHolderFeatures">
 		<table id="TopicList">
 			<tr>
@@ -44,6 +42,5 @@
 			<% end_if %>
 		</table>
 	</div>
-
 	<% include ForumFooter %>
 </div>

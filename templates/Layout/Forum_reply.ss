@@ -1,7 +1,5 @@
 <% include ForumHeader %>
-
 	$ReplyForm
-
 	<% if BBTags %>
 		<div id="BBTagsHolder" class="hide">
 			<h2 class="bbcodeExamples">Available BB Code tags</h2>
@@ -15,7 +13,6 @@
 			</ul>
 		</div>
 	<% end_if %>
-
 	<table class="postHeader">
 		<tr class="rowOne">
 			<td class="pageNumbers">
@@ -41,7 +38,6 @@
 			</td>
 <% end_if %>
 		</tr>
-
 		<tr class="rowTwo">
 			<td class="author">
 				<span>Author</span>
@@ -54,7 +50,6 @@
 			</td>
 		</tr>
 	</table>
-
 	<ul id="Posts">
 		<% control Posts %>
 			<li class="$EvenOdd">
@@ -62,7 +57,6 @@
 			</li>
 		<% end_control %>
 	</ul>
-
 	<table class="postHeader">
 		<tr class="rowOne">
 			<td class="pageNumbers">
@@ -89,5 +83,4 @@
 <% end_if %>
 		</tr>
 	</table>
-
 <% include ForumFooter %>

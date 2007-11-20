@@ -1,5 +1,4 @@
 <% include ForumHeader %>
-	
 	<% if CurrentMember %>
 		<% if ViewMode = Edit %>
 			$EditForm
@@ -9,7 +8,6 @@
 	<% else %>
 		<p class="error message">If you would like to post, please <a href="Security/login" title="log in">log in</a> or <a href="ForumMemberProfile/register" title="register">register</a> first.</p>
 	<% end_if %>
-	
 	<% if BBTags %>
 		<div id="BBTagsHolder" class="hide">
 			<h2 class="bbcodeExamples">Available BB Code tags</h2>
@@ -23,5 +21,4 @@
 			</ul>
 		</div>
 	<% end_if %>
-	
 <% include ForumFooter %>

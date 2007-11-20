@@ -15,7 +15,6 @@
 <div class="posterContent">
 	<h4>$Title</h4>
 	<p class="postDate">$Created.Long at $Created.Time</p>
-	
 	<% if EditLink || DeleteLink %>
 		<div class="postModifiers">
 			<% if EditLink %>
@@ -26,16 +25,12 @@
 			<% end_if %>
 		</div>
 	<% end_if %>
-		
-	
 	<div class="postType">
 		<p>$Content.Parse(BBCodeParser)</p>
 	</div>
-				
 	<% if Updated %>
 		<p class="lastEdited"><strong>Last edited:</strong> $Updated.Long at $Updated.Time</p>
 	<% end_if %>
-
 	<% if Attachments %>
 		<div class="attachments">
 			<strong>Attached Files</strong>

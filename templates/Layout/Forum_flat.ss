@@ -1,5 +1,4 @@
 <% include ForumHeader %>
-
 	<table class="postHeader">
 		<tr class="rowOne">
 			<td class="pageNumbers">
@@ -37,7 +36,6 @@
 			</td>
 		</tr>
 	</table>
-
 	<ul id="Posts">
 		<% control Posts %>
 			<li id="post{$ID}" class="$EvenOdd">
@@ -45,9 +43,7 @@
 			</li>
 		<% end_control %>
 	</ul>
-
 	<table class="postHeader">
-
 		<tr class="rowTwo">
 			<td class="author">&nbsp;</td>
 			<td class="topicTitle">&nbsp;</td>
@@ -55,7 +51,6 @@
 				<span><strong>$Post.NumViews views</strong></span>
 			</td>
 		</tr>
-
 		<tr class="rowOne">
 			<td class="pageNumbers">
 				<% if Posts.MoreThanOnePage %>
@@ -82,5 +77,4 @@
 <% end_if %>
 		</tr>
 	</table>
-
 <% include ForumFooter %>

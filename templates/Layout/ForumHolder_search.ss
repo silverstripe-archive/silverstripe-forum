@@ -1,5 +1,4 @@
 <% include ForumHeader %>
-
 	<% if SearchResults %>
 		<div class="forumHolderFeatures">
 		<table id="TopicList">
@@ -42,5 +41,4 @@
 				</table>
 			</div>
 		<% end_if %>
-
 <% include ForumFooter %>

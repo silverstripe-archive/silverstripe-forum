@@ -34,5 +34,4 @@
 			<% end_control %>
 		</table>
 	</div>
-
 <% include ForumFooter %>

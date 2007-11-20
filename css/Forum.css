@@ -146,7 +146,7 @@
 			}
 			.featureLeft h2,
 			h2.bbcodeExamples {
-				clear: none;
+				clear: none !important;
 				margin: 0;
 				padding-left: 10px;
 				color: #0b6db4;

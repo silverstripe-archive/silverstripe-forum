@@ -1,14 +1,11 @@
 <% include ForumHeader %>
-	
 	<div id="TopicTree">
 		<div id="Root">
-	
 			<% if ViewMode = Edit %>
 				$ReplyForm
 			<% else %>
 				$ReplyForm_Preview
 			<% end_if %>
-
 			<% if BBTags %>
 				<div id="BBTagsHolder" class="hide">
 					<h2 class="bbcodeExamples">Available BB Code tags</h2>
@@ -22,8 +19,6 @@
 					</ul>
 				</div>
 			<% end_if %>
-
 		</div>
 	</div>
-
 <% include ForumFooter %>
