@@ -740,6 +740,14 @@ form .BBCodeHint {
 	margin-right: 11px;
 }
 
+#RegisterLogin a {
+	text-decoration: none;
+}
+
+#RegisterLogin a:hover {
+	text-decoration: underline;
+}
+
 #RegisterLogin img {
 	border: none;
 	vertical-align: middle;

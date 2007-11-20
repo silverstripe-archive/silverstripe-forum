@@ -56,7 +56,8 @@ class ForumHolder_Controller extends Page_Controller {
 
 		Requirements::javascript("jsparty/prototype.js");
 		Requirements::javascript("jsparty/behaviour.js");
-		Requirements::javascript("forum/javascript/Forum_openid_description.js");
+		if($this->OpenIDAvailable())
+			Requirements::javascript("forum/javascript/Forum_openid_description.js");
 
 		RSSFeed::linkToFeed($this->Link("rss"), "Posts to all forums");
 		parent::init();
@@ -72,6 +73,9 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return bool Returns TRUE if OpenID is available, FALSE otherwise.
 	 */
 	function OpenIDAvailable() {
+		if(class_exists('Authenticator') == false)
+			return false;
+
 		return Authenticator::is_registered("OpenIDAuthenticator");
 	}
 
@@ -226,10 +230,64 @@ class ForumHolder_Controller extends Page_Controller {
 	 * browser.
 	 */
 	function rss() {
-		$rss = new RSSFeed($this->RecentPosts(10), $this->Link(),
-											 "Forum posts to '$this->Title'",
-											 "", "Title", "RSSContent", "RSSAuthor");
-		$rss->outputToBrowser();
+		HTTP::set_cache_age(3600); // cache for one hour
+
+		$data = array('last_created' => null,
+									'last_id' => null);
+
+    if(!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&
+			 !isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+
+			// just to get the version data..
+			$this->NewPostsAvailable(null, null, $data);
+
+      // No information provided by the client, just return the last posts
+			$rss = new RSSFeed($this->RecentPosts(10), $this->Link(),
+												 "Forum posts to '$this->Title'", "", "Title",
+												 "RSSContent", "RSSAuthor",
+												 $data['last_created'], $data['last_id']);
+			$rss->outputToBrowser();
+
+    } else {
+			// Return only new posts, check the request headers!
+			$since = null;
+			$etag = null;
+
+			if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+				// Split the If-Modified-Since (Netscape < v6 gets this wrong)
+				$since = explode(';', $_SERVER['HTTP_IF_MODIFIED_SINCE']);
+				// Turn the client request If-Modified-Since into a timestamp
+				$since = @strtotime($since[0]);
+				if(!$since)
+					$since = null;
+			}
+
+			if(isset($_SERVER['HTTP_IF_NONE_MATCH']) &&
+				 is_numeric($_SERVER['HTTP_IF_NONE_MATCH'])) {
+				$etag = (int)$_SERVER['HTTP_IF_NONE_MATCH'];
+			}
+
+			if($this->NewPostsAvailable($since, $etag, $data)) {
+				HTTP::register_modification_timestamp($data['last_created']);
+				$rss = new RSSFeed($this->RecentPosts(50, $since, $etag),
+													 $this->Link(),
+													 "Forum posts to '$this->Title'", "", "Title",
+													 "RSSContent", "RSSAuthor", $data['last_created'],
+													 $data['last_id']);
+				$rss->outputToBrowser();
+			} else {
+				if($data['last_created'])
+					HTTP::register_modification_timestamp($data['last_created']);
+
+				if($data['last_id'])
+					HTTP::register_etag($data['last_id']);
+
+				// There are no new posts, just output an "304 Not Modified" message
+				HTTP::add_cache_headers();
+				header('HTTP/1.1 304 Not Modified');
+			}
+		}
+		exit;
 	}
 
 
@@ -237,9 +295,75 @@ class ForumHolder_Controller extends Page_Controller {
 	 * Get the last posts
 	 *
 	 * @param int $limit Number of posts to return
+	 * @param int $lastVisit Optional: Unix timestamp of the last visit (GMT)
+	 * @param int $lastPostID Optional: ID of the last read post
 	 */
-	function RecentPosts($limit = null) {
-		return DataObject::get("Post", "", "Created DESC", "", $limit);
+	function RecentPosts($limit = null, $lastVisit = null,
+											 $lastPostID = null) {
+		$filter = "";
+
+		if($lastVisit)
+			$lastVisit = @date('Y-m-d H:i:s', $lastVisit);
+
+		$lastPostID = (int)$lastPostID;
+		if($lastPostID > 0)
+			$filter .= "ID > $lastPostID";
+
+		if($lastVisit) {
+			if($lastPostID > 0)
+				$filter .= " AND ";
+
+			$filter .= "Created > '$lastVisit'";
+		}
+
+		return DataObject::get("Post", $filter, "Created DESC", "", $limit);
+	}
+
+
+	/**
+	 * Are new posts available?
+	 *
+	 * @param int $lastVisit Unix timestamp of the last visit (GMT)
+	 * @param int $lastPostID ID of the last read post
+	 * @param int $topicID ID of the relevant topic (set to NULL for all
+	 *                     topics)
+	 * @param array $data Optional: If an array is passed, the timestamp of
+	 *                    the last created post and it's ID will be stored in
+	 *                    it (keys: 'last_id', 'last_created')
+	 * @return bool Returns TRUE if there are new posts available, otherwise
+	 *              FALSE.
+	 */
+	public function NewPostsAvailable($lastVisit, $lastPostID,
+																		array &$data = null) {
+		$version = DB::query("SELECT max(ID) as LastID, max(Created) " .
+			"as LastCreated FROM Post")->first();
+
+		if($version == false)
+			return false;
+
+		if($data) {
+			$data['last_id'] = (int)$version['LastID'];
+			$data['last_created'] = strtotime($version['LastCreated']);
+		}
+
+		$lastVisit = (int) $lastVisit;
+		if($lastVisit <= 0)
+			$lastVisit = false;
+
+		$lastPostID = (int)$lastPostID;
+		if($lastPostID <= 0)
+			$lastPostID = false;
+
+		if(!$lastVisit && !$lastPostID)
+			return true; // no check possible!
+
+		if($lastVisit && (strtotime($version['LastCreated']) > $lastVisit))
+			return true;
+
+		if($lastPostID && ((int)$version['LastID'] > $lastPostID))
+			return true;
+
+		return false;
 	}
 
 

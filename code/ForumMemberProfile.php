@@ -22,7 +22,8 @@ class ForumMemberProfile extends Page_Controller {
 
 		Requirements::javascript("jsparty/prototype.js");
  		Requirements::javascript("jsparty/behaviour.js");
-		Requirements::javascript("forum/javascript/Forum_openid_description.js");
+		if($this->OpenIDAvailable())
+			Requirements::javascript("forum/javascript/Forum_openid_description.js");
 
 		parent::init();
  	}
@@ -47,6 +48,9 @@ class ForumMemberProfile extends Page_Controller {
 	 * @return bool Returns TRUE if OpenID is available, FALSE otherwise.
 	 */
 	function OpenIDAvailable() {
+		if(class_exists('Authenticator') == false)
+			return false;
+
 		return Authenticator::is_registered("OpenIDAuthenticator");
 	}
 
@@ -102,6 +106,7 @@ class ForumMemberProfile extends Page_Controller {
 	function RegistrationForm() {
 		$data = Session::get("FormInfo.Form_RegistrationForm.data");
 		$use_openid =
+			($this->OpenIDAvailable == true) &&
 			(isset($data['IdentityURL']) && !empty($data['IdentityURL'])) ||
 			(isset($_POST['IdentityURL']) && !empty($_POST['IdentityURL']));
 
@@ -146,8 +151,9 @@ class ForumMemberProfile extends Page_Controller {
   			Director::redirectBack();
   			return;
   		}
-  	} elseif($member = DataObject::get_one("Member",
-				"`IdentityURL` = '{$data['IdentityURL']}'")) {
+  	} elseif($this->OpenIDAvailable() &&
+				($member = DataObject::get_one("Member",
+					"`IdentityURL` = '{$data['IdentityURL']}'"))) {
   		if($member) {
   			$form->addErrorMessage("Blurb",
 					"Sorry, that OpenID is already registered. Please choose " .
