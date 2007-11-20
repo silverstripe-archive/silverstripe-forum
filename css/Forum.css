@@ -45,7 +45,7 @@
 		background:#f2fbff;
 		padding:6px;
 	}
-	
+
 	p.message {
 		border:1px solid #b3dee2;
 		background:#f1fdff;
@@ -58,7 +58,7 @@
 		background:#ffc1c1 !important;
 		border:1px solid #ff8b8b !important;
 	}
-	
+
 	p.message.status {
 		font-size:1.2em;
 		display:block;
@@ -74,13 +74,13 @@
 			p.message a:hover {
 				text-decoration:none;
 			}
-	
-	
+
+
 	/* Post content styling */
 	#PostContentNormal {
 		display:none;
 	}
-	
+
 	#PostContentNormal,
 	#FirstPost, #Posts li {
 		clear:left;
@@ -92,7 +92,7 @@
 	#PostContentNormal,	#FirstPost {
 		width:100%;
 	}
-	
+
 	#Posts li.even {
 		background:#f5f5f5;
 		border-top:4px solid #ddd;
@@ -148,7 +148,7 @@
 				}
 		.featureRight {
 			float:right;
-			width:41%;	
+			width:41%;
 		}
 			.featureRight p.forumStats {
 				line-height:1.8em;
@@ -159,8 +159,8 @@
 				font-size:1.2em;
 				color:#000;
 			}
-			
-			
+
+
 			.featureRight span.jumpTo {
 				color:#666;
 			}
@@ -233,7 +233,7 @@
 					font-weight:bold;
 					text-transform:uppercase;
 				}
-				
+
 			table.postHeader td.gotoButton {
 				width:60%;
 			}
@@ -264,8 +264,8 @@
 			table.postHeader td.replyButton a.next {
 				color:#d07327;
 			}
-		
-		
+
+
 		table.postHeader td.gotoButtonTop a,
 		table.postHeader td.gotoButtonEnd a {
 			color:#0162a9;
@@ -297,7 +297,7 @@
 			font-size:1.4em;
 			line-height:1.5em;
 			font-weight:bold;
-		}	
+		}
 			div.userInformation a.authorTitle {
 				text-decoration:none;
 				color:#309eed;
@@ -369,11 +369,11 @@
 					color:black;
 					text-decoration:none;
 				}
-		
+
 
 	/* Topic tree styling */
 	#TopicTree {
-	}	
+	}
 	#TopicTree li {
 	}
 		p.message {
@@ -384,8 +384,8 @@
 			margin-bottom:15px;
 			color:#000;
 			font-size:1.5em;
-		}	
-		
+		}
+
 		#TopicTree li a {
 			color:#368cc9;
 			text-decoration:none;
@@ -402,7 +402,7 @@
 					background:#f9f9f9;
 				}
 
-	
+
 	/* Topic list styling shared between forum view and topic list view */
 	#TopicList {
 		border-collapse:collapse;
@@ -451,7 +451,7 @@
 			}
 			#TopicList tr td a {
 				color:#1c7bbf;
-				text-decoration:none;				
+				text-decoration:none;
 			}
 				#TopicList tr td a.topicTitle {
 					font-weight:bold;
@@ -462,11 +462,11 @@
 			#TopicList .lastPost {
 				font-size: 1.1em;
 			}
-				
-				
+
+
 	/* Currently online box styling */
 	#CurrentlyOnline {
-		margin-top:20px;	
+		margin-top:20px;
 		background:#f7fbfe;
 		border-top:5px solid #e1f0f7;
 		border-bottom:5px solid #e1f0f7;
@@ -497,11 +497,11 @@
 			/* line-height:3em; */
 			color:#333;
 		}
-		
+
 	/* User profile styling */
 	#UserProfile,
 	#MemberLatestPosts {
-		margin-top:20px;	
+		margin-top:20px;
 		background:#f7fbfe;
 		border-top:5px solid #e1f0f7;
 		border-bottom:5px solid #e1f0f7;
@@ -577,7 +577,7 @@
 			float:left;
 			margin:10px 0px 0px 100px;
 		}
-		
+
 		#UserProfile select {
 			width:208px;
 			color:#666;
@@ -588,16 +588,16 @@
 			font-size:1.2em;
 			color:#666;
 		}
-		
+
 #UserProfile .checkableoption {
 	position: relative;
 	width: 435px;
 }
 #UserProfile .checkableoption input.checkbox {
 	position: absolute;
-	/*top: 15px;  
+	/*top: 15px;
 	right: 0px;*/
-	top: 40px;  
+	top: 40px;
 	right: 90px;
 }
 #Form_ReplyForm_AttachmentField_PostAttachment {
@@ -628,10 +628,10 @@ ul.attachmentList {
 
 /* Helpers */
 .clear:after {
-    content: "."; 
-    display: block; 
-    height: 0; 
-    clear: both; 
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
     visibility: hidden;
 }
 
@@ -640,7 +640,7 @@ ul.attachmentList {
 /* Hides from IE-mac \*/
 * html .clear {height: 1%;}
 .clear {display: block;}
-/* End hide from IE-mac */	
+/* End hide from IE-mac */
 
 /* These are for the BBCode example tags at the top of the start topic/reply to topic/edit post forms */
 ul.bbcodeExamples li {
@@ -682,19 +682,25 @@ form .BBCodeHint {
 	display: block;
 }
 
-#RegisterLogin #email {
-	width:280px;
-}
-
-#RegisterLogin #password {
-	width:100px;
-}
-
 #RegisterLogin span {
 	margin-left:5px;
 	margin-right:11px;
 }
 
+#RegisterLogin img {
+	border: none;
+	vertical-align: middle;
+}
+
 #TopicSubscription {
 	text-align:center;
+}
+
+#Form_RegistrationWithOpenIDForm_OpenIDURL {
+  background: url(../../sapphire/images/openid-small.gif) no-repeat;
+  background-color: #fff;
+  background-position: 0 50%;
+  color: #000;
+  padding-left: 18px !important;
+  width: 284px;
 }
