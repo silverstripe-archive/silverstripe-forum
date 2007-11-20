@@ -11,7 +11,7 @@
 				<% if CheckForumPermissions %>
 					<tr class="$EvenOdd">
 						<td class="forumCategory odd">
-							<a class="topicTitle" href="$Link" title="Go to the $Title topic">$Title</a>
+							<a class="topicTitle" href="$Link" title="Go to the $Title.EscapeXML topic">$Title</a>
 							<% if Content %><span class="summary">$Content.Summary</span><% end_if %>
 						</td>
 						<td class="count even">
@@ -22,9 +22,9 @@
 						</td>
 						<td class="even lastPost">
 							<% control LatestPost %>
-								<a class="topicTitle" href="$Link#post{$ID}" title="Go to latest post in {$Topic.Title}"><% control Topic %>$Title.LimitCharacters(20)<% end_control %></a>
+								<a class="topicTitle" href="$Link#post{$ID}" title="Go to latest post in {$Topic.Title.EscapeXML}"><% control Topic %>$Title.LimitCharacters(20)<% end_control %></a>
 							<% control Author %>
-								<p class="userInfo">by <% if Link %><a href="$Link" title="Click here to view <% if Nickname %>$Nickname<% else %>Anon<% end_if %>&#39;s profile"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a><% else %><span>Anon</span><% end_if %></p>
+								<p class="userInfo">by <% if Link %><a href="$Link" title="Click here to view <% if Nickname %>$Nickname.EscapeXML<% else %>Anon<% end_if %>&#39;s profile"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a><% else %><span>Anon</span><% end_if %></p>
 							<% end_control %>
 								<p class="userInfo">$Created.Ago</p>
 							<% end_control %>
@@ -34,5 +34,5 @@
 			<% end_control %>
 		</table>
 	</div>
-	
+
 <% include ForumFooter %>

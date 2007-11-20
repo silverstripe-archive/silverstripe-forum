@@ -1,9 +1,9 @@
 <% include ForumHeader %>
-		
+
 	<% if SearchResults %>
 		<div class="forumHolderFeatures">
 		<table id="TopicList">
-			<tr class="rowOne">	
+			<tr class="rowOne">
 				<td class="pageNumbers">
 					<span><strong>Page:</strong></span>
 					<% control SearchResults.Pages %>
@@ -21,13 +21,13 @@
 			<tr class="$EvenOdd">
 				<td class="forumCategory">
 					<% control Topic %>
-					<a class="topicTitle" href="$Link" title="Go to the $Title topic">$Title</a>
+					<a class="topicTitle" href="$Link" title="Go to the $Title.EscapeXML topic">$Title</a>
 					<% end_control %>
 				</td>
 				<td>
 					<a class="topicTitle" href="$Link">$Title</a>
 					<% control Author %>
-					<p class="userInfo">by <a href="$Link" title="Click here to view <% if Nickname %>$Nickname<% else %>Anon<% end_if %>&#39;s profile"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a></p>
+					<p class="userInfo">by <a href="$Link" title="Click here to view <% if Nickname %>$Nickname.EscapeXML<% else %>Anon<% end_if %>&#39;s profile"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a></p>
 					<% end_control %>
 					<p class="userInfo">$Created.Nice</p>
 				</td>
