@@ -36,8 +36,6 @@ class Forum extends Page {
 
 	static $posts_per_page = 8;
 
-	static $lastForumAccessed;
-
 
 	/**
 	 * Add default records to database
@@ -346,6 +344,12 @@ class Forum extends Page {
  * The forum controller class
  */
 class Forum_Controller extends Page_Controller {
+
+	/**
+	 * Last accessed forum
+	 */
+	static $lastForumAccessed;
+
 
 	/**
 	 * Return a list of all top-level topics in this forum
