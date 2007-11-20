@@ -364,6 +364,7 @@ class Forum_Controller extends Page_Controller {
 			);
 
 			Security::permissionFailure($this, $messageSet);
+			return;
  		}
 
  		// Delete any posts that don't have a Title set (This cleans up posts
@@ -900,7 +901,7 @@ JS
 			);
 
 			Security::permissionFailure($this, $messageSet);
-			exit;
+			return;
 		}
 
 		Requirements::javascript("forum/javascript/Forum_reply.js");
@@ -1547,7 +1548,7 @@ JS
 			);
 
 			Security::permissionFailure($this, $messageSet);
-			exit;
+			return;
 	  }
 	}
 

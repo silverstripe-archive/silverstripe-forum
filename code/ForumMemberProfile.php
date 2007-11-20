@@ -127,7 +127,7 @@ class ForumMemberProfile extends Page_Controller {
   			// Load errors into session and post back
 				Session::set("FormInfo.Form_RegistrationForm.data", $data);
   			Director::redirectBack();
-  			die();
+  			return;
   		}
   	} elseif($member = DataObject::get_one("Member",
 				"`IdentityURL` = '{$data['IdentityURL']}'")) {
@@ -140,7 +140,7 @@ class ForumMemberProfile extends Page_Controller {
 				// Load errors into session and post back
 				Session::set("FormInfo.Form_RegistrationForm.data", $data);
 				Director::redirectBack();
-				die();
+  			return;
 			}
   	} elseif($member = DataObject::get_one("Member",
 				"`Nickname` = '{$data['Nickname']}'")) {
@@ -152,7 +152,7 @@ class ForumMemberProfile extends Page_Controller {
 				// Load errors into session and post back
 				Session::set("FormInfo.Form_RegistrationForm.data", $data);
 				Director::redirectBack();
-				die();
+				return;
 			}
 		}
 
@@ -231,7 +231,7 @@ class ForumMemberProfile extends Page_Controller {
 					"bad");
 			}
 			Director::redirectBack();
-			die();
+			return;
 		}
 
 
@@ -252,7 +252,7 @@ class ForumMemberProfile extends Page_Controller {
 					"bad");
 			}
 			Director::redirectBack();
-			die();
+			return;
 		}
 
 		$SQL_identity = Convert::raw2sql($auth_request->endpoint->claimed_id);
@@ -264,7 +264,7 @@ class ForumMemberProfile extends Page_Controller {
 					"bad");
 			}
 			Director::redirectBack();
-			die();
+			return;
 		}
 
 
@@ -315,9 +315,6 @@ class ForumMemberProfile extends Page_Controller {
 				print implode("\n", $page_contents);
 			}
 		}
-
-		// Stop the script execution! This method should return only on error
-		exit();
 	}
 
 
@@ -364,7 +361,7 @@ class ForumMemberProfile extends Page_Controller {
 
 			Session::set("FormInfo.Form_RegistrationForm.data", $data);
 			Director::redirect($this->Link('register'));
-			die();
+			return;
 		}
 
 
@@ -467,7 +464,7 @@ class ForumMemberProfile extends Page_Controller {
 				"Sorry, that nickname already exists. Please choose another.",
 				"bad");
 			Director::redirectBack();
-			die;
+			return;
 		}
 
 		$form->saveInto($member);
