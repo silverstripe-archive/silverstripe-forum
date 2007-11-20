@@ -8,7 +8,7 @@
 		<span><a href="$LoginURL" title="Click here to login">Login</a> |
 			<a href="Security/lostpassword" title="Click here to retrieve your password">forgot password</a> |
 			<a href="ForumMemberProfile/register" title="Click here to register">register</a> |
-			<a href="ForumMemberProfile/registerwithopenid" title="Click here to register with OpenID">register with OpenID <img src="sapphire/images/openid-small.gif" alt="OpenID" /></a>
+			<a href="ForumMemberProfile/registerwithopenid" title="Click here to register with OpenID">register with OpenID <img src="sapphire/images/openid-small.gif" alt="Click here to register with OpenID" /></a>
 		</span>
 	<% end_if %>
 </div>
