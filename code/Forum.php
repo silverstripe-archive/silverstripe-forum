@@ -852,7 +852,10 @@ JS
 		if($topicID) {
 			$SQL_topicID = Convert::raw2sql($topicID);
 			$filter =  " AND TopicID = '$SQL_topicID'";
+		} else {
+			$filter = "";
 		}
+
 		return DataObject::get("Post", "ForumID = '$this->ID' $filter", "Created DESC", "", $limit);
 	}
 
