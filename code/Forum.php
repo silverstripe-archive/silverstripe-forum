@@ -162,7 +162,7 @@ class Forum extends Page {
 			$topic = DataObject::get_by_id("Post", "$SQL_id");
 
 			if($topic) {
-				$nonPageParts[] = $topic->getTitle();
+				$nonPageParts[] = Convert::raw2xml($topic->getTitle());
 			}
 		}
 
