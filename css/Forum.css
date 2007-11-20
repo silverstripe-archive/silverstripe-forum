@@ -46,7 +46,7 @@
 		padding:6px;
 	}
 
-	p.message {
+	.message {
 		border:1px solid #b3dee2;
 		background:#f1fdff;
 		font-size:1.1em;
@@ -54,12 +54,12 @@
 		padding:5px;
 	}
 
-	p.message.bad {
+	.message.bad {
 		background:#ffc1c1 !important;
 		border:1px solid #ff8b8b !important;
 	}
 
-	p.message.status {
+	.message.status {
 		font-size:1.2em;
 		display:block;
 		padding:5px;
@@ -68,10 +68,10 @@
 		border:1px solid #add480;
 		background:#f2f9ea;
 	}
-		p.message a {
+		.message a {
 			color:#666;
 		}
-			p.message a:hover {
+			.message a:hover {
 				text-decoration:none;
 			}
 
