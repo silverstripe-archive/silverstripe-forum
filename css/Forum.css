@@ -763,3 +763,37 @@ form .BBCodeHint {
   padding-left: 18px !important;
   width: 284px;
 }
+
+#OpenIDDescription {
+	position: absolute;
+	border: 3px solid #e1f0f7;
+	padding: 5px;
+	width: 320px;
+	background-color: #FFFFFF;
+	font-size: 90%;
+}
+	#OpenIDDescription.hide {
+		display: none;
+	}
+	#OpenIDDescription span {
+		float: right;
+		font-size: 1.5em;
+		font-weight: bold;
+	}
+	#OpenIDDescription h1 {
+		clear: none;
+		font-size: 2em;
+		margin: 0;
+		margin-bottom: 0.2em;
+	}
+	#OpenIDDescription p {
+		line-height: 1.5em;
+		margin-bottom: 0.4em;
+	}
+	#OpenIDDescription a {
+		text-decoration: underline;
+	}
+	#OpenIDDescription a:hover {
+		color: #000000;
+		text-decoration: underline;
+	}

@@ -20,6 +20,10 @@ class ForumMemberProfile extends Page_Controller {
 	function init() {
 		Requirements::themedCSS('Forum');
 
+		Requirements::javascript("jsparty/prototype.js");
+ 		Requirements::javascript("jsparty/behaviour.js");
+		Requirements::javascript("forum/javascript/Forum_openid_description.js");
+
 		parent::init();
  	}
 
@@ -31,6 +35,19 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function LoginURL() {
 		return $this->Link("login");
+	}
+
+
+	/**
+	 * Is OpenID support available?
+	 *
+	 * This method checks if the {@link OpenIDAuthenticator} is available and
+	 * registered.
+	 *
+	 * @return bool Returns TRUE if OpenID is available, FALSE otherwise.
+	 */
+	function OpenIDAvailable() {
+		return Authenticator::is_registered("OpenIDAuthenticator");
 	}
 
 

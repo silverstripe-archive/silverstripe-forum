@@ -54,8 +54,25 @@ class ForumHolder_Controller extends Page_Controller {
 	function init() {
 		Requirements::themedCSS('Forum');
 
+		Requirements::javascript("jsparty/prototype.js");
+		Requirements::javascript("jsparty/behaviour.js");
+		Requirements::javascript("forum/javascript/Forum_openid_description.js");
+
 		RSSFeed::linkToFeed($this->Link("rss"), "Posts to all forums");
 		parent::init();
+	}
+
+
+	/**
+	 * Is OpenID support available?
+	 *
+	 * This method checks if the {@link OpenIDAuthenticator} is available and
+	 * registered.
+	 *
+	 * @return bool Returns TRUE if OpenID is available, FALSE otherwise.
+	 */
+	function OpenIDAvailable() {
+		return Authenticator::is_registered("OpenIDAuthenticator");
 	}
 
 

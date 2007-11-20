@@ -382,6 +382,7 @@ class Forum_Controller extends Page_Controller {
  		Requirements::javascript("jsparty/behaviour.js");
  		Requirements::javascript("jsparty/tree/tree.js");
 		Requirements::javascript("forum/javascript/Forum.js");
+		Requirements::javascript("forum/javascript/Forum_openid_description.js");
 
 		// Refresh the forum every X seconds if requested
 		// TODO Make this AJAX-friendly :>
@@ -412,6 +413,19 @@ JS
 			ContentNegotiator::allowXHTML();
 
 		parent::init();
+	}
+
+
+	/**
+	 * Is OpenID support available?
+	 *
+	 * This method checks if the {@link OpenIDAuthenticator} is available and
+	 * registered.
+	 *
+	 * @return bool Returns TRUE if OpenID is available, FALSE otherwise.
+	 */
+	function OpenIDAvailable() {
+		return Authenticator::is_registered("OpenIDAuthenticator");
 	}
 
 
