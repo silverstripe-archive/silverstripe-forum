@@ -148,8 +148,7 @@ class ForumHolder_Controller extends Page_Controller {
 		return DataObject::get("Member",
 			"LastVisited > NOW() - INTERVAL 15 MINUTE",
 			"FirstName, Surname",
-			"INNER JOIN Group_Members ON Group_Members.GroupID IN (1, 2, 3) " .
-				"AND Group_Members.MemberID = Member.ID");
+			"");
 	}
 
 
