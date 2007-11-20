@@ -1,46 +1,50 @@
 <?php
-/*
- * Created on Jun 19, 2007
+
+
+/**
+ * ForumRole
  *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
+ * This decorator adds the needed fields and methods to the {@link Member}
+ * object.
  */
- 
- class ForumRole extends DataObjectDecorator {
- 	
- 	/**
+class ForumRole extends DataObjectDecorator {
+
+	/**
 	 * Edit the given query object to support queries for this extension
 	 */
 	function augmentSQL(SQLQuery &$query) {}
- 	
- 	/**
+
+
+	/**
 	 * Update the database schema as required by this extension
 	 */
 	function augmentDatabase() {
- 		$exist =  DB::query( "SHOW TABLES LIKE 'ForumMember'" )->numRecords();
- 		if( $exist > 0 ) {
- 			DB::query( "UPDATE `Member`, `ForumMember` " .
- 				"SET `Member`.`ClassName` = 'Member'," .
- 				"`Member`.`ForumRank` = `ForumMember`.`ForumRank`," .
- 				"`Member`.`Occupation` = `ForumMember`.`Occupation`," .
- 				"`Member`.`Country` = `ForumMember`.`Country`," .
- 				"`Member`.`Nickname` = `ForumMember`.`Nickname`," .
- 				"`Member`.`FirstNamePublic` = `ForumMember`.`FirstNamePublic`," .
- 				"`Member`.`SurnamePublic` = `ForumMember`.`SurnamePublic`," .
- 				"`Member`.`OccupationPublic` = `ForumMember`.`OccupationPublic`," .
- 				"`Member`.`CountryPublic` = `ForumMember`.`CountryPublic`," .
- 				"`Member`.`EmailPublic` = `ForumMember`.`EmailPublic`," .
- 				"`Member`.`AvatarID` = `ForumMember`.`AvatarID`," .
- 				"`Member`.`LastViewed` = `ForumMember`.`LastViewed`" .
- 				"WHERE `Member`.`ID` = `ForumMember`.`ID`"
- 			);
- 			echo( "<div style=\"padding:5px; color:white; background-color:blue;\">The data transfer has succeeded. However, to complete it, you must delete the ForumMember table. To do this, execute the query \"DROP TABLE 'ForumMember'\".</div>" );
- 		}
+		$exist =  DB::query( "SHOW TABLES LIKE 'ForumMember'" )->numRecords();
+		if( $exist > 0 ) {
+			DB::query( "UPDATE `Member`, `ForumMember` " .
+				"SET `Member`.`ClassName` = 'Member'," .
+				"`Member`.`ForumRank` = `ForumMember`.`ForumRank`," .
+				"`Member`.`Occupation` = `ForumMember`.`Occupation`," .
+				"`Member`.`Country` = `ForumMember`.`Country`," .
+				"`Member`.`Nickname` = `ForumMember`.`Nickname`," .
+				"`Member`.`FirstNamePublic` = `ForumMember`.`FirstNamePublic`," .
+				"`Member`.`SurnamePublic` = `ForumMember`.`SurnamePublic`," .
+				"`Member`.`OccupationPublic` = `ForumMember`.`OccupationPublic`," .
+				"`Member`.`CountryPublic` = `ForumMember`.`CountryPublic`," .
+				"`Member`.`EmailPublic` = `ForumMember`.`EmailPublic`," .
+				"`Member`.`AvatarID` = `ForumMember`.`AvatarID`," .
+				"`Member`.`LastViewed` = `ForumMember`.`LastViewed`" .
+				"WHERE `Member`.`ID` = `ForumMember`.`ID`"
+			);
+			echo("<div style=\"padding:5px; color:white; background-color:blue;\">The data transfer has succeeded. However, to complete it, you must delete the ForumMember table. To do this, execute the query \"DROP TABLE 'ForumMember'\".</div>" );
+		}
 	}
- 	
- 	/**
-	 * Define extra database fields.
-	 * Return an map where the keys are db, has_one, etc, and the values are additional fields / relations to be defined
+
+	/**
+	 * Define extra database fields
+	 *
+	 * Return an map where the keys are db, has_one, etc, and the values are
+	 * additional fields/relations to be defined
 	 */
 	function extraDBFields() {
 		return array(
@@ -64,48 +68,76 @@
 			)
 		);
 	}
-	
-	// Additional Methods
-	
+
+
 	function NumPosts() {
 		if(is_numeric($this->owner->ID)) {
-			return (int)DB::query("SELECT count(*) FROM Post WHERE AuthorID = '" . $this->owner->ID . "'")->value();
+			return (int)DB::query("SELECT count(*) FROM Post WHERE AuthorID = '" .
+														$this->owner->ID . "'")->value();
 		} else {
 			return 0;
 		}
 	}
-	
+
+
 	function Link() {
 		return "ForumMemberProfile/show/" . $this->owner->ID;
 	}
-	
-	function getForumFields($addMode = false) {
-		return new FieldSet(
+
+
+	/**
+	 * Get the fields needed by the forum module
+	 *
+	 * @param bool $addMode If set to TRUE, the E-mail field will be editable,
+	 *                      otherwise it will be read-only
+	 * @param bool $showIdentityURL Should a field for an OpenID or an i-name
+	 *                              be shown (always read-only)?
+	 * @return FieldSet Returns a FieldSet containing all needed fields for
+	 *                  the registration of new users
+	 */
+	function getForumFields($addMode = false, $showIdentityURL = false) {
+		$fieldset = new FieldSet(
 			new HeaderField("Personal Details"),
-			
+
 			new LiteralField("Blurb","<p id=\"helpful\">Tick the fields to show in public profile</p>"),
-			
-			new CheckableOption( "UnnecessaryNicknamePublic", new TextField("Nickname", "Nickname"), true, true ),
-			new CheckableOption( "FirstNamePublic", new TextField("FirstName", "First name") ),
-			new CheckableOption( "SurnamePublic", new TextField("Surname", "Surname") ),
-			new CheckableOption( "OccupationPublic", new TextField("Occupation", "Occupation"), true ),
-			new CheckableOption( "CountryPublic", new CountryDropdownField("Country", "Country"), true ),
-			
+
+			new CheckableOption("UnnecessaryNicknamePublic", new TextField("Nickname", "Nickname"), true, true),
+			new CheckableOption("FirstNamePublic", new TextField("FirstName", "First name")),
+			new CheckableOption("SurnamePublic", new TextField("Surname", "Surname")),
+			new CheckableOption("OccupationPublic", new TextField("Occupation", "Occupation"), true),
+			new CheckableOption("CountryPublic", new CountryDropdownField("Country", "Country"), true),
+
 			new HeaderField("User Details"),
-			new CheckableOption( "EmailPublic", $addMode ? new EmailField("Email", "Email") : new ReadonlyField("Email", "Email") ),
+			new CheckableOption("EmailPublic", ($addMode)
+				? new EmailField("Email", "Email")
+				: new ReadonlyField("Email", "Email")),
 			new PasswordField("Password", "Password") ,
-			new PasswordField("ConfirmPassword", "Confirm Password") ,
-			new SimpleImageField("Avatar", "Upload avatar") ,
+			new PasswordField("ConfirmPassword", "Confirm Password"),
+			new SimpleImageField("Avatar", "Upload avatar"),
 			new ReadonlyField("ForumRank", "User rating")
 		);
+
+		if($showIdentityURL) {
+			$fieldset->insertBefore(new ReadonlyField('IdentityURL', 'OpenID/i-name'),
+															'Password');
+			$fieldset->insertAfter(new LiteralField('PasswordOptionalMessage',
+				'<p>Since you provided an OpenID respectively an i-name the ' .
+					'password is optional. If you enter one, you will be able to ' .
+					'log in also with your e-mail address.</p>'),
+				'IdentityURL');
+		}
+
+		return $fieldset;
 	}
-	
+
+
 	function updateCMSFields(FieldSet &$fields) {
 		if( Permission::checkMember( $this->owner->ID, "ACCESS_FORUM" ) ) {
 			$fields->insertBefore( new TextField( "Nickname", "Nickname" ), "FirstName" );
 			$fields->insertAfter( new TextField( "Occupation", "Occupation" ), "Surname" );
-			if( ! $fields->fieldByName( 'Country' ) ) $fields->insertAfter( new CountryDropdownField( "Country", "Country" ), "Occupation" );
+			$fields->insertAfter( new CountryDropdownField( "Country", "Country" ), "Occupation" );
 
+			$fields->push( new PasswordField( "ConfirmPassword", "Confirm Password" ) );
 			$fields->push( new ImageField( "Avatar", "Upload avatar" ) );
 			$fields->push( new DropdownField( "ForumRank", "User rating", array(
 				"Community Member" => "Community Member",
@@ -119,56 +151,80 @@
 			)));
 		}
 	}
-	
+
+
+	/**
+	 * Get the validator
+	 *
+	 * @return ForumMember_Validator Returns the validator
+	 */
 	function getValidator() {
 		return new ForumMember_Validator();
 	}
-	
+
+
 	/**
 	 * Can the current user edit the given member?
+	 *
 	 * @return true if this member can be edited, false otherwise
 	 */
 	function canEdit() {
 		if($this->owner->ID == Member::currentUserID()) return true;
-		
+
 		if($member = Member::currentUser()) return $member->can('AdminCMS');
-		
+
 		return false;
 	}
-	
+
+
 	/**
 	 * Used in preference to the Nickname field on templates
-	 * Provides a default for the nickname field (first name, or "Anonymous User" if that's not set)
+	 *
+	 * Provides a default for the nickname field (first name, or "Anonymous
+	 * User" if that's not set)
 	 */
 	function Nickname() {
 		if($this->owner->Nickname) return $this->owner->Nickname;
 		else if($this->owner->FirstName) return $this->owner->FirstName;
 		else return "Anonymous user";
 	}
-	
-	function forgotNickname(){
-		$e = new ForumMember_ForgotNicknameEmail();
-		$e->populateTemplate($this->owner);
-		$e->send();
-	}	
- }
- 
- class ForumMember_Validator extends Member_Validator {
+}
+
+
+
+/**
+ * ForumMember_Validator
+ *
+ * This class is used to validate the new fields added by the
+ * {@link ForumRole} decorator.
+ *
+ * @todo This class is useless at the moment since sapphire doesn't support
+ *       validators on DataObjectDecorators at the moment.
+ */
+class ForumMember_Validator extends Member_Validator {
+
+	/**
+	 * Client-side validation code
+	 *
+	 * @return string Returns the needed javascript code for client-side
+	 *                validation.
+	 */
 	function javascript() {
 		$js = parent::javascript();
-		
+
 		$formID = $this->form->FormName();
 		$passwordFieldName = $this->form->dataFieldByName('Password')->id();
-		$passwordConfirmFieldName = $this->form->dataFieldByName('ConfirmPassword')->id();
-		
-		
+		$passwordConfirmFieldName =
+			$this->form->dataFieldByName('ConfirmPassword')->id();
+
+
 		$passwordcheck = <<<JS
 Behaviour.register({
 	"#$formID": {
 		validatePasswordConfirmation: function() {
 			var passEl = _CURRENT_FORM.elements['Password'];
 			var confEl = _CURRENT_FORM.elements['ConfirmPassword'];
-		
+
 			if(passEl.value == confEl.value)
 				return true;
 			else {
@@ -185,14 +241,15 @@ Behaviour.register({
 	}
 });
 JS;
+		Requirements::customScript($passwordcheck,
+															 'func_validatePasswordConfirmation');
 
-	Requirements::customScript($passwordcheck, 'func_validatePasswordConfirmation');
-	
-	$js .= "\$('$formID').validatePasswordConfirmation();";
-	return $js;
-	
+		$js .= "\$('$formID').validatePasswordConfirmation();";
+		return $js;
 	}
 }
+
+
 
 /**
  * Email template for topic notifications
@@ -203,25 +260,17 @@ class ForumMember_TopicNotification extends Email_Template {
 		$to = '$Email',
 		$subject = 'New reply to \'$Title\'',
 		$ss_template = 'ForumMember_TopicNotification';
-	
+
 	/**
-	 * This only exists because you can't do "protected $from = Email::getAdminEmail()" with PHP
+	 * This only exists because you can't do
+	 * "protected $from = Email::getAdminEmail()" with PHP
 	 */
 	function __construct() {
 		$this->setFrom(Email::getAdminEmail());
-		
+
 		parent::__construct();
 	}
 }
 
-/**
- * For the system that Nickname is used for logging in, instead of Email
- */
-class ForumMember_ForgotNicknameEmail extends Email_Template{
-	protected $from = '';
-    protected $subject = "Your Username";
-    protected $ss_template = 'ForumMember_ForgotNicknameEmail';
-    protected $to = '$Email';
-}
 
 ?>
