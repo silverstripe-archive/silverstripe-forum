@@ -53,7 +53,7 @@ class Forum extends Page {
 			$group->Code = 'forum-members';
 			$group->Title = "Forum Members";
 			$group->write();
-			
+
 			Permission::grant( $group->ID, $code );
 			Database::alteration_message("Forum Members group created","created");
 		}
@@ -132,7 +132,7 @@ class Forum extends Page {
 
 		return $fields;
 	}
-	
+
 	/**
 	 * Create breadcrumbs
 	 *
@@ -265,41 +265,41 @@ class Forum extends Page {
 	function getTopicsByStatus($status){
 		return DataObject::get("Post", "ForumID = $this->ID and ParentID = 0 and Status = '$status'");
 	}
-	
+
 	function hasChildren() {
 		return $this->NumPosts();
 	}
-	
+
 	function getChildrenAsUL($attributes = "", $titleEval = '"<li>" . $child->Title', $extraArg = null, $limitToMarked = false, $rootCall = false){
 		if($limitToMarked && $rootCall) {
 			$this->markingFinished();
 		}
-		
+
 		$children = $this->Topics();
 		if($children) {
 			if($attributes) {
 				$attributes = " $attributes";
 			}
-			
+
 			$output = "<ul$attributes>\n";
 			foreach($children as $child) {
 				if(!$limitToMarked || $child->isMarked()) {
 					$foundAChild = true;
-					$output .= eval("return $titleEval;") . "\n" . 
+					$output .= eval("return $titleEval;") . "\n" .
 					$child->getChildrenAsUL("", $titleEval, $extraArg, false, false) . "</li>\n";
 				}
 			}
-			
+
 			$output .= "</ul>\n";
 		}
-		
+
 		if(isset($foundAChild) && $foundAChild) {
 			return $output;
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Checks to see if the currently logged in user has a certain permissions
 	 * for this forum
@@ -399,7 +399,7 @@ JS
 		}
 
 		Requirements::css("jsparty/tree/tree.css");
-		
+
 		Requirements::themedCSS('Forum');
 
 		if(Director::fileExists(project()."/css/forum.css"))
@@ -462,12 +462,12 @@ JS
 	 * these will be posts that have been created by the ReplyForm method
 	 * but not modified by the postAMessage method.
 	 *
-	 * Has a time limit - posts can exist in this state for 15 minutes
+	 * Has a time limit - posts can exist in this state for 24 hours
 	 * before they are deleted - this is so anybody uploading attachments
 	 * has time to do so.
 	 */
 	function deleteUntitledPosts() {
-		DB::query("DELETE FROM Post WHERE `Title` IS NULL AND `Content` IS NULL AND `Created` < NOW() - INTERVAL 15 MINUTE");
+		DB::query("DELETE FROM Post WHERE `Title` IS NULL AND `Content` IS NULL AND `Created` < NOW() - INTERVAL 24 HOUR");
 	}
 
 
@@ -1811,4 +1811,5 @@ JS
 		return DataObject::get_by_id("ForumHolder", $this->ParentID)->URLSegment;
 	}
 }
+
 ?>

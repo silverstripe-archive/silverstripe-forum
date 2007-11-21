@@ -1,4 +1,5 @@
 <?php
+
 class Post extends DataObject {
 	static $db = array(
 		"Title" => "Varchar(255)",
@@ -7,33 +8,33 @@ class Post extends DataObject {
 		"NumViews" => "Int",
 	);
 	static $default_sort = "LastEdited DESC";
-	
+
 	static $indexes = array(
 		"SearchFields" => "fulltext (Title, Content)"
 	);
-	
+
 	static $casting = array(
 		"Updated" => "Datetime",
 		"RSSContent" => "HTMLText",
 		"RSSAuthor" => "Varchar",
 		"Content" => "Text"
 	);
-	
+
 	static $has_one = array(
 		"Parent" => "Post",
 		"Topic" => "Post", // Extra link to the top-level post
 		"Forum" => "Forum",
 		"Author" => "Member",
 	);
-	
+
 	static $has_many = array(
 		"Children" => "Post" //All Posts one-level below this Post
 	);
-	
+
 	static $extensions = array(
 		"Hierarchy",
 	);
-	
+
 	function hasChildren(){
 		$children = $this->Children();
 		return($children&&$children->count());
@@ -47,24 +48,24 @@ class Post extends DataObject {
 		} elseif($this->ParentID && !$this->TopicID){
 			$this->TopicID = $this->Parent->TopicID;
 		}
-		
+
 		parent::onBeforeWrite();
 	}
-	
+
 	function AuthorFullName(){
 		if($this->Author()->ID)
 			return $this->Author()->FirstName." ".$this->Author()->Surname;
 		else
 			return 'a visitor';
 	}
-	
+
 	function IsModerator(){
 		return Member::currentUser()==$this->Forum()->Moderator();
 	}
-	
+
 	/**
 	 * This lets you see a list of all files that have been attached so far.
-	 * 
+	 *
 	 * @return DataObjectSet|false
 	 */
 	function Attachments() {
@@ -73,7 +74,7 @@ class Post extends DataObject {
 		if(!$allAttachments) return false;
 
 		$doSet = new DataObjectSet();
-		
+
 		// Do some fancy post-pocessing - change the class if this is a Image so we can make some thumbnails and sane-sized images
 		foreach($allAttachments as $singleAttachment) {
 			if($singleAttachment->appCategory() == "image") {
@@ -84,10 +85,10 @@ class Post extends DataObject {
 				$doSet->push($singleAttachment);
 			}
 		}
-		
+
 		return $doSet;
 	}
-	
+
 	/*
 	function Link($action = null){
 		if(!$action)
@@ -97,39 +98,39 @@ class Post extends DataObject {
 		return "$url/$action/$id";
 	}
 	*/
-	
+
 	function ForumURLSegment(){
 		return $this->Forum()->URLSegment;
 	}
-	
+
 	function util_isRoot() {
 		return $this->ParentID == 0;
 	}
-	
+
 	function getTitle() {
 		$title = $this->getField('Title');
 		if(!$title) $title = "Re: " . $this->Topic()->Title;
 
 		return $title;
 	}
-	
+
 	function LatestMember($limit = null) {
 		return DataObject::get("Member", "", "`Member`.`ID` DESC", "", 1);
 	}
-	
-	
+
+
 	/**
 	 * Return the last edited date, if it's different from created
 	 */
 	function Updated() {
 		if($this->LastEdited != $this->Created) return $this->LastEdited;
 	}
-	
+
 	function EditLink() {
 	  if((Member::currentUser() && Member::currentUser()->ID == $this->Author()->ID) || (Member::currentUser() && Member::currentUser()->_isAdmin())) return "<a href=\"{$this->Forum()->Link()}editpost/{$this->ID}\">edit</a>";
 	  else return false;
 	}
-	
+
 	function DeleteLink() {
 	  Requirements::javascript("forum/javascript/DeleteLink.js");
 	  $id = " ";
@@ -139,7 +140,7 @@ class Post extends DataObject {
 	}
 
 	function getAscendants(&$ascendants) {
-	
+
 		if($parent = $this->getParent()){
 			array_push($ascendants, $parent);
 			$parent->getAscendants($ascendants);
@@ -148,11 +149,11 @@ class Post extends DataObject {
 			return $ascendants;
 		}
 	}
-	
+
 	function getAllPostsUnderThisTopic() {
 		return DataObject::get("Post", "TopicID = $this->TopicID AND ParentID <> 0 AND Status = 'Moderated'");
 	}
-	
+
 	function LatestPost() {
 		$filter = "";
 		if($this->ParentID != 0) {
@@ -171,10 +172,10 @@ class Post extends DataObject {
 			$parents[] = $this->ID;
 			$filter = "AND (ID = $this->ID OR ParentID IN (" . implode(",", $parents) . "))";
 		}
-		
+
 		return (int)DB::query("SELECT count(*) FROM Post WHERE TopicID = $this->TopicID $filter")->value();
 	}
-	
+
 	function RSSContent() {
 		$parser = new BBCodeParser($this->Content);
 		return $parser->parse() . '<br><br>Posted to: ' . $this->Topic()->Title;
@@ -183,11 +184,11 @@ class Post extends DataObject {
 		$author = $this->Author();
 		return "$author->FirstName $author->Surname";
 	}
-	
+
 	function NumReplies() {
 		return $this->NumPosts() - 1;
 	}
-	
+
 	/**
 	 * Increment the NumViews value by 1.  Write just that number straight to the database
 	 */
@@ -196,7 +197,7 @@ class Post extends DataObject {
 		$SQL_numViews = Convert::raw2sql($this->NumViews);
 		DB::query("UPDATE Post SET NumViews = '$SQL_numViews' WHERE ID = $this->ID");
 	}
-	
+
 	/*
 	 * Return a link to show this post
 	 */
@@ -205,10 +206,10 @@ class Post extends DataObject {
 		if($this->ParentID == 0) return $baseLink . "show/" . $this->ID;
 		else return $baseLink . "show/" . $this->TopicID  . '?showPost=' . $this->ID;
 	}
-	
+
 	function getCMSFields(){ //Topic is-a Post, so here we are getting all the posts for that topic
 		$authors = DataObject::get("Member");
-		
+
 		$ret = new FieldSet(
 			new TabSet("Main",
 				new Tab("Topic Details",
@@ -225,7 +226,7 @@ class Post extends DataObject {
 					)),
 					new DropdownField("AuthorID", "Author", $authors->map())
 				),
-				new Tab("Active Posts", 
+				new Tab("Active Posts",
 					$activePosts = new ComplexTableField(
 						$controller = null,
 						$name = "ActivePosts",
@@ -286,7 +287,7 @@ class Post extends DataObject {
 		$activePosts->setPermissions(
 			array("show")
 		);
-		
+
 		$awaitingPosts->setFieldCasting(
 			array(
 				"Content" => "Text->LimitWordCountPlainText(20)"
@@ -295,7 +296,7 @@ class Post extends DataObject {
 		$awaitingPosts->setPermissions(
 			array("add", "edit", "show")
 		);
-		
+
 		$rejectedPosts->setFieldCasting(
 			array(
 				"Content" => "Text->LimitWordCountPlainText(20)"
@@ -304,13 +305,13 @@ class Post extends DataObject {
 		$rejectedPosts->setPermissions(
 			array("show")
 		);
-		
+
 		return $ret;
 	}
-	
+
 	function getCMSFields_forPopup(){
 		$authors = DataObject::get("Member");
-		
+
 		$topicID = $this->TopicID?$this->TopicID:$this->ParentID;
 		$postsExceptMyselft = DataObject::get("Post", "TopicID = '$topicID' AND (ParentID <> 0 AND ID <> '$this->ID' OR ParentID = 0) AND Status = 'Moderated'");
 		if(!$postsExceptMyselft||!$postsExceptMyselft->count()){
@@ -321,51 +322,51 @@ class Post extends DataObject {
 			new DropdownField("ParentID", "Post Replied To", $postsExceptMyselft->map()),
 			new TextField("Title", "Title"),
 			new TextareaField("Content", "Content"),
-			new DropdownField("Status", "Status", 
+			new DropdownField("Status", "Status",
 				array(
-					"Awaiting"=>"Awaiting", 
+					"Awaiting"=>"Awaiting",
 					"Moderated"=>"Moderated",
 					"Rejected"=>"Rejected"
 				)
 			),
 			new HiddenField("TopicID", "", $topicID)
 		);
-		
+
 		return $ret;
 	}
-	
+
 	function getCMSActions(){
 		return new FieldSet(
 			new FormAction('save', 'Save','ajaxAction-save'),
 			new FormAction("archive", "Archive", 'ajaxAction->archive')
 		);
 	}
-	
+
 	function LimitWordCountPlainText($numWords){
 		/*debug::show($this->Countent.LimitWordCountPlainText($numWords));
 		die*/
 		return $this->Countent;
 	}
-		
+
 }
 
 /**
- * Topic Subscription: Allows members to subscribe to any number of topics 
+ * Topic Subscription: Allows members to subscribe to any number of topics
  * and receive email notifications when these topics are replied to.
  */
 class Post_Subscription extends DataObject {
 	static $db = array(
 		"LastSent" => "SSDatetime"
 	);
-	
+
 	static $has_one = array(
 		"Topic" => "Post",
 		"Member" => "Member"
 	);
-	
+
 	/**
 	 * Checks to see if a Member is already subscribed to this thread
-	 * 
+	 *
 	 * @param int $topic The ID of the topic to check
 	 * @param int $memberID The ID of the currently logged in member (Defaults to Member::currentUserID())
 	 * @return bool true if they are subscribed, false if they're not
@@ -374,18 +375,18 @@ class Post_Subscription extends DataObject {
 		if(!$memberID) $memberID = Member::currentUserID();
 		$SQL_topicID = Convert::raw2sql($topicID);
 		$SQL_memberID = Convert::raw2sql($memberID);
-		
+
 		if(DB::query("SELECT ID FROM Post_Subscription WHERE `TopicID` = '$SQL_topicID' AND `MemberID` = '$SQL_memberID'")->value()) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Notifys everybody that has subscribed to this topic that a new post has been added.
 	 * To get emailed, people subscribed to this topic must have visited the forum since the last time they received an email
-	 * 
+	 *
 	 * @param Post $post The post that has just been added
 	 */
 	static function notify(Post $post) {
@@ -395,24 +396,24 @@ class Post_Subscription extends DataObject {
 		if($list) {
 			foreach($list as $obj) {
 				$SQL_id = Convert::raw2sql((int)$obj->MemberID);
-				
+
 				// Get the members details
 				$member = DataObject::get_one("Member", "`Member`.`ID` = '$SQL_id'");
-				
+
 				// Create the email and send it out
 				$email = new ForumMember_TopicNotification;
 				$email->populateTemplate($member);
 				$email->populateTemplate($post);
 				$email->send();
-				
+
 				// Set the LastSent field for this subscription to prevent >1 email from being sent before the user views the thread
 				$obj->LastSent = date("Y-m-d H:i:s");
 				$obj->write();
 			}
 		}
 	}
-	
-	
+
+
 }
 
 /**
@@ -422,7 +423,7 @@ class Post_Attachment extends File {
 	static $has_one = array(
 		"Post" => "Post"
 	);
-	
+
 	/**
 	 * Allows the user to download a file without right-clicking
 	 */
@@ -433,11 +434,11 @@ class Post_Attachment extends File {
 
 			HTTP::sendFileToBrowser(file_get_contents($file->getFullPath()), $file->Name);
 		}
-		
+
 		// Missing something or hack attempt
 		Director::redirectBack();
 	}
-	
+
 	/**
 	 * Returns a download link
 	 */
@@ -445,4 +446,5 @@ class Post_Attachment extends File {
 		return "$this->class/download/$this->ID/";
 	}
 }
+
 ?>
