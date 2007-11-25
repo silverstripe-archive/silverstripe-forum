@@ -1046,7 +1046,10 @@ JS
 
 		$required = new RequiredFields("Title", "Content");
 		$replyform = new Form($this, "ReplyForm", $fields, $actions, $required);
-		$currentID = $this->currentPost ? $this->currentPost->ID : "";
+		$currentID = $this->currentPost
+			? $this->currentPost->ID
+			: "";
+
 		if(Session::get("forumInfo.{$currentID}.postvar") != null) {
 			$_REQUEST = Session::get("forumInfo.{$currentID}.postvar");
 			Session::clear("forumInfo.{$currentID}.postvar");
