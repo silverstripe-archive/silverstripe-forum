@@ -35,11 +35,14 @@ class Post extends DataObject {
 		"Hierarchy",
 	);
 
+
 	function hasChildren(){
 		$children = $this->Children();
 		return($children&&$children->count());
 
 	}
+
+
 	function onBeforeWrite() {
 		if(!$this->ParentID && !$this->TopicID) {
 			if($this->ID){
@@ -52,6 +55,7 @@ class Post extends DataObject {
 		parent::onBeforeWrite();
 	}
 
+
 	function AuthorFullName(){
 		if($this->Author()->ID)
 			return $this->Author()->FirstName." ".$this->Author()->Surname;
@@ -59,9 +63,11 @@ class Post extends DataObject {
 			return 'a visitor';
 	}
 
+
 	function IsModerator(){
 		return Member::currentUser()==$this->Forum()->Moderator();
 	}
+
 
 	/**
 	 * This lets you see a list of all files that have been attached so far.
@@ -99,13 +105,16 @@ class Post extends DataObject {
 	}
 	*/
 
+
 	function ForumURLSegment(){
 		return $this->Forum()->URLSegment;
 	}
 
+
 	function util_isRoot() {
 		return $this->ParentID == 0;
 	}
+
 
 	function getTitle() {
 		$title = $this->getField('Title');
@@ -113,6 +122,7 @@ class Post extends DataObject {
 
 		return $title;
 	}
+
 
 	function LatestMember($limit = null) {
 		return DataObject::get("Member", "", "`Member`.`ID` DESC", "", 1);
@@ -126,21 +136,32 @@ class Post extends DataObject {
 		if($this->LastEdited != $this->Created) return $this->LastEdited;
 	}
 
+
 	function EditLink() {
-	  if((Member::currentUser() && Member::currentUser()->ID == $this->Author()->ID) || (Member::currentUser() && Member::currentUser()->_isAdmin())) return "<a href=\"{$this->Forum()->Link()}editpost/{$this->ID}\">edit</a>";
-	  else return false;
+	  if((Member::currentUser() && Member::currentUser()->ID == $this->Author()->ID) ||
+			 (Member::currentUser() && Member::currentUser()->_isAdmin())) {
+			return "<a href=\"{$this->Forum()->Link()}editpost/{$this->ID}\">edit</a>";
+		}
+	  else {
+			return false;
+		}
 	}
+
 
 	function DeleteLink() {
 	  Requirements::javascript("forum/javascript/DeleteLink.js");
 	  $id = " ";
-	  if($this->ParentID == 0) $id = " id=\"firstPost\" ";
-	  if(Member::currentUser() && Member::currentUser()->_isAdmin()) return "<a".$id."class=\"deletelink\" href=\"{$this->Forum()->Link()}deletepost/{$this->ID}\">delete</a>";
-	  else return false;
+	  if($this->ParentID == 0)
+			$id = " id=\"firstPost\" ";
+
+	  if(Member::currentUser() && Member::currentUser()->_isAdmin())
+			return "<a".$id."class=\"deletelink\" href=\"{$this->Forum()->Link()}deletepost/{$this->ID}\">delete</a>";
+	  else
+			return false;
 	}
 
-	function getAscendants(&$ascendants) {
 
+	function getAscendants(&$ascendants) {
 		if($parent = $this->getParent()){
 			array_push($ascendants, $parent);
 			$parent->getAscendants($ascendants);
@@ -150,9 +171,11 @@ class Post extends DataObject {
 		}
 	}
 
+
 	function getAllPostsUnderThisTopic() {
 		return DataObject::get("Post", "TopicID = $this->TopicID AND ParentID <> 0 AND Status = 'Moderated'");
 	}
+
 
 	function LatestPost() {
 		$filter = "";
@@ -161,33 +184,41 @@ class Post extends DataObject {
 			$parents[] = $this->ID;
 			$filter = "AND ParentID IN (" . implode(",", $parents) . ")";
 		}
-		$posts = DataObject::get("Post", "TopicID = $this->TopicID $filter", "Created DESC", "", 1);
+		$posts = DataObject::get("Post", "TopicID = $this->TopicID $filter",
+														 "Created DESC", "", 1);
 		if($posts) return $posts->First();
 	}
+
 
 	function NumPosts() {
 		$filter = "";
 		if($this->ParentID != 0) {
 			$parents = $this->getDescendantIDList();
 			$parents[] = $this->ID;
-			$filter = "AND (ID = $this->ID OR ParentID IN (" . implode(",", $parents) . "))";
+			$filter = "AND (ID = $this->ID OR ParentID IN (" .
+			          implode(",", $parents) . "))";
 		}
 
 		return (int)DB::query("SELECT count(*) FROM Post WHERE TopicID = $this->TopicID $filter")->value();
 	}
 
+
 	function RSSContent() {
 		$parser = new BBCodeParser($this->Content);
 		return $parser->parse() . '<br><br>Posted to: ' . $this->Topic()->Title;
 	}
+
+
 	function RSSAuthor() {
 		$author = $this->Author();
 		return "$author->FirstName $author->Surname";
 	}
 
+
 	function NumReplies() {
 		return $this->NumPosts() - 1;
 	}
+
 
 	/**
 	 * Increment the NumViews value by 1.  Write just that number straight to the database
@@ -198,6 +229,7 @@ class Post extends DataObject {
 		DB::query("UPDATE Post SET NumViews = '$SQL_numViews' WHERE ID = $this->ID");
 	}
 
+
 	/*
 	 * Return a link to show this post
 	 */
@@ -206,6 +238,7 @@ class Post extends DataObject {
 		if($this->ParentID == 0) return $baseLink . "show/" . $this->ID;
 		else return $baseLink . "show/" . $this->TopicID  . '?showPost=' . $this->ID;
 	}
+
 
 	function getCMSFields(){ //Topic is-a Post, so here we are getting all the posts for that topic
 		$authors = DataObject::get("Member");
@@ -309,12 +342,18 @@ class Post extends DataObject {
 		return $ret;
 	}
 
+
 	function getCMSFields_forPopup(){
 		$authors = DataObject::get("Member");
 
-		$topicID = $this->TopicID?$this->TopicID:$this->ParentID;
-		$postsExceptMyselft = DataObject::get("Post", "TopicID = '$topicID' AND (ParentID <> 0 AND ID <> '$this->ID' OR ParentID = 0) AND Status = 'Moderated'");
-		if(!$postsExceptMyselft||!$postsExceptMyselft->count()){
+		$topicID = $this->TopicID
+			?$this->TopicID
+			:$this->ParentID;
+
+		$postsExceptMyselft = DataObject::get("Post",
+			"TopicID = '$topicID' AND (ParentID <> 0 AND ID <> '$this->ID' OR ParentID = 0) AND Status = 'Moderated'");
+
+		if(!$postsExceptMyselft||!$postsExceptMyselft->count()) {
 			$postsExceptMyselft = new DataObjectSet();
 		}
 		$ret = new FieldSet(
@@ -335,12 +374,14 @@ class Post extends DataObject {
 		return $ret;
 	}
 
+
 	function getCMSActions(){
 		return new FieldSet(
-			new FormAction('save', 'Save','ajaxAction-save'),
+			new FormAction('save', 'Save', 'ajaxAction-save'),
 			new FormAction("archive", "Archive", 'ajaxAction->archive')
 		);
 	}
+
 
 	function LimitWordCountPlainText($numWords){
 		/*debug::show($this->Countent.LimitWordCountPlainText($numWords));
@@ -391,7 +432,9 @@ class Post_Subscription extends DataObject {
 	 */
 	static function notify(Post $post) {
 		// Get all people subscribed to this topic, not including the post author, who have visited the forum since the last time they got sent an email
-		$list = DataObject::get("Post_Subscription", "`TopicID` = '$post->TopicID' AND `MemberID` != '$post->AuthorID' AND `Member`.`LastViewed` > `Post_Subscription`.`LastSent`", null, "LEFT JOIN Member ON `Post_Subscription`.`MemberID` = `Member`.`ID`");
+		$list = DataObject::get("Post_Subscription",
+			"`TopicID` = '$post->TopicID' AND `MemberID` != '$post->AuthorID' AND `Member`.`LastViewed` > `Post_Subscription`.`LastSent`",
+			null, "LEFT JOIN Member ON `Post_Subscription`.`MemberID` = `Member`.`ID`");
 
 		if($list) {
 			foreach($list as $obj) {
@@ -406,7 +449,8 @@ class Post_Subscription extends DataObject {
 				$email->populateTemplate($post);
 				$email->send();
 
-				// Set the LastSent field for this subscription to prevent >1 email from being sent before the user views the thread
+				// Set the LastSent field for this subscription to prevent >1 email
+				// from being sent before the user views the thread
 				$obj->LastSent = date("Y-m-d H:i:s");
 				$obj->write();
 			}
@@ -438,6 +482,7 @@ class Post_Attachment extends File {
 		// Missing something or hack attempt
 		Director::redirectBack();
 	}
+
 
 	/**
 	 * Returns a download link
