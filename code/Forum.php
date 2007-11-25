@@ -253,7 +253,7 @@ class Forum extends Page {
 	 * Returns the topics (first posting of each thread) for this forum
 	 */
 	function Topics() {
-		if(Member::currentUser() == $this->Moderator()) {
+		if(Member::currentUser() == $this->Moderator() && is_numeric($this->ID)) {
 			return DataObject::get("Post",
 														 "ForumID = $this->ID and ParentID = 0 and (Status = 'Moderated' or Status = 'Awaiting')");
 		}
@@ -263,14 +263,19 @@ class Forum extends Page {
 
 
 	function getTopicsByStatus($status){
-		return DataObject::get("Post", "ForumID = $this->ID and ParentID = 0 and Status = '$status'");
+		if(is_numeric($this->ID)) {
+			$status = Convert::raw2sql($status);
+			return DataObject::get("Post", "ForumID = $this->ID and ParentID = 0 and Status = '$status'");
+		}
 	}
 
 	function hasChildren() {
 		return $this->NumPosts();
 	}
 
-	function getChildrenAsUL($attributes = "", $titleEval = '"<li>" . $child->Title', $extraArg = null, $limitToMarked = false, $rootCall = false){
+	function getChildrenAsUL($attributes = "", $titleEval = '"<li>" . $child->Title',
+													 $extraArg = null, $limitToMarked = false,
+													 $rootCall = false){
 		if($limitToMarked && $rootCall) {
 			$this->markingFinished();
 		}
@@ -1091,18 +1096,22 @@ JS
 		if($this->replyModerate() == 'pass') {
 
 			if($data['Parent'])
-				$parent = DataObject::get_by_id('Post', $data['Parent']);
+				$parent = DataObject::get_by_id('Post',
+																				Convert::raw2sql($data['Parent']));
 
 			// Make sure we have this posts ID, we create the new Post in
 			// Forum::ReplyForm() now to allow us to add attachments properly.
 			// TODO This is dumb
-			if($data['PostID'])
-				$post = DataObject::get_by_id('Post', Convert::raw2sql($data['PostID']));
-			else
+			if($data['PostID']) {
+				$post = DataObject::get_by_id('Post',
+																			Convert::raw2sql($data['PostID']));
+			}
+			else {
 				user_error('A valid post was not specified. We pass the Post ID ' .
 									 'through now, creating a blank post on ReplyForm. ' .
 									 'Dumb, but necessary for uploading attachments.',
 									 E_USER_ERROR);
+			}
 
 			if(isset($parent))
 				$currentID = $parent->ID;
