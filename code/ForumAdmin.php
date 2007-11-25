@@ -108,15 +108,19 @@ HTML;
 		return $ret;
 	}
 
-	function getEditForm($id){
+	function getEditForm($id) {
+		if(!is_numeric($id))
+			return;
 
 		$topic = DataObject::get_by_id("Post", $id);
 
-		$fields = (method_exists($topic, 'getCMSFields')) ? $topic->getCMSFields() : new FieldSet();
+		$fields = (method_exists($topic, 'getCMSFields'))
+			? $topic->getCMSFields()
+			: new FieldSet();
 
 		if(!$fields->dataFieldByName('ID')) {
 
-			$fields->push($idField = new HiddenField("ID","ID",$id));
+			$fields->push($idField = new HiddenField("ID","ID", $id));
 			$idField->setValue($id);
 		}
 
@@ -129,22 +133,26 @@ HTML;
 	}
 
 	function save($urlParams, $form){
-		$post = DataObject::get_by_id("Post", $urlParams[ID]);
-		$post->update($_POST);
-		$post->write();
+		if(is_numeric($urlParams['ID'])) {
+			$post = DataObject::get_by_id("Post", $urlParams['ID']);
+			$post->update($_POST);
+			$post->write();
 
-		FormResponse::status_message("Saved", "good");
-		return FormResponse::respond();
+			FormResponse::status_message("Saved", "good");
+			return FormResponse::respond();
+		}
 	}
 
 	function archive($urlParams, $form){
-		$post = DataObject::get_by_id("Post", $urlParams[ID]);
-		$post->update($_POST);
-		$post->Status = 'Archived';
-		$post->write();
+		if(is_numeric($urlParams['ID'])) {
+			$post = DataObject::get_by_id("Post", $urlParams[ID]);
+			$post->update($_POST);
+			$post->Status = 'Archived';
+			$post->write();
 
-		FormResponse::status_message("Archived", "good");
-		return FormResponse::respond();
+			FormResponse::status_message("Archived", "good");
+			return FormResponse::respond();
+		}
 	}
 }
 
