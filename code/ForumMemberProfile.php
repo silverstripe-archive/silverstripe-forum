@@ -140,7 +140,7 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function doregister($data, $form) {
 		if($member = DataObject::get_one("Member",
-				"`Email` = '{$data['Email']}'")) {
+				"`Email` = '". Convert::raw2sql($data['Email']) . "'")) {
   		if($member) {
   			$form->addErrorMessage("Blurb",
 					"Sorry, that email address already exists. Please choose another.",
@@ -153,7 +153,8 @@ class ForumMemberProfile extends Page_Controller {
   		}
   	} elseif($this->OpenIDAvailable() &&
 				($member = DataObject::get_one("Member",
-					"`IdentityURL` = '{$data['IdentityURL']}'"))) {
+					"`IdentityURL` = '". Convert::raw2sql($data['IdentityURL']) .
+					"'"))) {
   		if($member) {
   			$form->addErrorMessage("Blurb",
 					"Sorry, that OpenID is already registered. Please choose " .
@@ -166,7 +167,7 @@ class ForumMemberProfile extends Page_Controller {
   			return;
 			}
   	} elseif($member = DataObject::get_one("Member",
-				"`Nickname` = '{$data['Nickname']}'")) {
+				"`Nickname` = '". Convert::raw2sql($data['Nickname']) . "'")) {
   		if($member) {
   			$form->addErrorMessage("Blurb",
 					"Sorry, that nickname already exists. Please choose another.",
