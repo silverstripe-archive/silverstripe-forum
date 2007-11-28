@@ -253,12 +253,15 @@ class Forum extends Page {
 	 * Returns the topics (first posting of each thread) for this forum
 	 */
 	function Topics() {
-		if(Member::currentUser() == $this->Moderator() && is_numeric($this->ID)) {
-			return DataObject::get("Post",
-														 "ForumID = $this->ID and ParentID = 0 and (Status = 'Moderated' or Status = 'Awaiting')");
+		if(Member::currentUser()==$this->Moderator() && is_numeric($this->ID)) {
+			$statusFilter = "(`Post`.Status IN ('Moderated', 'Awaiting')";
+		} else {
+			$statusFilter = "`Post`.Status = 'Moderated'";
 		}
-
-		return DataObject::get("Post", "ForumID = $this->ID and ParentID = 0 and Status = 'Moderated'");
+			
+		return DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and $statusFilter", "max(PostList.Created) DESC",
+			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID"
+		);
 	}
 
 
