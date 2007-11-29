@@ -258,9 +258,12 @@ class Forum extends Page {
 		} else {
 			$statusFilter = "`Post`.Status = 'Moderated'";
 		}
+		
+		if(isset($_GET['start']) && is_numeric($_GET['start'])) $limit = Convert::raw2sql($_GET['start']) . ", 30";
+		else $limit = 30;
 			
 		return DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and $statusFilter", "max(PostList.Created) DESC",
-			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID"
+			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $limit
 		);
 	}
 

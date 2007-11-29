@@ -41,6 +41,21 @@
 				</tr>
 			<% end_if %>
 		</table>
+
+		<% if Topics.MoreThanOnePage %>
+		<div class="typography"><p style="text-align: center; margin-top: 1em">
+			<% if Topics.PrevLink %><a style="float: left" href="$Topics.PrevLink">	&lt; Previous Page</a><% end_if %>
+			<% if Topics.NextLink %><a style="float: right" href="$Topics.NextLink">Next Page &gt;</a><% end_if %>
+			<% control Topics.Pages(20) %>
+				<% if CurrentBool %>
+				<b>$PageNum</b>
+				<% else %>
+				<a href="$Link">$PageNum</a>
+				<% end_if %>
+			<% end_control %>
+		</p></div>
+		<% end_if %>
+		
 	</div>
 	<% include ForumFooter %>
 </div>
