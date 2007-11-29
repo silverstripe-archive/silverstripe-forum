@@ -69,6 +69,21 @@ class ForumRole extends DataObjectDecorator {
 		);
 	}
 
+	function FirstNamePublic() {
+		return $this->owner->FirstNamePublic || Permission::check('ADMIN');
+	}
+	function SurnamePublic() {
+		return $this->owner->SurnamePublic || Permission::check('ADMIN');
+	}
+	function OccupationPublic() {
+		return $this->owner->OccupationPublic || Permission::check('ADMIN');
+	}
+	function CountryPublic() {
+		return $this->owner->CountryPublic || Permission::check('ADMIN');
+	}
+	function EmailPublic() {
+		return $this->owner->EmailPublic || Permission::check('ADMIN');
+	}
 
 	function NumPosts() {
 		if(is_numeric($this->owner->ID)) {
