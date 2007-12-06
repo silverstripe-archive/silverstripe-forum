@@ -1,0 +1,12 @@
+/* Styling for forum CMS fields */
+
+
+#ForumRefreshTime label.left {
+	display: inline;
+	float: none;
+}
+#ForumRefreshTime input {
+	width: 20px;
+	padding: 0px;
+	vertical-align: center;
+}
