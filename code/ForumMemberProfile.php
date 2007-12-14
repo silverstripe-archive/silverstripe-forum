@@ -105,8 +105,9 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function RegistrationForm() {
 		$data = Session::get("FormInfo.Form_RegistrationForm.data");
+
 		$use_openid =
-			($this->OpenIDAvailable == true) &&
+			($this->OpenIDAvailable() == true) &&
 			(isset($data['IdentityURL']) && !empty($data['IdentityURL'])) ||
 			(isset($_POST['IdentityURL']) && !empty($_POST['IdentityURL']));
 
