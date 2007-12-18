@@ -150,7 +150,7 @@ class ForumRole extends DataObjectDecorator {
 		if(Permission::checkMember($this->owner->ID, "ACCESS_FORUM")) {
 			$fields->insertBefore(new TextField("Nickname", "Nickname"), "FirstName");
 			$fields->insertAfter(new TextField("Occupation", "Occupation"), "Surname");
-			$fields->insertAfter(new CountryDropdownField("Country", "Country"), "Occupation");
+			if(!$fields->fieldByName('Country')) $fields->insertAfter(new CountryDropdownField("Country", "Country"), "Occupation");
 
 			$fields->insertAfter(new PasswordField("ConfirmPassword", "Confirm Password"), "Password");
 			$fields->push(new ImageField("Avatar", "Upload avatar"));
