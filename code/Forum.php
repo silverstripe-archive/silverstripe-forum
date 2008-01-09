@@ -413,11 +413,6 @@ JS
 
 		Requirements::themedCSS('Forum');
 
-		if(Director::fileExists(project()."/css/forum.css"))
-			Requirements::css(project()."/css/forum.css");
-		else
-			Requirements::css("forum/css/Forum.css");
-
 		RSSFeed::linkToFeed($this->Link("rss"), "Posts to the '$this->Title' forum");
 		RSSFeed::linkToFeed($this->Parent->Link("rss"), "Posts to all forums");
 
