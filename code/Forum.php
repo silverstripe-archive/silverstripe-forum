@@ -391,7 +391,7 @@ class Forum_Controller extends Page_Controller {
 
  	  Requirements::javascript("jsparty/prototype.js");
  		Requirements::javascript("jsparty/behaviour.js");
- 		Requirements::javascript("jsparty/tree/tree.js");
+ 		//Requirements::javascript("jsparty/tree/tree.js");
 		Requirements::javascript("forum/javascript/Forum.js");
 		if($this->OpenIDAvailable())
 			Requirements::javascript("forum/javascript/Forum_openid_description.js");
