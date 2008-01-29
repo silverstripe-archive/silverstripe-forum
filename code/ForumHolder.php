@@ -373,7 +373,10 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @param int $limit Number of members to return
 	 */
 	function LatestMember($limit = null) {
-		return DataObject::get("Member", "", "`Member`.`ID` DESC", "", 1);
+		$forumgroup = DataObject::get_one('Group', 'Code="forum-members"');
+		if($forumgroup) {
+			return $forumgroup->getManyManyComponents('Members', '', 'Created DESC', '', 1);
+		}	
 	}
 
 
