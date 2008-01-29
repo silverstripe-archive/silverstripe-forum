@@ -13,7 +13,7 @@
 	<% end_control %>
 </div>
 <div class="posterContent">
-	<h4>$Title</h4>
+	<h4><a href="#post$ID">$Title <img src="forum/images/right.png" alt="Link to this post" title="Link to this post" /></a></h4>
 	<p class="postDate">$Created.Long at $Created.Time</p>
 	<% if EditLink || DeleteLink %>
 		<div class="postModifiers">
