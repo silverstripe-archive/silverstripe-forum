@@ -414,7 +414,7 @@ JS
 		Requirements::themedCSS('Forum');
 
 		RSSFeed::linkToFeed($this->Link("rss"), "Posts to the '$this->Title' forum");
-		RSSFeed::linkToFeed($this->Parent->Link("rss"), "Posts to all forums");
+		if($this->Parent) RSSFeed::linkToFeed($this->Parent->Link("rss"), "Posts to all forums");
 
 		if(Director::is_ajax())
 			ContentNegotiator::allowXHTML();
