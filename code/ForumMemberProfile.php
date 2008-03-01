@@ -261,7 +261,7 @@ class ForumMemberProfile extends Page_Controller {
 
 
 		$trust_root = Director::absoluteBaseURL();
-		$return_to_url = $trust_root . $this->Link('ProcessOpenIDResponse');
+		$return_to_url = $trust_root . $this->Link('processopenidresponse');
 
 		$consumer = new Auth_OpenID_Consumer(new OpenIDStorage(),
 																				 new SessionWrapper());
@@ -347,12 +347,15 @@ class ForumMemberProfile extends Page_Controller {
 	/**
 	 * Function to process the response of the OpenID server
 	 */
-	function ProcessOpenIDResponse() {
+	function processopenidresponse() {
 		$consumer = new Auth_OpenID_Consumer(new OpenIDStorage(),
 																				 new SessionWrapper());
 
+		$trust_root = Director::absoluteBaseURL();
+		$return_to_url = $trust_root . $this->Link('ProcessOpenIDResponse');
+
 		// Complete the authentication process using the server's response.
-		$response = $consumer->complete();
+		$response = $consumer->complete($return_to_url);
 
 		if($response->status == Auth_OpenID_SUCCESS) {
 			Session::clear("FormInfo.Form_RegistrationWithOpenIDForm.data");

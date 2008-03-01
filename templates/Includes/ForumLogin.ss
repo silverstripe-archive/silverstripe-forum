@@ -13,7 +13,7 @@
 	  <span><a href="#" id="HideOpenIDdesc">X</a></span>
 		<h1>What is OpenID?</h1>
 		<p>OpenID is an Internet-wide identity system that allows you to sign in to many websites with a single account.</p>
-		<p>With OpenID, your ID becomes a URL (e.g. http://<strong>username</strong>.myopenid.com/). You can get a free OpenID for example from <a href="http://www.myopenid.com">myopenid.com</a>.</p>
+		<p>With OpenID, your ID becomes a URL (e.g. http://<strong>username</strong>.myopenid.com/). <a href="http://openid.net/get/">Find out how to get your own OpenID</a> for free (it's probable that you have already one).</p>
 		<p>For more information visit the <a href="http://openid.net">official OpenID site.</a></p>
 	</div>
 			(<a href="#" id="ShowOpenIDdesc">what is OpenID?</a>)<% end_if %>

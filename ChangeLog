@@ -1,5 +1,8 @@
 Forum ChangeLog
 
+0.1.3
+  - Compatible to OpenID 2.0 now
+
 0.1.2
   - Order topics by most recently active
   - Implemented thread pagination
@@ -19,7 +22,7 @@ Forum ChangeLog
   - Added support for conditional GET
   - Fixed Member validation on extensions
   - Increase timeout of draft messages from 15 minutes to 24 hours
-  
+
 0.1.1
   - Security fix: Breadcrumbs are not escaped properly and can be misused for CSRF or XSS attacks.
   - Parse bbcode in RSS feed
