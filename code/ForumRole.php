@@ -216,9 +216,11 @@ class ForumRole_Validator extends Extension {
 
 		$formID = $form->FormName();
 		$passwordFieldName = $form->dataFieldByName('Password')->id();
-		$passwordConfirmFieldName =
-			$form->dataFieldByName('ConfirmPassword')->id();
 
+		$passwordConfirmField = $form->dataFieldByName('ConfirmPassword');
+		if(!$passwordConfirmField) return;
+
+		$passwordConfirmFieldName = $passwordConfirmField->id();
 
 		$passwordcheck = <<<JS
 Behaviour.register({
