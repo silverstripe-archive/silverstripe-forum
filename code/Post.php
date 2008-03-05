@@ -318,7 +318,7 @@ class Post extends DataObject {
 			)
 		);
 		$activePosts->setPermissions(
-			array("show")
+			array("show", "edit")
 		);
 
 		$awaitingPosts->setFieldCasting(
@@ -336,7 +336,7 @@ class Post extends DataObject {
 			)
 		);
 		$rejectedPosts->setPermissions(
-			array("show")
+			array("show", "delete")
 		);
 
 		return $ret;
