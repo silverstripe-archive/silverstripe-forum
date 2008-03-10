@@ -65,7 +65,10 @@ class ForumRole extends DataObjectDecorator {
 			),
 			'defaults' => array(
 				'ForumRank' => 'Community Member'
-			)
+			),
+			'searchable_fields' => array(
+				'Nickname' => true
+			),
 		);
 	}
 
