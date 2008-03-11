@@ -365,9 +365,13 @@ class Forum_Controller extends Page_Controller {
 	/**
 	 * Return a list of all top-level topics in this forum
 	 */
- 	function init() {
+	function init() {
+		//if($this->action == 'rss') Security::use_base_auth_for_regular_login();
+		parent::init();
+		
+		if(Director::redirected_to()) return;
+		
  	  if(!$this->CheckForumPermissions("view")) {
- 		  parent::init();
  		  $messageSet = array(
 				'default' => "Enter your email address and password to view this forum.",
 				'alreadyLoggedIn' => "I'm sorry, but you can't access this forum until you've logged in.  If you want to log in as someone else, do so below",
@@ -418,8 +422,6 @@ JS
 
 		if(Director::is_ajax())
 			ContentNegotiator::allowXHTML();
-
-		parent::init();
 	}
 
 
@@ -1444,8 +1446,7 @@ JS
 			if($this->NewPostsAvailable($since, $etag, $this->urlParams['ID'],
 																	$data)) {
 				HTTP::register_modification_timestamp($data['last_created']);
-				$rss = new RSSFeed($this->RecentPosts($this->urlParams['ID'], 50,
-																							$since, $etag),
+				$rss = new RSSFeed($this->RecentPosts($this->urlParams['ID'], 50, null, $etag),
 													 $this->Link(),
 													 "Forum posts to '$this->Title'", "", "Title",
 													 "RSSContent", "RSSAuthor", $data['last_created'],

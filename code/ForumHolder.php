@@ -269,7 +269,7 @@ class ForumHolder_Controller extends Page_Controller {
 
 			if($this->NewPostsAvailable($since, $etag, $data)) {
 				HTTP::register_modification_timestamp($data['last_created']);
-				$rss = new RSSFeed($this->RecentPosts(50, $since, $etag),
+				$rss = new RSSFeed($this->RecentPosts(50, null, $etag),
 													 $this->Link(),
 													 "Forum posts to '$this->Title'", "", "Title",
 													 "RSSContent", "RSSAuthor", $data['last_created'],
