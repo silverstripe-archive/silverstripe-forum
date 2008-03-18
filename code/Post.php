@@ -118,7 +118,7 @@ class Post extends DataObject {
 
 	function getTitle() {
 		$title = $this->getField('Title');
-		if(!$title) $title = "Re: " . $this->Topic()->Title;
+		if(!$title && $this->Topic()) $title = "Re: " . $this->Topic()->Title;
 
 		return $title;
 	}
@@ -205,7 +205,9 @@ class Post extends DataObject {
 
 	function RSSContent() {
 		$parser = new BBCodeParser($this->Content);
-		return $parser->parse() . '<br><br>Posted to: ' . $this->Topic()->Title;
+		$html = $parser->parse();
+		if($this->Topic()) $html .= '<br><br>Posted to: ' . $this->Topic()->Title;
+		return $html;
 	}
 
 
