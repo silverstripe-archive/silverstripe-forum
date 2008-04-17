@@ -155,7 +155,7 @@ class ForumRole extends DataObjectDecorator {
 			$fields->insertAfter(new TextField("Occupation", "Occupation"), "Surname");
 			if(!$fields->fieldByName('Country')) $fields->insertAfter(new CountryDropdownField("Country", "Country"), "Occupation");
 
-			$fields->insertAfter(new PasswordField("ConfirmPassword", "Confirm Password"), "Password");
+			if(!$fields->dataFieldByName('Password')) $fields->insertAfter(new PasswordField("ConfirmPassword", "Confirm Password"), "Password");
 			$fields->push(new ImageField("Avatar", "Upload avatar"));
 			$fields->push(new DropdownField("ForumRank", "User rating", array(
 				"Community Member" => "Community Member",
