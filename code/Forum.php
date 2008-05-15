@@ -1549,7 +1549,7 @@ JS
 			return DataObject::get_by_id("Forum", self::$lastForumAccessed);
 		else {
 			$forums = DataObject::get("Forum", "", "", "", 1);
-			return $forums->First();
+			if($forums) return $forums->First();
 		}
 
 	}

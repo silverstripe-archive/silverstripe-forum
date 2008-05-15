@@ -567,7 +567,7 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function getParent() {
 		$siblingForum = Forum_Controller::getLastForumAccessed();
-		return $siblingForum->Parent;
+		if($siblingForum) return $siblingForum->Parent;
 	}
 
 
