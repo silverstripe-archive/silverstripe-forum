@@ -16,7 +16,7 @@ cms
 jsparty
 forum
 
-2. Run /db/build/
+2. Visit http://www.yoursite.com/db/build/?flush=1 in your browser (where yoursite.com refers to the URL of your SilverStripe site)
 
 3. The CMS should now have "Forum Holder" and "Forum" page types.
 Add these and visit them on the public site.
