@@ -14,11 +14,11 @@ class ForumMemberProfileTest extends FunctionalTest {
 			"Forum ranking:",
 			"Avatar:",
 		));
-		$this->assertExactHTMLMatchBySelector("div#UserProfile p", array(
-			'<p class="readonly">test1</p>',
-			'<p class="readonly">0</p>',
-			'<p class="readonly">n00b</p>',
-			'<p><img class="userAvatar" src="forum/images/forummember_holder.gif" width="80" alt="test1\'s avatar"/></p>',
+		$this->assertExactMatchBySelector("div#UserProfile p", array(
+			'test1',
+			'0',
+			'n00b',
+			'',
 		));
 
 		/* Get the profile of a public member */
@@ -36,16 +36,16 @@ class ForumMemberProfileTest extends FunctionalTest {
 			'Forum ranking:',
 			'Avatar:'
 		));
-		$this->assertExactHTMLMatchBySelector("div#UserProfile p", array(
-			'<p class="readonly">test2</p>',
-			'<p class="readonly">Test</p>',
-			'<p class="readonly">Two</p>',
-			'<p class="readonly"><a href="mailto:test2@example.com">test2@example.com</a></p>',
-			'<p class="readonly">OtherUser</p>',
-			'<p class="readonly">Australia</p>',
-			'<p class="readonly">0</p>',
-			'<p class="readonly">l33t</p>',
-			'<p><img class="userAvatar" src="forum/images/forummember_holder.gif" width="80" alt="test2\'s avatar"/></p>',
+		$this->assertExactMatchBySelector("div#UserProfile p", array(
+			'test2',
+			'Test',
+			'Two',
+			'',
+			'OtherUser',
+			'Australia',
+			'0',
+			'l33t',
+			'',
 		));
 	}
 }
