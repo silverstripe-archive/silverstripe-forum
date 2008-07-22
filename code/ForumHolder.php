@@ -6,11 +6,11 @@ class ForumHolder extends Page {
 		"HolderSubtitle" => "Varchar(200)",
 		"ProfileSubtitle" => "Varchar(200)",
 		"ForumSubtitle" => "Varchar(200)",
-		"HolderAbstract" => "Text",
-		"ProfileAbstract" => "Text",
-		"ForumAbstract" => "Text",
-		"ProfileModify" => "Text",
-		"ProfileAdd" => "Text"
+		"HolderAbstract" => "HTMLText", 
+		"ProfileAbstract" => "HTMLText", 
+		"ForumAbstract" => "HTMLText", 
+		"ProfileModify" => "HTMLText", 
+		"ProfileAdd" => "HTMLText"
 	);
 
 	static $allowed_children = array('Forum');
