@@ -1626,7 +1626,7 @@ JS
 
 		// User authentication
 	  if(Member::currentUser() &&
-			 (Member::currentUser()->_isAdmin() ||
+			 (Member::currentUser()->isAdmin() ||
 				Member::currentUser()->ID == $this->currentPost->AuthorID)) {
 		  return $this->EditPostForm();
 	  } else {
@@ -1724,7 +1724,7 @@ JS
 	 *               anything but redirect the user to the login page.
 	 */
 	function deletepost() {
-	  if(Member::currentUser() && Member::currentUser()->_isAdmin()) {
+	  if(Member::currentUser() && Member::currentUser()->isAdmin()) {
 		  // Get the current post if we haven't found it yet
 		  if(!$this->currentPost) {
 				$this->currentPost = $this->Post($this->urlParams['ID']);

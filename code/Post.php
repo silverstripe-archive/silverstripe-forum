@@ -139,7 +139,7 @@ class Post extends DataObject {
 
 	function EditLink() {
 	  if((Member::currentUser() && Member::currentUser()->ID == $this->Author()->ID) ||
-			 (Member::currentUser() && Member::currentUser()->_isAdmin())) {
+			 (Member::currentUser() && Member::currentUser()->isAdmin())) {
 			return "<a href=\"{$this->Forum()->Link()}editpost/{$this->ID}\">edit</a>";
 		}
 	  else {
@@ -154,7 +154,7 @@ class Post extends DataObject {
 	  if($this->ParentID == 0)
 			$id = " id=\"firstPost\" ";
 
-	  if(Member::currentUser() && Member::currentUser()->_isAdmin())
+	  if(Member::currentUser() && Member::currentUser()->isAdmin())
 			return "<a".$id."class=\"deletelink\" href=\"{$this->Forum()->Link()}deletepost/{$this->ID}\">delete</a>";
 	  else
 			return false;
