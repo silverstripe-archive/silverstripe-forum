@@ -279,6 +279,7 @@ table.postHeader td.author {
 	padding-left: 5px;
 }
 table.postHeader td.topicTitle {
+
 }
 table.postHeader td.noOfReads {
 	text-align: right;
@@ -498,6 +499,8 @@ table.postHeader td.gotoButtonEnd a {
 		}
 			#TopicList tr td a.topicTitle {
 				font-weight: bold;
+				display: block;
+				margin-bottom: 4px;
 			}
 			#TopicList tr td a:hover {
 				text-decoration: underline;
@@ -524,11 +527,13 @@ table.postHeader td.gotoButtonEnd a {
 	#CurrentlyOnline h3 {
 		color: #0b6db4;
 		font-size: 14px;
+		margin-bottom: 6px;
 		font-weight: bold;
 		font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
 	}
 	#CurrentlyOnline p {
 		font-size: 11px;
+		margin-bottom: 4px;
 	}
 		#CurrentlyOnline p a,
 		#CurrentlyOnline span a {
@@ -717,16 +722,11 @@ form .BBCodeHint {
 
 /* FORUM REGISTER
 --------------------------------- */
-#RegisterLogin span {
-	margin-left: 5px;
-	margin-right: 11px;
+#RegisterLogin p {
+	text-align: right;
+	float: right;
+	margin: 4px 0 0 0;
 }
-#RegisterLogin a {
-	text-decoration: none;
-}
-	#RegisterLogin a:hover {
-		text-decoration: underline;
-	}
 
 #RegisterLogin img {
 	border: none;

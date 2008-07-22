@@ -1,7 +1,8 @@
-<div id="ForumContent">
+<div id="ForumContent" class="typography">
 	<% include ForumLogin %>
-	<h1 class="genericTitle">$Parent.Title</h1>
-	<% include Menu2 %>
+	<h1>$Parent.Title</h1>
+	
+	<div class="clear"><!-- --></div>
 	<div class="forumFeatures">
 		<div class="featureRight">
 			<p class="forumStats">$TotalPosts <strong>Posts</strong> in $TotalTopics <strong>Topics</strong> by $TotalAuthors <strong>members</strong></p>

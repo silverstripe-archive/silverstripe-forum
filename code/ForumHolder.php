@@ -130,7 +130,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return int Returns the number of posts
 	 */
 	function TotalPosts() {
-		return DB::query("SELECT COUNT(*) FROM Post")->value();
+		return DB::query("SELECT COUNT(*) FROM Post WHERE Content != 'NULL'")->value(); 
 	}
 
 
@@ -140,7 +140,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return int Returns the number of topics (threads)
 	 */
 	function TotalTopics() {
-		return DB::query("SELECT COUNT(*) FROM Post WHERE ParentID = 0")->value();
+		return DB::query("SELECT COUNT(*) FROM Post WHERE ParentID = 0 AND Content != 'NULL'")->value(); 
 	}
 
 
