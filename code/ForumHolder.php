@@ -237,10 +237,8 @@ class ForumHolder_Controller extends Page_Controller {
 
     if(!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&
 			 !isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-
 			// just to get the version data..
 			$this->NewPostsAvailable(null, null, $data);
-
       // No information provided by the client, just return the last posts
 			$rss = new RSSFeed($this->RecentPosts(10), $this->Link(),
 												 "Forum posts to '$this->Title'", "", "Title",
@@ -266,7 +264,6 @@ class ForumHolder_Controller extends Page_Controller {
 				 is_numeric($_SERVER['HTTP_IF_NONE_MATCH'])) {
 				$etag = (int)$_SERVER['HTTP_IF_NONE_MATCH'];
 			}
-
 			if($this->NewPostsAvailable($since, $etag, $data)) {
 				HTTP::register_modification_timestamp($data['last_created']);
 				$rss = new RSSFeed($this->RecentPosts(50, null, $etag),
@@ -300,8 +297,8 @@ class ForumHolder_Controller extends Page_Controller {
 	 */
 	function RecentPosts($limit = null, $lastVisit = null,
 											 $lastPostID = null) {
-		$filter = "";
-
+		$filter = "TopicID > 0";   
+		
 		if($lastVisit)
 			$lastVisit = @date('Y-m-d H:i:s', $lastVisit);
 
