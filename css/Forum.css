@@ -480,8 +480,9 @@ table.postHeader td.gotoButtonEnd a {
 		}
 			#TopicList tr td.forumCategory span.summary p,
 			#TopicList tr td.topicName p.summary {
-				font-size: 0.9em;
+				font-size: 10px;
 				line-height: 1.2em;
+				margin: 0px;
 			}
 		#TopicList tr td.topicName {
 			width: 75%;
@@ -492,6 +493,7 @@ table.postHeader td.gotoButtonEnd a {
 		}
 		#TopicList tr td p.userInfo {
 			color: #999;
+			margin:0;
 		}
 		#TopicList tr td a {
 			color: #1c7bbf;
