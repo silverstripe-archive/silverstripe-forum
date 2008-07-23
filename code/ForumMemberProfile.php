@@ -1,11 +1,10 @@
 <?php
-
-
 /**
  * Forum member profile controller
  */
 class ForumMemberProfile extends Page_Controller {
 
+	public $URLSegment = "ForumMemberProfile"; 
 	/**
 	 * Constructor
 	 */

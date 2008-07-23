@@ -226,7 +226,7 @@ class Forum extends Page {
 
 
 	/**
-	 * Get the number of total topics (threads)
+	 * Get the number of total topics (threads) in this Forum
 	 *
 	 * @return int Returns the number of topics (threads)
 	 */
@@ -235,7 +235,6 @@ class Forum extends Page {
 			return (int)DB::query("SELECT count(*) FROM Post WHERE ForumID = $this->ID AND ParentID = 0")->value();
 		}
 	}
-
 
 	/**
 	 * Get the number of total posts
@@ -262,9 +261,9 @@ class Forum extends Page {
 		if(isset($_GET['start']) && is_numeric($_GET['start'])) $limit = Convert::raw2sql($_GET['start']) . ", 30";
 		else $limit = 30;
 			
-		return DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and $statusFilter", "max(PostList.Created) DESC",
-			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $limit
-		);
+		return DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and $statusFilter", "PostList.Created DESC",
+		         "INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $limit
+		      );
 	}
 
 

@@ -1,6 +1,6 @@
 <div id="ForumContent" class="typography">
 	<% include ForumLogin %>
-	<h1>$Parent.Title</h1>
+	<% if Parent %><h1>$Parent.Title</h1><% end_if %>
 	
 	<div class="clear"><!-- --></div>
 	<div class="forumFeatures">

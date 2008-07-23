@@ -14,5 +14,4 @@ MemberTableField::addMembershipFields( array(
 	"Country" => "Country",
 	"ForumRank" => "ForumRank"
 	));
-
 ?>

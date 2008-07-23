@@ -7,9 +7,9 @@
 #ForumContent {
 	width: 760px;
 	float: none;
-	margin: 0px auto 20px auto;
+	margin: 0;
+	padding: 0;
 }
-
 
 /* FORMS
 ------------------------------------ */
@@ -157,7 +157,7 @@ ul#Posts {
 			line-height: 1.3em;
 			width: 367px;
 		}
-		.featureLeft h2,
+		#ForumContent .featureLeft h2,
 		h2.bbcodeExamples {
 			clear: none !important;
 			margin: 0;
@@ -725,7 +725,7 @@ form .BBCodeHint {
 #RegisterLogin p {
 	text-align: right;
 	float: right;
-	margin: 4px 0 0 0;
+	margin: 0 0 4px 0;
 }
 
 #RegisterLogin img {
