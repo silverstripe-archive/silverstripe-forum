@@ -89,7 +89,7 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function register() {
 		return array(
-			"Title" => "SilverStripe Forum",
+			"Title" => "Forum Registration",
 			"Subtitle" => "Register",
 			"Abstract" => DataObject::get_one("ForumHolder")->ProfileAbstract,
 			"Form" => $this->RegistrationForm(),
@@ -262,8 +262,7 @@ class ForumMemberProfile extends Page_Controller {
 		$trust_root = Director::absoluteBaseURL();
 		$return_to_url = $trust_root . $this->Link('processopenidresponse');
 
-		$consumer = new Auth_OpenID_Consumer(new OpenIDStorage(),
-																				 new SessionWrapper());
+		$consumer = new Auth_OpenID_Consumer(new OpenIDStorage(), new SessionWrapper());
 
 
 		// No auth request means we can't begin OpenID
@@ -303,8 +302,7 @@ class ForumMemberProfile extends Page_Controller {
 
 		if($auth_request->shouldSendRedirect()) {
 			// For OpenID 1, send a redirect.
-			$redirect_url = $auth_request->redirectURL($trust_root,
-																								 $return_to_url);
+			$redirect_url = $auth_request->redirectURL($trust_root, $return_to_url);
 
 			if(Auth_OpenID::isFailure($redirect_url)) {
 				displayError("Could not redirect to server: " .
@@ -347,8 +345,7 @@ class ForumMemberProfile extends Page_Controller {
 	 * Function to process the response of the OpenID server
 	 */
 	function processopenidresponse() {
-		$consumer = new Auth_OpenID_Consumer(new OpenIDStorage(),
-																				 new SessionWrapper());
+		$consumer = new Auth_OpenID_Consumer(new OpenIDStorage(), new SessionWrapper());
 
 		$trust_root = Director::absoluteBaseURL();
 		$return_to_url = $trust_root . $this->Link('ProcessOpenIDResponse');
@@ -694,7 +691,10 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function MetaTags($includeTitle = true) {
 		$tags = "";
-		$Title = "Forum user profile";
+		$Title = "Forum User Profile";
+		if(Director::urlParam('Action') == "register") { 
+			$Title = "Forum Registration";
+		}
 		if($includeTitle == true) {
 			$tags .= "<title>" . $Title . "</title>\n";
 		}
