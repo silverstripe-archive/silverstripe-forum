@@ -62,7 +62,7 @@
 				<a href="$ReplyLink" title="Click here to reply to this topic">Reply</a>
 				<% if Posts.MoreThanOnePage %>
 					<% if Posts.NotLastPage %>
-						<a class="next" href="$Posts.NextLink" title="View the next page">Next &gt</a>
+						<a class="next" href="$Posts.NextLink" title="View the next page">Next &gt;</a>
 					<% end_if %>
 				<% end_if %>
 			</td>
