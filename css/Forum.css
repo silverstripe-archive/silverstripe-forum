@@ -153,8 +153,8 @@ ul#Posts {
 		.featureLeft p {
 			padding-left: 10px;
 			color: #666;
-			font-size: 1.3em;
-			line-height: 1.3em;
+			font-size: 11px;
+			line-height: 18px;
 			width: 367px;
 		}
 		#ForumContent .featureLeft h2,
@@ -327,7 +327,7 @@ table.postHeader td.gotoButtonEnd a {
 	}
 		div.userInformation a.authorTitle,
 		div.userInformation span.authorTitle {
-			font-size: 1.4em;
+			font-size: 13px;
 			line-height: 1.5em;
 			font-weight: bold;
 		}
@@ -364,6 +364,7 @@ table.postHeader td.gotoButtonEnd a {
 		margin-left: 150px;
 		padding: 18px 0 18px 18px;
 		width: 590px;
+		_width: 585px;
 	}
 		div.posterContent h4 {
 			font-size: 1.5em;
@@ -372,19 +373,18 @@ table.postHeader td.gotoButtonEnd a {
 			margin: 0;
 		}
 		div.posterContent p.postDate {
-			font-size: 1.2em;
+			font-size: 10px;
 			line-height: 2em;
 			color: #b1b1b1;
-			border-bottom: 1px solid #ccc;
-			margin-bottom: 5px;
+			margin-bottom: 8px;
 		}
 		div.posterContent div.postType {
 			margin-bottom: 20px;
 		}
 
 			div.posterContent div.postType p {
-				font-size: 1.1em;
-				line-height: 120%;
+				font-size: 11px;
+				line-height: 14px;
 			}
 
 		div.posterContent p.lastEdited {
@@ -413,37 +413,13 @@ table.postHeader td.gotoButtonEnd a {
 				}
 
 
-/* Topic tree styling (to be removed since not using tree) */
-#TopicTree {
-}
-#TopicTree li {
-}
-	p.message {
-		background: #f5ffec;
-		border-top: 1px solid #6bb521;
-		border-bottom: 1px solid #6bb521;
-		padding: 10px 50px 10px 15px;
-		margin-bottom: 15px;
-		color: #000;
-		font-size: 1.5em;
-	}
+/* REPLY FORM 
+----------------------------------- */
 
-	#TopicTree li a {
-		color: #368cc9;
-		text-decoration: none;
-		font-size: 1.4em;
-		line-height: 1.7em;
-	}
-	#TopicTree li ul li {
-	}
-		#TopicTree div.replyPost {
-			background: #e7e7e7;
-			padding: 5px;
-		}
-			#TopicTree div.replyPost div.postHolder {
-				background: #f9f9f9;
-			}
-
+#PreviousPosts {
+	margin: 0 0 10px 0;
+	border-bottom: 1px solid #EEE;
+}
 
 /* TOPIC LISTING VIEW 
 ----------------------------------- */
@@ -458,7 +434,8 @@ table.postHeader td.gotoButtonEnd a {
 		padding: 5px;
 		margin: 0;
 		color: #fff;
-		font-size: 1.2em;
+		font-size: 11px;
+		font-weight: bold;
 	}
 	#TopicList tr {
 		background: #fff;
@@ -504,6 +481,10 @@ table.postHeader td.gotoButtonEnd a {
 				display: block;
 				margin-bottom: 4px;
 			}
+				#TopicList tr td.lastPost a.topicTitle {
+					font-size: 10px;
+					margin: 0;
+				}
 			#TopicList tr td a:hover {
 				text-decoration: underline;
 			}

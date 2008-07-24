@@ -185,8 +185,7 @@ class Forum extends Page {
 			$page = $page->Parent;
 		}
 
-		return implode(" &raquo; ",
-									 array_reverse(array_merge($nonPageParts,$parts)));
+		return implode(" &raquo; ", array_reverse(array_merge($nonPageParts,$parts)));
 	}
 
 
@@ -392,9 +391,8 @@ class Forum_Controller extends Page_Controller {
  			$member->write();
  		}
 
- 	  Requirements::javascript("jsparty/prototype.js");
+ 	  	Requirements::javascript("jsparty/prototype.js");
  		Requirements::javascript("jsparty/behaviour.js");
- 		//Requirements::javascript("jsparty/tree/tree.js");
 		Requirements::javascript("forum/javascript/Forum.js");
 		if($this->OpenIDAvailable())
 			Requirements::javascript("forum/javascript/Forum_openid_description.js");
@@ -552,135 +550,6 @@ JS
 		}
 	}
 
-
-	/**
-	 * Return the topic tree beneath the root-post, as a nested list
-	 *
-	 * @return string HTML code for the topic tree
-	 */
-	function TopicTree() {
-		if($this->Mode() == "threaded")
-			$result = $this->TopicTree_FullyThreaded();
-		else
-			$result = $this->TopicTree_Flat();
-		return $result;
-	}
-
-
-	/**
-	 * Get topic tree
-	 *
-	 * @return string Returns the HTML code for the topic tree
-	 *
-	 * @todo Add more explanation for this method
-	 */
-	function getTopicTree($postID = null) {
-		if($_REQUEST['mode'])
-			$this->setMode($_REQUEST['mode']);
-
-		if($postID == null);
-			$postID = $this->urlParams['ID'];
-
-		if(($postID != null) && ($post = $this->Post($postID))) {
-			return $this->renderWith("ForumRightHand");
-		}
-		else {
-			if($this->ViewMode() == 'Edit')
-				return "<div id=\"Root\">" . $this->ReplyForm()->forTemplate() . "</div>";
-			else
-				return "<div id=\"Root\">" . $this->ReplyForm_Preview()->forTemplate() . "</div>";
-		}
-	}
-
-
-	/**
-	 * Get topic tree (fully threaded)
-	 *
-	 * @param int $postID ID of the posting or NULL if the URL parameter ID
-	 *                    should be used
-	 * @return string Returns the HTML code for the topic tree.
-	 */
-	function TopicTree_FullyThreaded($postID = null) {
-		if($postID == null);
-			$postID = $this->urlParams['ID'];
-
-		if($postID && ($post = $this->Post($postID))) {
-			if(!$post->TopicID)
-				user_error("Post #$postID doesn't have a Topic ID", E_USER_ERROR);
-
-			$root = $this->Root($postID);
-
-			if(!$root)
-				user_error("Topic #$post->TopicID can't be found.", E_USER_ERROR);
-
-			if(!Director::is_ajax())
-				$root = $post;
-
-			if($root->Status == 'Moderated') {
-				if($this->Moderator() == Member::currentUser()) {
-					$root->setMarkingFilter("Status", array("Moderated", "Awaiting"));
-				} else {
-					$root->setMarkingFilter("Status", "Moderated");
-				}
-
-				$root->markPartialTree(null);
-
-				$subTree = $root->getChildrenAsUL("id=\"childrenof-$root->ID\" class=\"Root tree\"",
-						' "<li id=\"post-$child->ID\" class=\"$child->class $child->Status\">" . ' .
-						' "<a  title=\"by ".$child->AuthorFullName()." - $child->Created\" href=\"" . Director::link("$extraArg->URLSegment", "show", $child->ID) . "\" >" . $child->Title . "</a>" ',
-						$this, true);
-
-				$subTree .= ($subTree)
-					? $this->CheckboxForMode()
-					: "";
-
-				return $subTree;
-			}
-		}
-	}
-
-
-	/**
-	 * Return a ascendants tree from root to the given post
-	 *
-	 * Only for none ajax version
-	 *
-	 * @return string Returns the HTML code for the ascendants tree from the
-	 *                root to the given post
-	 */
-	function AscendantsThreading() {
-		if(($postID = $this->urlParams['ID']) && ($post = $this->Post($postID))) {
-			$ascendants=array();
-			$post->getAscendants($ascendants);
-
-			if($ascendants){
-				$ascendants = array_reverse($ascendants);
-
-				if($this->Mode()=='threaded') {
-					$ret = "";
-					foreach($ascendants as $ascendant) {
-						$ret .= "<ul><li id=\"post-$ascendant->ID\" class=\"$ascendant->class\"><a title=\"by " .
-							$ascendant->AuthorFullName() . " - $ascendant->Created\" href=\"" .
-							$ascendant->Link() . "\">$ascendant->Title</a></li>";
-					}
-					foreach($ascendants as $ascendant) {
-						$ret .="</ul>";
-					}
-				} else {
-					$ret = "<ul>";
-					foreach($ascendants as $ascendant) {
-						$ret .= "<li id=\"post-$ascendant->ID\" class=\"$ascendant->class\"><a title=\"by " .
-							$ascendant->AuthorFullName() . " - $ascendant->Created\" href=\"" .
-							$ascendant->Link() . "\">$ascendant->Title</a></li>";
-					}
-					$ret .= "</ul>";
-				}
-			}
-			return $ret;
-		}
-	}
-
-
 	/**
 	 * Return the topic flat list of all threads under the root
 	 *
@@ -750,30 +619,6 @@ JS
 			return '<div id="Mode">Arranged By: Latest on Top <input name="Mode" type="checkbox" value="flat" /></div>';
 		else
 			return '<div id="Mode">Arranged By: Converstation <input name="Mode" type="checkbox" value="threaded" /></div>';
-	}
-
-
-	/**
-	 * Get the forum mode (threaded or flat)
-	 *
-	 * @return string Returns the forum mode (threaded or flat).
-	 */
-	function Mode() {
-		if(!Session::get('forumInfo.mode')) {
-			Session::set('forumInfo.mode', 'threaded');
-		}
-
-		return Session::get('forumInfo.mode');
-	}
-
-
-	/**
-	 * Set the forum mode (threaded or flat)
-	 *
-	 * @param string $val The forum mode (threaded or flat).
-	 */
-	function setMode($val) {
-		Session::set('forumInfo.mode', $val);
 	}
 
 
@@ -853,7 +698,7 @@ JS
 	 *
 	 * @return DataObjectSet Returns the posts.
 	 */
-	function Posts() {
+	function Posts($order = "ASC") {
 		$SQL_id = Convert::raw2sql($this->urlParams['ID']);
 		$numPerPage = Forum::$posts_per_page;
 
@@ -869,8 +714,7 @@ JS
 		if(!isset($_GET['start'])) {
 			$_GET['start'] = 0;
 		}
-		return DataObject::get("Post", "TopicID = '$SQL_id'", "Created" , "",
-													 (int)$_GET['start'] . ", $numPerPage");
+		return DataObject::get("Post", "TopicID = '$SQL_id'", "Created $order" , "", (int)$_GET['start'] . ", $numPerPage");
 	}
 
 
@@ -1371,7 +1215,7 @@ JS
 	 * Show will redirect to flat
 	 */
 	function show() {
-	  $url = $this->Link() . 'flat/' . $this->urlParams['ID'];
+		$url = $this->Link() . 'flat/' . $this->urlParams['ID'];
 		if(isset($_REQUEST['showPost']))
 			$url .= '?showPost=' . $_REQUEST['showPost'];
 		Director::redirect($url);
@@ -1406,16 +1250,15 @@ JS
 	function rss() {
 		HTTP::set_cache_age(3600); // cache for one hour
 
-		$data = array('last_created' => null,
-									'last_id' => null);
+		$data = array('last_created' => null, 'last_id' => null);
 
-    if(!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&
+    	if(!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&
 			 !isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
 
 			// just to get the version data..
 			$this->NewPostsAvailable(null, null, $this->urlParams['ID'], $data);
 
-      // No information provided by the client, just return the last posts
+      		// No information provided by the client, just return the last posts
 			$rss = new RSSFeed($this->RecentPosts($this->urlParams['ID'], 10),
 												 $this->Link(),
 												 "Forum posts to '$this->Title'", "", "Title",
@@ -1423,7 +1266,7 @@ JS
 												 $data['last_created'], $data['last_id']);
 			$rss->outputToBrowser();
 
-    } else {
+    	} else {
 			// Return only new posts, check the request headers!
 			$since = null;
 			$etag = null;

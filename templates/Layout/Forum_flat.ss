@@ -18,12 +18,8 @@
 			<td class="replyButton">
 				<a href="$ReplyLink" title="Click here to reply to this topic">Reply</a>
 			</td>
-<% if FlatThreadedDropdown %>
-			<td class="viewOptions">
-				$FlatThreadedDropdown
-			</td>
-<% end_if %>
 		</tr>
+		
 		<tr class="rowTwo">
 			<td class="author">
 				<span>Author</span>
@@ -70,11 +66,6 @@
 					<% end_if %>
 				<% end_if %>
 			</td>
-<% if FlatThreadedDropdown %>
-			<td class="viewOptions">
-				$FlatThreadedDropdown
-			</td>
-<% end_if %>
 		</tr>
 	</table>
 <% include ForumFooter %>

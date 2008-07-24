@@ -232,21 +232,20 @@ class ForumHolder_Controller extends Page_Controller {
 	function rss() {
 		HTTP::set_cache_age(3600); // cache for one hour
 
-		$data = array('last_created' => null,
-									'last_id' => null);
+		$data = array('last_created' => null, 'last_id' => null);
 
-    if(!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&
-			 !isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+    	if(!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&
+			!isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
 			// just to get the version data..
 			$this->NewPostsAvailable(null, null, $data);
-      // No information provided by the client, just return the last posts
+      		// No information provided by the client, just return the last posts
 			$rss = new RSSFeed($this->RecentPosts(10), $this->Link(),
 												 "Forum posts to '$this->Title'", "", "Title",
 												 "RSSContent", "RSSAuthor",
 												 $data['last_created'], $data['last_id']);
 			$rss->outputToBrowser();
 
-    } else {
+    	} else {
 			// Return only new posts, check the request headers!
 			$since = null;
 			$etag = null;
