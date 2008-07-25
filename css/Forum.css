@@ -80,6 +80,7 @@
 
 	.message.required, .message.bad, .message.error {
 		background: #ffc1c1 !important;
+		color: #cc0000;
 		border: 1px solid #ff8b8b !important;
 	}
 
