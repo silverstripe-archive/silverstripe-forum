@@ -262,10 +262,8 @@ class Forum extends Page {
 		$posts = DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and $statusFilter", "PostList.Created DESC",
 		         "INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $start.',10'
 		      );
-		if($posts) {
-			$posts->setPageLength(2);
-		}
-		return $posts;
+		// @TODO work out why pagination is not working #2248 (looks like $this->TotalItems() doesnt return correctly)
+		return ($posts) ? $posts : false ;
 	}
 
 
