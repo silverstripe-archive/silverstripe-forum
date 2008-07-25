@@ -4,7 +4,7 @@
 		<table id="TopicList">
 			<tr class="rowOne">
 				<td class="pageNumbers">
-					<span><strong>Page:</strong></span>
+					<span><strong><% _t('PAGE','Page:') %></strong></span>
 					<% control SearchResults.Pages %>
 						<% if CurrentBool %>
 							<span><strong>$PageNum</strong></span>
@@ -15,18 +15,21 @@
 					<% end_control %>
 				</td>
 			</tr>
-			<tr><th>Topic</th><th>Post</th></tr>
+			<tr>
+				<th><% _t('TOPIC','Topic') %></th>
+				<th><% _t('POST','Post') %></th>
+			</tr>
 			<% control SearchResults %>
 			<tr class="$EvenOdd">
 				<td class="forumCategory">
 					<% control Topic %>
-					<a class="topicTitle" href="$Link" title="Go to the $Title.EscapeXML topic">$Title</a>
+					<a class="topicTitle" href="$Link" title="<% sprintf(_t('',"Go to the %s topic"),$Title.EscapeXML) %>">$Title</a>
 					<% end_control %>
 				</td>
 				<td>
 					<a class="topicTitle" href="$Link">$Title</a>
 					<% control Author %>
-					<p class="userInfo">by <a href="$Link" title="Click here to view <% if Nickname %>$Nickname.EscapeXML<% else %>Anon<% end_if %>&#39;s profile"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a></p>
+					<p class="userInfo"><% _t('BY','by') %> <a href="$Link" title="<% _t('CLICKTOUSER','Click here to view') %> <% if Nickname %>$Nickname.EscapeXML<% else %>Anon<% end_if %><% _t('CLICKTOUSER2','&#39;s profile') %>"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a></p>
 					<% end_control %>
 					<p class="userInfo">$Created.Nice</p>
 				</td>
@@ -37,7 +40,7 @@
 		<% else %>
 			<div class="forumHolderFeatures">
 				<table id="TopicList">
-					<tr><td>There are no results for those word(s)</td></tr>
+					<tr><td><% _t('NORESULTS','There are no results for those word(s)') %></td></tr>
 				</table>
 			</div>
 		<% end_if %>

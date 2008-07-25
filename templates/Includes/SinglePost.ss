@@ -1,6 +1,6 @@
 <div class="userInformation">
 	<% control Author %>
-		<a class="authorTitle" href="$Link" title="Go to this user's profile">$Nickname</a><br />
+		<a class="authorTitle" href="$Link" title="<% _t('GOTOPROFILE','Go to this User\'s Profile') %>">$Nickname</a><br />
 	<% if Avatar %>
 		<% control Avatar.SetWidth(80) %>
 		<img class="userAvatar" src="$URL" alt="avatar" /><br />
@@ -29,16 +29,16 @@
 		<p>$Content.Parse(BBCodeParser)</p>
 	</div>
 	<% if Updated %>
-		<p class="lastEdited"><strong>Last edited:</strong> $Updated.Long at $Updated.Time</p>
+		<p class="lastEdited"><strong><% _t('LASTEDITED','Last edited:') %></strong> $Updated.Long <% _t('AT') %> $Updated.Time</p>
 	<% end_if %>
 	<% if Attachments %>
 		<div class="attachments">
-			<strong>Attached Files</strong>
+			<strong><% _t('ATTACHED','Attached Files') %></strong> 
 			<ul class="attachmentList">
 			<% control Attachments %>
 				<li class="attachment">
 					<a href="$Link"><img src="$Icon"></a>
-					<a href="$Link">$Name</a> (<a href="$DownloadLink">download</a>)<br />
+					<a href="$Link">$Name</a> (<a href="$DownloadLink"><% _t('DOWNLOAD','Download') %></a>)<br />
 					<% if ClassName = "Image" %>$Width x $Height - <% end_if %>$Size
 				</li>
 			<% end_control %>

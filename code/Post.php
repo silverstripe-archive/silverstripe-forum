@@ -60,7 +60,7 @@ class Post extends DataObject {
 		if($this->Author()->ID)
 			return $this->Author()->FirstName." ".$this->Author()->Surname;
 		else
-			return 'a visitor';
+			return _t('Forum.VISITOR');
 	}
 
 
@@ -118,7 +118,7 @@ class Post extends DataObject {
 
 	function getTitle() {
 		$title = $this->getField('Title');
-		if(!$title && $this->Topic()) $title = "Re: " . $this->Topic()->Title;
+		if(!$title && $this->Topic()) $title = sprintf(_t('Post.RESPONSE',"Re: %s",PR_HIGH,'Post Subject Prefix'),$this->Topic()->Title);
 
 		return $title;
 	}
@@ -140,7 +140,7 @@ class Post extends DataObject {
 	function EditLink() {
 	  if((Member::currentUser() && Member::currentUser()->ID == $this->Author()->ID) ||
 			 (Member::currentUser() && Member::currentUser()->isAdmin())) {
-			return "<a href=\"{$this->Forum()->Link()}editpost/{$this->ID}\">edit</a>";
+			return "<a href=\"{$this->Forum()->Link()}editpost/{$this->ID}\">" . _t('Post.EDIT','edit') . "</a>";
 		}
 	  else {
 			return false;
@@ -155,7 +155,7 @@ class Post extends DataObject {
 			$id = " id=\"firstPost\" ";
 
 	  if(Member::currentUser() && Member::currentUser()->isAdmin())
-			return "<a".$id."class=\"deletelink\" href=\"{$this->Forum()->Link()}deletepost/{$this->ID}\">delete</a>";
+			return "<a".$id."class=\"deletelink\" href=\"{$this->Forum()->Link()}deletepost/{$this->ID}\">" . _t('Post.DELETE','delete') ."</a>";
 	  else
 			return false;
 	}
@@ -206,7 +206,7 @@ class Post extends DataObject {
 	function RSSContent() {
 		$parser = new BBCodeParser($this->Content);
 		$html = $parser->parse();
-		if($this->Topic()) $html .= '<br><br>Posted to: ' . $this->Topic()->Title;
+		if($this->Topic()) $html .= '<br><br>' . sprintf(_t('Post.POSTEDTO',"Posted to: %s"),$this->Topic()->Title);
 		return $html;
 	}
 
@@ -246,32 +246,32 @@ class Post extends DataObject {
 		$authors = DataObject::get("Member");
 
 		$ret = new FieldSet(
-			new TabSet("Main",
-				new Tab("Topic Details",
-					new ReadonlyField("ID", "Topic Internal ID"),
-					new ReadonlyField("Created", "Topic Created"),
-					new ReadonlyField("LastEdited", "Topic Last Edited"),
-					new TextField("Title", "Title"),
-					new TextareaField("Content", "Content"),
-					new DropdownField("Status", "Status", array(
-						'Awaiting' => 'Awaiting',
-						'Moderated' => 'Moderated',
-						'Rejected' => 'Rejected',
-						'Archived' => 'Archived'
+			new TabSet(_t('Post.MAIN','Main'),
+				new Tab(_t('Post.TOPICDETAILS','Topic Details'),
+					new ReadonlyField("ID", _t('Post.TOPICINTERNALID','Topic Internal ID')),
+					new ReadonlyField("Created", _t('Post.TOPICCREATED','Topic Created')),
+					new ReadonlyField("LastEdited", _t('Post.TOPICLASTEDIT','Topic Last Edited')),
+					new TextField("Title", _t('Post.TITLE','Title')),
+					new TextareaField("Content", _t('Post.CONTENT','Content')),
+					new DropdownField("Status", _t('Post.STATUS','Status'), array(
+						'Awaiting' => _t('Post.AWAITING','Awaiting'),
+						'Moderated' => _t('Post.MODERATED','Moderated'),
+						'Rejected' => _t('Post.REJECTED','Rejected'),
+						'Archived' => _t('Post.ARCHIVED','Archived')
 					)),
-					new DropdownField("AuthorID", "Author", $authors->map())
+					new DropdownField("AuthorID", _t('Post.AUTHOR','Author'), $authors->map())
 				),
-				new Tab("Active Posts",
+				new Tab(_t('Post.ACTIVEPOSTS','Active Posts'),
 					$activePosts = new ComplexTableField(
 						$controller = null,
 						$name = "ActivePosts",
 						$sourceClass = "Post",
 						$fieldList = array(
-							"Created"=>"Created",
-							"LastEdited" => "Last Edited",
-							"Title" => "Title",
-							"Status" => "Status",
-							"Content" => "Content"
+							"Created"=> _t('Post.CREATED','Created'),
+							"LastEdited" => _t('Post.LASTEDIT','Last Edited'),
+							"Title" => _t('Post.TITLE'),
+							"Status" => _t('Post.STATUS'),
+							"Content" => _t('Post.CONTENT')
 						),
 						$fieldList = "getCMSFields_forPopup",
 						$sourceFilter = "TopicID = '$this->ID' AND ParentID <> 0 AND Status = 'Moderated'",
@@ -279,33 +279,33 @@ class Post extends DataObject {
 					)
 				),
 
-				new Tab("Awaiting Posts",
+				new Tab(_t('Post.AWAITINGPOSTS','Awaiting Posts'),
 					$awaitingPosts = new ComplexTableField(
 						$controller = null,
 						$name = "AwaitingPosts",
 						$sourceClass = "Post",
 						$fieldList = array(
-							"Created"=>"Created",
-							"LastEdited" => "Last Edited",
-							"Title" => "Title",
-							"Status" => "Status",
-							"Content" => "Content"
+							"Created"=> _t('Post.CREATED','Created'),
+							"LastEdited" => _t('Post.LASTEDIT'),
+							"Title" => _t('Post.TITLE'),
+							"Status" => _t('Post.STATUS'),
+							"Content" => _t('Post.CONTENT')
 						),
 						$fieldList = "getCMSFields_forPopup",
 						$sourceFilter = "TopicID = '$this->ID' AND ParentID <> 0 AND Status = 'Awaiting'",
 						"Created DESC"
 					)
 				),
-				new Tab("Rejected Posts",
+				new Tab(_t('Post.REJECTEDPOSTS','Rejected Posts'),
 					$rejectedPosts = new ComplexTableField(
 						$controller = null,
 						$name = "RejectedPosts",
 						$sourceClass = "Post",
 						$fieldList = array(
-							"Created"=>"Created",
-							"LastEdited" => "Last Edited",
-							"Title" => "Title",
-							"Content" => "Content"
+							"Created"=> _t('Post.CREATED'),
+							"LastEdited" => _t('Post.LASTEDIT'),
+							"Title" => _t('Post.TITLE'),
+							"Content" => _t('Post.CONTENT')
 						),
 						$fieldList = "getCMSFields_forPopup",
 						$sourceFilter = "TopicID = '$this->ID' AND ParentID <> 0 AND Status = 'Rejected'",
@@ -359,15 +359,15 @@ class Post extends DataObject {
 			$postsExceptMyselft = new DataObjectSet();
 		}
 		$ret = new FieldSet(
-			new DropdownField("AuthorID", "Posted By", $authors->map()),
-			new DropdownField("ParentID", "Post Replied To", $postsExceptMyselft->map()),
-			new TextField("Title", "Title"),
-			new TextareaField("Content", "Content"),
-			new DropdownField("Status", "Status",
+			new DropdownField("AuthorID", sprintf(_t('Post.POSTEDBY',"Posted By %s"),$authors->map()) ),
+			new DropdownField("ParentID", sprintf(_t('Post.POSTREPLIEDTO',"Post Replied To %s"),$postsExceptMyselft->map())),
+			new TextField("Title", _t('Post.TITLE')),
+			new TextareaField("Content", _t('Post.CONTENT')),
+			new DropdownField("Status", _t('Post.STATUS'),
 				array(
-					"Awaiting"=>"Awaiting",
-					"Moderated"=>"Moderated",
-					"Rejected"=>"Rejected"
+					"Awaiting"=> _t('Post.AWAITING'),
+					"Moderated"=> _t('Post.MODERATED'),
+					"Rejected"=> _t('Post.REJECTED')
 				)
 			),
 			new HiddenField("TopicID", "", $topicID)
@@ -379,8 +379,8 @@ class Post extends DataObject {
 
 	function getCMSActions(){
 		return new FieldSet(
-			new FormAction('save', 'Save', 'ajaxAction-save'),
-			new FormAction("archive", "Archive", 'ajaxAction->archive')
+			new FormAction('save', _t('Post.SAVE','Save'), 'ajaxAction-save'),
+			new FormAction("archive", _t('Post.ARCHIVE','Archive'), 'ajaxAction->archive')
 		);
 	}
 

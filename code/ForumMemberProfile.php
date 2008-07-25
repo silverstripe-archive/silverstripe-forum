@@ -60,8 +60,7 @@ class ForumMemberProfile extends Page_Controller {
 	 * It simple sets the return URL and forwards to the standard login form.
 	 */
 	function login() {
-		Session::set('Security.Message.message',
-								 'Please enter your credentials to access the forum.');
+		Session::set('Security.Message.message', _t('Forum.CREDENTIALS'));
 		Session::set('Security.Message.type', 'status');
 		Session::set("BackURL", $this->Link());
 		Director::redirect('Security/login');
@@ -77,8 +76,7 @@ class ForumMemberProfile extends Page_Controller {
 
  		if(!is_numeric($SQL_memberID)) return null;
 
- 		$posts = DataObject::get("Post", "`AuthorID` = '$SQL_memberID'",
-														 "`Created` DESC", "", "0,10");
+ 		$posts = DataObject::get("Post", "`AuthorID` = '$SQL_memberID'", "`Created` DESC", "", "0,10");
 
  		return $posts;
  	}
@@ -89,8 +87,8 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function register() {
 		return array(
-			"Title" => "Forum Registration",
-			"Subtitle" => "Register",
+			"Title" => _t('ForumMemberProfile.FORUMREGTITLE','Forum Registration'), 
+		 	"Subtitle" => _t('ForumMemberProfile.REGISTER','Register'),
 			"Abstract" => DataObject::get_one("ForumHolder")->ProfileAbstract,
 			"Form" => $this->RegistrationForm(),
 		);
@@ -139,48 +137,45 @@ class ForumMemberProfile extends Page_Controller {
 	 * @param Form $form The used form
 	 */
 	function doregister($data, $form) {
-		if($member = DataObject::get_one("Member",
-				"`Email` = '". Convert::raw2sql($data['Email']) . "'")) {
-  		if($member) {
-  			$form->addErrorMessage("Blurb",
-					"Sorry, that email address already exists. Please choose another.",
+		if($member = DataObject::get_one("Member", "`Email` = '". Convert::raw2sql($data['Email']) . "'")) {
+  			if($member) {
+  				$form->addErrorMessage("Blurb",
+					_t('ForumMemberProfile.EMAILEXISTS','Sorry, that email address already exists. Please choose another.'),
 					"bad");
-
-  			// Load errors into session and post back
+				
+  				// Load errors into session and post back
 				Session::set("FormInfo.Form_RegistrationForm.data", $data);
-  			Director::redirectBack();
-  			return;
-  		}
-  	} elseif($this->OpenIDAvailable() &&
-				($member = DataObject::get_one("Member",
-					"`IdentityURL` = '". Convert::raw2sql($data['IdentityURL']) .
-					"'"))) {
-  		if($member) {
-  			$form->addErrorMessage("Blurb",
-					"Sorry, that OpenID is already registered. Please choose " .
-						"another or register without OpenID.",
-					"bad");
+  				Director::redirectBack();
+  				return;
+  			}
+  		} elseif($this->OpenIDAvailable() && ($member = DataObject::get_one("Member",
+					"`IdentityURL` = '". Convert::raw2sql($data['IdentityURL']) ."'"))) {
+  						
+				if($member) {
+  					$form->addErrorMessage("Blurb",
+						_t('ForumMemberProfile.OPENIDEXISTS','Sorry, that OpenID is already registered. Please choose another or register without OpenID.'),
+						"bad");
 
-				// Load errors into session and post back
-				Session::set("FormInfo.Form_RegistrationForm.data", $data);
-				Director::redirectBack();
-  			return;
+					// Load errors into session and post back
+					Session::set("FormInfo.Form_RegistrationForm.data", $data);
+					Director::redirectBack();
+  					return;
 			}
-  	} elseif($member = DataObject::get_one("Member",
+  		} elseif($member = DataObject::get_one("Member",
 				"`Nickname` = '". Convert::raw2sql($data['Nickname']) . "'")) {
-  		if($member) {
-  			$form->addErrorMessage("Blurb",
-					"Sorry, that nickname already exists. Please choose another.",
-					"bad");
+  					if($member) {
+  						$form->addErrorMessage("Blurb",
+							_t('ForumMemberProfile.NICKNAMEEXISTS','Sorry, that nickname already exists. Please choose another.'),
+							"bad");
 
-				// Load errors into session and post back
-				Session::set("FormInfo.Form_RegistrationForm.data", $data);
-				Director::redirectBack();
-				return;
-			}
+						// Load errors into session and post back
+						Session::set("FormInfo.Form_RegistrationForm.data", $data);
+						Director::redirectBack();
+					return;
+					}
 		}
 
-  	// create the new member
+  		// create the new member
 		$member = Object::create('Member');
 		$form->saveInto($member);
 
@@ -189,7 +184,7 @@ class ForumMemberProfile extends Page_Controller {
 			$member->Password = $data['Password'];
 		} else {
 			$form->addErrorMessage("Password",
-				"Both passwords need to match. Please try again.",
+				_t('ForumMemberProfile.PASSNOTMATCH','Both passwords need to match. Please try again.'),
 				"bad");
 
 			// Load errors into session and post back
@@ -214,12 +209,12 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function registerwithopenid($data, $message = null) {
 		return array(
-			"Title" => "SilverStripe Forum",
-			"Subtitle" => "Register with OpenID",
+			"Title" => _t('ForumMemberProfile.SSFORUM'),
+			"Subtitle" => _t('ForumMemberProfile.REGISTEROPENID','Register with OpenID'),
 			"Abstract" => ($message)
 				? '<p class="' . $message['type'] . '">' .
 						Convert::raw2xml($message['message']) . '</p>'
-				: "<p>Please enter your OpenID to continue the registration</p>",
+				: "<p>" . _t('ForumMemberProfile.ENTEROPENID','Please enter your OpenID to continue the registration') . "</p>",
 			"Form" => $this->RegistrationWithOpenIDForm(),
 		);
 	}
@@ -391,12 +386,11 @@ class ForumMemberProfile extends Page_Controller {
 
 		// The server returned an error message, handle it!
 		if($response->status == Auth_OpenID_CANCEL) {
-			$error_message = 'The verification was cancelled. Please try again.';
+			$error_message = _t('ForumMemberProfile.CANCELLEDVERIFICATION','The verification was cancelled. Please try again.');
 		} else if($response->status == Auth_OpenID_FAILURE) {
-			$error_message = 'The OpenID/i-name authentication failed.';
+			$error_message = _t('ForumMemberProfile.AUTHENTICATIONFAILED','The OpenID/i-name authentication failed.');
 		} else {
-			$error_message = 'An unexpected error occured. Please try again or ' .
-				'register without OpenID';
+			$error_message = _t('ForumMemberProfile.UNEXPECTEDERROR','An unexpected error occured. Please try again or register without OpenID');
 		}
 
 		$this->RegistrationWithOpenIDForm()->addErrorMessage("Blurb",
@@ -415,8 +409,7 @@ class ForumMemberProfile extends Page_Controller {
 	function edit() {
 		$form = $this->EditProfileForm()
 			? $this->EditProfileForm()
-			: "<p class=\"error message\">You don't have the permission to " .
-				"edit that member.</p>";
+			: "<p class=\"error message\">" . _t('ForumMemberProfile.WRONGPERMISSION','You don\'t have the permission to edit that member.') . "</p>";
 
 		return array(
 			"Title" => "Forum",
@@ -441,7 +434,7 @@ class ForumMemberProfile extends Page_Controller {
 		$fields->push(new HiddenField("ID"));
 
 		$form = new Form($this, 'EditProfileForm', $fields,
-			new FieldSet(new FormAction("dosave", "Save changes")),
+			new FieldSet(new FormAction("dosave", _t('ForumMemberProfile.SAVECHANGES','Save changes'))),
 			new RequiredFields("Nickname")
 		);
 
@@ -470,7 +463,7 @@ class ForumMemberProfile extends Page_Controller {
 					$member->Password = $data['Password'];
 				} else {
 					$form->addErrorMessage("Blurb",
-						"Both passwords need to match. Please try again.",
+						_t('ForumMemberProfile.PASSNOTMATCH'),
 						"bad");
 					Director::redirectBack();
 				}
@@ -485,7 +478,7 @@ class ForumMemberProfile extends Page_Controller {
 
 		if($nicknameCheck) {
 			$form->addErrorMessage("Blurb",
-				"Sorry, that nickname already exists. Please choose another.",
+				_t('ForumMemberProfile.NICKNAMEEXISTS'),
 				"bad");
 			Director::redirectBack();
 			return;
@@ -662,7 +655,7 @@ class ForumMemberProfile extends Page_Controller {
 	 * Get a subtitle
 	 */
 	function getSubtitle() {
-		return "User profile";
+		return _t('ForumMemberProfile.USERPROFILE','User profile');
 	}
 
 
@@ -691,9 +684,9 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function MetaTags($includeTitle = true) {
 		$tags = "";
-		$Title = "Forum User Profile";
+		$Title = _t('ForumMemberProfile.FORUMUSERPROFILE','Forum User Profile');
 		if(Director::urlParam('Action') == "register") { 
-			$Title = "Forum Registration";
+			_t('ForumMemberProfile.FORUMUSERREGISTER','Forum Registration');
 		}
 		if($includeTitle == true) {
 			$tags .= "<title>" . $Title . "</title>\n";

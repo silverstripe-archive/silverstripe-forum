@@ -14,7 +14,7 @@ class ForumHolder extends Page {
 	);
 
 	static $allowed_children = array('Forum');
-
+	
 	static $defaults = array(
 		"HolderSubtitle" => "Welcome to our forum!",
 		"ProfileSubtitle" => "Edit Your Profile",
@@ -25,7 +25,7 @@ class ForumHolder extends Page {
 		"ProfileModify" => "<p>Thanks, your member profile has been modified.</p>",
 		"ProfileAdd" => "<p>Thanks, you are now signed up to the forum.</p>",
 	);
-
+	
 	function getCMSFields($cms) {
 		$fields = parent::getCMSFields($cms);
 		$fields->addFieldToTab("Root.Content.Messages", new TextField("HolderSubtitle","Forum Holder Subtitle"));
@@ -96,8 +96,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 * It simple sets the return URL and forwards to the standard login form.
 	 */
 	function login() {
-		Session::set('Security.Message.message',
-								 'Please enter your credentials to access the forum.');
+		Session::set('Security.Message.message',_t('Forum.CREDENTIALS'));
 		Session::set('Security.Message.type', 'status');
 		Session::set("BackURL", $this->Link());
 		Director::redirect('Security/login');
@@ -181,10 +180,10 @@ class ForumHolder_Controller extends Page_Controller {
 	function search() {
 		$XML_keywords = Convert::raw2xml($_REQUEST['for']);
 		$Abstract = !empty($_REQUEST['for'])
-			? "<p>You searched for '" . $XML_keywords . "'.</p>"
+			? "<p>" . sprintf(_t('ForumHolder.SEARCHEDFOR',"You searched for '%s'."),$XML_keywords) . "</p>"
 			: null;
 
-		return array("Subtitle" => "Search results",
+		return array("Subtitle" => _t('ForumHolder.SEARCHRESULTS','Search results'),
 								 "Abstract" => $Abstract
 		);
 	}
@@ -240,7 +239,7 @@ class ForumHolder_Controller extends Page_Controller {
 			$this->NewPostsAvailable(null, null, $data);
       		// No information provided by the client, just return the last posts
 			$rss = new RSSFeed($this->RecentPosts(10), $this->Link(),
-												 "Forum posts to '$this->Title'", "", "Title",
+												 sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), "", "Title",
 												 "RSSContent", "RSSAuthor",
 												 $data['last_created'], $data['last_id']);
 			$rss->outputToBrowser();
@@ -267,7 +266,7 @@ class ForumHolder_Controller extends Page_Controller {
 				HTTP::register_modification_timestamp($data['last_created']);
 				$rss = new RSSFeed($this->RecentPosts(50, null, $etag),
 													 $this->Link(),
-													 "Forum posts to '$this->Title'", "", "Title",
+													 sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), "", "Title",
 													 "RSSContent", "RSSAuthor", $data['last_created'],
 													 $data['last_id']);
 				$rss->outputToBrowser();

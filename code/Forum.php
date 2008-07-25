@@ -55,7 +55,7 @@ class Forum extends Page {
 			$group->write();
 
 			Permission::grant( $group->ID, $code );
-			Database::alteration_message("Forum Members group created","created");
+			atabase::alteration_message(_t('Forum.GROUPCREATED','Forum Members group created'),"created"); 
 		}
 		else if(DB::query(
 			"SELECT * FROM Permission WHERE `GroupID` = '$forumGroup->ID' AND `Code` LIKE '$code'")
@@ -67,24 +67,21 @@ class Forum extends Page {
 			$forumholder = new ForumHolder();
 			$forumholder->Title = "Forums";
 			$forumholder->URLSegment = "forums";
-			$forumholder->Content = "<p>Welcome to SilverStripe Forum Module! " .
-				"This is the default ForumHolder page. You can now add forums.</p>";
+			$forumholder->Content = "<p>"._t('Forum.WELCOMEFORUMHOLDER','Welcome to SilverStripe Forum Module! This is the default ForumHolder page. You can now add forums.')."</p>";
 			$forumholder->Status = "Published";
 			$forumholder->write();
 			$forumholder->publish("Stage", "Live");
-			Database::alteration_message("ForumHolder page created","created");
-
+			Database::alteration_message(_t('Forum.FORUMHOLDERCREATED','ForumHolder page created'),"created");
 			$forum = new Forum();
-			$forum->Title = "General Discussion";
+			$forum->Title = _t('Forum.TITLE','General Discussion');
 			$forum->URLSegment = "general-discussion";
 			$forum->ParentID = $forumholder->ID;
-			$forum->Content = "<p>Welcome to SilverStripe Forum Module! This " .
-				"is the default Forum page. You can now add topics.</p>";
+			$forum->Content = "<p>"._t('Forum.WELCOMEFORUM','Welcome to SilverStripe Forum Module! This is the default Forum page. You can now add topics.')."</p>";
 			$forum->Status = "Published";
 			$forum->write();
 			$forum->publish("Stage", "Live");
 
-			Database::alteration_message("Forum page created","created");
+			Database::alteration_message(_t('Forum.FORUMCREATED','Forum page created'),"created");
 		}
 	}
 
@@ -100,31 +97,31 @@ class Forum extends Page {
 
 	  $fields = parent::getCMSFields();
 
-		$fields->addFieldToTab("Root.Access", new HeaderField("Who can read the forum?", 2));
+		$fields->addFieldToTab("Root.Access", new HeaderField(_t('Forum.ACCESSREAD','Who can read the forum?'), 2));
 		$fields->addFieldToTab("Root.Access",
 			new OptionsetField("ForumViewers", "", array(
-				"Anyone" => "Anyone",
-				"LoggedInUsers" => "Logged-in users",
-				"OnlyTheseUsers" => "Only these people (choose from list)")
+				"Anyone" => _t('Forum.READANYONE','Anyone'),
+				"LoggedInUsers" => _t('Forum.READLOGGEDIN','Logged-in users'),
+				"OnlyTheseUsers" => _t('Forum.READLIST','Only these people (choose from list)'))
 			)
 		);
 		$fields->addFieldToTab("Root.Access", new DropdownField("ForumViewersGroup", "Group", Group::map()));
-		$fields->addFieldToTab("Root.Access", new HeaderField("Who can post to the forum?", 2));
+		$fields->addFieldToTab("Root.Access", new HeaderField(_t('Forum.ACCESSPOST','Who can post to the forum?'), 2));
 		$fields->addFieldToTab("Root.Access", new OptionsetField("ForumPosters", "", array(
-		  "Anyone" => "Anyone",
-		  "LoggedInUsers" => "Logged-in users",
-		  "OnlyTheseUsers" => "Only these people (choose from list)"
+		  "Anyone" => _t('Forum.READANYONE'),
+		  "LoggedInUsers" => _t('Forum.READLOGGEDIN'),
+		  "OnlyTheseUsers" => _t('Forum.READLIST')
 		)));
 		$fields->addFieldToTab("Root.Access", new DropdownField("ForumPostersGroup", "Group", Group::map()));
 		// TODO Abstract this to the Permission class
-		$fields->addFieldToTab("Root.Access", new OptionsetField("CanAttachFiles", "Can users attach files?", array(
-			"1" => "Yes",
-			"0" => "No"
+		$fields->addFieldToTab("Root.Access", new OptionsetField("CanAttachFiles", _t('Forum.ACCESSATTACH','Can users attach files?'), array(
+			"1" => _t('Forum.YES','Yes'),
+			"0" => _t('Forum.NO','No')
 		)));
 
-		$fields->addFieldToTab("Root.Behaviour", new CheckboxField("ForumRefreshOn", "Refresh this forum"));
-		$refreshTime = new NumericField("ForumRefreshTime", "Refresh every ");
-		$refreshTime->setRightTitle(" seconds");
+		$fields->addFieldToTab("Root.Behaviour", new CheckboxField("ForumRefreshOn", _t('Forum.REFRESHFORUM','Refresh this forum')));
+		$refreshTime = new NumericField("ForumRefreshTime", _t('Forum.REFRECHTIME','Refresh every '));
+		$refreshTime->setRightTitle(_t('Forum.SECONDS',' seconds'));
 		$fields->addFieldToTab("Root.Behaviour", $refreshTime);
 
 		// Without this line, some newer versions of SQL fail (ENUM's are broken)
@@ -370,11 +367,11 @@ class Forum_Controller extends Page_Controller {
 		
 		if(Director::redirected_to()) return;
 		
- 	  if(!$this->CheckForumPermissions("view")) {
- 		  $messageSet = array(
-				'default' => "Enter your email address and password to view this forum.",
-				'alreadyLoggedIn' => "I'm sorry, but you can't access this forum until you've logged in.  If you want to log in as someone else, do so below",
-				'logInAgain' => "You have been logged out of the forums.  If you would like to log in again, enter a username and password below.",
+ 	  	if(!$this->CheckForumPermissions("view")) {
+ 		  	$messageSet = array(
+				'default' => _t('Forum.LOGINDEFAULT','Enter your email address and password to view this forum.'),
+				'alreadyLoggedIn' => _t('Forum.LOGINALREADY','I\'m sorry, but you can\'t access this forum until you\'ve logged in.  If you want to log in as someone else, do so below'),
+				'logInAgain' => _t('Forum.LOGINAGAIN','You have been logged out of the forums.  If you would like to log in again, enter a username and password below.')
 			);
 
 			Security::permissionFailure($this, $messageSet);
@@ -415,8 +412,8 @@ JS
 
 		Requirements::themedCSS('Forum');
 
-		RSSFeed::linkToFeed($this->Link("rss"), "Posts to the '$this->Title' forum");
-		if($this->Parent) RSSFeed::linkToFeed($this->Parent->Link("rss"), "Posts to all forums");
+		RSSFeed::linkToFeed($this->Link("rss"), sprintf(_t('Forum.RSSFORUM',"Posts to the '%s' forum"),$this->Title)); 
+	 	RSSFeed::linkToFeed($this->Parent->Link("rss"), _t('Forum.RSSFORUMS','Posts to all forums'));
 
 		if(Director::is_ajax())
 			ContentNegotiator::allowXHTML();
@@ -455,8 +452,7 @@ JS
 	 * It simple sets the return URL and forwards to the standard login form.
 	 */
 	function login() {
-		Session::set('Security.Message.message',
-								 'Please enter your credentials to access the forum.');
+		Session::set('Security.Message.message', _t('Forum.CREDENTIALS','Please enter your credentials to access the forum.'));
 		Session::set('Security.Message.type', 'status');
 		Session::set("BackURL", $this->Link());
 		Director::redirect('Security/login');
@@ -564,12 +560,12 @@ JS
 
 		if($postID && ($post = $this->Post($postID))) {
 			if(!$post->TopicID)
-				user_error("Post #$postID doesn't have a Topic ID", E_USER_ERROR);
+				user_error(sprintf(_t('Forum.NOTOPICID',"Post #%s doesn't have a Topic ID"),$postID), E_USER_ERROR);
 
 			$root = $this->Root($postID);
 
 			if(!$root)
-				user_error("Topic #$post->TopicID can't be found.", E_USER_ERROR);
+				user_error(sprintf(_t('Forum.NOTFOUND',"Topic #%s can't be found."),$post->TopicID), E_USER_ERROR);
 
 			if(!Director::is_ajax())
 				$root = $post;
@@ -585,7 +581,7 @@ JS
 			$subTree = "<ul id=\"childrenof-$root->ID\" class=\"Root tree\">";
 			foreach($subFlatNodes as $node) {
 				$subTree .= "<li id=\"post-$node->ID\" class=\"$node->class $node->Status\">";
-				$subTree .= "<a title=\"by " . $node->AuthorFullName() .
+				$subTree .= "<a title=\"" . _t('Forum.BY','by') . " " . $node->AuthorFullName() .
 					" - $node->Created\" href=\"" . $node->Link() .
 					"\">$node->Title</a></li>";
 			}
@@ -617,9 +613,9 @@ JS
 	 */
 	function CheckboxForMode(){
 		if(Session::get('forumInfo.mode') == 'threaded')
-			return '<div id="Mode">Arranged By: Latest on Top <input name="Mode" type="checkbox" value="flat" /></div>';
+			return '<div id="Mode">' . _t('Forum.ARRANGEDLATEST','Arranged By: Latest on Top') . ' <input name="Mode" type="checkbox" value="flat" /></div>';
 		else
-			return '<div id="Mode">Arranged By: Converstation <input name="Mode" type="checkbox" value="threaded" /></div>';
+			return '<div id="Mode">' . _t('Forum.ARRANGEDCONVERSTATION','Arranged By: Converstation') . ' <input name="Mode" type="checkbox" value="threaded" /></div>';
 	}
 
 
@@ -840,9 +836,9 @@ JS
 		// Check forum posting permissions
 		if(!$this->CheckForumPermissions("post")) {
 			$messageSet = array(
-			'default' => "You'll need to login before you can post to that forum. Please do so below.",
-			'alreadyLoggedIn' => "I'm sorry, but you can't post to this forum until you've logged in.  If you want to log in as someone else, do so below. If you're logged in and you still can't post, you don't have the correct permissions to post.",
-			'logInAgain' => "You have been logged out of the forums.  If you would like to log in again to post, enter a username and password below.",
+			'default' => _t('Forum.LOGINTOPOST','You\'ll need to login before you can post to that forum. Please do so below.'),
+			'alreadyLoggedIn' => _t('Forum.LOGINTOPOSTLOGGEDIN','I\'m sorry, but you can\'t post to this forum until you\'ve logged in.  If you want to log in as someone else, do so below. If you\'re logged in and you still can\'t post, you don\'t have the correct permissions to post.'),
+			'logInAgain' => _t('Forum.LOGINTOPOSTAGAIN','You have been logged out of the forums.  If you would like to log in again to post, enter a username and password below.'),
 			);
 
 			Security::permissionFailure($this, $messageSet);
@@ -869,15 +865,15 @@ JS
 		$fields = new FieldSet(
 			new TextField("Title", "Title", $this->currentPost ? "Re: " . $this->currentPost->Title : "" ),
 			new TextareaField("Content", "Content"),
-			new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"?\" id=\"BBCodeHint\">View Formatting Help</a> ]</div>"),
-			new CheckboxField("TopicSubscription", "Subscribe to this topic (Receive email notifications when a new reply is added)", $subscribed),
+			new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"?\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT','View Formatting Help') . "</a> ]</div>"),
+			new CheckboxField("TopicSubscription", _t('Forum.SUBSCRIBETOPIC','Subscribe to this topic (Receive email notifications when a new reply is added)'), $subscribed),
 			new HiddenField("Parent", "", $this->currentPost ? $this->currentPost->ID : "" ),
 			new HiddenField("PostID", "", $post->ID)
 		);
 
 		// Check if we can attach files to this forum's posts
 		if($this->canAttach()) {
-			$fields->push($attachmentField = new AttachmentField("PostAttachment", "Upload Files","Post_Attachment"));
+			$fields->push($attachmentField = new AttachmentField("PostAttachment", _t('Forum.POSTATTACHMENT','Upload Files'),"Post_Attachment"));
 			$attachmentField->setExtraData(array(
 				// TODO Fix this!
 				"PostID" => $post->ID
@@ -944,28 +940,24 @@ JS
 		if($this->replyModerate() == 'pass') {
 
 			if($data['Parent'])
-				$parent = DataObject::get_by_id('Post',
-																				Convert::raw2sql($data['Parent']));
+				$parent = DataObject::get_by_id('Post',	Convert::raw2sql($data['Parent']));
 
 			// Make sure we have this posts ID, we create the new Post in
 			// Forum::ReplyForm() now to allow us to add attachments properly.
 			// TODO This is dumb
 			if($data['PostID']) {
-				$post = DataObject::get_by_id('Post',
-																			Convert::raw2sql($data['PostID']));
+				$post = DataObject::get_by_id('Post', Convert::raw2sql($data['PostID']));
 			}
 			else {
-				user_error('A valid post was not specified. We pass the Post ID ' .
-									 'through now, creating a blank post on ReplyForm. ' .
-									 'Dumb, but necessary for uploading attachments.',
-									 E_USER_ERROR);
+				user_error(_t('Forum.NOVALIDPOST','A valid post was not specified. We pass the Post ID through now, creating a blank post on ReplyForm. Dumb, but necessary for uploading attachments.'),E_USER_ERROR);
 			}
 
-			if(isset($parent))
+			if(isset($parent)) {
 				$currentID = $parent->ID;
-			else
+			}
+			else {
 				$currentID = 0;
-
+			}
 			if(Session::get("forumInfo.{$currentID}.postvar") != null) {
 				$data = array_merge($data, Session::get("forumInfo.{$currentID}.postvar"));
 				Session::clear("forumInfo.{$currentID}.postvar");
@@ -1093,7 +1085,7 @@ JS
 		if($member)
 			$who = $member->Nickname;
 		else
-			$who = "a visitor";
+			$who = _t('Forum.VISITOR','a visitor');
 
 		$now = strftime("%Y-%m-%d %H:%M:%S", time());
 
@@ -1101,7 +1093,7 @@ JS
 			$title = new FormField("Title", ""),
 			$content = new FormField("Content", ""),
 			new HiddenField("Parent", "", $this->currentPost->ID),
-			new	FormField("Whowhen", "", "--- by " . $who . " - " . $now)
+			new	FormField("Whowhen", "", "--- " . _t('Forum.BY') . $who . " - " . $now)
 		);
 
 		$content->dontEscape = true;
@@ -1122,7 +1114,7 @@ JS
 		//$contentOK = Badwords::Moderate($_REQUEST['Content']);
 
 		/*if(!$titleOK||!$contentOK){
-			$_SESSION['ReplyForm_Preview']['message'] = 'You have used inappropriate language in your post. Please alter the words highlighted.';
+			$_SESSION['ReplyForm_Preview']['message'] = _t('Forum.WRONGLANGUAGE','You have used inappropriate language in your post. Please alter the words highlighted.') '';
 			$_SESSION['ReplyForm_Preview']['type'] = 'bad';
 		}
 		else{*/
@@ -1228,7 +1220,7 @@ JS
 	 */
 	function flat() {
 		RSSFeed::linkToFeed($this->Link("rss") . '/' . $this->urlParams['ID'],
-												"Posts to the '" . $this->Post()->Title . "' topic");
+												sprintf(_t('Forum.POSTTOTOPIC',"Posts to the '%s' topic"),$this->Post()->Title));
 
 		$SQL_id = Convert::raw2sql($this->urlParams['ID']);
 		if(is_numeric($SQL_id)) {
@@ -1260,7 +1252,7 @@ JS
       		// No information provided by the client, just return the last posts
 			$rss = new RSSFeed($this->RecentPosts($this->urlParams['ID'], 10),
 												 $this->Link(),
-												 "Forum posts to '$this->Title'", "", "Title",
+												 sprintf(_t('Forum.RSSFORUMPOSTSTO',"Forum posts to '%s'"),$this->Title), "", "Title",
 												 "RSSContent", "RSSAuthor",
 												 $data['last_created'], $data['last_id']);
 			$rss->outputToBrowser();
@@ -1289,7 +1281,7 @@ JS
 				HTTP::register_modification_timestamp($data['last_created']);
 				$rss = new RSSFeed($this->RecentPosts($this->urlParams['ID'], 50, null, $etag),
 													 $this->Link(),
-													 "Forum posts to '$this->Title'", "", "Title",
+													 sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), "", "Title",
 													 "RSSContent", "RSSAuthor", $data['last_created'],
 													 $data['last_id']);
 				$rss->outputToBrowser();
@@ -1315,7 +1307,7 @@ JS
 	 */
 	function starttopic() {
 		return array(
-			'Subtitle' => 'Start a new topic',
+			'Subtitle' => _t('Forum.NEWTOPIC','Start a new topic'),
 			'Abstract' => DataObject::get_one("ForumHolder")->ForumAbstract
 		);
 	}
@@ -1403,7 +1395,7 @@ JS
 	 */
 	function editpost() {
 	  return array(
-			'Subtitle' => 'Edit a post'
+			'Subtitle' => _t('Forum.EDITPOST','Edit a post')
 		);
 	}
 
@@ -1431,8 +1423,8 @@ JS
 														? $this->currentPost->Content
 														: "" ),
 
-				new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"?\" id=\"BBCodeHint\">View Formatting Help</a> ]</div>"),
-				new CheckboxField("TopicSubscription", "Subscribe to this topic (Receive email notifications when a new reply is added)", $subscribed),
+				new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"?\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT') . "</a> ]</div>"),
+				new CheckboxField("TopicSubscription", _t('Forum.SUBSCRIBETOPIC'), $subscribed),
 				new HiddenField("ID", "ID", ($this->currentPost)
 													? $this->currentPost->ID
 													: "" )
@@ -1460,7 +1452,7 @@ JS
 			$this->currentPost = $this->Post($this->urlParams['ID']);
 	    if(!$this->currentPost) {
 			  return array(
-			    "Content" => "<p class=\"message bad\">The current post couldn't be found in the database. Please go back to the thread you were editing and try to edit the post again. If this error persists, please email the administrator.</p>"
+			    "Content" => "<p class=\"message bad\">" . _t('Forum.POSTNOTFOUND','The current post couldn\'t be found in the database. Please go back to the thread you were editing and try to edit the post again. If this error persists, please email the administrator.') . "</p>"
 			  );
 			}
 		}
@@ -1471,7 +1463,7 @@ JS
 				Member::currentUser()->ID == $this->currentPost->AuthorID)) {
 		  return $this->EditPostForm();
 	  } else {
-	    return "You don't have the correct permissions to edit this post.";
+	    return _t('Forum.WRONGPERMISSION','You don\'t have the correct permissions to edit this post.');
 	  }
 	}
 
@@ -1491,10 +1483,7 @@ JS
 			$this->currentPost = $this->Post(Convert::raw2sql($data['ID']));
 			if(!$this->currentPost) {
 			  return array(
-			    "Content" => "<p class=\"message bad\">The current post " .
-						"couldn't be found in the database. Please go back to the " .
-						"thread you were editing and try to edit the post again. " .
-						"If this error persists, please email the administrator.</p>"
+			    "Content" => "<p class=\"message bad\">" . _t('Forum.POSTNOTFOUND') . "</p>"
 			  );
 			}
 		}
@@ -1545,9 +1534,9 @@ JS
 												 $this->currentPost->ID);
 	  } else {
 	    $messageSet = array(
-				'default' => "Enter your email address and password to edit this post.",
-				'alreadyLoggedIn' => "I'm sorry, but you can't edit this post until you've logged in.  You need to be either an administrator or the author of the post in order to edit it.",
-				'logInAgain' => "You have been logged out of the forums.  If you would like to log in again, enter a username and password below.",
+				'default' => _t('Forum.LOGINTOEDIT','Enter your email address and password to edit this post.'),
+				'alreadyLoggedIn' => _t('Forum.LOGINTOEDITLOGGEDIN','I\'m sorry, but you can\'t edit this post until you\'ve logged in.  You need to be either an administrator or the author of the post in order to edit it.'),
+				'logInAgain' => _t('Forum.LOGINAGAIN'),
 			);
 
 			Security::permissionFailure($this, $messageSet);
@@ -1571,10 +1560,7 @@ JS
 				$this->currentPost = $this->Post($this->urlParams['ID']);
 		    if(!$this->currentPost) {
 				  return array(
-				    "Content" => "<p class=\"message bad\">The current post " .
-							"couldn't be found in the database. Please go back to the " .
-							"thread you were editing and try to edit the post again. " .
-							"If this error persists, please email the administrator.</p>"
+				    "Content" => "<p class=\"message bad\">" . _t('Forum.POSTNOTFOUND') . "</p>"
 				  );
 				}
 			}
@@ -1613,8 +1599,7 @@ JS
           }
 		    }
 		    return array(
-		    	"Content" => "<p class=\"message good\">The specified thread " .
-						"was successfully deleted.</p>"
+		    	"Content" => "<p class=\"message good\">" . _t('Forum.THREADDELETED','The specified thread was successfully deleted.') . "</p>"
 		  	);
 		  } else {
 		  	Director::redirect($this->urlParams['URLSegment'] . "/flat/" .

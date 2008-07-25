@@ -23,13 +23,14 @@ class ForumAdmin extends LeftAndMain{
 			$ret .= "<ul>";
 			foreach($forums as $forum){
 				$ret .= <<<HTML
-				<li id="record-$forum->ID" class="Forum closed">Forum: $forum->Title
+				<li id="record-$forum->ID" class="Forum closed">
 HTML;
+				$ret .= _t('ForumAdmin.FORUM','Forum:') . $forum->Title; 
 				$ret .= "<ul>";
 
 				$topics = $forum->getTopicsByStatus('Moderated');
 				if($topics&&$topics->count()){
-					$ret .= "<li>Moderated Topics";
+					$ret .= "<li>" . _t('ForumAdmin.MODERATED','Moderated Topics');
 					$ret .= "<ul>";
 					foreach($topics as $topic){
 						$ret .= <<<HTML
@@ -37,7 +38,7 @@ HTML;
 						<a class="contents" href="$link
 HTML;
 						$ret .= <<<HTML
-						show/$topic->ID">Topic: $topic->Title</a>
+						show/$topic->ID"></a>
 						</li>
 HTML;
 					}
@@ -47,7 +48,7 @@ HTML;
 
 				$topics = $forum->getTopicsByStatus('Awaiting');
 				if($topics&&$topics->count()){
-					$ret .= "<li>Awaiting Topics";
+					$ret .= "<li>" . _t('ForumAdmin.AWAITING','Awaiting Topics'); 
 					$ret .= "<ul>";
 					foreach($topics as $topic){
 						$ret .= <<<HTML
@@ -55,7 +56,7 @@ HTML;
 						<a class="contents" href="$link
 HTML;
 						$ret .= <<<HTML
-						show/$topic->ID">Topic: $topic->Title</a>
+						show/$topic->ID"></a>
 						</li>
 HTML;
 					}
@@ -65,7 +66,7 @@ HTML;
 
 				$topics = $forum->getTopicsByStatus('Rejected');
 				if($topics&&$topics->count()){
-					$ret .= "<li>Rejected Topics";
+					$ret .= "<li>" . _t('ForumAdmin.REJECTED','Rejected Topics'); 
 					$ret .= "<ul>";
 					foreach($topics as $topic){
 						$ret .= <<<HTML
@@ -73,8 +74,8 @@ HTML;
 						<a class="contents" href="$link
 HTML;
 						$ret .= <<<HTML
-						show/$topic->ID">Topic: $topic->Title</a>
-						</li>
+						show/$topic->ID">$ret .= _t('ForumAdmin.TOPIC') . $topic->Title . "</a>"; 
+						$ret .= "</li>";
 HTML;
 					}
 					$ret .= "</ul>";
@@ -83,7 +84,7 @@ HTML;
 
 				$topics = $forum->getTopicsByStatus('Archived');
 				if($topics&&$topics->count()){
-					$ret .= "<li>Archived Topics";
+					$ret .= "<li>" . _t('ForumAdmin.ARCHIVED','Archived Topics'); 
 					$ret .= "<ul>";
 					foreach($topics as $topic){
 						$ret .= <<<HTML
@@ -91,7 +92,9 @@ HTML;
 						<a class="contents" href="$link
 HTML;
 						$ret .= <<<HTML
-						show/$topic->ID">Topic: $topic->Title</a>
+						show/$topic->ID">
+						$ret .= _t('ForumAdmin.TOPIC') . $topic->Title . "</a>"; 
+						$ret .= "</li>";
 						</li>
 HTML;
 					}

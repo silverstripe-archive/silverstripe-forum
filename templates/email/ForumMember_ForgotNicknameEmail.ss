@@ -1,7 +1,7 @@
-<p>Hi,</p>
+<p><% _t('HI','Hi,') %></p>
 
-<p>Here's your user name for <a href="home/">$BaseHref</a>.</p>
+<p><% sprintf(_t('MESSAGE',"Here's your user name for <a href=\"home/\">%s</a>."),$BaseHref) %></p>
 
 <p>
-Username: $Nickname<br />
+<% _t('USERNAME','Username:') %> $Nickname<br />
 </p>

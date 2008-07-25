@@ -64,7 +64,7 @@ class AttachmentField_Uploader extends Controller {
 			new FileField("Files[0]" , ""),
 			new HiddenField("action_doUpload", "", "1"),
 			new LiteralField('UploadButton',"
-				<input type='submit' value='Upload' name='action_upload' id='Form_UploadForm_action_upload' class='action' />
+				 <input type='submit' value='"._t('AttachmentField.UPLOADBUTTON','Upload')."' name='action_upload' id='Form_UploadForm_action_upload' class='action' /> 
 			"),
 			new LiteralField('MultifileCode',"
 				<div id='Form_UploadForm_FilesList'></div>
@@ -108,13 +108,13 @@ class AttachmentField_Uploader extends Controller {
 	function doUpload($data, $form) {
 		// Ensure we have an object to create
 		if(!$_GET['DestObj']) {
-			user_error("A usable destination object could not be found. Check that you've passed argument 3 to AttachmentField::__construct()", E_USER_ERROR);
+			user_error(_t('AttachmentField.NODESTOBJ','A usable destination object could not be found. Check that you\'ve passed argument 3 to AttachmentField::__construct()'), E_USER_ERROR); 
 		}
 
 		// Ensure the destination object extends File
 		$SAFE_objText = Convert::raw2sql($_GET['DestObj']);
 		if(!is_subclass_of($SAFE_objText, 'File')) {
-			user_error("'$SAFE_objText' doesn't sub-class File.", E_USER_ERROR);
+			user_error(sprintf(_t('AttachmentField.NOTSUBCLASS',"'%s'  doesn't sub-class File."),$SAFE_objText), E_USER_ERROR);
 		}
 
 		if($data['Files']) {
@@ -186,7 +186,7 @@ class AttachmentField_Uploader extends Controller {
 
 			// If no files were successfully uploaded, show an error message
 			if(!$validFile) {
-				$form->addErrorMessage('UploadButton', 'No files were uploaded, probably because of there sizes.', 'bad');
+				$form->addErrorMessage('UploadButton', _t('AttachmentField.ERRORPROBABLYSIZE','No files were uploaded, probably because of there sizes.'), 'bad'); 
 			}
 		}
 

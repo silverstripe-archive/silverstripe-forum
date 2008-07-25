@@ -1,22 +1,24 @@
 <div id="RegisterLogin">
 	<% if CurrentMember %>
-		<p>Logged in as <% if CurrentMember.Nickname %>$CurrentMember.Nickname<% else %>Anonymous<% end_if %> | <a href="Security/logout" title="Click here to log out">Log Out</a> | <a href="ForumMemberProfile/edit" title="Click here to edit your profile">My Profile</a></p>
+		<p>
+			<% _t('LOGGEDINAS','You\'re logged in as') %> <% if CurrentMember.Nickname %>$CurrentMember.Nickname<% else %>Anonymous<% end_if %> | 
+			<a href="Security/logout" title="<% _t('LOGOUTEXPLICATION','Click here to log out') %>"><% _t('LOGOUT','Log Out') %></a> | <a href="ForumMemberProfile/edit" title="<% _t('PROFILEEXPLICATION','Click here to edit your profile') %>"><% _t('PROFILE','Profile') %></a></p>
 	<% else %>
 		<p>
-			<a href="$LoginURL" title="Click here to login">Login</a> |
-			<a href="Security/lostpassword" title="Click here to retrieve your password">Forgot Password</a> |
-			<a href="ForumMemberProfile/register" title="Click here to register">Register</a>
+			<a href="$LoginURL" title="<% _t('LOGINEXPLICATION','Click here to login') %>"><% _t('LOGIN','Login') %></a> |
+			<a href="Security/lostpassword" title="<% _t('LOSTPASSEXPLICATION','Click here to retrieve your password') %>"><% _t('LOSTPASS','forgot password') %></a> |
+			<a href="ForumMemberProfile/register" title="<% _t('REGEXPLICATION','Click here to register') %>"><% _t('REGISTER','register') %></a>
 			<% if OpenIDAvailable %> |
-				<a href="ForumMemberProfile/registerwithopenid" title="Click here to register with OpenID">Register with OpenID <img src="sapphire/images/openid-small.gif" alt="Click here to register with OpenID" /></a>
-				(<a href="#" id="ShowOpenIDdesc">what is OpenID?</a>)
+				<a href="ForumMemberProfile/registerwithopenid" title="<% _t('OPENIDEXPLICATION','Click here to register with OpenID') %>">Register with OpenID <% _t('OPENID','register with OpenID') %> <img src="sapphire/images/openid-small.gif" alt="<% _t('OPENIDEXPLICATION') %></a>
+				(<a href="#" id="ShowOpenIDdesc"<% _t('WHATOPENID','What is OpenID?') %></a>)
 			<% end_if %>
 		</p>
 		<div id="OpenIDDescription" class="hide">
 	  		<span><a href="#" id="HideOpenIDdesc">X</a></span>
-			<h1>What is OpenID?</h1>
-			<p>OpenID is an Internet-wide identity system that allows you to sign in to many websites with a single account.</p>
-			<p>With OpenID, your ID becomes a URL (e.g. http://<strong>username</strong>.myopenid.com/). <a href="http://openid.net/get/">Find out how to get your own OpenID</a> for free (it's probable that you have already one).</p>
-			<p>For more information visit the <a href="http://openid.net">official OpenID site.</a></p>
+			<h1><% _t('WHATOPENIDUPPER','What is OpenID?') %></h1>
+			<p><% _t('OPENIDDESC1','OpenID is an Internet-wide identity system that allows you to sign in to many websites with a single account.') %></p>
+			<p><% _t('OPENIDDESC2','With OpenID, your ID becomes a URL (e.g. http://<strong>username</strong>.myopenid.com/). You can get a free OpenID for example from <a href="http://www.myopenid.com">myopenid.com</a>.') %></p>
+			<p><% _t('OPENIDDESC3','For more information visit the <a href="http://openid.net">official OpenID site.</a>') %></a></p>
 		</div>
 	<% end_if %>
 </div>

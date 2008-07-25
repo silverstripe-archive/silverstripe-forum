@@ -36,7 +36,7 @@ class ForumRole extends DataObjectDecorator {
 				"`Member`.`LastViewed` = `ForumMember`.`LastViewed`" .
 				"WHERE `Member`.`ID` = `ForumMember`.`ID`"
 			);
-			echo("<div style=\"padding:5px; color:white; background-color:blue;\">The data transfer has succeeded. However, to complete it, you must delete the ForumMember table. To do this, execute the query \"DROP TABLE 'ForumMember'\".</div>" );
+			echo("<div style=\"padding:5px; color:white; background-color:blue;\">" . _t('ForumRole.TRANSFERSUCCEEDED','The data transfer has succeeded. However, to complete it, you must delete the ForumMember table. To do this, execute the query \"DROP TABLE \'ForumMember\'\".') . "</div>" );
 		}
 	}
 
@@ -64,7 +64,7 @@ class ForumRole extends DataObjectDecorator {
 				'Avatar' => 'Image'
 			),
 			'defaults' => array(
-				'ForumRank' => 'Community Member'
+				'ForumRank' => _t('ForumRole.COMMEMBER','Community Member') 
 			),
 			'searchable_fields' => array(
 				'Nickname' => true
@@ -115,33 +115,31 @@ class ForumRole extends DataObjectDecorator {
 	 */
 	function getForumFields($addMode = false, $showIdentityURL = false) {
 		$fieldset = new FieldSet(
-			new HeaderField("Personal Details"),
+			new HeaderField(_t('ForumRole.PERSONAL','Personal Details')),
 
 			new LiteralField("Blurb","<p id=\"helpful\">Tick the fields to show in public profile</p>"),
 
-			new CheckableOption("UnnecessaryNicknamePublic", new TextField("Nickname", "Nickname"), true, true),
-			new CheckableOption("FirstNamePublic", new TextField("FirstName", "First name")),
-			new CheckableOption("SurnamePublic", new TextField("Surname", "Surname")),
-			new CheckableOption("OccupationPublic", new TextField("Occupation", "Occupation"), true),
-			new CheckableOption("CountryPublic", new CountryDropdownField("Country", "Country"), true),
+			new CheckableOption("UnnecessaryNicknamePublic", new TextField("Nickname", _t('ForumRole.NICKNAME','Nickname')), true, true),
+			new CheckableOption("FirstNamePublic", new TextField("FirstName", _t('ForumRole.FIRSTNAME','First name'))),
+			new CheckableOption("SurnamePublic", new TextField("Surname", _t('ForumRole.SURNAME','Surname'))),
+			new CheckableOption("OccupationPublic", new TextField("Occupation", _t('ForumRole.OCCUPATION','Occupation')), true),
+			new CheckableOption("CountryPublic", new CountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true),
 
-			new HeaderField("User Details"),
+			new HeaderField( _t('ForumRole.USERDETAILS','User Details')),
 			new CheckableOption("EmailPublic", ($addMode)
-				? new EmailField("Email", "Email")
-				: new ReadonlyField("Email", "Email")),
-			new PasswordField("Password", "Password") ,
-			new PasswordField("ConfirmPassword", "Confirm Password"),
-			new SimpleImageField("Avatar", "Upload avatar"),
-			new ReadonlyField("ForumRank", "User rating")
+				? new EmailField("Email", _t('ForumRole.EMAIL','Email'))
+				: new ReadonlyField("Email", _t('ForumRole.EMAIL'))),
+			new PasswordField("Password", _t('ForumRole.PASSWORD','Password')) ,
+			new PasswordField("ConfirmPassword", _t('ForumRole.CONFIRMPASS','Confirm Password')),
+			new SimpleImageField("Avatar", _t('ForumRole.AVATAR','Upload avatar')),
+			new ReadonlyField("ForumRank", _t('ForumRole.RATING','User rating'))
 		);
 
 		if($showIdentityURL) {
-			$fieldset->insertBefore(new ReadonlyField('IdentityURL', 'OpenID/i-name'),
+			$fieldset->insertBefore(new ReadonlyField('IdentityURL', _t('ForumRole.OPENIDINAME','OpenID/i-name')),
 															'Password');
 			$fieldset->insertAfter(new LiteralField('PasswordOptionalMessage',
-				'<p>Since you provided an OpenID respectively an i-name the ' .
-					'password is optional. If you enter one, you will be able to ' .
-					'log in also with your e-mail address.</p>'),
+				'<p>' . _t('ForumRole.PASSOPTMESSAGE','Since you provided an OpenID respectively an i-name the password is optional. If you enter one, you will be able to log in also with your e-mail address.') . '</p>'),
 				'IdentityURL');
 		}
 
@@ -158,14 +156,9 @@ class ForumRole extends DataObjectDecorator {
 			if(!$fields->dataFieldByName('Password')) $fields->insertAfter(new PasswordField("ConfirmPassword", "Confirm Password"), "Password");
 			$fields->push(new ImageField("Avatar", "Upload avatar"));
 			$fields->push(new DropdownField("ForumRank", "User rating", array(
-				"Community Member" => "Community Member",
-				"Administrator" => "Administrator",
-				"Moderator" => "Moderator",
-				"SilverStripe User" => "SilverStripe User",
-				"SilverStripe Developer" => "SilverStripe Developer",
-				"Core Development Team" => "Core Development Team",
-				"Google Summer of Code Hacker"	=> "Google Summer of Code Hacker",
-				"Lead Developer" => "Lead Developer"
+				"Community Member" => _t('ForumRole.COMMEMBER'),
+				"Administrator" => _t('ForumRole.ADMIN','Administrator'),
+				"Moderator" => _t('ForumRole.MOD','Moderator')
 			)));
 		}
 	}
@@ -194,7 +187,7 @@ class ForumRole extends DataObjectDecorator {
 	function Nickname() {
 		if($this->owner->Nickname) return $this->owner->Nickname;
 		else if($this->owner->FirstName) return $this->owner->FirstName;
-		else return "Anonymous user";
+		else return _t('ForumRole.ANONYMOUS','Anonymous user');
 	}
 }
 
