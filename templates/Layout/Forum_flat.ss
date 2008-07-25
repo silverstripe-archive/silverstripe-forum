@@ -16,7 +16,9 @@
 				<a href="#Footer" title="<% _t('CLICKGOTOEND','Click here to go the end of this post') %>"><% _t('GOTOEND','Go to End') %></a>
 			</td>
 			<td class="replyButton">
-				<a href="$ReplyLink" title="<% _t('CLICKREPLY','Click here to reply to this topic') %>"><% _t('REPLY','Reply') %></a>
+				<% if CheckForumPermissions(post) %>
+					<a href="$ReplyLink" title="<% _t('CLICKREPLY','Click here to reply to this topic') %>"><% _t('REPLY','Reply') %></a>
+				<% end_if %>
 			</td>
 		</tr>
 		
@@ -59,7 +61,9 @@
 				<a href="#Header" title="<% _t('CLICKGOTOTOP','Click here to go the top of this post') %>"><% _t('GOTOTOP','Go to Top') %></a>
 			</td>
 			<td class="replyButton">
-				<a href="$ReplyLink" title="<% _t('CLICKREPLY') %>"><% _t('REPLY') %></a>
+				<% if CheckForumPermissions(post) %>
+					<a href="$ReplyLink" title="<% _t('CLICKREPLY') %>"><% _t('REPLY') %></a>
+				<% end_if %>
 				<% if Posts.MoreThanOnePage %>
 					<% if Posts.NotLastPage %>
 						<a class="next" href="$Posts.NextLink" title="<% _t('NEXTTITLE','View the next page') %>"><% _t('NEXTLINK','Next') %> &gt;</a>

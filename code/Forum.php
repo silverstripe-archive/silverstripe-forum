@@ -14,7 +14,7 @@ class Forum extends Page {
 		"Type"=>"Enum(array('open', 'consultation'), 'open')",
 		"RequiredLogin"=>"Boolean",
 		"ForumViewers" => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers', 'Anyone')",
-		"ForumPosters" => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers', 'Anyone')",
+		"ForumPosters" => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers, NoOne', 'Anyone')",
 		"ForumViewersGroup" => "Int",
 		"ForumPostersGroup" => "Int",
 
@@ -108,9 +108,10 @@ class Forum extends Page {
 		$fields->addFieldToTab("Root.Access", new DropdownField("ForumViewersGroup", "Group", Group::map()));
 		$fields->addFieldToTab("Root.Access", new HeaderField(_t('Forum.ACCESSPOST','Who can post to the forum?'), 2));
 		$fields->addFieldToTab("Root.Access", new OptionsetField("ForumPosters", "", array(
-		  "Anyone" => _t('Forum.READANYONE'),
-		  "LoggedInUsers" => _t('Forum.READLOGGEDIN'),
-		  "OnlyTheseUsers" => _t('Forum.READLIST')
+		  	"Anyone" => _t('Forum.READANYONE'),
+		  	"LoggedInUsers" => _t('Forum.READLOGGEDIN'),
+		  	"OnlyTheseUsers" => _t('Forum.READLIST'),
+			"NoOne" => _t('Forum.READNOONE', 'Nobody. Make Forum Read Only')
 		)));
 		$fields->addFieldToTab("Root.Access", new DropdownField("ForumPostersGroup", "Group", Group::map()));
 		// TODO Abstract this to the Permission class
@@ -320,8 +321,8 @@ class Forum extends Page {
 			// Check posting permissions
 			case "post":
 				if($this->ForumPosters == "Anyone" ||
-					 ($this->ForumPosters == "LoggedInUsers" && Member::currentUser())
-					 || ($this->ForumPosters == "OnlyTheseUsers" &&
+					 ($this->ForumPosters == "LoggedInUsers" && Member::currentUser()) 
+					|| ($this->ForumPosters == "OnlyTheseUsers" &&
 					 Member::currentUser() &&
 							Member::currentUser()->isInGroup($this->ForumPostersGroup)))
 					return true;
