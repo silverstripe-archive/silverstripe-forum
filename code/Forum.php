@@ -257,12 +257,15 @@ class Forum extends Page {
 			$statusFilter = "`Post`.Status = 'Moderated'";
 		}
 		
-		if(isset($_GET['start']) && is_numeric($_GET['start'])) $limit = Convert::raw2sql($_GET['start']) . ", 30";
-		else $limit = 30;
-			
-		return DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and $statusFilter", "PostList.Created DESC",
-		         "INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $limit
+		if(isset($_GET['start']) && is_numeric($_GET['start'])) $start = Convert::raw2sql($_GET['start']) ;
+		else $start = 0;
+		$posts = DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and $statusFilter", "PostList.Created DESC",
+		         "INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $start.',10'
 		      );
+		if($posts) {
+			$posts->setPageLength(2);
+		}
+		return $posts;
 	}
 
 
@@ -464,7 +467,7 @@ JS
 
 	/**
 	 * Deletes any post where `Title` IS NULL and `Content` IS NULL -
-	 * these will be posts that have been created by the ReplyForm method
+	 * these will be posts that have been created by the ' method
 	 * but not modified by the postAMessage method.
 	 *
 	 * Has a time limit - posts can exist in this state for 24 hours
@@ -876,9 +879,7 @@ JS
 
 		// Check if we can attach files to this forum's posts
 		if($this->canAttach()) {
-			$fields->push($attachmentField = new AttachmentField("PostAttachment",
-																													 "Upload Files",
-																													 "Post_Attachment"));
+			$fields->push($attachmentField = new AttachmentField("PostAttachment", "Upload Files","Post_Attachment"));
 			$attachmentField->setExtraData(array(
 				// TODO Fix this!
 				"PostID" => $post->ID
