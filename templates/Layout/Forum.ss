@@ -45,7 +45,7 @@
 				<% end_control %>
 			<% else %>
 				<tr>
-					<td colspan="3" class="forumCategory">><% _t('NOTOPICS','There are no topics in this forum, ') %><a href="{$Link}starttopic" title="<% _t('NEWTOPIC') %>"><% _t('NEWTOPICTEXT','click here to start a new topic') %>.</td>
+					<td colspan="3" class="forumCategory"><% _t('NOTOPICS','There are no topics in this forum, ') %><a href="{$Link}starttopic" title="<% _t('NEWTOPIC') %>"><% _t('NEWTOPICTEXT','click here to start a new topic') %>.</td>
 				</tr>
 			<% end_if %>
 		</table>
