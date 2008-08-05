@@ -106,6 +106,8 @@ class ForumHolder_Controller extends Page_Controller {
 	/**
 	 * Get the forum holders' subtitle
 	 *
+	 * @TODO why is this defined when you can use HolderSubtitle?
+	 * 
 	 * @return string Returns the holders' subtitle
 	 */
 	function getSubtitle() {
@@ -116,6 +118,8 @@ class ForumHolder_Controller extends Page_Controller {
 	/**
 	 * Get the forum holders' abstract
 	 *
+	 * @TODO why is this defined when you can use HolderAbstract?
+	 * 
 	 * @return string Returns the holders' abstract
 	 */
 	function getAbstract() {
