@@ -377,6 +377,8 @@ class ForumHolder_Controller extends Page_Controller {
 
 	/**
 	 * Get the URL segment
+	 * 
+	 * @TODO Why this is explicitly defined?
 	 */
 	function URLSegment() {
 		return $this->URLSegment;
