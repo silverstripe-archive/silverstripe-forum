@@ -55,7 +55,7 @@ class Forum extends Page {
 			$group->write();
 
 			Permission::grant( $group->ID, $code );
-			atabase::alteration_message(_t('Forum.GROUPCREATED','Forum Members group created'),"created"); 
+			Database::alteration_message(_t('Forum.GROUPCREATED','Forum Members group created'),"created"); 
 		}
 		else if(DB::query(
 			"SELECT * FROM Permission WHERE `GroupID` = '$forumGroup->ID' AND `Code` LIKE '$code'")
