@@ -769,3 +769,46 @@ form .BBCodeHint {
 		color: #000000;
 		text-decoration: underline;
 	}
+/* ----------------------------
+ MEMBERS LIST STYLING
+----------------------------- */
+
+#MembersList {
+	font-size: 11px;
+	width: 100%;
+	border-collapse: collapse;
+}
+	#MembersList tr {
+		background: #fff;
+	}
+		#MembersList tr.odd {
+			background: #F5F5F5;
+		}
+			#MembersList tr td {
+				border: 1px solid #E3E3E3;
+			}
+		#MembersList tr:hover,
+		#MembersList tr.odd:hover {
+			background: #e2f3fa;
+			cursor: pointer;
+		}
+		#MembersList tr.head {
+			background: none;
+		}
+
+	#MembersList th {
+		font-weight: bold;
+		font-size: 11px;
+		padding: 4px 4px;
+	}
+	#MembersList td {
+		padding: 5px;
+	}
+			#MembersList td.numericField {
+				text-align: center;
+			}
+	#ForumMembersPagination p {
+		text-align: center;
+		font-size: 1.3em;
+		margin-top: 1em;
+	}

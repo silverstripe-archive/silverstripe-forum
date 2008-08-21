@@ -62,7 +62,46 @@ class ForumHolder_Controller extends Page_Controller {
 		RSSFeed::linkToFeed($this->Link("rss"), "Posts to all forums");
 		parent::init();
 	}
+	/** 
+	 * Generate a complete list of all the members data
+	 * 
+	 * @return DataObjectSet A DataObjectSet of all the members which are signed up
+	 */
+	function memberlist() {
+		// If sort has been defined then save it as in the session
+		$order = (isset($_GET['order'])) ? $_GET['order']: "";
+		if(!isset($_GET['start']) || !is_numeric($_GET['start']) || (int)$_GET['start'] < 1) 
+			$_GET['start'] = 0;
+		$SQL_start = (int)$_GET['start'];
 
+		switch($order) {
+			case "joined":
+				$members = DataObject::get("Member", "`Member`.Nickname != 'NULL'","`Member`.Created ASC", "", "{$SQL_start},100");
+			break;
+			case "name":
+				$members = DataObject::get("Member", "`Member`.Nickname != 'NULL'","`Member`.Nickname ASC","","{$SQL_start},100");
+			break;
+			case "country":
+				$members = DataObject::get("Member", "`Member`.Nickname != 'NULL' AND `Member`.CountryPublic = TRUE","`Member`.Country ASC","","{$SQL_start},100");
+			break;
+			case "posts": 
+				$query = singleton('Member')->extendedSQL("`Member`.Nickname != 'NULL'","NumPosts DESC", "{$SQL_start},100");
+				$query->select[] = "(SELECT COUNT(*) FROM `Post` WHERE `Post`.AuthorID = `Member`.ID) AS NumPosts";
+				$records = $query->execute();
+				$members = singleton('Member')->buildDataObjectSet($records, 'DataObjectSet', $query, 'Member');
+				$members->parseQueryLimit($query);
+			break;
+			default:
+				$members = DataObject::get("Member", "`Member`.Nickname != 'NULL'","","","{$SQL_start},100");
+			break;
+		}
+		return array(
+			"Subtitle" => "Member List", 
+			"Abstract" => $this->MemberListAbstract,
+			"Members" => $members,
+			"Title" => "Member List"
+		);
+	}
 
 	/**
 	 * Is OpenID support available?

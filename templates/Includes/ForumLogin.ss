@@ -10,7 +10,7 @@
 			<a href="ForumMemberProfile/register" title="<% _t('REGEXPLICATION','Click here to register') %>"><% _t('REGISTER','register') %></a>
 			<% if OpenIDAvailable %> |
 				<a href="ForumMemberProfile/registerwithopenid" title="<% _t('OPENIDEXPLICATION','Click here to register with OpenID') %>">Register with OpenID <% _t('OPENID','register with OpenID') %> <img src="sapphire/images/openid-small.gif" alt="<% _t('OPENIDEXPLICATION') %>"/></a>
-				(<a href="#" id="ShowOpenIDdesc"<% _t('WHATOPENID','What is OpenID?') %></a>)
+				(<a href="#" id="ShowOpenIDdesc"><% _t('WHATOPENID','What is OpenID?') %></a>)
 			<% end_if %>
 		</p>
 		<div id="OpenIDDescription" class="hide">
