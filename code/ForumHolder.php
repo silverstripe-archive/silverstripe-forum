@@ -240,11 +240,11 @@ class ForumHolder_Controller extends Page_Controller {
 
 		// Search for authors
 		$SQL_queryParts = split(' +', trim($SQL_query));
-		foreach($SQL_queryParts as $SQL_queryPart) {
-			$SQL_clauses[] = "FirstName LIKE '%$SQL_queryPart%' OR Surname LIKE '%$SQL_queryPart'";
+		foreach( $SQL_queryParts as $SQL_queryPart ) { 
+			$SQL_clauses[] = "FirstName LIKE '%$SQL_queryPart%' OR Surname LIKE '%$SQL_queryPart' OR Nickname LIKE '%$SQL_queryPart'";
 		}
 
-		$potentialAuthors = DataObject::get("Member", implode(" OR ", $SQL_clauses));
+		$potentialAuthors = DataObject::get("Member", implode(" OR ", $SQL_clauses), 'ID ASC');
 		$SQL_authorClause = '';
 		if($potentialAuthors) {
 			foreach($potentialAuthors as $potentialAuthor)
@@ -258,10 +258,10 @@ class ForumHolder_Controller extends Page_Controller {
 			$_GET['start'] = 0;
 
 		return DataObject::get("Post",
-			"MATCH (Title, Content) AGAINST ('$SQL_query') $SQL_authorClause",
-			"MATCH (Title, Content) AGAINST ('$SQL_query') DESC",
-			"",
-			(int)$_GET['start'] . ', 10');
+		         "MATCH (Title, Content) AGAINST ('$SQL_query' IN BOOLEAN MODE) $SQL_authorClause",
+		         "MATCH (Title, Content) AGAINST ('$SQL_query')",
+		         "",
+		         (int)$_GET['start'] . ', 10');
 	}
 
 

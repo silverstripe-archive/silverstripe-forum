@@ -15,5 +15,5 @@ MemberTableField::addMembershipFields( array(
 	"ForumRank" => "ForumRank"
 	));
 	
-//File::setMaxFileSize("100000", "100000", '*');
+File::setMaxFileSize("100000", "100000", '*');
 ?>

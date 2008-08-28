@@ -255,8 +255,8 @@ class Forum extends Page {
 			$statusFilter = "`Post`.Status = 'Moderated'";
 		}
 		
-		if(isset($_GET['start']) && is_numeric($_GET['start'])) $start = Convert::raw2sql($_GET['start']) ;
-		else $start = 0;
+		$start = (isset($_GET['start']) && is_numeric($_GET['start'])) ? $_GET['start'] : 0;
+		
 		$posts = DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and $statusFilter", "PostList.Created DESC",
 		         "INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $start.',10'
 		      );
@@ -358,6 +358,10 @@ class Forum_Controller extends Page_Controller {
 	 */
 	static $lastForumAccessed;
 
+	/**
+	 * Current Post
+	 */
+	private $currentPost;
 
 	/**
 	 * Return a list of all top-level topics in this forum
@@ -410,7 +414,6 @@ JS
 		}
 
 		Requirements::css("jsparty/tree/tree.css");
-
 		Requirements::themedCSS('Forum');
 
 		RSSFeed::linkToFeed($this->Link("rss"), sprintf(_t('Forum.RSSFORUM',"Posts to the '%s' forum"),$this->Title)); 
@@ -419,7 +422,6 @@ JS
 		if(Director::is_ajax())
 			ContentNegotiator::allowXHTML();
 	}
-
 
 	/**
 	 * Is OpenID support available?
@@ -462,7 +464,7 @@ JS
 
 	/**
 	 * Deletes any post where `Title` IS NULL and `Content` IS NULL -
-	 * these will be posts that have been created by the ' method
+	 * these will be posts that have been created by the method
 	 * but not modified by the postAMessage method.
 	 *
 	 * Has a time limit - posts can exist in this state for 24 hours
@@ -549,54 +551,6 @@ JS
 	}
 
 	/**
-	 * Return the topic flat list of all threads under the root
-	 *
-	 * @param int $postID ID of the posting or NULL if the URL parameter ID
-	 *                    should be used
-	 * @return string Returns the HTML code of the topic list
-	 */
-	function TopicTree_Flat($postID = null) {
-		if($postID == null)
-			$postID = $this->urlParams['ID'];
-
-		if($postID && ($post = $this->Post($postID))) {
-			if(!$post->TopicID)
-				user_error(sprintf(_t('Forum.NOTOPICID',"Post #%s doesn't have a Topic ID"),$postID), E_USER_ERROR);
-
-			$root = $this->Root($postID);
-
-			if(!$root)
-				user_error(sprintf(_t('Forum.NOTFOUND',"Topic #%s can't be found."),$post->TopicID), E_USER_ERROR);
-
-			if(!Director::is_ajax())
-				$root = $post;
-
-			if($this->Moderator() == Member::currentUser()) {
-				$subFlatNodes = DataObject::get("Post",
-					"TopicID = $root->TopicID and ParentID <> 0 and (Status = 'Moderated' or Status = 'Awaiting')");
-			} else {
-				$subFlatNodes = DataObject::get("Post",
-					"TopicID = $root->TopicID and ParentID <> 0 and Status = 'Moderated'");
-			}
-
-			$subTree = "<ul id=\"childrenof-$root->ID\" class=\"Root tree\">";
-			foreach($subFlatNodes as $node) {
-				$subTree .= "<li id=\"post-$node->ID\" class=\"$node->class $node->Status\">";
-				$subTree .= "<a title=\"" . _t('Forum.BY','by') . " " . $node->AuthorFullName() .
-					" - $node->Created\" href=\"" . $node->Link() .
-					"\">$node->Title</a></li>";
-			}
-			$subTree .= "</ul>";
-			$subTree .= ($subTree)
-				? $this->CheckboxForMode()
-				: "";
-
-			return $subTree;
-		}
-	}
-
-
-	/**
 	 * Get the link for the "start topic" action
 	 *
 	 * @return string Link for the start topic action
@@ -604,21 +558,6 @@ JS
 	function StartTopicLink(){
 		return Director::Link($this->URLSegment, 'starttopic');
 	}
-
-
-	/**
-	 * Get a checkbox for mode
-	 *
-	 * @return string Returns the HTML code for a checkbox to change the forum
-	 *                mode (flat <-> threaded).
-	 */
-	function CheckboxForMode(){
-		if(Session::get('forumInfo.mode') == 'threaded')
-			return '<div id="Mode">' . _t('Forum.ARRANGEDLATEST','Arranged By: Latest on Top') . ' <input name="Mode" type="checkbox" value="flat" /></div>';
-		else
-			return '<div id="Mode">' . _t('Forum.ARRANGEDCONVERSTATION','Arranged By: Converstation') . ' <input name="Mode" type="checkbox" value="threaded" /></div>';
-	}
-
 
 	/**
 	 * Get the view mode
@@ -765,9 +704,7 @@ JS
 	 * @return bool Returns TRUE if there are new posts available, otherwise
 	 *              FALSE.
 	 */
-	public function NewPostsAvailable($lastVisit, $lastPostID,
-																		$topicID = null, array
-																		&$data = null) {
+	public function NewPostsAvailable($lastVisit, $lastPostID,$topicID = null, array &$data = null) {
 		if(is_numeric($topicID)) {
 			$SQL_topicID = Convert::raw2sql($topicID);
 			$filter =  "AND TopicID = '$SQL_topicID'";
@@ -866,7 +803,7 @@ JS
 		$fields = new FieldSet(
 			new TextField("Title", "Title", $this->currentPost ? "Re: " . $this->currentPost->Title : "" ),
 			new TextareaField("Content", "Content"),
-			new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"?\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT','View Formatting Help') . "</a> ]</div>"),
+			new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"#BBTagsHolder\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT','View Formatting Help') . "</a> ]</div>"),
 			new CheckboxField("TopicSubscription", _t('Forum.SUBSCRIBETOPIC','Subscribe to this topic (Receive email notifications when a new reply is added)'), $subscribed),
 			new HiddenField("Parent", "", $this->currentPost ? $this->currentPost->ID : "" ),
 			new HiddenField("PostID", "", $post->ID)
@@ -1135,9 +1072,7 @@ JS
 		$post = $this->Post($id);
 		return $post->renderWith('PostDetail');
 	}
-
-
-	private $currentPost;
+	
 	/**
 	 * Return a replyform to the ajax handler that called it.
 	 * Contains form.innerHTML; doesn't include the form tag itself.
@@ -1202,26 +1137,12 @@ JS
 		return $this->Link() . "reply/" . $this->urlParams['ID'];
 	}
 
-
 	/**
-	 * Show will redirect to flat
+	 * Show will get the selected post
+	 * @return Array array of options.
 	 */
 	function show() {
-		$url = $this->Link() . 'flat/' . $this->urlParams['ID'];
-		if(isset($_REQUEST['showPost']))
-			$url .= '?showPost=' . $_REQUEST['showPost'];
-		Director::redirect($url);
-	}
-
-
-	/**
-	 * "Flat" display mode
-	 *
-	 * @return array Returns an empty array
-	 */
-	function flat() {
-		RSSFeed::linkToFeed($this->Link("rss") . '/' . $this->urlParams['ID'],
-												sprintf(_t('Forum.POSTTOTOPIC',"Posts to the '%s' topic"),$this->Post()->Title));
+		RSSFeed::linkToFeed($this->Link("rss") . '/' . $this->urlParams['ID'],sprintf(_t('Forum.POSTTOTOPIC',"Posts to the '%s' topic"),$this->Post()->Title));
 
 		$SQL_id = Convert::raw2sql($this->urlParams['ID']);
 		if(is_numeric($SQL_id)) {
@@ -1231,8 +1152,15 @@ JS
 		}
 		return array();
 	}
-
-
+	
+	/**
+	 * @deprecated We have removed flat / tree views
+	 */
+	function flat() {
+		return new user_error("Flat and Tree options have been similified to just flat view", E_USER_ERROR);
+	}
+	
+	
 	/**
 	 * Get the RSS feed
 	 *
@@ -1424,7 +1352,7 @@ JS
 														? $this->currentPost->Content
 														: "" ),
 
-				new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"?\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT') . "</a> ]</div>"),
+				new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"?#BBTagsHolder\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT') . "</a> ]</div>"),
 				new CheckboxField("TopicSubscription", _t('Forum.SUBSCRIBETOPIC'), $subscribed),
 				new HiddenField("ID", "ID", ($this->currentPost)
 													? $this->currentPost->ID
@@ -1623,15 +1551,13 @@ JS
 		return DataObject::get("Member", "", "`Member`.`ID` DESC", "", 1);
 	}
 
-
 	/**
 	 * Get a list of currently online users (last 15 minutes)
 	 */
 	function CurrentlyOnline() {
-		return DataObject::get("Member", "LastVisited > NOW() - INTERVAL 15 MINUTE", "FirstName, Surname",
+		return DataObject::get("Member", "LastVisited > NOW() - INTERVAL 15 MINUTE", "Nickname",
 			"INNER JOIN Group_Members ON Group_Members.GroupID IN (1,2,3) AND Group_Members.MemberID = Member.ID");
 	}
-
 
 	/**
 	 * Can we attach files to topics/posts inside this forum?
@@ -1642,7 +1568,6 @@ JS
 	function canAttach() {
 		return $this->CanAttachFiles ? true : false;
 	}
-
 
 	/**
 	 * Get the forum holder's URL segment
