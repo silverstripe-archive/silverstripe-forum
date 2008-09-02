@@ -370,8 +370,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return bool Returns TRUE if there are new posts available, otherwise
 	 *              FALSE.
 	 */
-	public function NewPostsAvailable($lastVisit, $lastPostID,
-																		array &$data = null) {
+	public function NewPostsAvailable($lastVisit, $lastPostID,array &$data = null) {
 		$version = DB::query("SELECT max(ID) as LastID, max(Created) " .
 			"as LastCreated FROM Post")->first();
 

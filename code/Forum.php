@@ -261,8 +261,6 @@ class Forum extends Page {
 		         "INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $start.',10'
 		      );
 		$posts->groupBy("`Post`.ForumID");
-		Debug::show($posts->TotalItems());
-		Debug::show($posts->UL());
 		return $posts;
 	}
 

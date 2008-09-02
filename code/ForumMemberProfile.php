@@ -66,7 +66,16 @@ class ForumMemberProfile extends Page_Controller {
 		Director::redirect('Security/login');
 	}
 
-
+	function logout() {
+		if($member = Member::currentUser())
+			$member->logOut();
+		$returnTo = DataObject::get_one("ForumHolder");
+		if($returnTo)
+			return Director::redirect(Director::absoluteBaseURL().$returnTo->URLSegment);
+		else {
+			return Director::redirectBack();
+		}
+	}
  	/**
  	 * Get the latest 10 posts by this member
  	 */
