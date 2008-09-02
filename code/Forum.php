@@ -261,7 +261,7 @@ class Forum extends Page {
 		         "INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $start.',10'
 		      );
 		// @TODO work out why pagination is not working #2248 (looks like $this->TotalItems() doesnt return correctly)
-		return ($posts) ? $posts : false ;
+		return $posts;
 	}
 
 
@@ -369,7 +369,6 @@ class Forum_Controller extends Page_Controller {
 	function init() {
 		//if($this->action == 'rss') Security::use_base_auth_for_regular_login();
 		parent::init();
-		
 		if(Director::redirected_to()) return;
 		
  	  	if(!$this->CheckForumPermissions("view")) {
@@ -658,15 +657,13 @@ JS
 	/**
 	 * Return recent posts in this forum or topic
 	 *
-	 * @param int $topicID ID of the relevant topic (set to NULL for all
-	 *                     topics)
+	 * @param int $topicID ID of the relevant topic (set to NULL for all topics)
 	 * @param int $limit Max. number of posts to return
 	 * @param int $lastVisit Optional: Unix timestamp of the last visit (GMT)
 	 * @param int $lastPostID Optional: ID of the last read post
 	 * @return DataObjectSet Returns the posts.
 	 */
-	function RecentPosts($topicID = null, $limit = null, $lastVisit = null,
-											 $lastPostID = null) {
+	function RecentPosts($topicID = null, $limit = null, $lastVisit = null, $lastPostID = null) {
 		if($topicID) {
 			$SQL_topicID = Convert::raw2sql($topicID);
 			$filter =  " AND TopicID = '$SQL_topicID'";
@@ -686,8 +683,7 @@ JS
 		if($lastPostID)
 			$filter .= " AND ID > $lastPostID";
 
-		return DataObject::get("Post", "ForumID = '$this->ID' $filter",
-													 "Created DESC", "", $limit);
+		return DataObject::get("Post", "ForumID = '$this->ID' $filter", "Created DESC", "", $limit);
 	}
 
 
@@ -934,7 +930,6 @@ JS
 			// LastEdited internally
 			DB::query("UPDATE Post SET Created = LastEdited WHERE ID = '$post->ID'");
 
-			// MDP 2007-03-24 Added thread subscription
 			// Send any notifications that need to be sent
 			Post_Subscription::notify($post);
 
@@ -1253,13 +1248,17 @@ JS
 
 
 	/**
-	 * Get the forum holders' abstract
+	 * Get the forum holders' abstract. Must cast it to HTMLText to keep links and 
+	 * formatting in tack
 	 *
 	 * @return string Returns the holders' abstract
 	 * @see ForumHolder::getAbstract()
 	 */
 	function getAbstract() {
-		return DataObject::get_one("ForumHolder")->HolderAbstract;
+		$abstract = DataObject::get_one("ForumHolder")->HolderAbstract;
+		$output = new HTMLText('Abstract');
+		$output->setValue($abstract);
+		return $output;
 	}
 
 

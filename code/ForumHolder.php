@@ -200,7 +200,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 * Get the forums
 	 */
 	function Forums() {
-		return DataObject::get("Forum");
+	 	return DataObject::get("Forum");
 	}
 
 
@@ -336,8 +336,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @param int $lastVisit Optional: Unix timestamp of the last visit (GMT)
 	 * @param int $lastPostID Optional: ID of the last read post
 	 */
-	function RecentPosts($limit = null, $lastVisit = null,
-											 $lastPostID = null) {
+	function RecentPosts($limit = null, $lastVisit = null, $lastPostID = null) {
 		$filter = "TopicID > 0";   
 		
 		if($lastVisit)

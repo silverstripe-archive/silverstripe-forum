@@ -7,7 +7,7 @@
 				<th class="odd"><% _t('POSTS','Posts') %></th>
 				<th class="even"><% _t('LASTPOST','Last Post') %></th>
 			</tr>
-			<% control AllChildren %>
+			<% control Children %>
 				<% if CheckForumPermissions %>
 					<tr class="$EvenOdd">
 						<td class="forumCategory odd">
