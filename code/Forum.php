@@ -260,7 +260,9 @@ class Forum extends Page {
 		$posts = DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and $statusFilter", "PostList.Created DESC",
 		         "INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $start.',10'
 		      );
-		// @TODO work out why pagination is not working #2248 (looks like $this->TotalItems() doesnt return correctly)
+		$posts->groupBy("`Post`.ForumID");
+		Debug::show($posts->TotalItems());
+		Debug::show($posts->UL());
 		return $posts;
 	}
 
@@ -1375,24 +1377,22 @@ JS
 	 * @todo Add some nicer default CSS for this form into forum/css/Forum.css
 	 */
 	function EditForm() {
-	  // Get the current post if we haven't found it yet
-	  if(!$this->currentPost){
+		// Get the current post if we haven't found it yet
+	  	if(!$this->currentPost){
 			$this->currentPost = $this->Post($this->urlParams['ID']);
-	    if(!$this->currentPost) {
-			  return array(
-			    "Content" => "<p class=\"message bad\">" . _t('Forum.POSTNOTFOUND','The current post couldn\'t be found in the database. Please go back to the thread you were editing and try to edit the post again. If this error persists, please email the administrator.') . "</p>"
-			  );
+	    	if(!$this->currentPost) {
+			  	return array(
+			    	"Content" => "<p class=\"message bad\">" . _t('Forum.POSTNOTFOUND','The current post couldn\'t be found in the database. Please go back to the thread you were editing and try to edit the post again. If this error persists, please email the administrator.') . "</p>"
+			  	);
 			}
 		}
 
 		// User authentication
-	  if(Member::currentUser() &&
-			 (Member::currentUser()->isAdmin() ||
-				Member::currentUser()->ID == $this->currentPost->AuthorID)) {
-		  return $this->EditPostForm();
-	  } else {
-	    return _t('Forum.WRONGPERMISSION','You don\'t have the correct permissions to edit this post.');
-	  }
+	  	if(Member::currentUser() && (Member::currentUser()->isAdmin() || Member::currentUser()->ID == $this->currentPost->AuthorID)) {
+			return $this->EditPostForm();
+	  	} else {
+	    	return _t('Forum.WRONGPERMISSION','You don\'t have the correct permissions to edit this post.');
+	  	}
 	}
 
 
@@ -1417,17 +1417,15 @@ JS
 		}
 
 		// User authentication
-	  if(Member::currentUser() &&
-			 (Member::currentUser()->_isAdmin() ||
-				Member::currentUser()->ID == $this->currentPost->AuthorID)) {
-		  // Convert the values to SQL-safe values
-	    $data['ID'] = Convert::raw2sql($data['ID']);
-		  $data['Title'] = Convert::raw2sql($data['Title']);
-	    $data['Content'] = Convert::raw2sql($data['Content']);
+		if(Member::currentUser() && (Member::currentUser()->_isAdmin() || Member::currentUser()->ID == $this->currentPost->AuthorID)) {
+			// Convert the values to SQL-safe values
+	    	$data['ID'] = Convert::raw2sql($data['ID']);
+		  	$data['Title'] = Convert::raw2sql($data['Title']);
+	    	$data['Content'] = Convert::raw2sql($data['Content']);
 
-	    // Save form data into the post
-	    $form->saveInto($this->currentPost);
-	    $this->currentPost->write();
+	    	// Save form data into the post	
+	    	$form->saveInto($this->currentPost);
+	    	$this->currentPost->write();
 
 			if($data['ID'])
 				$post = DataObject::get_by_id('Post', Convert::raw2sql($data['ID']));
@@ -1482,62 +1480,58 @@ JS
 	 *               anything but redirect the user to the login page.
 	 */
 	function deletepost() {
-	  if(Member::currentUser() && Member::currentUser()->isAdmin()) {
-		  // Get the current post if we haven't found it yet
-		  if(!$this->currentPost) {
+		if(Member::currentUser() && Member::currentUser()->isAdmin()) {
+			// Get the current post if we haven't found it yet
+		  	if(!$this->currentPost) {
 				$this->currentPost = $this->Post($this->urlParams['ID']);
-		    if(!$this->currentPost) {
-				  return array(
-				    "Content" => "<p class=\"message bad\">" . _t('Forum.POSTNOTFOUND') . "</p>"
-				  );
+		    	if(!$this->currentPost) {
+					return array(
+				    	"Content" => "<p class=\"message bad\">" . _t('Forum.POSTNOTFOUND') . "</p>"
+					);
 				}
 			}
 
-	    // Delete the post in question
-      if($this->currentPost) {
-      	// Delete attachments (if any) from this post
-      	if($attachments = $this->currentPost->Attachments()) {
-      		foreach($attachments as $file) {
-      			$file->delete();
-      			$file->destroy();
+	    	// Delete the post in question
+      		if($this->currentPost) {
+      			// Delete attachments (if any) from this post
+      			if($attachments = $this->currentPost->Attachments()) {
+      				foreach($attachments as $file) {
+      					$file->delete();
+      					$file->destroy();
+      				}
+      			}
+
+      			$this->currentPost->delete();
       		}
-      	}
 
-      	$this->currentPost->delete();
-      }
-
-		  // Also, delete any posts where this post was the parent (that is,
+		  	// Also, delete any posts where this post was the parent (that is,
 			// $this->currentPost is the first post in a thread
-		  if($this->currentPost && $this->currentPost->ParentID == 0) {
-		    $dependentPosts = DataObject::get("Post",
-					"`Post`.`TopicID` = '" .
-					Convert::raw2sql($this->currentPost->OldID) . "'");
-		    if($dependentPosts) {
-          foreach($dependentPosts as $post) {
-            // Delete attachments (if any) from this post
-		      	if($attachments = $post->Attachments()) {
-		      		foreach($attachments as $file) {
-		      			$file->delete();
-		      			$file->destroy();
-		      		}
-		      	}
+		  	if($this->currentPost && $this->currentPost->ParentID == 0) {
+	    		$dependentPosts = DataObject::get("Post","`Post`.`TopicID` = '" .Convert::raw2sql($this->currentPost->OldID) . "'");
+		    	if($dependentPosts) {
+          			foreach($dependentPosts as $post) {
+            			// Delete attachments (if any) from this post
+		      			if($attachments = $post->Attachments()) {
+		      				foreach($attachments as $file) {
+		      					$file->delete();
+		      					$file->destroy();
+		      				}
+		      			}
 
-		      	// Delete the post
-            $post->delete();
-          }
-		    }
-		    return array(
-		    	"Content" => "<p class=\"message good\">" . _t('Forum.THREADDELETED','The specified thread was successfully deleted.') . "</p>"
-		  	);
-		  } else {
-		  	Director::redirect($this->urlParams['URLSegment'] . "/flat/" .
-													 $this->currentPost->TopicID . "/");
-		  }
-
-	  } else {
-     	Session::set("BackURL", $this->Link());
-	    Director::redirect("Security/login");
-	  }
+		      			// Delete the post
+            			$post->delete();
+          			}
+		    	}	
+		    	return array(
+		    		"Content" => "<p class=\"message good\">" . _t('Forum.THREADDELETED','The specified thread was successfully deleted.') . "</p>"
+		  		);
+		  	} else {
+		  		Director::redirect($this->urlParams['URLSegment'] . "/show/" .$this->currentPost->TopicID . "/");
+		  	}
+	  	} else {
+     		Session::set("BackURL", $this->Link());
+	    	Director::redirect("Security/login");
+	  	}
 	}
 
 
