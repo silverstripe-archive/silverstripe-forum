@@ -2,6 +2,10 @@
 	<% include ForumHeader %>
 
 	$Content
+	<% if ForumAdminMsg %>
+		<p id="ForumAdminMsg">$ForumAdminMsg</p>
+	<% end_if %>
+	
 	<% if ForumPosters = NoOne %>
 		<p class="message error"><% _t('READONLYFORUM', 'This Forum is read only. You cannot post replies or start new threads') %></p>
 	<% end_if %>

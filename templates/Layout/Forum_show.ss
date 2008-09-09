@@ -72,4 +72,12 @@
 			</td>
 		</tr>
 	</table>
+	
+	<% if isAdmin %>
+		<div class="clear"><!-- --></div>
+		<div id="ForumAdminFeatures">
+			<h3>Forum Admin Features</h3>
+			$MoveThreadForm
+		</div>
+	<% end_if %>
 <% include ForumFooter %>

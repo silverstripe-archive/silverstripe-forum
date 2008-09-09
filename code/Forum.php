@@ -255,13 +255,12 @@ class Forum extends Page {
 			$statusFilter = "`Post`.Status = 'Moderated'";
 		}
 		
-		$start = (isset($_GET['start']) && is_numeric($_GET['start'])) ? $_GET['start'] : 0;
-		
-		$posts = DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and $statusFilter", "PostList.Created DESC",
-		         "INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $start.',10'
-		      );
-		$posts->groupBy("`Post`.ForumID");
-		return $posts;
+		if(isset($_GET['start']) && is_numeric($_GET['start'])) $limit = Convert::raw2sql($_GET['start']) . ", 30";
+		else $limit = 30;
+			
+		return DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and $statusFilter", "max(PostList.Created) DESC",
+			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $limit
+		);
 	}
 
 
@@ -275,38 +274,6 @@ class Forum extends Page {
 	function hasChildren() {
 		return $this->NumPosts();
 	}
-
-	function getChildrenAsUL($attributes = "", $titleEval = '"<li>" . $child->Title',
-													 $extraArg = null, $limitToMarked = false,
-													 $rootCall = false){
-		if($limitToMarked && $rootCall) {
-			$this->markingFinished();
-		}
-
-		$children = $this->Topics();
-		if($children) {
-			if($attributes) {
-				$attributes = " $attributes";
-			}
-
-			$output = "<ul$attributes>\n";
-			foreach($children as $child) {
-				if(!$limitToMarked || $child->isMarked()) {
-					$foundAChild = true;
-					$output .= eval("return $titleEval;") . "\n" .
-					$child->getChildrenAsUL("", $titleEval, $extraArg, false, false) . "</li>\n";
-				}
-			}
-
-			$output .= "</ul>\n";
-		}
-
-		if(isset($foundAChild) && $foundAChild) {
-			return $output;
-		}
-	}
-
-
 
 	/**
 	 * Checks to see if the currently logged in user has a certain permissions
@@ -1322,7 +1289,7 @@ JS
 	 * @return array Returns an array to render the edit post page
 	 */
 	function editpost() {
-	  return array(
+		return array(
 			'Subtitle' => _t('Forum.EDITPOST','Edit a post')
 		);
 	}
@@ -1565,6 +1532,56 @@ JS
 	 */
 	function ForumHolderURLSegment() {
 		return DataObject::get_by_id("ForumHolder", $this->ParentID)->URLSegment;
+	}
+	
+	/**
+	 * Return true if user is admin
+	 */
+	function isAdmin() {
+		return (Member::currentUser() && Member::currentUser()->isAdmin()) ? true : false;
+	}
+	
+	/** 
+	 * Move thread form. Handles the dropdown to select the new forum category
+	 * @return Form
+	 */
+	function MoveThreadForm() {
+		$forums = DataObject::get("Forum", "`Forum`.ID != '$this->ID'");
+		$fields = new FieldSet(
+			new DropdownField("NewForum", "Move Thread. Select The New Forum: ", $forums->toDropDownMap()),
+			new HiddenField("Topic", "Topic", Convert::raw2sql(Director::urlParam('ID')))
+		);
+		$actions = new FieldSet(
+			new FormAction('doMoveThreadForm', 'Move')
+		);
+		return new Form($this, 'MoveThreadForm', $fields, $actions);
+	}
+	
+	/** 
+	 * Process's the moving of a given topic. Has to check for admin privledges,
+	 * passed an old topic id (post id in URL) and a new topic id
+	 */
+	function doMoveThreadForm($data, $form) {
+		// check we are admin before we process anything
+		if(!$this->CheckForumPermissions('admin')) return false;
+		
+		// Get the Object from the Topic ID 
+		$oldTopic = Convert::raw2sql($data['Topic']);
+
+		// get all posts in that topic
+		$newForum = Convert::raw2sql($data['NewForum']);
+		$posts = DataObject::get("Post", "`Post`.TopicID = '$oldTopic'");
+		if(!$posts) return user_error("No Posts Found", E_USER_ERROR);
+		
+		// update all the posts under that topic to the new forum.
+		foreach($posts as $post) {
+			$post->ForumID = $newForum;
+			$post->write();
+		}
+		
+		return array(
+			'ForumAdminMsg' => 'Thread Has Been Moved.'
+		);
 	}
 }
 
