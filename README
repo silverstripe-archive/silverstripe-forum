@@ -1,12 +1,25 @@
-07 July 2007
+###############################################
+Forum Module
+###############################################
 
 This is v0.1 of Forum module to help developers learn about how to create a SilverStripe module,
 and to allow adventureous hackers to try out and improve the forum. More documentation will follow shortly.
-
 This release should be considered beta-quality.
 
-To install:
+Maintainer Contact
+-----------------------------------------------
+Sean Harvey (Nickname: sharvey, halkyon)
+<sean (at) silverstripe (dot) com>
 
+Requirements
+-----------------------------------------------
+
+Documentation
+-----------------------------------------------
+http://doc.silverstripe.com/doku.php?id=modules:forum
+
+Installation Instructions
+-----------------------------------------------
 1. Place this directory in the root of your SilverStripe installation
 I.e. you will now have the following root folders
 
@@ -21,6 +34,8 @@ forum
 3. The CMS should now have "Forum Holder" and "Forum" page types in the page type dropdown.
 Add these and visit them on the public site.
 
-Please raise issues, bugs, contributions in the silverstripe.com forum...
+Usage Overview
+-----------------------------------------------
 
-sigurd@silverstripe.com
+Known issues
+-----------------------------------------------
