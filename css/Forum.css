@@ -18,6 +18,12 @@
 	font-size: 1.1em;
 }
 
+#ForumContent #Form_ReplyForm_action_postAMessage {
+	display: block;
+	font-size: 1.8em;
+	padding: 4px;
+	font-weight: bold;
+}
 #ForumContent textarea {
 	font-family: Verdana, Tahoma, sans-serif;
 }
@@ -738,11 +744,13 @@ form .BBCodeHint {
 
 #OpenIDDescription {
 	position: absolute;
+	display: none;
+	left: 700px;
 	border: 3px solid #e1f0f7;
+	outline: 2px solid #bed6e1;
 	padding: 5px;
 	width: 320px;
 	background-color: #FFFFFF;
-	font-size: 90%;
 }
 	#OpenIDDescription.hide {
 		display: none;
@@ -758,17 +766,7 @@ form .BBCodeHint {
 		margin: 0;
 		margin-bottom: 0.2em;
 	}
-	#OpenIDDescription p {
-		line-height: 1.5em;
-		margin-bottom: 0.4em;
-	}
-	#OpenIDDescription a {
-		text-decoration: underline;
-	}
-	#OpenIDDescription a:hover {
-		color: #000000;
-		text-decoration: underline;
-	}
+
 /* ----------------------------
  MEMBERS LIST STYLING
 ----------------------------- */

@@ -23,7 +23,8 @@ class ForumMemberProfile extends Page_Controller {
  		Requirements::javascript("jsparty/behaviour.js");
 		if($this->OpenIDAvailable())
 			Requirements::javascript("forum/javascript/Forum_openid_description.js");
-
+		$this->Title = "User Profile";
+		
 		parent::init();
  	}
 

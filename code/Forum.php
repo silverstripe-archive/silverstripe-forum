@@ -85,7 +85,6 @@ class Forum extends Page {
 		}
 	}
 
-
 	/**
 	 * Returns a FieldSet with which to create the CMS editing form
 	 *
@@ -142,10 +141,7 @@ class Forum extends Page {
 	 *                         displayed
 	 * @return string HTML code to display breadcrumbs
 	 */
-	public function Breadcrumbs($maxDepth = null,
-															$unlinked = false,
-															$stopAtPageType = false,
-															$showHidden = false) {
+	public function Breadcrumbs($maxDepth = null,$unlinked = false, $stopAtPageType = false,$showHidden = false) {
 		$page = $this;
 		$nonPageParts = array();
 		$parts = array();
@@ -201,8 +197,6 @@ class Forum extends Page {
 
 		if(is_numeric($id))
 			return DataObject::get_by_id("Post", $id);
-		// this is causing some errors, temporarily added is_numeric.
-		// TODO FIXME!
 	}
 
 
@@ -214,8 +208,7 @@ class Forum extends Page {
 	 */
 	function LatestPost() {
 		if(is_numeric($this->ID)) {
-			$posts = DataObject::get("Post", "ForumID = $this->ID",
-															 "Created DESC", "", 1);
+			$posts = DataObject::get("Post", "ForumID = $this->ID", "Created DESC", "", 1);
 			if($posts)
 				return $posts->First();
 		}
@@ -359,10 +352,16 @@ class Forum_Controller extends Page_Controller {
  			$member->LastViewed = date("Y-m-d H:i:s");
  			$member->write();
  		}
-
+		
+		// IN 0.2 Moving away from prototype
+		Requirements::javascript("jsparty/jquery/jquery.js");
+		Requirements::javascript("forum/javascript/forum.js");
+		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
+		
+		// Keep this for backwards compatibility 
  	  	Requirements::javascript("jsparty/prototype.js");
  		Requirements::javascript("jsparty/behaviour.js");
-		Requirements::javascript("forum/javascript/Forum.js");
+
 		if($this->OpenIDAvailable())
 			Requirements::javascript("forum/javascript/Forum_openid_description.js");
 
@@ -379,7 +378,6 @@ JS
 );
 		}
 
-		Requirements::css("jsparty/tree/tree.css");
 		Requirements::themedCSS('Forum');
 
 		RSSFeed::linkToFeed($this->Link("rss"), sprintf(_t('Forum.RSSFORUM',"Posts to the '%s' forum"),$this->Title)); 
@@ -735,6 +733,7 @@ JS
 	 */
 	function ReplyForm() {
 		// Check forum posting permissions
+	
 		if(!$this->CheckForumPermissions("post")) {
 			$messageSet = array(
 			'default' => _t('Forum.LOGINTOPOST','You\'ll need to login before you can post to that forum. Please do so below.'),
@@ -752,10 +751,6 @@ JS
 			$this->currentPost = $this->Post($this->urlParams['ID']);
 		}
 
-		// Create a new Post object for this reply. protip: This is dumb :(
-		$post = new Post;
-		$post->write();
-
 		// See if this user has already subscribed
 		if($this->currentPost)
 			$subscribed = Post_Subscription::already_subscribed($this->currentPost->TopicID);
@@ -768,29 +763,27 @@ JS
 			new TextareaField("Content", "Content"),
 			new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"#BBTagsHolder\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT','View Formatting Help') . "</a> ]</div>"),
 			new CheckboxField("TopicSubscription", _t('Forum.SUBSCRIBETOPIC','Subscribe to this topic (Receive email notifications when a new reply is added)'), $subscribed),
-			new HiddenField("Parent", "", $this->currentPost ? $this->currentPost->ID : "" ),
-			new HiddenField("PostID", "", $post->ID)
+			new HiddenField("Parent", "", $this->currentPost ? $this->currentPost->ID : "" )
 		);
 
 		// Check if we can attach files to this forum's posts
+
 		if($this->canAttach()) {
-			$fields->push($attachmentField = new AttachmentField("PostAttachment", _t('Forum.POSTATTACHMENT','Upload Files'),"Post_Attachment"));
-			$attachmentField->setExtraData(array(
-				// TODO Fix this!
-				"PostID" => $post->ID
-			));
+			$fileUploadField = new FileField("Attachment", "Attach File");
+			$fileUploadField->setAllowedMaxFileSize(100000000);
+			$fields->push(
+				$fileUploadField
+			);
 		}
 
 		$actions = 	new FieldSet(
-			// new FormAction("preview", "Preview"),
 			new FormAction("postAMessage", "Post")
 		);
 
 		$required = new RequiredFields("Title", "Content");
 		$replyform = new Form($this, "ReplyForm", $fields, $actions, $required);
-		$currentID = $this->currentPost
-			? $this->currentPost->ID
-			: "";
+	
+		$currentID = $this->currentPost	? $this->currentPost->ID : "";
 
 		if(Session::get("forumInfo.{$currentID}.postvar") != null) {
 			$_REQUEST = Session::get("forumInfo.{$currentID}.postvar");
@@ -801,20 +794,6 @@ JS
 
 		return $replyform;
 	}
-
-
-	/**
-	 * Preview a posting
-	 *
-	 * @param array $data The user submitted data
-	 * @param Form $form The used form
-	 */
-	function preview($data, $form) {
-		$this->setViewMode($data['action_preview']);
-		$this->setPostVar($data);
-		Director::redirectBack();
-	}
-
 
 	/**
 	 * Edit a posting
@@ -843,14 +822,12 @@ JS
 			if($data['Parent'])
 				$parent = DataObject::get_by_id('Post',	Convert::raw2sql($data['Parent']));
 
-			// Make sure we have this posts ID, we create the new Post in
-			// Forum::ReplyForm() now to allow us to add attachments properly.
-			// TODO This is dumb
+			// Use an existing post, otherwise create a new one
 			if($data['PostID']) {
 				$post = DataObject::get_by_id('Post', Convert::raw2sql($data['PostID']));
 			}
 			else {
-				user_error(_t('Forum.NOVALIDPOST','A valid post was not specified. We pass the Post ID through now, creating a blank post on ReplyForm. Dumb, but necessary for uploading attachments.'),E_USER_ERROR);
+				$post = new Post();
 			}
 
 			if(isset($parent)) {
@@ -859,6 +836,8 @@ JS
 			else {
 				$currentID = 0;
 			}
+			
+
 			if(Session::get("forumInfo.{$currentID}.postvar") != null) {
 				$data = array_merge($data, Session::get("forumInfo.{$currentID}.postvar"));
 				Session::clear("forumInfo.{$currentID}.postvar");
@@ -881,7 +860,33 @@ JS
 				$post->AuthorID = $member->ID;
 			$post->ForumID = $this->ID;
 			$post->write();
-
+			
+			// Upload and Save all files attached to the field
+			if($data['Attachment']) {
+				
+				// Attachment will always be blank, If they had an image it will be at least in Attachment-0
+				$id = 0;
+				while(isset($data['Attachment-'.$id])) {
+					$image = $data['Attachment-'.$id];
+					if($image) {
+						// check to see if a file of same exists
+						$title = Convert::raw2sql($image['name']);
+						$file = DataObject::get_one("Post_Attachment", "`File`.Title = '$title' AND `Post_Attachment`.PostID = '$post->ID'");
+						if(!$file) {
+							$file = new Post_Attachment();
+							$file->PostID = $post->ID;
+						
+							$upload = new Upload();
+							$upload->loadIntoFile($image, $file);
+						
+							$file->write();
+						}
+					}
+					$id++;
+				}
+			}
+			
+			
 			if($post->ParentID == 0) {
 				$post->TopicID = $post->ID;
 				// Extra write() that we can't avoid because we need to set
@@ -932,8 +937,7 @@ JS
 					$this->urlParams['ID'] = null;
 				}
 			} else {
-				Director::redirect($this->Link() . 'show/' . $post->TopicID .
-													 '?showPost=' . $post->ID);
+				Director::redirect($this->Link() . 'show/' . $post->TopicID .'?showPost=' . $post->ID);
 			}
 		}
 	}
@@ -970,71 +974,6 @@ JS
 			" - at $post->Created \">" . $post->Title . "</a></li>";
 	}
 
-
-	/**
-	 * The "preview" version of the reply form
-	 *
-	 * @return Form Returns the reply form.
-	 */
-	function ReplyForm_Preview() {
-		if(!$this->currentPost) {
-			$this->currentPost = $this->Post($this->urlParams['ID']);
-		}
-
-		$member = Member::currentUser();
-		if($member)
-			$who = $member->Nickname;
-		else
-			$who = _t('Forum.VISITOR','a visitor');
-
-		$now = strftime("%Y-%m-%d %H:%M:%S", time());
-
-		$fields = new FieldSet(
-			$title = new FormField("Title", ""),
-			$content = new FormField("Content", ""),
-			new HiddenField("Parent", "", $this->currentPost->ID),
-			new	FormField("Whowhen", "", "--- " . _t('Forum.BY') . $who . " - " . $now)
-		);
-
-		$content->dontEscape = true;
-		$title->dontEscape = true;
-		$content->reserveNL = true;
-
-		$actions = new FieldSet(
-			new FormAction("edit", "Edit")
-		);
-		$replyform = new Form($this, "ReplyForm_Preview", $fields, $actions);
-
-		$currentID = $this->currentPost->ID;
-		if(Session::get("forumInfo.{$currentID}.postvar") != null) {
-			$_REQUEST = Session::get("forumInfo.{$currentID}.postvar");
-		}
-
-		//$titleOK = Badwords::Moderate($_REQUEST['Title']);
-		//$contentOK = Badwords::Moderate($_REQUEST['Content']);
-
-		/*if(!$titleOK||!$contentOK){
-			$_SESSION['ReplyForm_Preview']['message'] = _t('Forum.WRONGLANGUAGE','You have used inappropriate language in your post. Please alter the words highlighted.') '';
-			$_SESSION['ReplyForm_Preview']['type'] = 'bad';
-		}
-		else{*/
-			$replyform ->Actions()->push(new FormAction("postAMessage", "Post"));
-		//}
-		$replyform ->loadDataFrom($_REQUEST);
-		return $replyform;
-	}
-
-
-	/**
-	 * Return the detail of a single post to the ajax handler.
-	 * Returns a single <div> tag for insertion into the HTML.
-	 */
-	function getpost() {
-		$id = $_REQUEST['id'];
-		$post = $this->Post($id);
-		return $post->renderWith('PostDetail');
-	}
-	
 	/**
 	 * Return a replyform to the ajax handler that called it.
 	 * Contains form.innerHTML; doesn't include the form tag itself.
@@ -1107,12 +1046,17 @@ JS
 		RSSFeed::linkToFeed($this->Link("rss") . '/' . $this->urlParams['ID'],sprintf(_t('Forum.POSTTOTOPIC',"Posts to the '%s' topic"),$this->Post()->Title));
 
 		$SQL_id = Convert::raw2sql($this->urlParams['ID']);
+		$title = $this->Title;
 		if(is_numeric($SQL_id)) {
 			$topic = DataObject::get_by_id("Post", $SQL_id);
-			if($topic)
+			if($topic) {
 				$topic->incNumViews();
+				$title = $topic->Title . ' &raquo; ' . $title; // Set the Forum Thread Title.
+			}
 		}
-		return array();
+		return array(	
+			'Title' => $title
+		);
 	}
 	
 	/**
@@ -1547,6 +1491,7 @@ JS
 	 */
 	function MoveThreadForm() {
 		$forums = DataObject::get("Forum", "`Forum`.ID != '$this->ID'");
+		if(!$forums) return false;
 		$fields = new FieldSet(
 			new DropdownField("NewForum", "Move Thread. Select The New Forum: ", $forums->toDropDownMap()),
 			new HiddenField("Topic", "Topic", Convert::raw2sql(Director::urlParam('ID')))

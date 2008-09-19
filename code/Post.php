@@ -28,7 +28,8 @@ class Post extends DataObject {
 	);
 
 	static $has_many = array(
-		"Children" => "Post" //All Posts one-level below this Post
+		"Children" => "Post",
+		"Attachments" => "Post_Attachment"
 	);
 
 	static $extensions = array(
@@ -76,7 +77,8 @@ class Post extends DataObject {
 	 */
 	function Attachments() {
 		// Get all (if any) attachments for this post
-		$allAttachments = DataObject::get("Post_Attachment", "`PostID` = '$this->ID'");
+		$allAttachments = DataObject::get("Post_Attachment", "`Post_Attachment`.PostID = '$this->ID'");
+
 		if(!$allAttachments) return false;
 
 		$doSet = new DataObjectSet();
@@ -85,7 +87,6 @@ class Post extends DataObject {
 		foreach($allAttachments as $singleAttachment) {
 			if($singleAttachment->appCategory() == "image") {
 				$obj = $singleAttachment->newClassInstance('Image');
-				$obj->DownloadLink = $singleAttachment->DownloadLink(); // TODO This is kinda hacked in, investigate a better way to do this
 				$doSet->push($obj);
 			} else {
 				$doSet->push($singleAttachment);
@@ -94,16 +95,6 @@ class Post extends DataObject {
 
 		return $doSet;
 	}
-
-	/*
-	function Link($action = null){
-		if(!$action)
-			$action = 'show';
-		$id = $this->ID;
-		$url = $this->ForumURLSegment();
-		return "$url/$action/$id";
-	}
-	*/
 
 
 	function ForumURLSegment(){
@@ -482,13 +473,6 @@ class Post_Attachment extends File {
 
 		// Missing something or hack attempt
 		Director::redirectBack();
-	}
-
-	/**
-	 * Returns a download link
-	 */
-	function DownloadLink() {
-		return "$this->class/download/$this->ID/";
 	}
 }
 

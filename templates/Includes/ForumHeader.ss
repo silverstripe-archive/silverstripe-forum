@@ -27,7 +27,7 @@
 		<div class="featureLeft">
 			<h2>$Subtitle</h2>
 			<% if Abstract %>$Abstract<% else %>$Content<% end_if %>
-			<span class="breadcrumbs"><strong>$Breadcrumbs</strong></span>
-		</div>
+			<p>$Breadcrumbs</p>
+		</div>	
     <div class="clear"><!-- --></div>
-	</div>
+</div>

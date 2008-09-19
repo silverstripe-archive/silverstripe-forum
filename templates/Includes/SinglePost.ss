@@ -38,7 +38,7 @@
 			<% control Attachments %>
 				<li class="attachment">
 					<a href="$Link"><img src="$Icon"></a>
-					<a href="$Link">$Name</a> (<a href="$DownloadLink"><% _t('DOWNLOAD','Download') %></a>)<br />
+					<a href="$Link">$Name</a><br />
 					<% if ClassName = "Image" %>$Width x $Height - <% end_if %>$Size
 				</li>
 			<% end_control %>

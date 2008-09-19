@@ -53,11 +53,14 @@ class ForumHolder_Controller extends Page_Controller {
 	 */
 	function init() {
 		Requirements::themedCSS('Forum');
-
-		Requirements::javascript("jsparty/prototype.js");
-		Requirements::javascript("jsparty/behaviour.js");
-		if($this->OpenIDAvailable())
-			Requirements::javascript("forum/javascript/Forum_openid_description.js");
+		
+		// IN 0.2 Moving away from prototype
+		Requirements::javascript("jsparty/jquery/jquery.js");
+		Requirements::javascript("forum/javascript/forum.js");
+		
+		// Keep this for backwards compatibility 
+ 	  	Requirements::javascript("jsparty/prototype.js");
+ 		Requirements::javascript("jsparty/behaviour.js");
 
 		RSSFeed::linkToFeed($this->Link("rss"), "Posts to all forums");
 		parent::init();
@@ -208,12 +211,8 @@ class ForumHolder_Controller extends Page_Controller {
 	 * Get a list of currently online users (last 15 minutes)
 	 */
 	function CurrentlyOnline() {
-		return DataObject::get("Member",
-			"LastVisited > NOW() - INTERVAL 15 MINUTE",
-			"FirstName, Surname",
-			"");
+		return DataObject::get("Member","LastVisited > NOW() - INTERVAL 15 MINUTE","Nickname");
 	}
-
 
 	/**
 	 * The search action
