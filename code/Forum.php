@@ -1413,9 +1413,7 @@ class Forum_Controller extends Page_Controller {
 		  	if(!$this->currentPost) {
 				$this->currentPost = $this->Post($this->urlParams['ID']);
 		    	if(!$this->currentPost) {
-					return array(
-				    	"Content" => "<p class=\"message bad\">" . _t('Forum.POSTNOTFOUND') . "</p>"
-					);
+					return false;
 				}
 			}
 
@@ -1450,16 +1448,12 @@ class Forum_Controller extends Page_Controller {
             			$post->delete();
           			}
 		    	}	
-		    	return array(
-		    		"Content" => "<p class=\"message good\">" . _t('Forum.THREADDELETED','The specified thread was successfully deleted.') . "</p>"
-		  		);
-		  	} else {
-		  		Director::redirect($this->urlParams['URLSegment'] . "/show/" .$this->currentPost->TopicID . "/");
-		  	}
-	  	} else {
-     		Session::set("BackURL", $this->Link());
-	    	Director::redirect("Security/login");
+				if(!Director::is_ajax()) return	Director::redirect($this->urlParams['URLSegment'] . "/show/" .$this->currentPost->TopicID . "/");
+		    	return true;
+		  	} 
+			return true;
 	  	}
+		return false;
 	}
 
 

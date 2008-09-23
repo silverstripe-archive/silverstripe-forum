@@ -140,13 +140,12 @@ class Post extends DataObject {
 
 
 	function DeleteLink() {
-	  Requirements::javascript("forum/javascript/DeleteLink.js");
 	  $id = " ";
 	  if($this->ParentID == 0)
 			$id = " id=\"firstPost\" ";
 
 	  if(Member::currentUser() && Member::currentUser()->isAdmin())
-			return "<a".$id."class=\"deletelink\" href=\"{$this->Forum()->Link()}deletepost/{$this->ID}\">" . _t('Post.DELETE','delete') ."</a>";
+			return "<a".$id."class=\"deletelink\" rel=\"$this->ID\" href=\"{$this->Forum()->Link()}deletepost/{$this->ID}\">" . _t('Post.DELETE','delete') ."</a>";
 	  else
 			return false;
 	}

@@ -59,10 +59,18 @@ $(document).ready(function() {
 	
 	$('.postModifiers a.deletelink').click(function(){
 		if($(this).attr('id')== 'firstPost') {
-			 if(!confirm("Are you sure you wish to delete this thread?\nNote: This will delete ALL posts in this thread.")) return false;
+			if(!confirm("Are you sure you wish to delete this thread?\nNote: This will delete ALL posts in this thread.")) return false;
 		} else {
 			if(!confirm("Are you sure you wish to delete this post?")) return false;
 		}
+		var id = $(this).attr("rel");
+		$.post($(this).attr("href"), function(data) {
+			if(data == 1) {
+				// was successful
+				$("ul#Posts li#post"+id).fadeOut();
+			}
+		});
+		return false;
 	});
 	
 	/**
