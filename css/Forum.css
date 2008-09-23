@@ -839,3 +839,22 @@ form .BBCodeHint {
 	font-weight: bold;
 	color: #618252;
 }
+
+/* --------------------------
+ CURRENT ATTACHMENT STYLING
+--------------------------- */
+#Attachment {
+	width: 350px;
+	float: left;
+}
+#CurrentAttachments {
+	float: right;
+	margin-top: 10px;
+	width: 400px;
+}
+	#CurrentAttachments ul {
+		margin-left: 0;
+	}
+		#CurrentAttachments li {
+			
+		}

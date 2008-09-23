@@ -353,38 +353,16 @@ class Forum_Controller extends Page_Controller {
  			$member->write();
  		}
 		
-		// IN 0.2 Moving away from prototype
-		Requirements::javascript("jsparty/jquery/jquery.js");
+		// IN 0.2 Moving away from prototype. The core still uses it but as of
+		// SilverStripe 2.4 all the JS will be jquery based.
+		Requirements::javascript("forum/javascript/jquery.js"); 
 		Requirements::javascript("forum/javascript/forum.js");
 		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
-		
-		// Keep this for backwards compatibility 
- 	  	Requirements::javascript("jsparty/prototype.js");
- 		Requirements::javascript("jsparty/behaviour.js");
-
-		if($this->OpenIDAvailable())
-			Requirements::javascript("forum/javascript/Forum_openid_description.js");
-
-		// Refresh the forum every X seconds if requested
-		// TODO Make this AJAX-friendly :>
-		$time = $this->refreshTime();
-		if(!in_array($this->urlParams['Action'],
-								 array('reply', 'editpost', 'starttopic')) &&
-			 ($time > 0)) {
-			$time *= 1000;
-			Requirements::customScript(<<<JS
-				setTimeout(function() { window.location.reload(); }, {$time});
-JS
-);
-		}
 
 		Requirements::themedCSS('Forum');
 
 		RSSFeed::linkToFeed($this->Link("rss"), sprintf(_t('Forum.RSSFORUM',"Posts to the '%s' forum"),$this->Title)); 
 	 	RSSFeed::linkToFeed($this->Parent->Link("rss"), _t('Forum.RSSFORUMS','Posts to all forums'));
-
-		if(Director::is_ajax())
-			ContentNegotiator::allowXHTML();
 	}
 
 	/**
@@ -438,27 +416,6 @@ JS
 	function deleteUntitledPosts() {
 		DB::query("DELETE FROM Post WHERE `Title` IS NULL AND `Content` IS NULL AND `Created` < NOW() - INTERVAL 24 HOUR");
 	}
-
-
-	/**
-	 * Checks if this forum should refresh every X seconds
-	 *
-	 * @return int Returns 0 if the forum shouldn't refresh, otherwise the
-	 *             number of seconds if it should refresh
-	 */
-	protected function refreshTime() {
-		/** Ensure refresher is on **/
-		if(!$this->ForumRefreshOn)
-			return 0;
-
-		/** Ensure the input is valid **/
-		if(!ctype_digit((string)$this->ForumRefreshTime) ||
-			 (int)$this->ForumRefreshTime < 1)
-			return 0;
-
-		return $this->ForumRefreshTime;
-	}
-
 
 	/**
 	 * Get the currently logged in member
@@ -770,7 +727,7 @@ JS
 
 		if($this->canAttach()) {
 			$fileUploadField = new FileField("Attachment", "Attach File");
-			$fileUploadField->setAllowedMaxFileSize(100000000);
+			$fileUploadField->setAllowedMaxFileSize(1000000);
 			$fields->push(
 				$fileUploadField
 			);
@@ -1225,7 +1182,31 @@ JS
 		}
 
 	}
+	/**
+	 * Delete an Attachment 
+	 * Called from the EditPost method. Its Done via Ajax
+	 */
+	function deleteAttachment() {
 
+		// check we were passed an id and member is logged in
+		if(!Director::urlParam('ID') || !Member::currentUser()) return false;
+		
+		// try and get the file
+		$file = DataObject::get_by_id("Post_Attachment", (int) Director::urlParam('ID'));
+	
+		// woops no file with that ID
+		if(!$file) return false;
+		
+		// check permissions
+		if(!Member::currentUser()->isAdmin() && $file->OwnerID != Member::currentUserID()) return false;
+	
+		// Ok we are good
+		$file->delete();
+		
+		if(!Director::is_ajax()) return Director::redirectBack(); // if Javascript is disabled 
+		
+		return true; 
+	}
 
 	/**
 	 * Edit post action
@@ -1245,28 +1226,41 @@ JS
 	 * @return Form Returns the edit post form
 	 */
 	function EditPostForm() {
-	  // See if this user has already subscribed
-	  if($this->currentPost)
+		// See if this user has already subscribed
+		if($this->currentPost)
 			$subscribed = Post_Subscription::already_subscribed($this->currentPost->TopicID);
-	  else
+	  	else
 			$subscribed = false;
 
-	  Requirements::javascript("forum/javascript/Forum_reply.js");
-
-	  return new Form($this, "EditPostForm",
+		if($this->canAttach()) {
+			$fileUploadField = new FileField("Attachment", "Attach File");
+			$fileUploadField->setAllowedMaxFileSize(1000000);
+		}
+		else {
+			$fileUploadField = null;
+		}
+		
+		// @TODO - This is nasty. Sort of goes against the whole MVC thing doesnt it? 
+		// Generate a List of all the attachments rather then use the multifile uploader which
+		// doesn't like setting defaults
+		
+		$Attachments = "";
+		if($this->currentPost && $attachmentList = $this->currentPost->Attachments()) {
+			$Attachments = "<div id=\"CurrentAttachments\"><h4>Current Attachments</h4><ul>";
+			foreach($attachmentList as $attachment) {
+				$Attachments .= "<li class='attachment-$attachment->ID'>$attachment->Name [<a href='$this->URLSegment/deleteAttachment/$attachment->ID' rel='$attachment->ID' class='deleteAttachment'>". _t('Forum.REMOVE','remove') ."</a>]</li>";
+			}
+			$Attachments .= "<ul></div>";
+		}
+	  	return new Form($this, "EditPostForm",
 			new FieldSet(
-				new TextField("Title", "Title", ($this->currentPost)
-												? $this->currentPost->Title
-												: "" ),
-				new TextareaField("Content", "Content", 5, 40, ($this->currentPost)
-														? $this->currentPost->Content
-														: "" ),
-
+				new TextField("Title", "Title", ($this->currentPost) ? $this->currentPost->Title : "" ),
+				new TextareaField("Content", "Content", 5, 40, ($this->currentPost) ? $this->currentPost->Content : "" ),
 				new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"?#BBTagsHolder\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT') . "</a> ]</div>"),
 				new CheckboxField("TopicSubscription", _t('Forum.SUBSCRIBETOPIC'), $subscribed),
-				new HiddenField("ID", "ID", ($this->currentPost)
-													? $this->currentPost->ID
-													: "" )
+				$fileUploadField,
+				new LiteralField("CurrentAttachments", $Attachments),
+				new HiddenField("ID", "ID", ($this->currentPost) ? $this->currentPost->ID: "" )
 			),
 			new FieldSet(
 				new FormAction("editAMessage", "Edit")
@@ -1343,6 +1337,31 @@ JS
 			// Send any notifications that need to be sent
 			Post_Subscription::notify($post);
 
+			// Do upload of the new files
+			// Upload and Save all files attached to the field
+			if($data['Attachment']) {
+				
+				// Attachment will always be blank, If they had an image it will be at least in Attachment-0
+				$id = 0;
+				while(isset($data['Attachment-'.$id])) {
+					$image = $data['Attachment-'.$id];
+					if($image) {
+						// check to see if a file of same exists
+						$title = Convert::raw2sql($image['name']);
+						$file = DataObject::get_one("Post_Attachment", "`File`.Title = '$title' AND `Post_Attachment`.PostID = '$post->ID'");
+						if(!$file) {
+							$file = new Post_Attachment();
+							$file->PostID = $post->ID;
+						
+							$upload = new Upload();
+							$upload->loadIntoFile($image, $file);
+						
+							$file->write();
+						}
+					}
+					$id++;
+				}
+			}
 			// Add a topic subscription entry if required
 			if(isset($data['TopicSubscription'])) {
 				// Ensure this user hasn't already subscribed
