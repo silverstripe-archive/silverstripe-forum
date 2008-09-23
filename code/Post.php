@@ -149,7 +149,19 @@ class Post extends DataObject {
 	  else
 			return false;
 	}
-
+	
+	/** 
+	 * Are Forum Signatures on Member profiles allowed
+	 * 
+	 * @return Boolean
+	 */
+	 function DisplaySignatures() {
+		$forumHolder = DataObject::get_one("ForumHolder");
+		if($forumHolder && $forumHolder->DisplaySignatures == true) {
+			return true;
+		}
+		return false;
+	}
 
 	function getAscendants(&$ascendants) {
 		if($parent = $this->getParent()){

@@ -14,7 +14,10 @@
 </div>
 <div class="posterContent">
 	<h4><a href="#post$ID">$Title <img src="forum/images/right.png" alt="Link to this post" title="Link to this post" /></a></h4>
-	<p class="postDate">$Created.Long at $Created.Time</p>
+	<p class="postDate">$Created.Long at $Created.Time 
+	<% if Updated %>
+		<strong><% _t('LASTEDITED','Last edited:') %> $Updated.Long <% _t('AT') %> $Updated.Time</strong>
+	<% end_if %></p>
 	<% if EditLink || DeleteLink %>
 		<div class="postModifiers">
 			<% if EditLink %>
@@ -28,9 +31,19 @@
 	<div class="postType">
 		<p>$Content.Parse(BBCodeParser)</p>
 	</div>
-	<% if Updated %>
-		<p class="lastEdited"><strong><% _t('LASTEDITED','Last edited:') %></strong> $Updated.Long <% _t('AT') %> $Updated.Time</p>
+	
+	<% if DisplaySignatures %>
+		<% control Author %>
+			<% if Signature %>
+				<div class="signature">
+					<p>$Signature</p>
+				</div>
+			<% end_if %>
+		<% end_control %>
 	<% end_if %>
+	
+
+
 	<% if Attachments %>
 		<div class="attachments">
 			<strong><% _t('ATTACHED','Attached Files') %></strong> 

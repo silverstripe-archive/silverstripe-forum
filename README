@@ -2,17 +2,19 @@
 Forum Module
 ###############################################
 
-This is v0.1 of Forum module to help developers learn about how to create a SilverStripe module,
-and to allow adventureous hackers to try out and improve the forum. More documentation will follow shortly.
-This release should be considered beta-quality.
+This is v0.2 of Forum module. While the forum module is quite stable enough for everyday use, it 
+is not feature complete as yet. If you have any suggestions please email or get in touch
 
 Maintainer Contact
 -----------------------------------------------
-Sean Harvey (Nickname: sharvey, halkyon)
-<sean (at) silverstripe (dot) com>
+Sean Harvey (Nickname: sharvey, halkyon) <sean (at) silverstripe (dot) com>
+Will Rossiter (Nickname: wrossiter, willr) <will (at) silverstripe (dot) com>
 
 Requirements
 -----------------------------------------------
+It is currently being tested again trunk (soon to be 2.3) but should be compatible all the way back
+to 2.2
+
 
 Documentation
 -----------------------------------------------

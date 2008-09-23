@@ -320,13 +320,10 @@ class ForumMemberProfile extends Page_Controller {
 			// For OpenID 2, use a javascript form to send a POST request to the
 			// server.
 			$form_id = 'openid_message';
-			$form_html = $auth_request->formMarkup($trust_root, $return_to_url,
-																						 false,
-																						 array('id' => $form_id));
+			$form_html = $auth_request->formMarkup($trust_root, $return_to_url,	false, array('id' => $form_id));
 
 			if(Auth_OpenID::isFailure($form_html)) {
-				displayError("Could not redirect to server: " .
-										 $form_html->message);
+				displayError("Could not redirect to server: " .$form_html->message);
 			} else {
 				$page_contents = array(
 					 "<html><head><title>",
@@ -441,6 +438,9 @@ class ForumMemberProfile extends Page_Controller {
 										!empty($member->IdentityURL));
 
 		$fields = singleton('Member')->getForumFields(false, $show_openid);
+		if(singleton('Post')->DisplaySignatures()) {
+			$fields->push(new TextareaField('Signature', 'Forum Signature'));
+		}
 		$fields->push(new HiddenField("ID"));
 
 		$form = new Form($this, 'EditProfileForm', $fields,

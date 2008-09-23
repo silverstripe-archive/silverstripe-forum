@@ -58,7 +58,8 @@ class ForumRole extends DataObjectDecorator {
 				'OccupationPublic' => 'Boolean',
 				'CountryPublic' => 'Boolean',
 				'EmailPublic' => 'Boolean',
-				'LastViewed' => 'SSDatetime'
+				'LastViewed' => 'SSDatetime',
+				'Signature' => 'Text'
 			),
 			'has_one' => array(
 				'Avatar' => 'Image'

@@ -657,6 +657,7 @@ div.attachments strong {
 ul.attachmentList {
 	border-top: 1px solid #ccc;
 	padding-top: 15px;
+	margin: 0;
 }
 #Posts li li.attachment {
 	height: 60px;
@@ -858,3 +859,14 @@ form .BBCodeHint {
 		#CurrentAttachments li {
 			
 		}
+
+/* ---------------------------
+ * SIGNATURES
+ * ------------------------- */
+#Posts .signature {
+	border-top: 1px solid #eee;
+}
+	#Posts .signature p {
+		font-size: 10px;
+		color: #888;
+	}

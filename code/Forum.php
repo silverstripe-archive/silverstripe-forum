@@ -1381,11 +1381,8 @@ class Forum_Controller extends Page_Controller {
 					DB::query("DELETE FROM Post_Subscription WHERE `TopicID` = '$post->TopicID' AND `MemberID` = '$SQL_memberID'");
 				}
 			}
-
-			Director::redirect($this->Link() . 'show/' .
-												 $this->currentPost->TopicID . '?showPost=' .
-												 $this->currentPost->ID . '#post' .
-												 $this->currentPost->ID);
+			$this->flushCache();
+			Director::redirect($this->Link().'show/'.$this->currentPost->TopicID.'?showPost='. $id . '#post' . $id .'&flush=1');
 	  } else {
 	    $messageSet = array(
 				'default' => _t('Forum.LOGINTOEDIT','Enter your email address and password to edit this post.'),

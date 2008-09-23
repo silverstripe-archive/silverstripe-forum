@@ -10,7 +10,8 @@ class ForumHolder extends Page {
 		"ProfileAbstract" => "HTMLText", 
 		"ForumAbstract" => "HTMLText", 
 		"ProfileModify" => "HTMLText", 
-		"ProfileAdd" => "HTMLText"
+		"ProfileAdd" => "HTMLText",
+		"DisplaySignatures" => "Boolean"
 	);
 
 	static $allowed_children = array('Forum');
@@ -36,6 +37,7 @@ class ForumHolder extends Page {
 		$fields->addFieldToTab("Root.Content.Messages", new HTMLEditorField("ForumAbstract","Create topic Abstract"));
 		$fields->addFieldToTab("Root.Content.Messages", new HTMLEditorField("ProfileModify","Create message after modifing forum member"));
 		$fields->addFieldToTab("Root.Content.Messages", new HTMLEditorField("ProfileAdd","Create message after adding forum member"));
+		$fields->addFieldToTab("Root.Content.Options", new CheckboxField("DisplaySignatures", "Display Member Signatures?"));
 		return $fields;
 	}
 
