@@ -481,6 +481,56 @@ class Forum_Controller extends Page_Controller {
 	}
 
 	/**
+	 * Subscribe to thread link
+	 * 
+	 * @return String
+	 */
+	function SubscribeLink() {
+		if(Post_Subscription::already_subscribed(Director::urlParam('ID'))) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Subscribe a user to a thread given by an ID.
+	 * 
+	 * Designed to be called via AJAX so return true / false
+	 * @return Boolean | Redirection for non AJAX requests
+	 */
+	function subscribe() {
+		if(Member::currentUser() && !Post_Subscription::already_subscribed(Director::urlParam('ID'))) {
+			$obj = new Post_Subscription;
+			$obj->TopicID = Director::urlParam('ID');
+			$obj->MemberID = Member::currentUserID();
+			$obj->LastSent = date("Y-m-d H:i:s"); // The user was last notified right now
+			$obj->write();
+			if(Director::is_ajax()) return true;
+			return Director::redirectBack();
+		}
+		return false;
+	}
+	
+	/**
+	 * Unsubscribe a user from a thread by an ID
+	 *
+	 * Designed to be called via AJAX so return true / false
+	 * @return Boolean | Redirection for non AJAX requests
+	 */
+	function unsubscribe() {
+		if(Member::currentUser() && Post_Subscription::already_subscribed(Director::urlParam('ID'))) {
+			$SQL_memberID = Member::currentUserID();
+			$topicID = (int) Director::urlParam('ID');
+			DB::query("DELETE FROM Post_Subscription WHERE `TopicID` = '$topicID' AND `MemberID` = '$SQL_memberID'");
+			if(Director::is_ajax()) return true;
+			return Director::redirectBack();
+		}
+		return false;
+	}
+	
+	
+	
+	/**
 	 * Get the view mode
 	 *
 	 * @return string Returns the view mode

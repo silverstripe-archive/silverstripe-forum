@@ -280,7 +280,7 @@ table.postHeader td.gotoButton {
 	width: 60%;
 }
 table.postHeader td.replyButton {
-	width: 20%;
+	width: 160px;
 }
 table.postHeader td.author {
 	padding-left: 5px;
@@ -298,10 +298,26 @@ table.postHeader td.replyButton a {
 	text-decoration: none;
 	width: 58px;
 	height: 20px;
-	padding: 3px 11px 5px 11px;
+	float: left;
+	text-align: center;
+	line-height: 20px;
 	font-size: 12px;
 	font-weight: bold;
 }
+	table.postHeader td.replyButton a.subscribe,
+	table.postHeader td.replyButton a.unsubscribe {
+		background: url(../../forum/images/subscribeButton.gif) no-repeat top left;
+		padding: 0;
+		display: block;
+		width: 96px;
+		height: 20px;
+		float: right;
+		text-align: center;
+		line-height: 20px;
+	}
+	table.postHeader td.replyButton a.hidden {
+		display: none;
+	}
 table.postHeader td.replyButton a.next {
 	color: #d07327;
 }

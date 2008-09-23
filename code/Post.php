@@ -225,12 +225,19 @@ class Post extends DataObject {
 
 
 	/**
-	 * Increment the NumViews value by 1.  Write just that number straight to the database
+	 * Check if they have visited this thread before. If they haven't increment 
+	 * the NumViews value by 1 and set visited to true
+	 * 
+	 * Write just that number straight to the database
 	 */
 	function incNumViews() {
-		$this->NumViews++;
-		$SQL_numViews = Convert::raw2sql($this->NumViews);
-		DB::query("UPDATE Post SET NumViews = '$SQL_numViews' WHERE ID = $this->ID");
+		if(Session::get($_SESSION['SERVER_NAME']."ForumViewed-".$this->ID)) return false;
+		else {
+			Session::set($_SESSION['SERVER_NAME']."ForumViewed-".$this->ID, 'true');
+			$this->NumViews++;
+			$SQL_numViews = Convert::raw2sql($this->NumViews);
+			DB::query("UPDATE Post SET NumViews = '$SQL_numViews' WHERE ID = $this->ID");
+		}
 	}
 
 

@@ -87,5 +87,27 @@ $(document).ready(function() {
 		return false;
 	});
 	
+	/**
+	 * Do the Subscribe / Unsubscribe button
+	 */
+	$("td.replyButton a.subscribe").click(function() {
+		$.post($(this).attr("href"), function(data) {
+			if(data == 1) {
+				$("td.replyButton a.subscribe").fadeOut().hide();
+				$("td.replyButton a.unsubscribe").fadeIn();
+			}
+		});
+		return false;
+	});
+	
+	$("td.replyButton a.unsubscribe").click(function() {
+		$.post($(this).attr("href"), function(data) {
+			if(data == 1) {
+				$("td.replyButton a.unsubscribe").fadeOut().hide();
+				$("td.replyButton a.subscribe").fadeIn();
+			}
+		});
+		return false;
+	});
 })
 })(jQuery);
