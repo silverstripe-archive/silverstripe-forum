@@ -155,13 +155,11 @@ class ForumRole extends DataObjectDecorator {
 
 	function updateCMSFields(FieldSet &$fields) {
 		if(Permission::checkMember($this->owner->ID, "ACCESS_FORUM")) {
-			$fields->insertBefore(new TextField("Nickname", "Nickname"), "FirstName");
-			$fields->insertAfter(new TextField("Occupation", "Occupation"), "Surname");
-			if(!$fields->fieldByName('Country')) $fields->insertAfter(new CountryDropdownField("Country", "Country"), "Occupation");
-
-			if(!$fields->dataFieldByName('Password')) $fields->insertAfter(new PasswordField("ConfirmPassword", "Confirm Password"), "Password");
-			$fields->push(new ImageField("Avatar", "Upload avatar"));
-			$fields->push(new DropdownField("ForumRank", "User rating", array(
+			$fields->addFieldToTab('Root.Main',new TextField("Nickname", "Nickname"), "FirstName");
+			$fields->addFieldToTab('Root.Main',new TextField("Occupation", "Occupation"), "Surname");
+			$fields->addFieldToTab('Root.Main',new CountryDropdownField("Country", "Country"), "Occupation");
+			$fields->addFieldToTab('Root.Main',new ImageField("Avatar", "Upload avatar"));
+			$fields->addFieldToTab('Root.Main',new DropdownField("ForumRank", "User rating", array(
 				"Community Member" => _t('ForumRole.COMMEMBER'),
 				"Administrator" => _t('ForumRole.ADMIN','Administrator'),
 				"Moderator" => _t('ForumRole.MOD','Moderator')
