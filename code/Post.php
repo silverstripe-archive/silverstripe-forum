@@ -231,12 +231,14 @@ class Post extends DataObject {
 	 * Write just that number straight to the database
 	 */
 	function incNumViews() {
-		if(Session::get($_SESSION['SERVER_NAME']."ForumViewed-".$this->ID)) return false;
-		else {
-			Session::set($_SESSION['SERVER_NAME']."ForumViewed-".$this->ID, 'true');
-			$this->NumViews++;
-			$SQL_numViews = Convert::raw2sql($this->NumViews);
-			DB::query("UPDATE Post SET NumViews = '$SQL_numViews' WHERE ID = $this->ID");
+		if(isset($_SESSION['SERVER_NAME'])) {
+			if(Session::get($_SESSION['SERVER_NAME']."ForumViewed-".$this->ID)) return false;
+			else {
+				Session::set($_SESSION['SERVER_NAME']."ForumViewed-".$this->ID, 'true');
+				$this->NumViews++;
+				$SQL_numViews = Convert::raw2sql($this->NumViews);
+				DB::query("UPDATE Post SET NumViews = '$SQL_numViews' WHERE ID = $this->ID");
+			}
 		}
 	}
 

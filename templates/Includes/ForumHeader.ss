@@ -1,6 +1,5 @@
 <div id="ForumContent" class="typography">
 	<% include ForumLogin %>
-	<% if Parent %><h1>$Parent.Title</h1><% end_if %>
 	<div class="clear"><!-- --></div>
 	<div class="forumFeatures">
 		<div class="featureRight">
@@ -25,8 +24,8 @@
 			</div>
 		</div>
 		<div class="featureLeft">
-			<h2>$Subtitle</h2>
-			<% if Abstract %>$Abstract<% else %>$Content<% end_if %>
+			<h2>$HolderSubtitle</h2>
+			<% if HolderAbstract %>$HolderAbstract<% else %>$Content<% end_if %>
 			<p>$Breadcrumbs</p>
 		</div>	
     <div class="clear"><!-- --></div>

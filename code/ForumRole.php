@@ -47,7 +47,7 @@ class ForumRole extends DataObjectDecorator {
 	 * additional fields/relations to be defined
 	 */
 	function extraDBFields() {
-		return array(
+		$fields = array(
 			'db' => array(
 				'ForumRank' => 'Varchar',
 				'Occupation' => 'Varchar',
@@ -71,6 +71,8 @@ class ForumRole extends DataObjectDecorator {
 				'Nickname' => true
 			),
 		);
+		$this->extend('extraDBFields',$fields);
+		return $fields;
 	}
 
 	function FirstNamePublic() {

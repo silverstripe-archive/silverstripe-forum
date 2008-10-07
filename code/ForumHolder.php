@@ -11,7 +11,8 @@ class ForumHolder extends Page {
 		"ForumAbstract" => "HTMLText", 
 		"ProfileModify" => "HTMLText", 
 		"ProfileAdd" => "HTMLText",
-		"DisplaySignatures" => "Boolean"
+		"DisplaySignatures" => "Boolean",
+		"ShowInCategories" => "Boolean"
 	);
 
 	static $allowed_children = array('Forum');
@@ -27,17 +28,22 @@ class ForumHolder extends Page {
 		"ProfileAdd" => "<p>Thanks, you are now signed up to the forum.</p>",
 	);
 	
-	function getCMSFields($cms) {
-		$fields = parent::getCMSFields($cms);
-		$fields->addFieldToTab("Root.Content.Messages", new TextField("HolderSubtitle","Forum Holder Subtitle"));
-		$fields->addFieldToTab("Root.Content.Messages", new HTMLEditorField("HolderAbstract","Forum Holder Abstract"));
-		$fields->addFieldToTab("Root.Content.Messages", new TextField("ProfileSubtitle","Member Profile Subtitle"));
-		$fields->addFieldToTab("Root.Content.Messages", new HTMLEditorField("ProfileAbstract","Member Profile Abstract"));
-		$fields->addFieldToTab("Root.Content.Messages", new TextField("ForumSubtitle","Create topic Subtitle"));
-		$fields->addFieldToTab("Root.Content.Messages", new HTMLEditorField("ForumAbstract","Create topic Abstract"));
-		$fields->addFieldToTab("Root.Content.Messages", new HTMLEditorField("ProfileModify","Create message after modifing forum member"));
-		$fields->addFieldToTab("Root.Content.Messages", new HTMLEditorField("ProfileAdd","Create message after adding forum member"));
-		$fields->addFieldToTab("Root.Content.Options", new CheckboxField("DisplaySignatures", "Display Member Signatures?"));
+	function getCMSFields() {
+		$fields = parent::getCMSFields();
+		$fields->addFieldsToTab("Root.Content.Messages", array(
+			new TextField("HolderSubtitle","Forum Holder Subtitle"),
+			new HTMLEditorField("HolderAbstract","Forum Holder Abstract"),
+			new TextField("ProfileSubtitle","Member Profile Subtitle"),
+			new HTMLEditorField("ProfileAbstract","Member Profile Abstract"),
+			new TextField("ForumSubtitle","Create topic Subtitle"),
+			new HTMLEditorField("ForumAbstract","Create topic Abstract"),
+			new HTMLEditorField("ProfileModify","Create message after modifing forum member"),
+			new HTMLEditorField("ProfileAdd","Create message after adding forum member")
+		));
+		$fields->addFieldsToTab("Root.Content.Settings", array(
+			new CheckboxField("DisplaySignatures", "Display Member Signatures?"),
+			new CheckboxField("ShowInCategories", "Show Forums In Categories?")
+		));
 		return $fields;
 	}
 
@@ -55,21 +61,17 @@ class ForumHolder_Controller extends Page_Controller {
 	 */
 	function init() {
 		Requirements::themedCSS('Forum');
-		
-		// IN 0.2 Moving away from prototype
 		Requirements::javascript("jsparty/jquery/jquery.js");
 		Requirements::javascript("forum/javascript/forum.js");
-		
-		// Keep this for backwards compatibility 
- 	  	Requirements::javascript("jsparty/prototype.js");
- 		Requirements::javascript("jsparty/behaviour.js");
 
 		RSSFeed::linkToFeed($this->Link("rss"), "Posts to all forums");
 		parent::init();
 	}
 	/** 
-	 * Generate a complete list of all the members data
-	 * 
+	 * Generate a complete list of all the members data. Return a 
+	 * set of all these members sorted by a GET variable
+	 *  
+	 * @todo Sort via AJAX
 	 * @return DataObjectSet A DataObjectSet of all the members which are signed up
 	 */
 	function memberlist() {
@@ -145,32 +147,7 @@ class ForumHolder_Controller extends Page_Controller {
 		Session::set("BackURL", $this->Link());
 		Director::redirect('Security/login');
 	}
-
-
-	/**
-	 * Get the forum holders' subtitle
-	 *
-	 * @TODO why is this defined when you can use HolderSubtitle?
-	 * 
-	 * @return string Returns the holders' subtitle
-	 */
-	function getSubtitle() {
-		return $this->HolderSubtitle;
-	}
-
-
-	/**
-	 * Get the forum holders' abstract
-	 *
-	 * @TODO why is this defined when you can use HolderAbstract?
-	 * 
-	 * @return string Returns the holders' abstract
-	 */
-	function getAbstract() {
-		return $this->HolderAbstract;
-	}
-
-
+	
 	/**
 	 * Get the number of total posts
 	 *
@@ -202,10 +179,18 @@ class ForumHolder_Controller extends Page_Controller {
 
 
 	/**
-	 * Get the forums
+	 * Get the forums. Actually its a bit more complex then that
+	 * we need to group by the Forum Categories.
 	 */
 	function Forums() {
-	 	return DataObject::get("Forum");
+	 	$categories = DataObject::get("ForumCategory");	
+		if($this->ShowInCategories && $categories) {
+			foreach($categories as $category) {
+				$category->CategoryForums = DataObject::get("Forum", "CategoryID = '$category->ID'");
+			}
+			return $categories;
+		}
+		return DataObject::get("Forum");
 	}
 
 

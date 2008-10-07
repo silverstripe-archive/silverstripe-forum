@@ -18,11 +18,6 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function init() {
 		Requirements::themedCSS('Forum');
-
-		Requirements::javascript("jsparty/prototype.js");
- 		Requirements::javascript("jsparty/behaviour.js");
-		if($this->OpenIDAvailable())
-			Requirements::javascript("forum/javascript/Forum_openid_description.js");
 		$this->Title = "User Profile";
 		
 		parent::init();

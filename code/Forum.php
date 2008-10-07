@@ -26,7 +26,8 @@ class Forum extends Page {
 
 	static $has_one = array(
 		"Moderator" => "Member",
-		"Group" => "Group"
+		"Group" => "Group",
+		"Category" => "ForumCategory"
 	);
 
 	static $defaults = array(
@@ -62,7 +63,11 @@ class Forum extends Page {
 				->numRecords() == 0 ) {
 			Permission::grant($forumGroup->ID, $code);
 		}
-
+		if(!$category = DataObject::get_one("ForumCategory")) {
+			$category = new ForumCategory();
+			$category->Title = _t('Forum.DEFAULTCATEGORY', 'General');
+			$category->write();
+		}
 		if(!DataObject::get_one("ForumHolder")) {
 			$forumholder = new ForumHolder();
 			$forumholder->Title = "Forums";
@@ -78,6 +83,7 @@ class Forum extends Page {
 			$forum->ParentID = $forumholder->ID;
 			$forum->Content = "<p>"._t('Forum.WELCOMEFORUM','Welcome to SilverStripe Forum Module! This is the default Forum page. You can now add topics.')."</p>";
 			$forum->Status = "Published";
+			$forum->CategoryID = $category->ID;
 			$forum->write();
 			$forum->publish("Stage", "Live");
 
@@ -94,8 +100,8 @@ class Forum extends Page {
 		Requirements::javascript("forum/javascript/ForumAccess.js");
 		Requirements::css("forum/css/Forum_CMS.css");
 
-	  $fields = parent::getCMSFields();
-
+	  	$fields = parent::getCMSFields();
+	
 		$fields->addFieldToTab("Root.Access", new HeaderField(_t('Forum.ACCESSREAD','Who can read the forum?'), 2));
 		$fields->addFieldToTab("Root.Access",
 			new OptionsetField("ForumViewers", "", array(
@@ -123,9 +129,18 @@ class Forum extends Page {
 		$refreshTime = new NumericField("ForumRefreshTime", _t('Forum.REFRECHTIME','Refresh every '));
 		$refreshTime->setRightTitle(_t('Forum.SECONDS',' seconds'));
 		$fields->addFieldToTab("Root.Behaviour", $refreshTime);
-
-		// Without this line, some newer versions of SQL fail (ENUM's are broken)
-		//$fields->addFieldToTab("Root.Access", new HiddenField("Type", "Type", "open"));
+		
+		$fields->addFieldToTab("Root.Category",
+			new HasOneComplexTableField(
+				$this,
+				'Category',
+				'ForumCategory',
+				array(
+					'Title' => 'Title'
+				),
+				'getCMSFields_forPopup'
+			)
+		);
 
 		return $fields;
 	}
@@ -1160,7 +1175,7 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @return string Returns the forum title
 	 */
-	function getSubtitle() {
+	function getHolderSubtitle() {
 		return $this->Title;
 	}
 
@@ -1172,7 +1187,7 @@ class Forum_Controller extends Page_Controller {
 	 * @return string Returns the holders' abstract
 	 * @see ForumHolder::getAbstract()
 	 */
-	function getAbstract() {
+	function getHolderAbstract() {
 		$abstract = DataObject::get_one("ForumHolder")->HolderAbstract;
 		$output = new HTMLText('Abstract');
 		$output->setValue($abstract);
@@ -1235,6 +1250,8 @@ class Forum_Controller extends Page_Controller {
 	/**
 	 * Delete an Attachment 
 	 * Called from the EditPost method. Its Done via Ajax
+	 *
+	 * @return boolean
 	 */
 	function deleteAttachment() {
 
