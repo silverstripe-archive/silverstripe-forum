@@ -20,7 +20,8 @@ class ForumHolder extends Page {
 		"ProfileModify" => "HTMLText", 
 		"ProfileAdd" => "HTMLText",
 		"DisplaySignatures" => "Boolean",
-		"ShowInCategories" => "Boolean"
+		"ShowInCategories" => "Boolean",
+		"AllowGravatars" => "Boolean"
 	);
 
 	static $allowed_children = array('Forum');
@@ -50,7 +51,8 @@ class ForumHolder extends Page {
 		));
 		$fields->addFieldsToTab("Root.Content.Settings", array(
 			new CheckboxField("DisplaySignatures", "Display Member Signatures?"),
-			new CheckboxField("ShowInCategories", "Show Forums In Categories?")
+			new CheckboxField("ShowInCategories", "Show Forums In Categories?"),
+			new CheckboxField("AllowGravatars", "Allow <a href='http://www.gravatar.com/' target='_blank'>Gravatars</a>?")
 		));
 		return $fields;
 	}

@@ -122,6 +122,7 @@ class ForumRole extends DataObjectDecorator {
 	 *                  the registration of new users
 	 */
 	function getForumFields($addMode = false, $showIdentityURL = false) {
+		$gravatarText = (DataObject::get_one("ForumHolder", "AllowGravatars = True")) ? '<small>'. _t('ForumRole.CANGRAVATAR', 'If you use Gravatars then leave this blank') .'</small>' : "";
 		$fieldset = new FieldSet(
 			new HeaderField(_t('ForumRole.PERSONAL','Personal Details')),
 
@@ -139,7 +140,7 @@ class ForumRole extends DataObjectDecorator {
 				: new ReadonlyField("Email", _t('ForumRole.EMAIL'))),
 			new PasswordField("Password", _t('ForumRole.PASSWORD','Password')) ,
 			new PasswordField("ConfirmPassword", _t('ForumRole.CONFIRMPASS','Confirm Password')),
-			new SimpleImageField("Avatar", _t('ForumRole.AVATAR','Upload avatar')),
+			new SimpleImageField("Avatar", _t('ForumRole.AVATAR','Upload avatar ') .' '. $gravatarText),
 			new ReadonlyField("ForumRank", _t('ForumRole.RATING','User rating'))
 		);
 
@@ -160,7 +161,7 @@ class ForumRole extends DataObjectDecorator {
 			$fields->addFieldToTab('Root.Main',new TextField("Nickname", "Nickname"), "FirstName");
 			$fields->addFieldToTab('Root.Main',new TextField("Occupation", "Occupation"), "Surname");
 			$fields->addFieldToTab('Root.Main',new CountryDropdownField("Country", "Country"), "Occupation");
-			$fields->addFieldToTab('Root.Main',new ImageField("Avatar", "Upload avatar. <small>If you want to use your <a href='http://www.gravatar.com/'>Gravatar</a> then leave this blank.</small>"));
+			$fields->addFieldToTab('Root.Main',new ImageField("Avatar", "Upload avatar."));
 			$fields->addFieldToTab('Root.Main',new DropdownField("ForumRank", "User rating", array(
 				"Community Member" => _t('ForumRole.COMMEMBER'),
 				"Administrator" => _t('ForumRole.ADMIN','Administrator'),
@@ -197,8 +198,10 @@ class ForumRole extends DataObjectDecorator {
 	}
 	
 	/** 
-	 * Return the url of the avatar or gravatar of the selected user
-	 *
+	 * Return the url of the avatar or gravatar of the selected user.
+	 * Checks to see if the current user has an avatar, if they do use it
+	 * otherwise query gravatar.com
+	 * 
 	 * @return String
 	 */
 	public function Avatar() {
@@ -216,10 +219,12 @@ class ForumRole extends DataObjectDecorator {
 			$gd->resizeByWidth(80);
 			return $gd;
 		}
-		
-		// ok. no image but can we find a gravatar
-		$grav_url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5($this->Email)."&default=".urlencode($default)."&size=80";
-		return $grav_url;
+		if($holder = DataObject::get_one("ForumHolder", "AllowGravatars = True")) {
+			// ok. no image but can we find a gravatar. Will return the default image as defined above if not.
+			$grav_url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5($this->Email)."&default=".urlencode($default)."&size=80";
+			return $grav_url;
+		}
+		return $default;
 	}
 }
 
