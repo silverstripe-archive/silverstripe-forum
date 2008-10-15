@@ -1,6 +1,8 @@
 <?php
 /**
- * Forum member profile controller
+ * ForumMemberProfile is the profile pages for a given ForumMember
+ * 
+ * @package forum
  */
 class ForumMemberProfile extends Page_Controller {
 

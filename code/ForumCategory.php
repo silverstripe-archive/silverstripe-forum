@@ -4,6 +4,8 @@
  * A Forum Category is applied to each forum page in 
  * a has one relation. These will be editable via the
  * {@link ComplexTableField} on the Forum object 
+ *
+ * @package forum
  */
 
 class ForumCategory extends DataObject {

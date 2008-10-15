@@ -1,11 +1,11 @@
 <?php
-
-
 /**
  * ForumRole
  *
  * This decorator adds the needed fields and methods to the {@link Member}
  * object.
+ *
+ * @package forum
  */
 class ForumRole extends DataObjectDecorator {
 

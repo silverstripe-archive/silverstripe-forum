@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * ForumHolder represents the top forum overview page. Its children
+ * should be Forums. On this page you can also edit your global settings
+ * for the entire forum.
+ * 
+ * @package forum
+ */
+
 class ForumHolder extends Page {
 
 	static $db = array (
@@ -50,10 +58,6 @@ class ForumHolder extends Page {
 }
 
 
-/**
- * ForumHolder Controller
- *
- */
 class ForumHolder_Controller extends Page_Controller {
 
 	/**
@@ -62,8 +66,8 @@ class ForumHolder_Controller extends Page_Controller {
 	function init() {
 		Requirements::themedCSS('Forum');
 		Requirements::javascript("jsparty/jquery/jquery.js");
+		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
 		Requirements::javascript("forum/javascript/forum.js");
-
 		RSSFeed::linkToFeed($this->Link("rss"), "Posts to all forums");
 		parent::init();
 	}

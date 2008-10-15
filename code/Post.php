@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Forum Post. Has a given 'thread' and 'Author'
+ * 
+ * @package forum
+ */
+
 class Post extends DataObject {
 	static $db = array(
 		"Title" => "Varchar(255)",
@@ -186,8 +192,7 @@ class Post extends DataObject {
 			$parents[] = $this->ID;
 			$filter = "AND ParentID IN (" . implode(",", $parents) . ")";
 		}
-		$posts = DataObject::get("Post", "TopicID = $this->TopicID $filter",
-														 "Created DESC", "", 1);
+		$posts = DataObject::get("Post", "TopicID = $this->TopicID $filter", "Created DESC", "", 1);
 		if($posts) return $posts->First();
 	}
 

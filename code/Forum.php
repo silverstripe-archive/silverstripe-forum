@@ -1,7 +1,8 @@
 <?php
-
 /**
- * Class that represents a forum
+ * Forum represents a collection of posts related to threads
+ * 
+ * @package forum
  */
 class Forum extends Page {
 
@@ -368,8 +369,6 @@ class Forum_Controller extends Page_Controller {
  			$member->write();
  		}
 		
-		// IN 0.2 Moving away from prototype. The core still uses it but as of
-		// SilverStripe 2.4 all the JS will be jquery based.
 		Requirements::javascript("forum/javascript/jquery.js"); 
 		Requirements::javascript("forum/javascript/forum.js");
 		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
