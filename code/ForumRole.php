@@ -74,7 +74,7 @@ class ForumRole extends DataObjectDecorator {
 		$this->extend('extraDBFields',$fields);
 		return $fields;
 	}
-
+	
 	function FirstNamePublic() {
 		return $this->owner->FirstNamePublic || Permission::check('ADMIN');
 	}
@@ -160,7 +160,7 @@ class ForumRole extends DataObjectDecorator {
 			$fields->addFieldToTab('Root.Main',new TextField("Nickname", "Nickname"), "FirstName");
 			$fields->addFieldToTab('Root.Main',new TextField("Occupation", "Occupation"), "Surname");
 			$fields->addFieldToTab('Root.Main',new CountryDropdownField("Country", "Country"), "Occupation");
-			$fields->addFieldToTab('Root.Main',new ImageField("Avatar", "Upload avatar"));
+			$fields->addFieldToTab('Root.Main',new ImageField("Avatar", "Upload avatar. <small>If you want to use your <a href='http://www.gravatar.com/'>Gravatar</a> then leave this blank.</small>"));
 			$fields->addFieldToTab('Root.Main',new DropdownField("ForumRank", "User rating", array(
 				"Community Member" => _t('ForumRole.COMMEMBER'),
 				"Administrator" => _t('ForumRole.ADMIN','Administrator'),
@@ -194,6 +194,32 @@ class ForumRole extends DataObjectDecorator {
 		if($this->owner->Nickname) return $this->owner->Nickname;
 		else if($this->owner->FirstName) return $this->owner->FirstName;
 		else return _t('ForumRole.ANONYMOUS','Anonymous user');
+	}
+	
+	/** 
+	 * Return the url of the avatar or gravatar of the selected user
+	 *
+	 * @return String
+	 */
+	public function Avatar() {
+		$default = "forum/images/forummember_holder.gif";
+		if(file_exists(SSViewer::current_theme().'_forum/images/forummember_holder.gif')) {
+			$default = SSViewer::current_theme().'_forum/images/forummember_holder.gif';
+		}
+		// if they have uploaded an image
+		if($this->AvatarID) {
+			$avatar = DataObject::get_by_id("File", $this->AvatarID);
+			if(!$avatar) return $default;
+			
+			// resize
+			$gd = new GD($avatar->Filename);
+			$gd->resizeByWidth(80);
+			return $gd;
+		}
+		
+		// ok. no image but can we find a gravatar
+		$grav_url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5($this->Email)."&default=".urlencode($default)."&size=80";
+		return $grav_url;
 	}
 }
 

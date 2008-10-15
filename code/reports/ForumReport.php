@@ -47,6 +47,7 @@ class ForumReport_MonthlyPosts extends SideReport {
 	function title() {
 		return _t('Forum.FORUMMONTHLYPOSTS',"Forum Posts by Month");
 	}
+	
 	function records() {
 		$members = DB::query("SELECT date_format( Created, '%Y %M' ) as Month , count( Created ) as PostsTotal FROM Post group by date_format( Created, '%M %Y' ) order by Created DESC");
 		$output = array();
@@ -56,8 +57,10 @@ class ForumReport_MonthlyPosts extends SideReport {
 		return $output;
 
 	}
+	
 	function fieldsToShow() {
 	}
+	
 	function getHTML() {
 		$result = "<ul class=\"$this->class\">\n";
 		foreach($this->records() as $record => $value) {

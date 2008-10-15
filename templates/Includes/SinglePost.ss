@@ -1,13 +1,8 @@
 <div class="userInformation">
 	<% control Author %>
 		<a class="authorTitle" href="$Link" title="<% _t('GOTOPROFILE','Go to this User\'s Profile') %>">$Nickname</a><br />
-	<% if Avatar %>
-		<% control Avatar.SetWidth(80) %>
-		<img class="userAvatar" src="$URL" alt="avatar" /><br />
-		<% end_control %>
-	<% else %>
-		<img class="userAvatar" src="forum/images/forummember_holder.gif" alt="$Nickname's avatar" /><br />
-	<% end_if %>
+		
+		<img class="userAvatar" src="$Avatar" alt="avatar" /><br />
 	<% if ForumRank %><span class="rankingTitle expert">$ForumRank</span><br /><% end_if %>
 	<% if NumPosts %><span class="postCount">$NumPosts posts</span><% end_if %>
 	<% end_control %>

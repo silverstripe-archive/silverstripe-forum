@@ -125,11 +125,9 @@ class ForumMemberProfile extends Page_Controller {
 		);
 
 		$member = new Member();
-		$form->loadDataFrom($member);
 
-
-		// If OpenID is used, we should also load the data stored in the session
-		if($use_openid && is_array($data)) {
+		// we should also load the data stored in the session. if failed
+		if(is_array($data)) {
 			$form->loadDataFrom($data);
 		}
 
@@ -181,11 +179,10 @@ class ForumMemberProfile extends Page_Controller {
 					return;
 					}
 		}
-
-  		// create the new member
+		// create the new member
 		$member = Object::create('Member');
 		$form->saveInto($member);
-
+		
 		// check password fields are the same before saving
 		if($data['Password'] == $data['ConfirmPassword']) {
 			$member->Password = $data['Password'];
@@ -196,9 +193,10 @@ class ForumMemberProfile extends Page_Controller {
 
 			// Load errors into session and post back
 			Session::set("FormInfo.Form_RegistrationForm.data", $data);
-			Director::redirectBack();
+			return Director::redirectBack();
 		}
 
+  		
 		$member->write();
 		$member->login();
 		Group::addToGroupByName($member, 'forum-members');
