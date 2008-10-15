@@ -535,10 +535,11 @@ table.postHeader td.gotoButtonEnd a {
 	border-bottom: 5px solid #e1f0f7;
 	padding: 10px 10px 5px 20px;
 }
-	#CurrentlyOnline h3 {
+	#CurrentlyOnline strong {
 		color: #0b6db4;
-		font-size: 14px;
+		font-size: 13px;
 		margin-bottom: 6px;
+		padding-right: 4px;
 		font-weight: bold;
 		font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
 	}
@@ -548,7 +549,7 @@ table.postHeader td.gotoButtonEnd a {
 	}
 		#CurrentlyOnline p a,
 		#CurrentlyOnline span a {
-			color: #0b6db4;
+			color: #888;
 			text-decoration: underline;
 		}
 			#CurrentlyOnline p a:hover,
