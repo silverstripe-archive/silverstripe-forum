@@ -451,13 +451,12 @@ table.postHeader td.gotoButtonEnd a {
 	width: 100%;
 }
 	#TopicList tr th {
-		background: #6a6a6a;
-		border-left: 1px solid #6a6a6a;
-		border-right: 1px solid #6a6a6a;
+		background: #eee;
+		border: 1px solid #c9c9c9;
+		color: #888;
 		padding: 5px;
 		margin: 0;
-		color: #fff;
-		font-size: 11px;
+		font-size: 10px;
 		font-weight: bold;
 	}
 	#TopicList tr {
@@ -472,7 +471,7 @@ table.postHeader td.gotoButtonEnd a {
 		border: 1px solid #e3e3e3;
 		margin: 0;
 		color: #333;
-		line-height: 1.1em;
+		line-height: 11px;
 		vertical-align: top;
 	}
 		#TopicList tr td.forumCategory {
@@ -481,7 +480,7 @@ table.postHeader td.gotoButtonEnd a {
 			#TopicList tr td.forumCategory span.summary p,
 			#TopicList tr td.topicName p.summary {
 				font-size: 10px;
-				line-height: 1.2em;
+				line-height: 14px;
 				margin: 0px;
 			}
 		#TopicList tr td.topicName {
@@ -490,6 +489,12 @@ table.postHeader td.gotoButtonEnd a {
 		#TopicList tr td.count {
 			text-align: center;
 			vertical-align: middle;
+		}
+		#TopicList tr.category td {
+			font-size: 14px;
+			background: #6a6a6a;
+			font-weight: bold;
+			color: #fff;
 		}
 		#TopicList tr td p.userInfo {
 			color: #999;
