@@ -20,7 +20,7 @@ class Post extends DataObject {
 	);
 
 	static $casting = array(
-		"Updated" => "Datetime",
+		"Updated" => "SSDatetime",
 		"RSSContent" => "HTMLText",
 		"RSSAuthor" => "Varchar",
 		"Content" => "Text"

@@ -292,7 +292,7 @@ JS;
 /**
  * Email template for topic notifications
  */
-class ForumMember_TopicNotification extends Email_Template {
+class ForumMember_TopicNotification extends Email {
 	// TODO Figure out why '$Nickname <$Email>' doesn't work for protected $to
 	protected
 		$to = '$Email',

@@ -17,4 +17,14 @@ MemberTableField::addMembershipFields( array(
 	
 //File::setMaxFileSize("100000", "100000", '*');
 
+LeftAndMain::add_menu_item(
+	"forum", 
+	'Forum',
+	"admin/forum/", 
+	"ForumAdmin"
+);
+
+Director::addRules(50, array(
+	'admin/forum/$Action/$ID' => 'ForumAdmin',
+));
 ?>
