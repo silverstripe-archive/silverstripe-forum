@@ -211,12 +211,12 @@ class ForumRole extends DataObjectDecorator {
 		}
 		// if they have uploaded an image
 		if($this->owner->AvatarID) {
-			$avatar = DataObject::get_by_id("File", $this->owner->AvatarID);
+			$avatar = DataObject::get_by_id("Image", $this->owner->AvatarID);
 			if(!$avatar) return $default;
 			
-			// resize
-			$gd = new GD($avatar->getAbsoluteURL());
-			return $gd->resizeByWidth(80);
+			$resizedAvatar = $avatar->SetWidth(80);
+			
+			return $resizedAvatar->URL;
 		}
 		if($holder = DataObject::get_one("ForumHolder", "AllowGravatars = True")) {
 			// ok. no image but can we find a gravatar. Will return the default image as defined above if not.
