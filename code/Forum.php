@@ -840,24 +840,20 @@ class Forum_Controller extends Page_Controller {
 	function postAMessage($data, $form) {
 		if($this->replyModerate() == 'pass') {
 
-			if($data['Parent'])
-				$parent = DataObject::get_by_id('Post',	Convert::raw2sql($data['Parent']));
+			if($data['Parent']) $parent = DataObject::get_by_id('Post',	Convert::raw2sql($data['Parent']));
 
 			// Use an existing post, otherwise create a new one
-			if($data['PostID']) {
+			if(!empty($data['PostID'])) {
 				$post = DataObject::get_by_id('Post', Convert::raw2sql($data['PostID']));
-			}
-			else {
+			} else {
 				$post = new Post();
 			}
 
 			if(isset($parent)) {
 				$currentID = $parent->ID;
-			}
-			else {
+			} else {
 				$currentID = 0;
 			}
-			
 
 			if(Session::get("forumInfo.{$currentID}.postvar") != null) {
 				$data = array_merge($data, Session::get("forumInfo.{$currentID}.postvar"));
@@ -866,29 +862,29 @@ class Forum_Controller extends Page_Controller {
 
 			$this->setViewMode("Edit");
 			$this->setPostVar(null);
+			
 			if($data) {
 				foreach($data as $key => $val) {
 					$post->setField($key, $val);
 				}
 			}
+			
 			$post->ParentID = $data['Parent'];
 
-			$post->TopicID = isset($parent)
-				? $parent->TopicID
-				: "";
+			$post->TopicID = isset($parent) ? $parent->TopicID : '';
 
-			if($member = Member::currentUser())
-				$post->AuthorID = $member->ID;
+			if($member = Member::currentUser()) $post->AuthorID = $member->ID;
 			$post->ForumID = $this->ID;
 			$post->write();
 			
 			// Upload and Save all files attached to the field
-			if($data['Attachment']) {
+			if(!empty($data['Attachment'])) {
 				
 				// Attachment will always be blank, If they had an image it will be at least in Attachment-0
 				$id = 0;
-				while(isset($data['Attachment-'.$id])) {
-					$image = $data['Attachment-'.$id];
+				while(isset($data['Attachment-' . $id])) {
+					$image = $data['Attachment-' . $id];
+					
 					if($image) {
 						// check to see if a file of same exists
 						$title = Convert::raw2sql($image['name']);
@@ -903,6 +899,7 @@ class Forum_Controller extends Page_Controller {
 							$file->write();
 						}
 					}
+					
 					$id++;
 				}
 			}
