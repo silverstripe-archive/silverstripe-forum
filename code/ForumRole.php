@@ -98,8 +98,7 @@ class ForumRole extends DataObjectDecorator {
 	}
 	function NumPosts() {
 		if(is_numeric($this->owner->ID)) {
-			return (int)DB::query("SELECT count(*) FROM Post WHERE AuthorID = '" .
-														$this->owner->ID . "'")->value();
+			return (int)DB::query("SELECT count(*) FROM Post WHERE AuthorID = '" . $this->owner->ID . "'")->value();
 		} else {
 			return 0;
 		}
@@ -204,10 +203,11 @@ class ForumRole extends DataObjectDecorator {
 	 * 
 	 * @return String
 	 */
-	public function Avatar() {
+	function GetAvatar() {
+
 		$default = "forum/images/forummember_holder.gif";
-		if(file_exists(SSViewer::current_theme().'_forum/images/forummember_holder.gif')) {
-			$default = SSViewer::current_theme().'_forum/images/forummember_holder.gif';
+		if(file_exists('themes/'. SSViewer::current_theme().'_forum/images/forummember_holder.gif')) {
+			$default = 'themes/'. SSViewer::current_theme().'_forum/images/forummember_holder.gif';
 		}
 		// if they have uploaded an image
 		if($this->AvatarID) {
@@ -217,13 +217,15 @@ class ForumRole extends DataObjectDecorator {
 			// resize
 			$gd = new GD($avatar->Filename);
 			$gd->resizeByWidth(80);
-			return $gd;
+
+			return $gd->URL;
 		}
 		if($holder = DataObject::get_one("ForumHolder", "AllowGravatars = True")) {
 			// ok. no image but can we find a gravatar. Will return the default image as defined above if not.
 			$grav_url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5($this->Email)."&default=".urlencode($default)."&size=80";
 			return $grav_url;
 		}
+
 		return $default;
 	}
 }
