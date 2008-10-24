@@ -210,8 +210,8 @@ class ForumRole extends DataObjectDecorator {
 			$default = 'themes/'. SSViewer::current_theme().'_forum/images/forummember_holder.gif';
 		}
 		// if they have uploaded an image
-		if($this->AvatarID) {
-			$avatar = DataObject::get_by_id("File", $this->AvatarID);
+		if($this->owner->AvatarID) {
+			$avatar = DataObject::get_by_id("File", $this->owner->AvatarID);
 			if(!$avatar) return $default;
 			
 			// resize
