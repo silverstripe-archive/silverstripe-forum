@@ -23,7 +23,7 @@
 			<tr class="$EvenOdd">
 				<td class="forumCategory">
 					<% control Topic %>
-					<a class="topicTitle" href="$Link" title="<% sprintf(_t('',"Go to the %s topic"),$Title.EscapeXML) %>">$Title</a>
+					<a class="topicTitle" href="$Link" title="<% sprintf(_t('Forum.ss.GOTOTHISTOPIC',"Go to the %s topic"),$Title.EscapeXML) %>">$Title</a>
 					<% end_control %>
 				</td>
 				<td>

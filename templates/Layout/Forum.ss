@@ -23,7 +23,7 @@
 				<% control Topics %>
 					<tr class="$EvenOdd">
 						<td class="topicName">
-							<a class="topicTitle" href="$Link" title="<% sprintf(_t('',"Go to the %s topic"),$Title.EscapeXML) %>">$Title</a>
+							<a class="topicTitle" href="$Link" title="<% sprintf(_t('Forum.ss.GOTOTHISTOPIC',"Go to the %s topic"),$Title.EscapeXML) %>">$Title</a>
 							<p class="summary">
 								<% control Author %>
 									<% if Link %>
