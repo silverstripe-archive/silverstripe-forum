@@ -53,56 +53,6 @@ $lang['en_US']['Forum']['WELCOMEFORUM'] = 'Welcome to SilverStripe Forum Module!
 $lang['en_US']['Forum']['WELCOMEFORUMHOLDER'] = 'Welcome to SilverStripe Forum Module! This is the default ForumHolder page. You can now add forums.';
 $lang['en_US']['Forum']['WRONGPERMISSION'] = 'You don\'t have the correct permissions to edit this post.';
 $lang['en_US']['Forum']['YES'] = 'Yes';
-$lang['en_US']['Forum']['db_Abstract'] = array(
-	'Abstract',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Forum']['db_CanAttachFiles'] = array(
-	'CanAttachFiles',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Forum']['db_ForumPosters'] = array(
-	'ForumPosters',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Forum']['db_ForumPostersGroup'] = array(
-	'ForumPostersGroup',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Forum']['db_ForumRefreshOn'] = array(
-	'ForumRefreshOn',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Forum']['db_ForumRefreshTime'] = array(
-	'ForumRefreshTime',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Forum']['db_ForumViewers'] = array(
-	'ForumViewers',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Forum']['db_ForumViewersGroup'] = array(
-	'ForumViewersGroup',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Forum']['db_RequiredLogin'] = array(
-	'RequiredLogin',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Forum']['db_Type'] = array(
-	'Type',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
 $lang['en_US']['Forum.ss']['BY'] = 'by';
 $lang['en_US']['Forum.ss']['CLICKTOUSER'] = 'Click here to view';
 $lang['en_US']['Forum.ss']['GOTOFIRSTUNREAD'] = 'Go to the first unread post in the %s topic.';
@@ -128,21 +78,6 @@ $lang['en_US']['ForumCategory']['SINGULARNAME'] = array(
 	50,
 	'Singular name of the object, used in dropdowns and to generally identify a single object in the interface'
 );
-$lang['en_US']['ForumCategory']['db_StackableOrder'] = array(
-	'StackableOrder',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['ForumCategory']['db_Title'] = array(
-	'Title',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['ForumCategory']['has_many_Forums'] = array(
-	'Forums',
-	50,
-	'Name of an object relation, mainly used for automatically generating forms'
-);
 $lang['en_US']['ForumFooter.ss']['CURRENTLYON'] = 'Currently Online:';
 $lang['en_US']['ForumFooter.ss']['ISONLINE'] = ' is online';
 $lang['en_US']['ForumFooter.ss']['LATESTMEMBER'] = 'Welcome to our latest member:';
@@ -167,61 +102,6 @@ $lang['en_US']['ForumHolder']['SINGULARNAME'] = array(
 	'Forum Holder',
 	50,
 	'Singular name of the object, used in dropdowns and to generally identify a single object in the interface'
-);
-$lang['en_US']['ForumHolder']['db_AllowGravatars'] = array(
-	'AllowGravatars',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['ForumHolder']['db_DisplaySignatures'] = array(
-	'DisplaySignatures',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['ForumHolder']['db_ForumAbstract'] = array(
-	'ForumAbstract',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['ForumHolder']['db_ForumSubtitle'] = array(
-	'ForumSubtitle',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['ForumHolder']['db_HolderAbstract'] = array(
-	'HolderAbstract',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['ForumHolder']['db_HolderSubtitle'] = array(
-	'HolderSubtitle',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['ForumHolder']['db_ProfileAbstract'] = array(
-	'ProfileAbstract',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['ForumHolder']['db_ProfileAdd'] = array(
-	'ProfileAdd',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['ForumHolder']['db_ProfileModify'] = array(
-	'ProfileModify',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['ForumHolder']['db_ProfileSubtitle'] = array(
-	'ProfileSubtitle',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['ForumHolder']['db_ShowInCategories'] = array(
-	'ShowInCategories',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
 );
 $lang['en_US']['ForumHolder.ss']['FORUM'] = 'Forum';
 $lang['en_US']['ForumHolder.ss']['FORUMS'] = 'Forums';
@@ -376,36 +256,6 @@ $lang['en_US']['Post']['TOPICCREATED'] = 'Topic Created';
 $lang['en_US']['Post']['TOPICDETAILS'] = 'Topic Details';
 $lang['en_US']['Post']['TOPICINTERNALID'] = 'Topic Internal ID';
 $lang['en_US']['Post']['TOPICLASTEDIT'] = 'Topic Last Edited';
-$lang['en_US']['Post']['db_Content'] = array(
-	'Content',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Post']['db_NumViews'] = array(
-	'NumViews',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Post']['db_Status'] = array(
-	'Status',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Post']['db_Title'] = array(
-	'Title',
-	50,
-	'Name of the object property, mainly used for automatically generating forms'
-);
-$lang['en_US']['Post']['has_many_Attachments'] = array(
-	'Attachments',
-	50,
-	'Name of an object relation, mainly used for automatically generating forms'
-);
-$lang['en_US']['Post']['has_many_Children'] = array(
-	'Children',
-	50,
-	'Name of an object relation, mainly used for automatically generating forms'
-);
 $lang['en_US']['SinglePost.ss']['ATTACHED'] = 'Attached Files';
 $lang['en_US']['SinglePost.ss']['GOTOPROFILE'] = 'Go to this User\'s Profile';
 $lang['en_US']['SinglePost.ss']['LASTEDITED'] = 'Last edited:';
