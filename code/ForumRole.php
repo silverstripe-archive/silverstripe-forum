@@ -157,11 +157,11 @@ class ForumRole extends DataObjectDecorator {
 
 	function updateCMSFields(FieldSet &$fields) {
 		if(Permission::checkMember($this->owner->ID, "ACCESS_FORUM")) {
-			$fields->addFieldToTab('Root.Main',new TextField("Nickname", "Nickname"), "FirstName");
-			$fields->addFieldToTab('Root.Main',new TextField("Occupation", "Occupation"), "Surname");
-			$fields->addFieldToTab('Root.Main',new CountryDropdownField("Country", "Country"), "Occupation");
-			$fields->addFieldToTab('Root.Main',new ImageField("Avatar", "Upload avatar."));
-			$fields->addFieldToTab('Root.Main',new DropdownField("ForumRank", "User rating", array(
+			$fields->addFieldToTab('Root.Forum',new TextField("Nickname", "Nickname"), "FirstName");
+			$fields->addFieldToTab('Root.Forum',new TextField("Occupation", "Occupation"), "Surname");
+			$fields->addFieldToTab('Root.Forum',new CountryDropdownField("Country", "Country"), "Occupation");
+			$fields->addFieldToTab('Root.Forum',new ImageField("Avatar", "Upload avatar."));
+			$fields->addFieldToTab('Root.Forum',new DropdownField("ForumRank", "User rating", array(
 				"Community Member" => _t('ForumRole.COMMEMBER'),
 				"Administrator" => _t('ForumRole.ADMIN','Administrator'),
 				"Moderator" => _t('ForumRole.MOD','Moderator')
