@@ -1,6 +1,6 @@
 <% include ForumHeader %>
 	<div class="forumHolderFeatures">
-		<table id="TopicList">
+		<table id="TopicOverview" class="topicList">
 			<% if ShowInCategories %>
 				<% control Forums %>
 					<tr class="category"><td colspan="4">$Title</td></tr>

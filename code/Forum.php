@@ -256,6 +256,7 @@ class Forum extends Page {
 
 	/**
 	 * Returns the topics (first posting of each thread) for this forum
+	 * @return DataObjectSet
 	 */
 	function Topics() {
 		if(Member::currentUser()==$this->Moderator() && is_numeric($this->ID)) {
@@ -266,12 +267,22 @@ class Forum extends Page {
 		
 		if(isset($_GET['start']) && is_numeric($_GET['start'])) $limit = Convert::raw2sql($_GET['start']) . ", 30";
 		else $limit = 30;
-			
-		return DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and $statusFilter", "max(PostList.Created) DESC",
+
+		return DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and `Post`.IsSticky = 0 and $statusFilter", "max(PostList.Created) DESC",
 			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $limit
 		);
 	}
-
+	
+	/**
+	 * Return the Sticky Threads
+	 * @return DataObjectSet
+	 */
+	function StickyTopics() {
+		return DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and `Post`.IsSticky = 1", "max(PostList.Created) DESC",
+			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID"
+		);
+	}
+	
 
 	function getTopicsByStatus($status){
 		if(is_numeric($this->ID)) {
@@ -1077,14 +1088,6 @@ class Forum_Controller extends Page_Controller {
 	}
 	
 	/**
-	 * @deprecated We have removed flat / tree views
-	 */
-	function flat() {
-		return new user_error("Flat and Tree options have been similified to just flat view", E_USER_ERROR);
-	}
-	
-	
-	/**
 	 * Get the RSS feed
 	 *
 	 * This method outputs the RSS feed to the browser. If the URL parameter
@@ -1552,33 +1555,62 @@ class Forum_Controller extends Page_Controller {
 	
 	/**
 	 * Return true if user is admin
+	 * @return Boolean
 	 */
 	function isAdmin() {
 		return (Member::currentUser() && Member::currentUser()->isAdmin()) ? true : false;
 	}
 	
+	/**
+	 * Returns the Forum Message from Session. This
+	 * is used for things like Moving thread messages
+	 * @return String
+	 */
+	function ForumAdminMsg() {
+		$message = Session::get('ForumAdminMsg');
+		Session::clear('ForumAdminMsg');
+		return $message;
+	}
+	
+	
 	/** 
-	 * Move thread form. Handles the dropdown to select the new forum category
+	 * Forum Admin Features form. 
+	 * Handles the dropdown to select the new forum category and the checkbox for stickyness
+	 *
 	 * @return Form
 	 */
-	function MoveThreadForm() {
-		$forums = DataObject::get("Forum", "`Forum`.ID != '$this->ID'");
-		if(!$forums) return false;
+	function AdminFormFeatures() {
+		$id = Convert::raw2sql(Director::urlParam('ID'));
+		
+		// Check to see if sticky
+		$checked = false;
+		if($posts = $this->Posts()) {
+			$checked = ($posts->First()->IsSticky) ? true : false;
+		}
+		// Default Fields
 		$fields = new FieldSet(
-			new DropdownField("NewForum", "Move Thread. Select The New Forum: ", $forums->toDropDownMap()),
-			new HiddenField("Topic", "Topic", Convert::raw2sql(Director::urlParam('ID')))
+			new CheckboxField('IsSticky', 'Is this a Sticky Thread?', $checked),
+			new HiddenField("Topic", "Topic",$id)
 		);
+		
+		// Move Thread Dropdown
+		$forums = DataObject::get("Forum", "`Forum`.ID != '$this->ID'");
+		if($forums) {
+			$fields->push(new DropdownField("NewForum", "Change Thread Forum", $forums->toDropDownMap('ID', 'Title', 'Select New Category:')), '', null, 'Select New Location:');
+		}
+
+		// Save Actions
 		$actions = new FieldSet(
-			new FormAction('doMoveThreadForm', 'Move')
+			new FormAction('doAdminFormFeatures', 'Save')
 		);
-		return new Form($this, 'MoveThreadForm', $fields, $actions);
+		return new Form($this, 'AdminFormFeatures', $fields, $actions);
 	}
 	
 	/** 
 	 * Process's the moving of a given topic. Has to check for admin privledges,
 	 * passed an old topic id (post id in URL) and a new topic id
 	 */
-	function doMoveThreadForm($data, $form) {
+	function doAdminFormFeatures($data, $form) {
 		// check we are admin before we process anything
 		if(!$this->CheckForumPermissions('admin')) return false;
 		
@@ -1588,17 +1620,21 @@ class Forum_Controller extends Page_Controller {
 		// get all posts in that topic
 		$newForum = Convert::raw2sql($data['NewForum']);
 		$posts = DataObject::get("Post", "`Post`.TopicID = '$oldTopic'");
-		if(!$posts) return user_error("No Posts Found", E_USER_ERROR);
 		
-		// update all the posts under that topic to the new forum.
+		if(!$posts) return user_error("No Posts Found", E_USER_ERROR);
+
+		// update all the posts under that topic to the sticky status and / or the 
+		// new thread location
 		foreach($posts as $post) {
-			$post->ForumID = $newForum;
+			if($newForum > 0) {
+				$post->ForumID = $newForum;
+			}
+			$post->IsSticky = ($data['IsSticky']) ? true : false;
 			$post->write();
 		}
+		Session::set('ForumAdminMsg','Thread Settings Have Been Updated');
 		
-		return array(
-			'ForumAdminMsg' => 'Thread Has Been Moved.'
-		);
+		return Director::redirect($this->URLSegment.'/');
 	}
 }
 

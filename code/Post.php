@@ -1,18 +1,25 @@
 <?php
 
 /**
- * Forum Post. Has a given 'thread' and 'Author'
- * 
+ * Forum Post Object
+ *
+ * A SilverStripe Forum doesn't have 'Threads' as such rather a linkedlist
+ * of forum posts. This is a single post object with all related fields 
+ * and information.
+ *
  * @package forum
  */
 
 class Post extends DataObject {
+	
 	static $db = array(
 		"Title" => "Varchar(255)",
 		"Content" => "Text",
 		"Status" => "Enum('Awaiting, Moderated, Rejected, Archived', 'Moderated')",
 		"NumViews" => "Int",
+		"IsSticky" => "Boolean"
 	);
+	
 	static $default_sort = "LastEdited DESC";
 
 	static $indexes = array(
@@ -42,14 +49,10 @@ class Post extends DataObject {
 		"Hierarchy",
 	);
 
-
-	function hasChildren(){
-		$children = $this->Children();
-		return($children&&$children->count());
-
-	}
-
-
+	/**
+	 * Save the parent ID and the topic ID before
+	 * writing this object to the database
+	 */
 	function onBeforeWrite() {
 		if(!$this->ParentID && !$this->TopicID) {
 			if($this->ID){
@@ -62,14 +65,16 @@ class Post extends DataObject {
 		parent::onBeforeWrite();
 	}
 
-
+	/**
+	 * Return the Authors Full Name
+	 * @return String
+	 */
 	function AuthorFullName(){
 		if($this->Author()->ID)
 			return $this->Author()->FirstName." ".$this->Author()->Surname;
 		else
 			return _t('Forum.VISITOR');
 	}
-
 
 	function IsModerator(){
 		return Member::currentUser()==$this->Forum()->Moderator();
@@ -106,12 +111,6 @@ class Post extends DataObject {
 	function ForumURLSegment(){
 		return $this->Forum()->URLSegment;
 	}
-
-
-	function util_isRoot() {
-		return $this->ParentID == 0;
-	}
-
 
 	function getTitle() {
 		$title = $this->getField('Title');
@@ -217,10 +216,10 @@ class Post extends DataObject {
 		return $html;
 	}
 
-
+	
 	function RSSAuthor() {
 		$author = $this->Author();
-		return "$author->FirstName $author->Surname";
+		return $author->Nickname;
 	}
 
 
@@ -256,157 +255,6 @@ class Post extends DataObject {
 		if($this->ParentID == 0) return $baseLink . "show/" . $this->ID;
 		else return $baseLink . "show/" . $this->TopicID  . '?showPost=' . $this->ID;
 	}
-
-
-	function getCMSFields(){ //Topic is-a Post, so here we are getting all the posts for that topic
-		$authors = DataObject::get("Member");
-
-		$ret = new FieldSet(
-			new TabSet(_t('Post.MAIN','Main'),
-				new Tab(_t('Post.TOPICDETAILS','Topic Details'),
-					new ReadonlyField("ID", _t('Post.TOPICINTERNALID','Topic Internal ID')),
-					new ReadonlyField("Created", _t('Post.TOPICCREATED','Topic Created')),
-					new ReadonlyField("LastEdited", _t('Post.TOPICLASTEDIT','Topic Last Edited')),
-					new TextField("Title", _t('Post.TITLE','Title')),
-					new TextareaField("Content", _t('Post.CONTENT','Content')),
-					new DropdownField("Status", _t('Post.STATUS','Status'), array(
-						'Awaiting' => _t('Post.AWAITING','Awaiting'),
-						'Moderated' => _t('Post.MODERATED','Moderated'),
-						'Rejected' => _t('Post.REJECTED','Rejected'),
-						'Archived' => _t('Post.ARCHIVED','Archived')
-					)),
-					new DropdownField("AuthorID", _t('Post.AUTHOR','Author'), $authors->map())
-				),
-				new Tab(_t('Post.ACTIVEPOSTS','Active Posts'),
-					$activePosts = new ComplexTableField(
-						$controller = null,
-						$name = "ActivePosts",
-						$sourceClass = "Post",
-						$fieldList = array(
-							"Created"=> _t('Post.CREATED','Created'),
-							"LastEdited" => _t('Post.LASTEDIT','Last Edited'),
-							"Title" => _t('Post.TITLE'),
-							"Status" => _t('Post.STATUS'),
-							"Content" => _t('Post.CONTENT')
-						),
-						$fieldList = "getCMSFields_forPopup",
-						$sourceFilter = "TopicID = '$this->ID' AND ParentID <> 0 AND Status = 'Moderated'",
-						"Created DESC"
-					)
-				),
-
-				new Tab(_t('Post.AWAITINGPOSTS','Awaiting Posts'),
-					$awaitingPosts = new ComplexTableField(
-						$controller = null,
-						$name = "AwaitingPosts",
-						$sourceClass = "Post",
-						$fieldList = array(
-							"Created"=> _t('Post.CREATED','Created'),
-							"LastEdited" => _t('Post.LASTEDIT'),
-							"Title" => _t('Post.TITLE'),
-							"Status" => _t('Post.STATUS'),
-							"Content" => _t('Post.CONTENT')
-						),
-						$fieldList = "getCMSFields_forPopup",
-						$sourceFilter = "TopicID = '$this->ID' AND ParentID <> 0 AND Status = 'Awaiting'",
-						"Created DESC"
-					)
-				),
-				new Tab(_t('Post.REJECTEDPOSTS','Rejected Posts'),
-					$rejectedPosts = new ComplexTableField(
-						$controller = null,
-						$name = "RejectedPosts",
-						$sourceClass = "Post",
-						$fieldList = array(
-							"Created"=> _t('Post.CREATED'),
-							"LastEdited" => _t('Post.LASTEDIT'),
-							"Title" => _t('Post.TITLE'),
-							"Content" => _t('Post.CONTENT')
-						),
-						$fieldList = "getCMSFields_forPopup",
-						$sourceFilter = "TopicID = '$this->ID' AND ParentID <> 0 AND Status = 'Rejected'",
-						"Created DESC"
-					)
-				)
-			)
-		);
-		$activePosts->setFieldCasting(
-			array(
-				"Content" => "Text->LimitWordCountPlainText(20)"
-			)
-		);
-		$activePosts->setPermissions(
-			array("show", "edit")
-		);
-
-		$awaitingPosts->setFieldCasting(
-			array(
-				"Content" => "Text->LimitWordCountPlainText(20)"
-			)
-		);
-		$awaitingPosts->setPermissions(
-			array("add", "edit", "show")
-		);
-
-		$rejectedPosts->setFieldCasting(
-			array(
-				"Content" => "Text->LimitWordCountPlainText(20)"
-			)
-		);
-		$rejectedPosts->setPermissions(
-			array("show", "delete")
-		);
-
-		return $ret;
-	}
-
-
-	function getCMSFields_forPopup(){
-		$authors = DataObject::get("Member");
-
-		$topicID = $this->TopicID
-			?$this->TopicID
-			:$this->ParentID;
-
-		$postsExceptMyselft = DataObject::get("Post",
-			"TopicID = '$topicID' AND (ParentID <> 0 AND ID <> '$this->ID' OR ParentID = 0) AND Status = 'Moderated'");
-
-		if(!$postsExceptMyselft||!$postsExceptMyselft->count()) {
-			$postsExceptMyselft = new DataObjectSet();
-		}
-		$ret = new FieldSet(
-			new DropdownField("AuthorID", sprintf(_t('Post.POSTEDBY',"Posted By %s"),$authors->map()) ),
-			new DropdownField("ParentID", sprintf(_t('Post.POSTREPLIEDTO',"Post Replied To %s"),$postsExceptMyselft->map())),
-			new TextField("Title", _t('Post.TITLE')),
-			new TextareaField("Content", _t('Post.CONTENT')),
-			new DropdownField("Status", _t('Post.STATUS'),
-				array(
-					"Awaiting"=> _t('Post.AWAITING'),
-					"Moderated"=> _t('Post.MODERATED'),
-					"Rejected"=> _t('Post.REJECTED')
-				)
-			),
-			new HiddenField("TopicID", "", $topicID)
-		);
-
-		return $ret;
-	}
-
-
-	function getCMSActions(){
-		return new FieldSet(
-			new FormAction('save', _t('Post.SAVE','Save'), 'ajaxAction-save'),
-			new FormAction("archive", _t('Post.ARCHIVE','Archive'), 'ajaxAction->archive')
-		);
-	}
-
-
-	function LimitWordCountPlainText($numWords){
-		/*debug::show($this->Countent.LimitWordCountPlainText($numWords));
-		die*/
-		return $this->Countent;
-	}
-
 }
 
 /**
@@ -497,7 +345,7 @@ class Post_Attachment extends File {
 		}
 
 		// Missing something or hack attempt
-		Director::redirectBack();
+		return Director::redirectBack();
 	}
 }
 

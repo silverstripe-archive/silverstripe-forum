@@ -81,7 +81,7 @@
 		<div class="clear"><!-- --></div>
 		<div id="ForumAdminFeatures">
 			<h3>Forum Admin Features</h3>
-			$MoveThreadForm
+			$AdminFormFeatures
 		</div>
 	<% end_if %>
 <% include ForumFooter %>

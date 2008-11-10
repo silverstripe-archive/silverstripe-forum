@@ -446,11 +446,11 @@ table.postHeader td.gotoButtonEnd a {
 
 /* TOPIC LISTING VIEW 
 ----------------------------------- */
-#TopicList {
+.topicList {
 	border-collapse: collapse;
 	width: 100%;
 }
-	#TopicList tr th {
+	.topicList tr th {
 		background: #eee;
 		border: 1px solid #c9c9c9;
 		color: #888;
@@ -459,13 +459,17 @@ table.postHeader td.gotoButtonEnd a {
 		font-size: 10px;
 		font-weight: bold;
 	}
-	#TopicList tr {
+	.topicList tr {
 		background: #fff;
 	}
-		#TopicList tr.odd {
+		.topicList tr.odd {
 			background: #f5f5f5;
 		}
-	#TopicList tr td {
+		.topicList tr.stickyPost {
+			background: #f8e7d3;
+			border: 1px solid #e7ccad;
+		}
+	.topicList tr td {
 		padding: 7px;
 		font-size: 1.2em;
 		border: 1px solid #e3e3e3;
@@ -474,54 +478,54 @@ table.postHeader td.gotoButtonEnd a {
 		line-height: 11px;
 		vertical-align: top;
 	}
-		#TopicList tr td.forumCategory {
+		.topicList tr td.forumCategory {
 			width: 60%;
 		}
-			#TopicList tr td.forumCategory span.summary p,
-			#TopicList tr td.topicName p.summary {
+			.topicList tr td.forumCategory span.summary p,
+			.topicList tr td.topicName p.summary {
 				font-size: 10px;
 				line-height: 14px;
 				margin: 0px;
 			}
-		#TopicList tr td.topicName {
+		.topicList tr td.topicName {
 			width: 75%;
 		}
-		#TopicList tr td.count {
+		.topicList tr td.count {
 			text-align: center;
 			vertical-align: middle;
 		}
-		#TopicList tr.category td {
+		.topicList tr.category td {
 			font-size: 14px;
 			background: #6a6a6a;
 			font-weight: bold;
 			color: #fff;
 		}
-		#TopicList tr td p.userInfo {
+		.topicList tr td p.userInfo {
 			color: #999;
 			margin:0;
 		}
-		#TopicList tr td a {
+		.topicList tr td a {
 			color: #1c7bbf;
 			text-decoration: none;
 		}
-			#TopicList tr td a.topicTitle {
+			.topicList tr td a.topicTitle {
 				font-weight: bold;
 				display: block;
 				margin-bottom: 4px;
 			}
-				#TopicList tr td.lastPost a.topicTitle {
+				.topicList tr td.lastPost a.topicTitle {
 					font-size: 10px;
 					margin: 0;
 				}
-			#TopicList tr td a:hover {
+			.topicList tr td a:hover {
 				text-decoration: underline;
 			}
-		#TopicList .lastPost p {
+		.topicList .lastPost p {
 			font-size: 0.75em;
 			line-height: 1.5em;
 		}
 
-		#TopicList .lastPost img {
+		.topicList .lastPost img {
 			vertical-align: middle;
 		}
 
