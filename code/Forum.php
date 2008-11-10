@@ -839,7 +839,6 @@ class Forum_Controller extends Page_Controller {
 	 */
 	function postAMessage($data, $form) {
 		if($this->replyModerate() == 'pass') {
-
 			if($data['Parent']) $parent = DataObject::get_by_id('Post',	Convert::raw2sql($data['Parent']));
 
 			// Use an existing post, otherwise create a new one
@@ -1383,7 +1382,7 @@ class Forum_Controller extends Page_Controller {
 		}
 
 		// User authentication
-		if(Member::currentUser() && (Member::currentUser()->_isAdmin() || Member::currentUser()->ID == $this->currentPost->AuthorID)) {
+		if(Member::currentUser() && (Member::currentUser()->isAdmin() || Member::currentUser()->ID == $this->currentPost->AuthorID)) {
 			// Convert the values to SQL-safe values
 	    	$data['ID'] = Convert::raw2sql($data['ID']);
 		  	$data['Title'] = Convert::raw2sql($data['Title']);
