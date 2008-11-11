@@ -1084,7 +1084,7 @@ class Forum_Controller extends Page_Controller {
 			$this->NewPostsAvailable(null, null, $this->urlParams['ID'], $data);
 
       		// No information provided by the client, just return the last posts
-			$rss = new RSSFeed($this->RecentPosts($this->urlParams['ID'], 10),
+			$rss = new RSSFeed($this->RecentPosts($this->urlParams['ID'], 30),
 												 $this->Link(),
 												 sprintf(_t('Forum.RSSFORUMPOSTSTO',"Forum posts to '%s'"),$this->Title), "", "Title",
 												 "RSSContent", "RSSAuthor",

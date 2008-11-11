@@ -143,7 +143,7 @@ class Post extends DataObject {
 			return false;
 		}
 	}
-
+	
 
 	function DeleteLink() {
 	  $id = " ";
@@ -155,6 +155,13 @@ class Post extends DataObject {
 	  else
 			return false;
 	}
+	function ReplyLink() {
+		return "<a href=\"{$this->Forum()->Link()}reply/{$this->ID}\">" . _t('Post.REPLYLINK','Post Reply') . "</a>";
+	}
+	function ShowLink() {
+		return "<a href=\"{$this->Forum()->Link()}show/{$this->ID}\">" . _t('Post.SHOWLINK','Show Thread') . "</a>";
+	}
+	
 	
 	/** 
 	 * Are Forum Signatures on Member profiles allowed
@@ -214,6 +221,7 @@ class Post extends DataObject {
 		$parser = new BBCodeParser($this->Content);
 		$html = $parser->parse();
 		if($this->Topic()) $html .= '<br><br>' . sprintf(_t('Post.POSTEDTO',"Posted to: %s"),$this->Topic()->Title);
+		$html .= " ". $this->ShowLink() . " | " .$this->ReplyLink();
 		return $html;
 	}
 
