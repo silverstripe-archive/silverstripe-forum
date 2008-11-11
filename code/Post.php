@@ -17,7 +17,8 @@ class Post extends DataObject {
 		"Content" => "Text",
 		"Status" => "Enum('Awaiting, Moderated, Rejected, Archived', 'Moderated')",
 		"NumViews" => "Int",
-		"IsSticky" => "Boolean"
+		"IsSticky" => "Boolean",
+		"IsReadOnly" => "Boolean"
 	);
 	
 	static $default_sort = "LastEdited DESC";

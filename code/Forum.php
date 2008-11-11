@@ -304,15 +304,22 @@ class Forum extends Page {
 	 *              FALSE.
 	 */
 	function CheckForumPermissions($type = "view") {
+		$member = Member::currentUser();
 		switch($type) {
 			// Check posting permissions
 			case "post":
-				if($this->ForumPosters == "Anyone" ||
-					 ($this->ForumPosters == "LoggedInUsers" && Member::currentUser()) 
+				if($this->ForumPosters == "Anyone" || ($this->ForumPosters == "LoggedInUsers" && $member) 
 					|| ($this->ForumPosters == "OnlyTheseUsers" &&
-					 Member::currentUser() &&
-							Member::currentUser()->isInGroup($this->ForumPostersGroup)))
-					return true;
+					 $member && $member->isInGroup($this->ForumPostersGroup))) {
+						// now check post can write
+						if($this->Post() && (!$this->Post()->IsReadOnly || $member->isAdmin()))	{
+							return true;
+						}
+						else {
+							return false;
+						}
+					}
+			
 				else
 					return false;
 				break;
@@ -470,30 +477,8 @@ class Forum_Controller extends Page_Controller {
 	 * @param string type
 	 */
 	function CheckForumPermissions($type = "view") {
-	  switch($type) {
-			// Check posting permissions
-			case "post":
-				if($this->ForumPosters == "Anyone" ||
-					 ($this->ForumPosters == "LoggedInUsers" && Member::currentUser()) ||
-					 ($this->ForumPosters == "OnlyTheseUsers" && Member::currentUser() &&
-							Member::currentUser()->isInGroup($this->ForumPostersGroup)))
-					return true;
-				else
-					return false;
-				break;
-
-			// Check viewing forum permissions
-			case "view":
-			default:
-				if($this->ForumViewers == "Anyone" ||
-					 ($this->ForumViewers == "LoggedInUsers" && Member::currentUser()) ||
-					 ($this->ForumViewers == "OnlyTheseUsers" && Member::currentUser() &&
-							Member::currentUser()->isInGroup($this->ForumViewersGroup)))
-					return true;
-				else
-					return false;
-			break;
-		}
+	  	$forum = DataObject::get_by_id("Forum", $this->ID);
+		return $forum->CheckForumPermissions($type);
 	}
 
 	/**
@@ -777,12 +762,14 @@ class Forum_Controller extends Page_Controller {
 			return;
 		}
 
-		Requirements::javascript("forum/javascript/Forum_reply.js");
-
 		if(!$this->currentPost) {
 			$this->currentPost = $this->Post($this->urlParams['ID']);
 		}
-
+		if($this->currentPost && ($this->currentPost->IsReadOnly == true && !$this->isAdmin())) {
+			Session::set('ForumAdminMsg', 'Sorry this Thread is Read only');
+			return Director::redirect($this->URLSegment.'/');
+		}
+		
 		// See if this user has already subscribed
 		if($this->currentPost)
 			$subscribed = Post_Subscription::already_subscribed($this->currentPost->TopicID);
@@ -849,125 +836,117 @@ class Forum_Controller extends Page_Controller {
 	 * @param Form $form The used form
 	 */
 	function postAMessage($data, $form) {
-		if($this->replyModerate() == 'pass') {
-			if($data['Parent']) $parent = DataObject::get_by_id('Post',	Convert::raw2sql($data['Parent']));
+		$member = Member::currentUser();
+		
+		if($data['Parent']) $parent = DataObject::get_by_id('Post',	Convert::raw2sql($data['Parent']));
+		
+		// check they have correct posting rights
+		if($parent && ($parent->IsReadOnly == true && !$this->isAdmin())) {
+			Session::set('ForumAdminMsg', 'Sorry this Thread is Read only');
+			return Director::redirect($this->URLSegment.'/');
+		} 
+		// Use an existing post, otherwise create a new one
+		if(!empty($data['PostID'])) {
+			$post = DataObject::get_by_id('Post', Convert::raw2sql($data['PostID']));
+		} else {
+			$post = new Post();
+		}
 
-			// Use an existing post, otherwise create a new one
-			if(!empty($data['PostID'])) {
-				$post = DataObject::get_by_id('Post', Convert::raw2sql($data['PostID']));
-			} else {
-				$post = new Post();
-			}
+		if(isset($parent)) {
+			$currentID = $parent->ID;
+		} else {
+			$currentID = 0;
+		}
 
-			if(isset($parent)) {
-				$currentID = $parent->ID;
-			} else {
-				$currentID = 0;
-			}
+		if(Session::get("forumInfo.{$currentID}.postvar") != null) {
+			$data = array_merge($data, Session::get("forumInfo.{$currentID}.postvar"));
+			Session::clear("forumInfo.{$currentID}.postvar");
+		}
 
-			if(Session::get("forumInfo.{$currentID}.postvar") != null) {
-				$data = array_merge($data, Session::get("forumInfo.{$currentID}.postvar"));
-				Session::clear("forumInfo.{$currentID}.postvar");
-			}
-
-			$this->setViewMode("Edit");
-			$this->setPostVar(null);
-			
-			if($data) {
-				foreach($data as $key => $val) {
-					$post->setField($key, $val);
-				}
-			}
-			
-			$post->ParentID = $data['Parent'];
-
-			$post->TopicID = isset($parent) ? $parent->TopicID : '';
-
-			if($member = Member::currentUser()) $post->AuthorID = $member->ID;
-			$post->ForumID = $this->ID;
-			$post->write();
-			
-			// Upload and Save all files attached to the field
-			if(!empty($data['Attachment'])) {
-				
-				// Attachment will always be blank, If they had an image it will be at least in Attachment-0
-				$id = 0;
-				while(isset($data['Attachment-' . $id])) {
-					$image = $data['Attachment-' . $id];
-					
-					if($image) {
-						// check to see if a file of same exists
-						$title = Convert::raw2sql($image['name']);
-						$file = DataObject::get_one("Post_Attachment", "`File`.Title = '$title' AND `Post_Attachment`.PostID = '$post->ID'");
-						if(!$file) {
-							$file = new Post_Attachment();
-							$file->PostID = $post->ID;
-						
-							$upload = new Upload();
-							$upload->loadIntoFile($image, $file);
-						
-							$file->write();
-						}
-					}
-					
-					$id++;
-				}
-			}
-			
-			
-			if($post->ParentID == 0) {
-				$post->TopicID = $post->ID;
-				// Extra write() that we can't avoid because we need to set
-				// $post->ID which is only created when the object is written to the
-				// database
-				$post->write();
-			}
-
-			// This is either a new thread or a new reply to an existing thread.
-			// We've already created the Post object, so supress the Last Edited
-			// message by setting Created and Last Edited to the same time-stamp.
-			// We need to bypass $post->write(), because DataObject sets
-			// LastEdited internally
-			DB::query("UPDATE Post SET Created = LastEdited WHERE ID = '$post->ID'");
-
-			// Send any notifications that need to be sent
-			Post_Subscription::notify($post);
-
-			// Add a topic subscription entry if required
-			if(isset($data['TopicSubscription'])) {
-				// Ensure this user hasn't already subscribed
-				if(!Post_Subscription::already_subscribed($post->TopicID)) {
-					// Create a new topic subscription for this member
-					$obj = new Post_Subscription;
-					$obj->TopicID = $post->TopicID;
-					$obj->MemberID = Member::currentUserID();
-					$obj->LastSent = date("Y-m-d H:i:s"); // The user was last notified right now
-					$obj->write();
-				}
-			} else {
-				// See if the member wanted to remove themselves
-				if(Post_Subscription::already_subscribed($post->TopicID)) {
-					// Remove the member
-					$SQL_memberID = Member::currentUserID();
-					DB::query("DELETE FROM Post_Subscription WHERE `TopicID` = '$post->TopicID' AND `MemberID` = '$SQL_memberID'");
-				}
-			}
-
-			if(Director::is_ajax()) {
-				$post = $this->Post($post->ID);
-				if($post->ParentID != 0) {
-					echo "<li id=\"post-$post->ID\" class=\"$post->class $post->Status\"><a href=\"" .
-						$post->Link() . "\" title=\"by " . $post->AuthorFullName() .
-						" - at $post->Created \">" . $post->Title . "</a></li>";
-				} else {
-					$this->urlParams['ID']= $post->ID;
-					echo $this->renderWith('ForumRightHand');
-					$this->urlParams['ID'] = null;
-				}
-			} else {
-				Director::redirect($this->Link() . 'show/' . $post->TopicID .'?showPost=' . $post->ID);
+		$this->setViewMode("Edit");
+		$this->setPostVar(null);
+		
+		if($data) {
+			foreach($data as $key => $val) {
+				$post->setField($key, $val);
 			}
 		}
+		
+		$post->ParentID = $data['Parent'];
+
+		$post->TopicID = isset($parent) ? $parent->TopicID : '';
+
+		if($member) $post->AuthorID = $member->ID;
+		$post->ForumID = $this->ID;
+		$post->write();
+		
+		// Upload and Save all files attached to the field
+		if(!empty($data['Attachment'])) {
+			
+			// Attachment will always be blank, If they had an image it will be at least in Attachment-0
+			$id = 0;
+			while(isset($data['Attachment-' . $id])) {
+				$image = $data['Attachment-' . $id];
+				
+				if($image) {
+					// check to see if a file of same exists
+					$title = Convert::raw2sql($image['name']);
+					$file = DataObject::get_one("Post_Attachment", "`File`.Title = '$title' AND `Post_Attachment`.PostID = '$post->ID'");
+					if(!$file) {
+						$file = new Post_Attachment();
+						$file->PostID = $post->ID;
+					
+						$upload = new Upload();
+						$upload->loadIntoFile($image, $file);
+					
+						$file->write();
+					}
+				}
+				
+				$id++;
+			}
+		}
+		
+		
+		if($post->ParentID == 0) {
+			$post->TopicID = $post->ID;
+			// Extra write() that we can't avoid because we need to set
+			// $post->ID which is only created when the object is written to the
+			// database
+			$post->write();
+		}
+
+		// This is either a new thread or a new reply to an existing thread.
+		// We've already created the Post object, so supress the Last Edited
+		// message by setting Created and Last Edited to the same time-stamp.
+		// We need to bypass $post->write(), because DataObject sets
+		// LastEdited internally
+		DB::query("UPDATE Post SET Created = LastEdited WHERE ID = '$post->ID'");
+
+		// Send any notifications that need to be sent
+		Post_Subscription::notify($post);
+
+		// Add a topic subscription entry if required
+		if(isset($data['TopicSubscription'])) {
+			// Ensure this user hasn't already subscribed
+			if(!Post_Subscription::already_subscribed($post->TopicID)) {
+				// Create a new topic subscription for this member
+				$obj = new Post_Subscription;
+				$obj->TopicID = $post->TopicID;
+				$obj->MemberID = Member::currentUserID();
+				$obj->LastSent = date("Y-m-d H:i:s"); // The user was last notified right now
+				$obj->write();
+			}
+		} else {
+			// See if the member wanted to remove themselves
+			if(Post_Subscription::already_subscribed($post->TopicID)) {
+				// Remove the member
+				$SQL_memberID = Member::currentUserID();
+				DB::query("DELETE FROM Post_Subscription WHERE `TopicID` = '$post->TopicID' AND `MemberID` = '$SQL_memberID'");
+			}
+		}
+
+		Director::redirect($this->Link() . 'show/' . $post->TopicID .'?showPost=' . $post->ID);
 	}
 
 
@@ -1583,13 +1562,17 @@ class Forum_Controller extends Page_Controller {
 		$id = Convert::raw2sql(Director::urlParam('ID'));
 		
 		// Check to see if sticky
-		$checked = false;
+		$checkedSticky = false;
+		$checkedReadOnly = false;
 		if($posts = $this->Posts()) {
-			$checked = ($posts->First()->IsSticky) ? true : false;
+			$checkedSticky = ($posts->First()->IsSticky) ? true : false;
+			$checkedReadOnly = ($posts->First()->IsReadOnly) ? true : false;
 		}
+		
 		// Default Fields
 		$fields = new FieldSet(
-			new CheckboxField('IsSticky', 'Is this a Sticky Thread?', $checked),
+			new CheckboxField('IsSticky', 'Is this a Sticky Thread?', $checkedSticky),
+			new CheckboxField('IsReadOnly', 'Is this a Read only Thread?', $checkedReadOnly),
 			new HiddenField("Topic", "Topic",$id)
 		);
 		
@@ -1629,6 +1612,7 @@ class Forum_Controller extends Page_Controller {
 			if($newForum > 0) {
 				$post->ForumID = $newForum;
 			}
+			$post->IsReadOnly = ($data['IsReadOnly']) ? true : false;
 			$post->IsSticky = ($data['IsSticky']) ? true : false;
 			$post->write();
 		}
