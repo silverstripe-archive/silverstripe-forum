@@ -7,11 +7,24 @@
 			<span class="jumpTo"><% _t('JUMPTO','Jump to:') %></span>
 			<select onchange="if(this.value) location.href = this.value">
 				<option value=""><% _t('SELECT','Select') %></option>
-				<% control Forums %>
-					<% if CheckForumPermissions %>
-						<option value="$Link">$Title</option>
-					<% end_if %>
-				<% end_control %>
+				<% if ShowInCategories %>
+					<% control Forums %>
+						<optgroup label="$Title">
+							<% control Forums %>
+								<% if CheckForumPermissions %>
+									<option value="$Link">$Title</option>
+								<% end_if %>
+							<% end_control %>
+						</optgroup>
+					<% end_control %>
+					
+				<% else %>
+					<% control Forums %>
+						<% if CheckForumPermissions %>
+							<option value="$Link">$Title</option>
+						<% end_if %>
+					<% end_control %>
+				<% end_if %>
 			</select>
 			<div id="ForumSearch">
 				<form action="<% if ForumHolderURLSegment %>{$ForumHolderURLSegment}<% else %>{$URLSegment}<% end_if %>/search/" method="get">

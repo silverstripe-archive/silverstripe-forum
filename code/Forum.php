@@ -338,6 +338,7 @@ class Forum extends Page {
 			break;
 		}
 	}
+		
 }
 
 
@@ -395,6 +396,10 @@ class Forum_Controller extends Page_Controller {
 
 		RSSFeed::linkToFeed($this->Link("rss"), sprintf(_t('Forum.RSSFORUM',"Posts to the '%s' forum"),$this->Title)); 
 	 	RSSFeed::linkToFeed($this->Parent->Link("rss"), _t('Forum.RSSFORUMS','Posts to all forums'));
+	 	
+	 	// Icky hack to set this page ShowInCategories so we can determine if we need to show in category mode or not.
+	 	$holderPage = $this->Parent;
+		if($holderPage) $this->ShowInCategories = $holderPage->ShowInCategories;
 	}
 
 	/**
@@ -1206,6 +1211,14 @@ class Forum_Controller extends Page_Controller {
 	 * Get the forums
 	 */
 	function Forums() {
+	 	$categories = DataObject::get("ForumCategory");
+	 	
+		if($this->ShowInCategories && $categories) {
+			foreach($categories as $category) {
+				$category->CategoryForums = DataObject::get("Forum", "CategoryID = '$category->ID'");
+			}
+			return $categories;
+		}
 		return DataObject::get("Forum");
 	}
 

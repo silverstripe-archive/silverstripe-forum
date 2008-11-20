@@ -183,7 +183,6 @@ class ForumHolder_Controller extends Page_Controller {
 		return DB::query("SELECT COUNT(DISTINCT AuthorID) FROM Post")->value();
 	}
 
-
 	/**
 	 * Get the forums. Actually its a bit more complex then that
 	 * we need to group by the Forum Categories.
@@ -198,8 +197,7 @@ class ForumHolder_Controller extends Page_Controller {
 		}
 		return DataObject::get("Forum");
 	}
-
-
+	
 	/**
 	 * Get a list of currently online users (last 15 minutes)
 	 */
