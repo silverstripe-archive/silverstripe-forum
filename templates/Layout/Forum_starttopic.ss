@@ -2,7 +2,7 @@
 	<div id="TopicTree">
 		<div id="Root">
 			<% if ViewMode = Edit %>
-				$ReplyForm
+				$ReplyForm(true)
 			<% else %>
 				$ReplyForm_Preview
 			<% end_if %>

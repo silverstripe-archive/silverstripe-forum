@@ -307,11 +307,20 @@ class Forum extends Page {
 		$member = Member::currentUser();
 		switch($type) {
 			// Check posting permissions
+			case "starttopic":
+				if($this->ForumPosters == "Anyone" || ($this->ForumPosters == "LoggedInUsers" && $member) 
+					|| ($this->ForumPosters == "OnlyTheseUsers" && $member && $member->isInGroup($this->ForumPostersGroup))) {
+						// now check post can write
+							return true;
+				} else {
+					return false;
+				}
+			break;
 			case "post":
 				if($this->ForumPosters == "Anyone" || ($this->ForumPosters == "LoggedInUsers" && $member) 
-					|| ($this->ForumPosters == "OnlyTheseUsers" &&
-					 $member && $member->isInGroup($this->ForumPostersGroup))) {
+					|| ($this->ForumPosters == "OnlyTheseUsers" && $member && $member->isInGroup($this->ForumPostersGroup))) {
 						// now check post can write
+
 						if($this->Post() && (!$this->Post()->IsReadOnly || $member->isAdmin()))	{
 							return true;
 						}
@@ -753,34 +762,44 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @return Form Returns the reply form
 	 */
-	function ReplyForm() {
+	function ReplyForm($addMode = false) {
 		// Check forum posting permissions
 	
-		if(!$this->CheckForumPermissions("post")) {
-			$messageSet = array(
-			'default' => _t('Forum.LOGINTOPOST','You\'ll need to login before you can post to that forum. Please do so below.'),
-			'alreadyLoggedIn' => _t('Forum.LOGINTOPOSTLOGGEDIN','I\'m sorry, but you can\'t post to this forum until you\'ve logged in.  If you want to log in as someone else, do so below. If you\'re logged in and you still can\'t post, you don\'t have the correct permissions to post.'),
-			'logInAgain' => _t('Forum.LOGINTOPOSTAGAIN','You have been logged out of the forums.  If you would like to log in again to post, enter a username and password below.'),
-			);
-
-			Security::permissionFailure($this, $messageSet);
-			return;
+		// Check if we're adding a new post instead of replying
+		if($addMode == true) {
+			if(!$this->CheckForumPermissions("starttopic")) {
+				$messageSet = array(
+				'default' => _t('Forum.LOGINTOPOST','You\'ll need to login before you can post to that forum. Please do so below.'),
+				'alreadyLoggedIn' => _t('Forum.LOGINTOPOSTLOGGEDIN','I\'m sorry, but you can\'t post to this forum until you\'ve logged in.  If you want to log in as someone else, do so below. If you\'re logged in and you still can\'t post, you don\'t have the correct permissions to post.'),
+				'logInAgain' => _t('Forum.LOGINTOPOSTAGAIN','You have been logged out of the forums.  If you would like to log in again to post, enter a username and password below.'),
+				);
+	
+				Security::permissionFailure($this, $messageSet);
+				return;
+			}
+		} else {
+			if(!$this->CheckForumPermissions("post")) {
+				$messageSet = array(
+				'default' => _t('Forum.LOGINTOPOST','You\'ll need to login before you can post to that forum. Please do so below.'),
+				'alreadyLoggedIn' => _t('Forum.LOGINTOPOSTLOGGEDIN','I\'m sorry, but you can\'t post to this forum until you\'ve logged in.  If you want to log in as someone else, do so below. If you\'re logged in and you still can\'t post, you don\'t have the correct permissions to post.'),
+				'logInAgain' => _t('Forum.LOGINTOPOSTAGAIN','You have been logged out of the forums.  If you would like to log in again to post, enter a username and password below.'),
+				);
+	
+				Security::permissionFailure($this, $messageSet);
+				return;
+			}
 		}
 
-		if(!$this->currentPost) {
-			$this->currentPost = $this->Post($this->urlParams['ID']);
-		}
+		if(!$this->currentPost) $this->currentPost = $this->Post($this->urlParams['ID']);
+		
 		if($this->currentPost && ($this->currentPost->IsReadOnly == true && !$this->isAdmin())) {
 			Session::set('ForumAdminMsg', 'Sorry this Thread is Read only');
 			return Director::redirect($this->URLSegment.'/');
 		}
 		
 		// See if this user has already subscribed
-		if($this->currentPost)
-			$subscribed = Post_Subscription::already_subscribed($this->currentPost->TopicID);
-		else
-			$subscribed = false;
-
+		if($this->currentPost) $subscribed = Post_Subscription::already_subscribed($this->currentPost->TopicID);
+		else $subscribed = false;
 
 		$fields = new FieldSet(
 			new TextField("Title", "Title", $this->currentPost ? "Re: " . $this->currentPost->Title : "" ),
@@ -842,6 +861,7 @@ class Forum_Controller extends Page_Controller {
 	 */
 	function postAMessage($data, $form) {
 		$member = Member::currentUser();
+		$parent = null;
 		
 		if($data['Parent']) $parent = DataObject::get_by_id('Post',	Convert::raw2sql($data['Parent']));
 		
