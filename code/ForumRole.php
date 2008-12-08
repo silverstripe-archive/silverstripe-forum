@@ -70,6 +70,9 @@ class ForumRole extends DataObjectDecorator {
 			'searchable_fields' => array(
 				'Nickname' => true
 			),
+			'indexes' => array(
+				'Nickname' => true,
+			),
 		);
 		$this->extend('extraDBFields',$fields);
 		return $fields;
