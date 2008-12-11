@@ -23,6 +23,9 @@ class ForumHolder extends Page {
 		"ShowInCategories" => "Boolean",
 		"AllowGravatars" => "Boolean"
 	);
+	
+	static $has_one = array(
+	);
 
 	static $allowed_children = array('Forum');
 	
