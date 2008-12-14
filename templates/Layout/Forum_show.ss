@@ -40,7 +40,7 @@
 	</table>
 	<ul id="Posts">
 		<% control Posts %>
-			<li id="post{$ID}" class="$EvenOdd">
+			<li id="post{$ID}" class="singlePost $EvenOdd">
 				<% include SinglePost %>
 			</li>
 		<% end_control %>
