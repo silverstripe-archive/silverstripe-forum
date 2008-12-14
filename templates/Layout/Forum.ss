@@ -9,7 +9,7 @@
 	<% if ForumPosters = NoOne %>
 		<p class="message error"><% _t('READONLYFORUM', 'This Forum is read only. You cannot post replies or start new threads') %></p>
 	<% end_if %>
-	<% if CheckForumPermissions(post) %>
+	<% if CheckForumPermissions(starttopic) %>
 		<p><a href="{$Link}starttopic" title="<% _t('NEWTOPIC','Click here to start a new topic') %>"><img src="forum/images/forum_startTopic.gif" alt="<% _t('NEWTOPICIMAGE','Start new topic') %>" /></a></p>
 	<% end_if %>
 	<div class="forumHolderFeatures">
