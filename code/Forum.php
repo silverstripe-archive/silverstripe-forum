@@ -1309,14 +1309,6 @@ class Forum_Controller extends Page_Controller {
 	  	else
 			$subscribed = false;
 
-		if($this->canAttach()) {
-			$fileUploadField = new FileField("Attachment", "Attach File");
-			$fileUploadField->setAllowedMaxFileSize(1000000);
-		}
-		else {
-			$fileUploadField = null;
-		}
-		
 		// @TODO - This is nasty. Sort of goes against the whole MVC thing doesnt it? 
 		// Generate a List of all the attachments rather then use the multifile uploader which
 		// doesn't like setting defaults
@@ -1329,16 +1321,25 @@ class Forum_Controller extends Page_Controller {
 			}
 			$Attachments .= "<ul></div>";
 		}
+		
+		$fields = new FieldSet(
+			new TextField("Title", "Title", ($this->currentPost) ? $this->currentPost->Title : "" ),
+			new TextareaField("Content", "Content", 5, 40, ($this->currentPost) ? $this->currentPost->Content : "" ),
+			new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"?#BBTagsHolder\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT') . "</a> ]</div>"),
+			new CheckboxField("TopicSubscription", _t('Forum.SUBSCRIBETOPIC'), $subscribed),
+			new LiteralField("CurrentAttachments", $Attachments),
+			new HiddenField("ID", "ID", ($this->currentPost) ? $this->currentPost->ID: "" )
+		);
+		
+		if($this->canAttach()) {
+			$fileUploadField = new FileField("Attachment", "Attach File");
+			$fileUploadField->setAllowedMaxFileSize(1000000);
+			$fields->insertBefore($fileUploadField, 'CurrentAttachments');
+		}
+		
+		
 	  	return new Form($this, "EditPostForm",
-			new FieldSet(
-				new TextField("Title", "Title", ($this->currentPost) ? $this->currentPost->Title : "" ),
-				new TextareaField("Content", "Content", 5, 40, ($this->currentPost) ? $this->currentPost->Content : "" ),
-				new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"?#BBTagsHolder\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT') . "</a> ]</div>"),
-				new CheckboxField("TopicSubscription", _t('Forum.SUBSCRIBETOPIC'), $subscribed),
-				$fileUploadField,
-				new LiteralField("CurrentAttachments", $Attachments),
-				new HiddenField("ID", "ID", ($this->currentPost) ? $this->currentPost->ID: "" )
-			),
+			$fields,
 			new FieldSet(
 				new FormAction("editAMessage", "Edit")
 			),
@@ -1416,7 +1417,7 @@ class Forum_Controller extends Page_Controller {
 
 			// Do upload of the new files
 			// Upload and Save all files attached to the field
-			if($data['Attachment']) {
+			if(isset($data['Attachment']) && $data['Attachment']) {
 				
 				// Attachment will always be blank, If they had an image it will be at least in Attachment-0
 				$id = 0;
@@ -1459,7 +1460,7 @@ class Forum_Controller extends Page_Controller {
 				}
 			}
 			$this->flushCache();
-			Director::redirect($this->Link().'show/'.$this->currentPost->TopicID.'?showPost='. $id . '#post' . $id .'&flush=1');
+			Director::redirect($this->Link().'show/'.$this->currentPost->TopicID.'?showPost='. $this->currentPost->ID . '#post' . $this->currentPost->ID .'&flush=1');
 	  } else {
 	    $messageSet = array(
 				'default' => _t('Forum.LOGINTOEDIT','Enter your email address and password to edit this post.'),
@@ -1645,8 +1646,8 @@ class Forum_Controller extends Page_Controller {
 			if($newForum > 0) {
 				$post->ForumID = $newForum;
 			}
-			$post->IsReadOnly = ($data['IsReadOnly']) ? true : false;
-			$post->IsSticky = ($data['IsSticky']) ? true : false;
+			$post->IsReadOnly = (isset($data['IsReadOnly']) && $data['IsReadOnly']) ? true : false;
+			$post->IsSticky = (isset($data['IsSticky']) && $data['IsSticky']) ? true : false;
 			$post->write();
 		}
 		Session::set('ForumAdminMsg','Thread Settings Have Been Updated');
