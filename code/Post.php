@@ -115,7 +115,7 @@ class Post extends DataObject {
 
 	function getTitle() {
 		$title = $this->getField('Title');
-		if(!$title && $this->Topic()) $title = sprintf(_t('Post.RESPONSE',"Re: %s",PR_HIGH,'Post Subject Prefix'),$this->Topic()->Title);
+		if(!$title && $this->TopicID && $this->Topic()) $title = sprintf(_t('Post.RESPONSE',"Re: %s",PR_HIGH,'Post Subject Prefix'),$this->Topic()->Title);
 
 		return $title;
 	}
