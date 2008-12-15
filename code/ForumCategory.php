@@ -19,6 +19,8 @@ class ForumCategory extends DataObject {
 		'Forums' => 'Forum'
 	);
 	
+	static $default_sort = "StackableOrder DESC";
+	
 	/**
 	 * Get the fields for the category edit/ add
 	 * in the complex table field popup window. 
