@@ -218,6 +218,7 @@ class ForumRole extends DataObjectDecorator {
 			if(!$avatar) return $default;
 			
 			$resizedAvatar = $avatar->SetWidth(80);
+			if(!$resizedAvatar) return false;
 			
 			return $resizedAvatar->URL;
 		}
