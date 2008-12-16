@@ -214,8 +214,8 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return array Returns an array to render the search results.
 	 */
 	function search() {
-		$XML_keywords = Convert::raw2xml($_REQUEST['for']);
-		$Abstract = !empty($_REQUEST['for'])
+		$XML_keywords = Convert::raw2xml($_REQUEST['Search']);
+		$Abstract = !empty($_REQUEST['Search'])
 			? "<p>" . sprintf(_t('ForumHolder.SEARCHEDFOR',"You searched for '%s'."),$XML_keywords) . "</p>"
 			: null;
 
@@ -229,7 +229,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 * Returns the search results
 	 */
 	function SearchResults() {
-		$SQL_query = Convert::raw2sql($_REQUEST['for']);
+		$SQL_query = Convert::raw2sql($_REQUEST['Search']);
 
 		// Search for authors
 		$SQL_queryParts = split(' +', trim($SQL_query));
