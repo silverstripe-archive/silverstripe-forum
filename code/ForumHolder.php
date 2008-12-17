@@ -224,39 +224,64 @@ class ForumHolder_Controller extends Page_Controller {
 		);
 	}
 
-
 	/**
-	 * Returns the search results
+	 * Returns the search results.
+	 * 
+	 * Perform a specific DB query in order to get relevant search
+	 * results, this means we can sort by relevancy score, thanks
+	 * to MySQL FULLTEXT searches.
+	 * 
+	 * @todo Specific to MySQL at this point.
+	 * 
+	 * @return DataObjectSet
 	 */
 	function SearchResults() {
-		$SQL_query = Convert::raw2sql($_REQUEST['Search']);
+		$searchQuery = Convert::raw2sql($_REQUEST['Search']);
 
 		// Search for authors
-		$SQL_queryParts = split(' +', trim($SQL_query));
-		foreach( $SQL_queryParts as $SQL_queryPart ) { 
+		$SQL_queryParts = split(' +', trim($searchQuery));
+		foreach($SQL_queryParts as $SQL_queryPart ) { 
 			$SQL_clauses[] = "FirstName LIKE '%$SQL_queryPart%' OR Surname LIKE '%$SQL_queryPart' OR Nickname LIKE '%$SQL_queryPart'";
 		}
 
-		$potentialAuthors = DataObject::get("Member", implode(" OR ", $SQL_clauses), 'ID ASC');
+		$potentialAuthors = DataObject::get('Member', implode(" OR ", $SQL_clauses), 'ID ASC');
 		$SQL_authorClause = '';
+		$SQL_potentialAuthorIDs = array();
+		
 		if($potentialAuthors) {
-			foreach($potentialAuthors as $potentialAuthor)
+			foreach($potentialAuthors as $potentialAuthor) {
 				$SQL_potentialAuthorIDs[] = $potentialAuthor->ID;
+			}
 			$SQL_authorList = implode(", ", $SQL_potentialAuthorIDs);
 			$SQL_authorClause = "OR AuthorID IN ($SQL_authorList)";
 		}
 
 		// Perform the search
-		if(!isset($_GET['start']))
-			$_GET['start'] = 0;
+		if(!empty($_GET['start'])) $limit = (int) $_GET['start'];
+		else $limit = $_GET['start'] = 0;
 
-		return DataObject::get("Post",
-		         "MATCH (Title, Content) AGAINST ('$SQL_query' IN BOOLEAN MODE) $SQL_authorClause",
-		         "MATCH (Title, Content) AGAINST ('$SQL_query')",
-		         "",
-		         (int)$_GET['start'] . ', 10');
+		$queryString = "SELECT Created, LastEdited, ClassName, Title, Content, TopicID, AuthorID, ForumID,
+				MATCH (Title, Content) AGAINST ('$searchQuery') AS RelevancyScore
+			FROM Post
+			WHERE MATCH (Title, Content) AGAINST ('$searchQuery' IN BOOLEAN MODE) $SQL_authorClause 
+			ORDER BY RelevancyScore DESC";
+		
+		// Get the 10 posts from the starting record
+		$query = DB::query("
+			$queryString
+			LIMIT $limit, 10
+		");
+		
+		// Find out how many posts that match with no limit
+		$allPosts = DB::query($queryString);
+		$allPostsCount = $allPosts ? $allPosts->numRecords() : 0;
+		
+		$baseClass = new Post();
+		$postsSet = $baseClass->buildDataObjectSet($query);
+		if($postsSet) $postsSet->setPageLimits($limit, 10, $allPostsCount);
+		
+		return $postsSet ? $postsSet : new DataObjectSet();
 	}
-
 
 	/**
 	 * Get the RSS feed
