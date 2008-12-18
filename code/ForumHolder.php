@@ -59,6 +59,19 @@ class ForumHolder extends Page {
 		));
 		return $fields;
 	}
+	
+	/**
+	 * If we're on the search action, we need to at least show
+	 * a breadcrumb to get back to the ForumHolder page.
+	 * @return string
+	 */
+	function Breadcrumbs() {
+		if(Director::urlParam('Action') == 'search') {
+			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('SEARCHBREADCRUMB', 'Search');
+		} else {
+			return parent::Breadcrumbs();
+		}
+	}
 
 }
 
