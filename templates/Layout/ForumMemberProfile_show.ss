@@ -16,7 +16,7 @@
 			<div><label class="left"><% _t('OCCUPATION','Occupation') %>:</label> <p class="readonly">$Occupation</p></div>
 			<% end_if %>
 			<% if CountryPublic %>
-			<div><label class="left"><% _t('COUNTRY','Country') %>:</label> <p class="readonly">$Country</p></div>
+			<div><label class="left"><% _t('COUNTRY','Country') %>:</label> <p class="readonly">$FullCountry</p></div>
 			<% end_if %>
 			<div><label class="left"><% _t('POSTNO','Number of posts') %>:</label> <p class="readonly">$NumPosts</p></div>
 			<div><label class="left"><% _t('FORUMRANK','Forum ranking') %>:</label> <% if ForumRank %><p class="readonly">$ForumRank</p><% else %><p><% _t('NORANK','No ranking') %></p><% end_if %></div>
