@@ -24,7 +24,7 @@
 		</div>
 	<% end_if %>
 	<div class="postType">
-		<p>$Content.Parse(BBCodeParser)</p>
+		$Content.Parse(BBCodeParser)
 	</div>
 	
 	<% if DisplaySignatures %>
@@ -36,8 +36,6 @@
 			<% end_if %>
 		<% end_control %>
 	<% end_if %>
-	
-
 
 	<% if Attachments %>
 		<div class="attachments">
