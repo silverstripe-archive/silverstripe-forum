@@ -16,7 +16,7 @@ class ForumMemberProfile extends Page_Controller {
 		$nonPageParts = array();
 		$parts = array();
 
-		$forumHolder = DataObject::get_one('ForumHolder');
+		$forumHolder = $this->ForumHolder();
 		$member = $this->Member();
 		
 		$parts[] = "<a href=\"{$forumHolder->Link()}\">{$forumHolder->Title}</a>";
@@ -35,7 +35,6 @@ class ForumMemberProfile extends Page_Controller {
 		parent::init();
  	}
 
-
 	/**
 	 * Get the URL for the login action
 	 *
@@ -44,8 +43,7 @@ class ForumMemberProfile extends Page_Controller {
 	function LoginURL() {
 		return $this->Link("login");
 	}
-
-
+	
 	/**
 	 * Is OpenID support available?
 	 *
@@ -60,7 +58,6 @@ class ForumMemberProfile extends Page_Controller {
 
 		return Authenticator::is_registered("OpenIDAuthenticator");
 	}
-
 
 	/**
 	 * The login action
@@ -84,18 +81,15 @@ class ForumMemberProfile extends Page_Controller {
 			return Director::redirectBack();
 		}
 	}
+	
  	/**
  	 * Get the latest 10 posts by this member
  	 */
  	function LatestPosts() {
  		$memberID = $this->urlParams['ID'];
- 		$SQL_memberID = Convert::raw2sql($memberID);
-
- 		if(!is_numeric($SQL_memberID)) return null;
-
- 		$posts = DataObject::get("Post", "`AuthorID` = '$SQL_memberID'", "`Created` DESC", "", "0,10");
-
- 		return $posts;
+ 		$SQL_memberID = (int) $memberID;
+ 		
+ 		return DataObject::get("Post", "`AuthorID` = '$SQL_memberID'", "`Created` DESC", "", "0,10");
  	}
 
 
@@ -558,7 +552,6 @@ class ForumMemberProfile extends Page_Controller {
 		return DataObject::get("Member", "", "`Member`.`ID` DESC", "", 1);
 	}
 
-
 	/**
 	 * This will trick SilverStripe into placing this page within the site
 	 * tree
@@ -648,7 +641,16 @@ class ForumMemberProfile extends Page_Controller {
 	function Forums() {
 		return $this->ForumHolder()->Forums();
 	}
-
+	
+	/**
+	 * Determines whether forums should be showed in categories
+	 * (required for the "jump to" dropdown to be populated).
+	 *
+	 * @return boolean
+	 */
+	function ShowInCategories() {
+		return $this->ForumHolder()->ShowInCategories;
+	}	
 
 	/**
 	 * Returns the search results
