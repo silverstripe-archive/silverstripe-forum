@@ -7,14 +7,24 @@
 class ForumMemberProfile extends Page_Controller {
 
 	public $URLSegment = "ForumMemberProfile"; 
+
 	/**
-	 * Constructor
+	 * Create breadcrumbs (just shows a forum holder link and name of user)
+	 * @return string HTML code to display breadcrumbs
 	 */
-	function __construct() {
-		return parent::__construct(null);
+	public function Breadcrumbs() {
+		$nonPageParts = array();
+		$parts = array();
+
+		$forumHolder = DataObject::get_one('ForumHolder');
+		$member = $this->Member();
+		
+		$parts[] = "<a href=\"{$forumHolder->Link()}\">{$forumHolder->Title}</a>";
+		$nonPageParts[] = $member ? $member->Nickname . ' ' . $this->Title : null;
+		
+		return implode(" &raquo; ", array_reverse(array_merge($nonPageParts, $parts)));
 	}
-
-
+	
 	/**
 	 * Initialise the controller
 	 */
@@ -523,25 +533,19 @@ class ForumMemberProfile extends Page_Controller {
 	/**
 	 * Return the with the passed ID (via URL parameters) or the current user
 	 *
-	 * @return bool|Member Returns the member object or FALSE if the member
+	 * @return null|Member Returns the member object or NULL if the member
 	 *                     was not found
 	 */
  	function Member() {
+ 		$member = null;
+ 		
 		if(is_numeric($this->urlParams['ID'])) {
-			$member = DataObject::get_by_id("Member", $this->urlParams['ID']);
-			if($this->urlParams['Action'] == "show") {
-				$member->Country = Geoip::countryCode2name(
-					$member->Country ? $member->Country : "NZ");
-			}
-			return $member;
+			$member = DataObject::get_by_id('Member', $this->urlParams['ID']);
 		} else {
 			$member = Member::currentUser();
-			if($this->urlParams['Action'] == "show") {
-				$member->Country = Geoip::countryCode2name(
-					$member->Country ? $member->Country : "NZ");
-			}
-			return $member;
 		}
+		
+		return $member;
 	}
 
 
