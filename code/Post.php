@@ -317,6 +317,9 @@ class Post_Subscription extends DataObject {
 				$email->setTemplate('ForumMember_TopicNotification');
 				$email->populateTemplate($member);
 				$email->populateTemplate($post);
+				$email->populateTemplate(array(
+					'UnsubscribeLink' => Director::absoluteBaseURL() . $post->Forum()->URLSegment . '/unsubscribe/' . $post->TopicID
+				));
 				$email->send();
 			}
 		}

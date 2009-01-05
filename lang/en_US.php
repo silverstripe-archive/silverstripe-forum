@@ -169,7 +169,7 @@ $lang['en_US']['ForumMember_ForgotNicknameEmail.ss']['HI'] = 'Hi,';
 $lang['en_US']['ForumMember_ForgotNicknameEmail.ss']['MESSAGE'] = 'Here\'s your user name for <a href=\"home/\">%s</a>.';
 $lang['en_US']['ForumMember_ForgotNicknameEmail.ss']['USERNAME'] = 'Username:';
 $lang['en_US']['ForumMember_TopicNotification.ss']['HI'] = 'Hi %s,';
-$lang['en_US']['ForumMember_TopicNotification.ss']['NEWPOSTMESSAGE'] = 'A new post has been added to a topic you\'ve subscribed to. You can <a href=\"%s\">view the post by clicking here.</a>';
+$lang['en_US']['ForumMember_TopicNotification.ss']['NEWPOSTMESSAGE'] = 'A new post has been added to a topic you\'ve subscribed to.';
 $lang['en_US']['ForumMember_TopicNotification.ss']['NOTIFICATIONMESSAGE'] = 'You will not receive additional notifications until you visit the forum again.';
 $lang['en_US']['ForumRole']['ADMIN'] = 'Administrator';
 $lang['en_US']['ForumRole']['ANONYMOUS'] = 'Anonymous user';
