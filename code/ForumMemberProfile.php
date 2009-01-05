@@ -479,8 +479,6 @@ class ForumMemberProfile extends Page_Controller {
 					'bad'
 				);
 				
-  				// Load errors into session and post back
-				Session::set("FormInfo.Form_RegistrationForm.data", $data);
   				Director::redirectBack();
   				return;
 			}
