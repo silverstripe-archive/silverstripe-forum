@@ -119,7 +119,7 @@ class ForumMemberProfile extends Page_Controller {
 			(isset($data['IdentityURL']) && !empty($data['IdentityURL'])) ||
 			(isset($_POST['IdentityURL']) && !empty($_POST['IdentityURL']));
 
-		$fields = singleton('Member')->getForumFields(true, $use_openid);
+		$fields = singleton('Member')->getForumFields($use_openid);
 		$form = new Form($this, 'RegistrationForm', $fields,
 			new FieldSet(new FormAction("doregister", "Register")),
 			($use_openid)
@@ -433,10 +433,9 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function EditProfileForm() {
 		$member = $this->Member();
-		$show_openid = (isset($member->IdentityURL) &&
-										!empty($member->IdentityURL));
+		$show_openid = (isset($member->IdentityURL) && !empty($member->IdentityURL));
 
-		$fields = singleton('Member')->getForumFields(false, $show_openid);
+		$fields = singleton('Member')->getForumFields($show_openid);
 		if(singleton('Post')->DisplaySignatures()) {
 			$fields->push(new TextareaField('Signature', 'Forum Signature'));
 		}
@@ -464,8 +463,29 @@ class ForumMemberProfile extends Page_Controller {
 	 * @param $form
 	 */
 	function dosave($data, $form) {
-		$member = DataObject::get_by_id("Member", $data['ID']);
-
+		$member = DataObject::get_by_id('Member', $data['ID']);
+		$SQL_email = Convert::raw2sql($data['Email']);
+		
+		// An existing member may have the requested email that doesn't belong to the
+		// person who is editing their profile - if so, throw an error
+		$existingMember = DataObject::get_one('Member', "Email = '$SQL_email'");
+		if($existingMember) {
+			if($existingMember->ID != $member->ID) {
+  				$form->addErrorMessage('Blurb',
+					_t(
+						'ForumMemberProfile.EMAILEXISTS',
+						'Sorry, that email address already exists. Please choose another.'
+					),
+					'bad'
+				);
+				
+  				// Load errors into session and post back
+				Session::set("FormInfo.Form_RegistrationForm.data", $data);
+  				Director::redirectBack();
+  				return;
+			}
+		}
+		
 		if($member->canEdit()) {
 			if(!empty($data['Password']) && !empty($data['ConfirmPassword'])) {
 				if($data['Password'] == $data['ConfirmPassword']) {

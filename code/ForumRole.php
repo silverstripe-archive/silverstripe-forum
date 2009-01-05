@@ -74,7 +74,9 @@ class ForumRole extends DataObjectDecorator {
 				'Nickname' => true,
 			),
 		);
-		$this->extend('extraDBFields',$fields);
+		
+		$this->extend('extraDBFields', $fields);
+		
 		return $fields;
 	}
 	
@@ -116,14 +118,12 @@ class ForumRole extends DataObjectDecorator {
 	/**
 	 * Get the fields needed by the forum module
 	 *
-	 * @param bool $addMode If set to TRUE, the E-mail field will be editable,
-	 *                      otherwise it will be read-only
 	 * @param bool $showIdentityURL Should a field for an OpenID or an i-name
 	 *                              be shown (always read-only)?
 	 * @return FieldSet Returns a FieldSet containing all needed fields for
 	 *                  the registration of new users
 	 */
-	function getForumFields($addMode = false, $showIdentityURL = false) {
+	function getForumFields($showIdentityURL = false) {
 		$gravatarText = (DataObject::get_one("ForumHolder", "AllowGravatars = True")) ? '<small>'. _t('ForumRole.CANGRAVATAR', 'If you use Gravatars then leave this blank') .'</small>' : "";
 		$fieldset = new FieldSet(
 			new HeaderField(_t('ForumRole.PERSONAL','Personal Details')),
@@ -137,9 +137,7 @@ class ForumRole extends DataObjectDecorator {
 			new CheckableOption("CountryPublic", new CountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true),
 
 			new HeaderField( _t('ForumRole.USERDETAILS','User Details')),
-			new CheckableOption("EmailPublic", ($addMode)
-				? new EmailField("Email", _t('ForumRole.EMAIL','Email'))
-				: new ReadonlyField("Email", _t('ForumRole.EMAIL'))),
+			new CheckableOption("EmailPublic", new EmailField("Email", _t('ForumRole.EMAIL','Email'))),
 			new PasswordField("Password", _t('ForumRole.PASSWORD','Password')) ,
 			new PasswordField("ConfirmPassword", _t('ForumRole.CONFIRMPASS','Confirm Password')),
 			new SimpleImageField("Avatar", _t('ForumRole.AVATAR','Upload avatar ') .' '. $gravatarText),
