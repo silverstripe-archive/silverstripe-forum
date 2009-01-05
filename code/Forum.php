@@ -542,6 +542,9 @@ class Forum_Controller extends Page_Controller {
 	 * @return Boolean | Redirection for non AJAX requests
 	 */
 	function unsubscribe() {
+		$loggedIn = Member::currentUserID() ? true : false;
+		if(!$loggedIn) Security::permissionFailure($this, _t('LOGINTOUNSUBSCRIBE', 'To unsubscribe from that thread, please log in first.'));
+		
 		if(Member::currentUser() && Post_Subscription::already_subscribed(Director::urlParam('ID'))) {
 			$SQL_memberID = Member::currentUserID();
 			$topicID = (int) Director::urlParam('ID');
@@ -549,10 +552,9 @@ class Forum_Controller extends Page_Controller {
 			if(Director::is_ajax()) return true;
 			return Director::redirectBack();
 		}
+		
 		return false;
 	}
-	
-	
 	
 	/**
 	 * Get the view mode
