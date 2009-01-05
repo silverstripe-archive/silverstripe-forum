@@ -301,8 +301,7 @@ class Post_Subscription extends DataObject {
 	static function notify(Post $post) {
 		// Get all people subscribed to this topic, not including the post author, who have visited the forum since the last time they got sent an email
 		$list = DataObject::get("Post_Subscription",
-			"`TopicID` = '$post->TopicID' AND `MemberID` != '$post->AuthorID' AND `Member`.`LastViewed` > `Post_Subscription`.`LastSent`",
-			null, "LEFT JOIN Member ON `Post_Subscription`.`MemberID` = `Member`.`ID`");
+			"`TopicID` = '$post->TopicID' AND `MemberID` != '$post->AuthorID'", null, "LEFT JOIN Member ON `Post_Subscription`.`MemberID` = `Member`.`ID`");
 
 		if($list) {
 			foreach($list as $obj) {
@@ -310,17 +309,15 @@ class Post_Subscription extends DataObject {
 
 				// Get the members details
 				$member = DataObject::get_one("Member", "`Member`.`ID` = '$SQL_id'");
-
-				// Create the email and send it out
-				$email = new ForumMember_TopicNotification;
+				
+				$email = new Email();
+				$email->setFrom(Email::getAdminEmail());
+				$email->setTo($member->Email);
+				$email->setSubject('New reply for ' . $post->Title);
+				$email->setTemplate('ForumMember_TopicNotification');
 				$email->populateTemplate($member);
 				$email->populateTemplate($post);
 				$email->send();
-
-				// Set the LastSent field for this subscription to prevent >1 email
-				// from being sent before the user views the thread
-				$obj->LastSent = date("Y-m-d H:i:s");
-				$obj->write();
 			}
 		}
 	}

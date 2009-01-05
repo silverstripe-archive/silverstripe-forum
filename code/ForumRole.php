@@ -289,28 +289,4 @@ JS;
 	}
 }
 
-
-
-/**
- * Email template for topic notifications
- */
-class ForumMember_TopicNotification extends Email {
-	// TODO Figure out why '$Nickname <$Email>' doesn't work for protected $to
-	protected
-		$to = '$Email',
-		$subject = 'New reply to \'$Title\'',
-		$ss_template = 'ForumMember_TopicNotification';
-
-	/**
-	 * This only exists because you can't do
-	 * "protected $from = Email::getAdminEmail()" with PHP
-	 */
-	function __construct() {
-		$this->setFrom(Email::getAdminEmail());
-
-		parent::__construct();
-	}
-}
-
-
 ?>
