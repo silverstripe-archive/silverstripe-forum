@@ -14,7 +14,9 @@ MemberTableField::addMembershipFields( array(
 	"Country" => "Country",
 	"ForumRank" => "ForumRank"
 	));
-	
+
+BBCodeParser::enable_smilies();
+
 //File::setMaxFileSize("100000", "100000", '*');
 
 ?>
