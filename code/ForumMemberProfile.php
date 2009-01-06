@@ -31,7 +31,7 @@ class ForumMemberProfile extends Page_Controller {
 		$member = $this->Member();
 		
 		$parts[] = "<a href=\"{$forumHolder->Link()}\">{$forumHolder->Title}</a>";
-		$nonPageParts[] = $member ? $member->Nickname . ' ' . $this->Title : null;
+		$nonPageParts[] = $member ? $member->Nickname . '\'s ' . $this->Title : null;
 		
 		return implode(" &raquo; ", array_reverse(array_merge($nonPageParts, $parts)));
 	}
@@ -41,7 +41,10 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function init() {
 		Requirements::themedCSS('Forum');
-		$this->Title = "User Profile";
+		$member = $this->Member() ? $this->Member() : null;
+		$nicknameText = ($member) ? ($member->Nickname . '\'s ') : '';
+		
+		$this->Title = $nicknameText . 'User Profile';
 		
 		parent::init();
  	}
