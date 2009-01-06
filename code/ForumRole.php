@@ -83,6 +83,12 @@ class ForumRole extends DataObjectDecorator {
 		return $fields;
 	}
 	
+	function ForumRank() {
+		$moderatedForums = $this->owner->ModeratedForums();
+		if($moderatedForums && $moderatedForums->Count() > 0) return _t('MODERATOR','Forum Moderator');
+		else return $this->owner->getField('ForumRank');
+	}
+	
 	function FirstNamePublic() {
 		return $this->owner->FirstNamePublic || Permission::check('ADMIN');
 	}

@@ -9,6 +9,17 @@ class ForumMemberProfile extends Page_Controller {
 	public $URLSegment = "ForumMemberProfile"; 
 
 	/**
+	 * Return a set of {@link Forum} objects that
+	 * this member is a moderator of.
+	 *
+	 * @return ComponentSet
+	 */
+	function ModeratedForums() {
+		$member = $this->Member();
+		return $member ? $member->ModeratedForums() : null;
+	}
+	
+	/**
 	 * Create breadcrumbs (just shows a forum holder link and name of user)
 	 * @return string HTML code to display breadcrumbs
 	 */
