@@ -30,6 +30,10 @@ class Forum extends Page {
 		"Group" => "Group",
 		"Category" => "ForumCategory"
 	);
+	
+	static $many_many = array(
+		'Moderators' => 'Member'
+	);
 
 	static $defaults = array(
 		"ForumViewers" => "Anyone",
@@ -142,10 +146,46 @@ class Forum extends Page {
 				'getCMSFields_forPopup'
 			)
 		);
+		
+		// TagField comes in it's own module.
+		// If it's installed, use it to select moderators for this forum
+		if(class_exists('TagField')) {
+			$fields->addFieldToTab(
+				'Root.Content.Main',
+				new TagField(
+					'Moderators',
+					_t('MODERATORS', 'Moderators for this forum'),
+					null,
+					'Forum',
+					'Nickname'
+				),
+				'Content'
+			);
+		}
 
 		return $fields;
 	}
 
+	/**
+	 * Return true if user is an "admin" of this forum or is a moderator.
+	 * The user can either have ADMIN permissions {@link Permission} or be
+	 * a moderator of this forum (their member ID is in the Moderators
+	 * many many relation ID list).
+	 * 
+	 * @see ForumRole->isModeratingForum()
+	 * 
+	 * @return boolean
+	 */
+	function isAdmin() {
+		if(!Member::currentUserID()) return false;
+		$member = Member::currentUser();
+		
+		$isModerator = $member->isModeratingForum($this);
+		$isAdmin = $member->isAdmin();
+		
+		return ($isAdmin || $isModerator) ? true : false;
+	}
+	
 	/**
 	 * Create breadcrumbs
 	 *
@@ -1277,7 +1317,7 @@ class Forum_Controller extends Page_Controller {
 		if(!$file) return false;
 		
 		// check permissions
-		if(!Member::currentUser()->isAdmin() && $file->OwnerID != Member::currentUserID()) return false;
+		if(!$this->isAdmin() && $file->OwnerID != Member::currentUserID()) return false;
 	
 		// Ok we are good
 		$file->delete();
@@ -1371,7 +1411,7 @@ class Forum_Controller extends Page_Controller {
 		}
 
 		// User authentication
-	  	if(Member::currentUser() && (Member::currentUser()->isAdmin() || Member::currentUser()->ID == $this->currentPost->AuthorID)) {
+	  	if(Member::currentUser() && ($this->isAdmin() || Member::currentUser()->ID == $this->currentPost->AuthorID)) {
 			return $this->EditPostForm();
 	  	} else {
 	    	return _t('Forum.WRONGPERMISSION','You don\'t have the correct permissions to edit this post.');
@@ -1400,7 +1440,7 @@ class Forum_Controller extends Page_Controller {
 		}
 
 		// User authentication
-		if(Member::currentUser() && (Member::currentUser()->isAdmin() || Member::currentUser()->ID == $this->currentPost->AuthorID)) {
+		if(Member::currentUser() && ($this->isAdmin() || Member::currentUser()->ID == $this->currentPost->AuthorID)) {
 			// Convert the values to SQL-safe values
 	    	$data['ID'] = Convert::raw2sql($data['ID']);
 		  	$data['Title'] = Convert::raw2sql($data['Title']);
@@ -1485,7 +1525,7 @@ class Forum_Controller extends Page_Controller {
 	 *               anything but redirect the user to the login page.
 	 */
 	function deletepost() {
-		if(Member::currentUser() && Member::currentUser()->isAdmin()) {
+		if($this->isAdmin()) {
 			// Get the current post if we haven't found it yet
 		  	if(!$this->currentPost) {
 				$this->currentPost = $this->Post($this->urlParams['ID']);
@@ -1566,14 +1606,6 @@ class Forum_Controller extends Page_Controller {
 	 */
 	function ForumHolderURLSegment() {
 		return DataObject::get_by_id("ForumHolder", $this->ParentID)->URLSegment;
-	}
-	
-	/**
-	 * Return true if user is admin
-	 * @return Boolean
-	 */
-	function isAdmin() {
-		return (Member::currentUser() && Member::currentUser()->isAdmin()) ? true : false;
 	}
 	
 	/**

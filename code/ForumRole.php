@@ -64,6 +64,9 @@ class ForumRole extends DataObjectDecorator {
 			'has_one' => array(
 				'Avatar' => 'Image'
 			),
+			'belongs_many_many' => array(
+				'ModeratedForums' => 'Forum'
+			),
 			'defaults' => array(
 				'ForumRank' => _t('ForumRole.COMMEMBER','Community Member') 
 			),
@@ -108,7 +111,18 @@ class ForumRole extends DataObjectDecorator {
 			return 0;
 		}
 	}
-
+	
+	/**
+	 * Checks if the current user is a moderator of the
+	 * given forum by looking in the moderator ID list.
+	 *
+	 * @param Forum object to check
+	 * @return boolean
+	 */
+	function isModeratingForum($forum) {
+		$moderatorIds = $forum->Moderators() ? $forum->Moderators()->getIdList() : array();
+		return in_array($this->owner->ID, $moderatorIds);
+	}
 
 	function Link() {
 		return "ForumMemberProfile/show/" . $this->owner->ID;

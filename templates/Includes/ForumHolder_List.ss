@@ -2,7 +2,12 @@
 	<tr class="$EvenOdd">
 		<td class="forumCategory odd">
 			<a class="topicTitle" href="$Link" title="<% sprintf(_t('GOTOTHISTOPIC',"Go to the %s topic"),$Title.EscapeXML) %>">$Title</a>
-			<% if Content %><div class="summary">$Content.FirstParagraph(html)</div><% end_if %>
+			<% if Content || Moderators %>
+				<div class="summary">
+					$Content.FirstParagraph(html)
+					<% if Moderators %><p>Moderators: <% control Moderators %><a href="$Link">$Nickname</a><% if Last %><% else %>, <% end_if %><% end_control %></p><% end_if %>
+				</div>
+			<% end_if %>
 		</td>
 	
 		<td class="count even">

@@ -40,6 +40,7 @@
 			<h2>$HolderSubtitle</h2>
 			<% if HolderAbstract %>$HolderAbstract<% else %>$Content<% end_if %>
 			<p>$Breadcrumbs</p>
+			<% if Moderators %><p>Moderators: <% control Moderators %><a href="$Link">$Nickname</a><% if Last %><% else %>, <% end_if %><% end_control %></p><% end_if %>
 		</div>	
     <div class="clear"><!-- --></div>
 </div>

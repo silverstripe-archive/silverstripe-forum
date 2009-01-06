@@ -133,31 +133,48 @@ class Post extends DataObject {
 		if($this->LastEdited != $this->Created) return $this->LastEdited;
 	}
 
-
+	/**
+	 * Return a link to edit this post.
+	 * 
+	 * If the member is the owner of the post, they can
+	 * edit their own profile, allowing them to see the link.
+	 * If the user is an admin of this forum, (ADMIN permissions
+	 * or a moderator) then they can edit too.
+	 *
+	 * @return string|null
+	 */
 	function EditLink() {
-	  if((Member::currentUser() && Member::currentUser()->ID == $this->Author()->ID) ||
-			 (Member::currentUser() && Member::currentUser()->isAdmin())) {
+		$memberID = Member::currentUserID() ? Member::currentUserID() : 0;
+		if(!$memberID) return null;
+
+		$isOwner = ($memberID == $this->Author()->ID) ? true : false;
+		
+		if($isOwner || $this->Forum()->isAdmin()) {
 			return "<a href=\"{$this->Forum()->Link()}editpost/{$this->ID}\">" . _t('Post.EDIT','edit') . "</a>";
 		}
-	  else {
-			return false;
+	}
+
+	/**
+	 * Return a link delete this post.
+	 * 
+	 * If the member is an admin of this forum, (ADMIN permissions
+	 * or a moderator) then they can delete the post.
+	 *
+	 * @return string|null
+	 */
+	function DeleteLink() {
+		$id = " ";
+		if($this->ParentID == 0) $id = " id=\"firstPost\" ";
+
+		if($this->Forum()->isAdmin()) {
+			return "<a".$id."class=\"deletelink\" rel=\"$this->ID\" href=\"{$this->Forum()->Link()}deletepost/{$this->ID}\">" . _t('Post.DELETE','delete') ."</a>";
 		}
 	}
 	
-
-	function DeleteLink() {
-	  $id = " ";
-	  if($this->ParentID == 0)
-			$id = " id=\"firstPost\" ";
-
-	  if(Member::currentUser() && Member::currentUser()->isAdmin())
-			return "<a".$id."class=\"deletelink\" rel=\"$this->ID\" href=\"{$this->Forum()->Link()}deletepost/{$this->ID}\">" . _t('Post.DELETE','delete') ."</a>";
-	  else
-			return false;
-	}
 	function ReplyLink() {
 		return "<a href=\"{$this->Forum()->Link()}reply/{$this->ID}\">" . _t('Post.REPLYLINK','Post Reply') . "</a>";
 	}
+	
 	function ShowLink() {
 		return "<a href=\"{$this->Forum()->Link()}show/{$this->ID}\">" . _t('Post.SHOWLINK','Show Thread') . "</a>";
 	}
