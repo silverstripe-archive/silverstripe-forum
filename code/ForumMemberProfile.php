@@ -31,7 +31,7 @@ class ForumMemberProfile extends Page_Controller {
 		$member = $this->Member();
 		
 		$parts[] = "<a href=\"{$forumHolder->Link()}\">{$forumHolder->Title}</a>";
-		$nonPageParts[] = $member ? $member->Nickname . '\'s ' . $this->Title : null;
+		$nonPageParts[] = $this->Title;
 		
 		return implode(" &raquo; ", array_reverse(array_merge($nonPageParts, $parts)));
 	}
