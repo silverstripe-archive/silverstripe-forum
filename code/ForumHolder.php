@@ -375,13 +375,10 @@ class ForumHolder_Controller extends Page_Controller {
 
 		$lastPostID = (int)$lastPostID;
 		if($lastPostID > 0)
-			$filter .= "ID > $lastPostID";
+			$filter .= " AND ID > $lastPostID";
 
 		if($lastVisit) {
-			if($lastPostID > 0)
-				$filter .= " AND ";
-
-			$filter .= "Created > '$lastVisit'";
+			$filter .= " AND Created > '$lastVisit'";
 		}
 
 		return DataObject::get("Post", $filter, "Created DESC", "", $limit);
