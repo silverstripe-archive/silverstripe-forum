@@ -145,36 +145,52 @@ class ForumRole extends DataObjectDecorator {
 	 */
 	function getForumFields($showIdentityURL = false) {
 		$gravatarText = (DataObject::get_one("ForumHolder", "AllowGravatars = True")) ? '<small>'. _t('ForumRole.CANGRAVATAR', 'If you use Gravatars then leave this blank') .'</small>' : "";
-		$fieldset = new FieldSet(
+
+		$personalDetailsFields = new CompositeField(
 			new HeaderField(_t('ForumRole.PERSONAL','Personal Details')),
-
+	
 			new LiteralField("Blurb","<p id=\"helpful\">Tick the fields to show in public profile</p>"),
-
+	
 			new CheckableOption("UnnecessaryNicknamePublic", new TextField("Nickname", _t('ForumRole.NICKNAME','Nickname')), true, true),
 			new CheckableOption("FirstNamePublic", new TextField("FirstName", _t('ForumRole.FIRSTNAME','First name'))),
 			new CheckableOption("SurnamePublic", new TextField("Surname", _t('ForumRole.SURNAME','Surname'))),
 			new CheckableOption("OccupationPublic", new TextField("Occupation", _t('ForumRole.OCCUPATION','Occupation')), true),
-			new CheckableOption("CountryPublic", new CountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true),
-
+			new CheckableOption("CountryPublic", new CountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true)
+		);
+		$personalDetailsFields->setID('PersonalDetailsFields');
+		
+		$userDetailsFields = new CompositeField(
 			new HeaderField( _t('ForumRole.USERDETAILS','User Details')),
+			
 			new CheckableOption("EmailPublic", new EmailField("Email", _t('ForumRole.EMAIL','Email'))),
 			new PasswordField("Password", _t('ForumRole.PASSWORD','Password')) ,
 			new PasswordField("ConfirmPassword", _t('ForumRole.CONFIRMPASS','Confirm Password')),
 			new SimpleImageField("Avatar", _t('ForumRole.AVATAR','Upload avatar ') .' '. $gravatarText),
 			new ReadonlyField("ForumRank", _t('ForumRole.RATING','User rating'))
 		);
+		$userDetailsFields->setID('UserDetailsFields');
+		
+		$fieldset = new FieldSet(
+			$personalDetailsFields,
+			$userDetailsFields
+		);
 
 		if($showIdentityURL) {
-			$fieldset->insertBefore(new ReadonlyField('IdentityURL', _t('ForumRole.OPENIDINAME','OpenID/i-name')),
-															'Password');
-			$fieldset->insertAfter(new LiteralField('PasswordOptionalMessage',
-				'<p>' . _t('ForumRole.PASSOPTMESSAGE','Since you provided an OpenID respectively an i-name the password is optional. If you enter one, you will be able to log in also with your e-mail address.') . '</p>'),
-				'IdentityURL');
+			$fieldset->insertBefore(
+				new ReadonlyField('IdentityURL', _t('ForumRole.OPENIDINAME','OpenID/i-name')),
+				'Password'
+			);
+			$fieldset->insertAfter(
+				new LiteralField(
+					'PasswordOptionalMessage',
+					'<p>' . _t('ForumRole.PASSOPTMESSAGE','Since you provided an OpenID respectively an i-name the password is optional. If you enter one, you will be able to log in also with your e-mail address.') . '</p>'
+				),
+				'IdentityURL'
+			);
 		}
 
 		return $fieldset;
 	}
-
 
 	function updateCMSFields(FieldSet &$fields) {
 		if(Permission::checkMember($this->owner->ID, "ACCESS_FORUM")) {
