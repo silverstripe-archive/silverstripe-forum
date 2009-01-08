@@ -68,8 +68,8 @@ class ForumHolder extends Page {
 	function Breadcrumbs() {
 		if(Director::urlParam('Action') == 'search') {
 			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('SEARCHBREADCRUMB', 'Search');
-		} else {
-			return parent::Breadcrumbs();
+		} elseif(Director::urlParam('Action') == 'memberlist') {
+			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('MEMBERLIST', 'Member List');
 		}
 	}
 
@@ -99,9 +99,12 @@ class ForumHolder_Controller extends Page_Controller {
 	function memberlist() {
 		// If sort has been defined then save it as in the session
 		$order = (isset($_GET['order'])) ? $_GET['order']: "";
-		if(!isset($_GET['start']) || !is_numeric($_GET['start']) || (int)$_GET['start'] < 1) 
+		
+		if(!isset($_GET['start']) || !is_numeric($_GET['start']) || (int) $_GET['start'] < 1) {
 			$_GET['start'] = 0;
-		$SQL_start = (int)$_GET['start'];
+		}
+		
+		$SQL_start = (int) $_GET['start'];
 
 		switch($order) {
 			case "joined":
@@ -124,11 +127,12 @@ class ForumHolder_Controller extends Page_Controller {
 				$members = DataObject::get("Member", "`Member`.Nickname != 'NULL'","","","{$SQL_start},100");
 			break;
 		}
+		
 		return array(
-			"Subtitle" => "Member List", 
-			"Abstract" => $this->MemberListAbstract,
-			"Members" => $members,
-			"Title" => "Member List"
+			'Subtitle' => _t('MEMBERLIST', 'Member List'),
+			'Abstract' => $this->MemberListAbstract,
+			'Members' => $members,
+			'Title' => _t('MEMBERLIST', 'Member List')
 		);
 	}
 
