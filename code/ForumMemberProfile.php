@@ -133,7 +133,7 @@ class ForumMemberProfile extends Page_Controller {
 			(isset($data['IdentityURL']) && !empty($data['IdentityURL'])) ||
 			(isset($_POST['IdentityURL']) && !empty($_POST['IdentityURL']));
 
-		$fields = singleton('Member')->getForumFields($use_openid);
+		$fields = singleton('Member')->getForumFields($use_openid, true);
 		$form = new Form($this, 'RegistrationForm', $fields,
 			new FieldSet(new FormAction("doregister", "Register")),
 			($use_openid)

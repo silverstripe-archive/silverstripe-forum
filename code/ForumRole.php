@@ -143,7 +143,7 @@ class ForumRole extends DataObjectDecorator {
 	 * @return FieldSet Returns a FieldSet containing all needed fields for
 	 *                  the registration of new users
 	 */
-	function getForumFields($showIdentityURL = false) {
+	function getForumFields($showIdentityURL = false, $addmode = false) {
 		$gravatarText = (DataObject::get_one("ForumHolder", "AllowGravatars = True")) ? '<small>'. _t('ForumRole.CANGRAVATAR', 'If you use Gravatars then leave this blank') .'</small>' : "";
 
 		$personalDetailsFields = new CompositeField(
