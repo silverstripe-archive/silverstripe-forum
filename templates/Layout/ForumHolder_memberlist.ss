@@ -20,24 +20,30 @@
 		</table>
 		
 		<% if Members.MoreThanOnePage %>
-		  	<div id="ForumMembersPagination">
+			<div id="ForumMembersPagination">
 				<p>
-		  			<% if Members.PrevLink %>
-		    			<a href="$Members.PrevLink">&lt;&lt; Prev</a> | 
-		  			<% end_if %>
-
-		  			<% control Members.Pages %>
-		    			<% if CurrentBool %>
-		      				<strong>$PageNum</strong> 
-		    			<% else %>
-		      				<a href="$Link" title="Go to page $PageNum">$PageNum</a> 
-		    			<% end_if %>
-		  			<% end_control %>
-
-		  			<% if Members.NextLink %>
-		    			| <a href="$Members.NextLink">Next &gt;&gt;</a>
-		  			<% end_if %>
-		  		</p>
+					<% if Members.NotFirstPage %>
+						<a class="prev" href="$Members.PrevLink" title="View the previous page">Prev</a>
+					<% end_if %>
+				
+					<span>
+				    	<% control Members.PaginationSummary(4) %>
+							<% if CurrentBool %>
+								$PageNum
+							<% else %>
+								<% if PageNum %>
+									<a href="$Link" title="View page number $PageNum">$PageNum</a>
+								<% else %>
+									...
+								<% end_if %>
+							<% end_if %>
+						<% end_control %>
+					</span>
+				
+					<% if Members.NotLastPage %>
+						<a class="next" href="$Members.NextLink" title="View the next page">Next</a>
+					<% end_if %>
+				</p>
 			</div>
 		<% end_if %>
 	</div>
