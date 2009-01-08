@@ -124,7 +124,7 @@ class ForumHolder_Controller extends Page_Controller {
 				$members->parseQueryLimit($query);
 			break;
 			default:
-				$members = DataObject::get("Member", "`Member`.Nickname != 'NULL'","","","{$SQL_start},100");
+				$members = DataObject::get("Member", "`Member`.Nickname != 'NULL'","`Member`.Created DESC","","{$SQL_start},100");
 			break;
 		}
 		
