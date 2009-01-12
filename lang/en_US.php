@@ -2,6 +2,11 @@
 
 global $lang;
 
+$lang['en_US']['']['LOGINTOUNSUBSCRIBE'] = 'To unsubscribe from that thread, please log in first.';
+$lang['en_US']['']['MEMBERLIST'] = 'Member List';
+$lang['en_US']['']['MODERATOR'] = 'Forum Moderator';
+$lang['en_US']['']['MODERATORS'] = 'Moderators for this forum';
+$lang['en_US']['']['SEARCHBREADCRUMB'] = 'Search';
 $lang['en_US']['Forum']['ACCESSATTACH'] = 'Can users attach files?';
 $lang['en_US']['Forum']['ACCESSPOST'] = 'Who can post to the forum?';
 $lang['en_US']['Forum']['ACCESSREAD'] = 'Who can read the forum?';
@@ -53,9 +58,7 @@ $lang['en_US']['Forum']['WELCOMEFORUM'] = 'Welcome to SilverStripe Forum Module!
 $lang['en_US']['Forum']['WELCOMEFORUMHOLDER'] = 'Welcome to SilverStripe Forum Module! This is the default ForumHolder page. You can now add forums.';
 $lang['en_US']['Forum']['WRONGPERMISSION'] = 'You don\'t have the correct permissions to edit this post.';
 $lang['en_US']['Forum']['YES'] = 'Yes';
-$lang['en_US']['Forum.ss']['BY'] = 'by';
-$lang['en_US']['Forum.ss']['CLICKTOUSER'] = 'Click here to view';
-$lang['en_US']['Forum.ss']['GOTOFIRSTUNREAD'] = 'Go to the first unread post in the %s topic.';
+$lang['en_US']['Forum.ss']['ANNOUNCEMENTS'] = 'Announcements';
 $lang['en_US']['Forum.ss']['GOTOTHISTOPIC'] = 'Go to the %s topic';
 $lang['en_US']['Forum.ss']['LASTPOST'] = 'Last Post';
 $lang['en_US']['Forum.ss']['NEWTOPIC'] = 'Click here to start a new topic';
@@ -65,7 +68,7 @@ $lang['en_US']['Forum.ss']['NOTOPICS'] = 'There are no topics in this forum, ';
 $lang['en_US']['Forum.ss']['POSTS'] = 'Posts';
 $lang['en_US']['Forum.ss']['PREVLNK'] = 'Previous Page';
 $lang['en_US']['Forum.ss']['READONLYFORUM'] = 'This Forum is read only. You cannot post replies or start new threads';
-$lang['en_US']['Forum.ss']['TOPIC'] = 'Topic';
+$lang['en_US']['Forum.ss']['TOPICS'] = 'Topics';
 $lang['en_US']['ForumAdmin_right.ss']['EDITPAGE'] = 'Edit Page';
 $lang['en_US']['ForumAdmin_right.ss']['WELCOME'] = 'Welcome to %s! Please choose click on one of the entries on the left pane.';
 $lang['en_US']['ForumCategory']['PLURALNAME'] = array(
@@ -170,7 +173,8 @@ $lang['en_US']['ForumMember_ForgotNicknameEmail.ss']['MESSAGE'] = 'Here\'s your 
 $lang['en_US']['ForumMember_ForgotNicknameEmail.ss']['USERNAME'] = 'Username:';
 $lang['en_US']['ForumMember_TopicNotification.ss']['HI'] = 'Hi %s,';
 $lang['en_US']['ForumMember_TopicNotification.ss']['NEWPOSTMESSAGE'] = 'A new post has been added to a topic you\'ve subscribed to.';
-$lang['en_US']['ForumMember_TopicNotification.ss']['NOTIFICATIONMESSAGE'] = 'You will not receive additional notifications until you visit the forum again.';
+$lang['en_US']['ForumMember_TopicNotification.ss']['REPLYLINK'] = 'View the topic';
+$lang['en_US']['ForumMember_TopicNotification.ss']['UNSUBSCRIBETEXT'] = 'Unsubscribe from the topic';
 $lang['en_US']['ForumRole']['ADMIN'] = 'Administrator';
 $lang['en_US']['ForumRole']['ANONYMOUS'] = 'Anonymous user';
 $lang['en_US']['ForumRole']['AVATAR'] = 'Upload avatar ';
@@ -216,48 +220,31 @@ $lang['en_US']['Forum_show.ss']['UNSUBSCRIBE'] = 'Unsubscribe';
 $lang['en_US']['Forum_show.ss']['VIEWS'] = 'Views';
 $lang['en_US']['Forum_starttopic.ss']['AVAILABLEBB'] = 'Available BB Code tags';
 $lang['en_US']['Forum_starttopic.ss']['EXAMPLE'] = 'Example';
-$lang['en_US']['Post']['ACTIVEPOSTS'] = 'Active Posts';
-$lang['en_US']['Post']['ARCHIVE'] = 'Archive';
-$lang['en_US']['Post']['ARCHIVED'] = 'Archived';
-$lang['en_US']['Post']['AUTHOR'] = 'Author';
-$lang['en_US']['Post']['AWAITING'] = 'Awaiting';
-$lang['en_US']['Post']['AWAITINGPOSTS'] = 'Awaiting Posts';
-$lang['en_US']['Post']['CONTENT'] = 'Content';
-$lang['en_US']['Post']['CREATED'] = 'Created';
 $lang['en_US']['Post']['DELETE'] = 'delete';
 $lang['en_US']['Post']['EDIT'] = 'edit';
-$lang['en_US']['Post']['LASTEDIT'] = 'Last Edited';
-$lang['en_US']['Post']['MAIN'] = 'Main';
-$lang['en_US']['Post']['MODERATED'] = 'Moderated';
 $lang['en_US']['Post']['PLURALNAME'] = array(
 	'Posts',
 	50,
 	'Pural name of the object, used in dropdowns and to generally identify a collection of this object in the interface'
 );
-$lang['en_US']['Post']['POSTEDBY'] = 'Posted By %s';
 $lang['en_US']['Post']['POSTEDTO'] = 'Posted to: %s';
-$lang['en_US']['Post']['POSTREPLIEDTO'] = 'Post Replied To %s';
-$lang['en_US']['Post']['REJECTED'] = 'Rejected';
-$lang['en_US']['Post']['REJECTEDPOSTS'] = 'Rejected Posts';
+$lang['en_US']['Post']['REPLYLINK'] = 'Post Reply';
 $lang['en_US']['Post']['RESPONSE'] = array(
 	'Re: %s',
 	PR_HIGH,
 	'Post Subject Prefix'
 );
-$lang['en_US']['Post']['SAVE'] = 'Save';
+$lang['en_US']['Post']['SHOWLINK'] = 'Show Thread';
 $lang['en_US']['Post']['SINGULARNAME'] = array(
 	'Post',
 	50,
 	'Singular name of the object, used in dropdowns and to generally identify a single object in the interface'
 );
-$lang['en_US']['Post']['STATUS'] = 'Status';
-$lang['en_US']['Post']['TITLE'] = 'Title';
-$lang['en_US']['Post']['TOPICCREATED'] = 'Topic Created';
-$lang['en_US']['Post']['TOPICDETAILS'] = 'Topic Details';
-$lang['en_US']['Post']['TOPICINTERNALID'] = 'Topic Internal ID';
-$lang['en_US']['Post']['TOPICLASTEDIT'] = 'Topic Last Edited';
 $lang['en_US']['SinglePost.ss']['ATTACHED'] = 'Attached Files';
 $lang['en_US']['SinglePost.ss']['GOTOPROFILE'] = 'Go to this User\'s Profile';
 $lang['en_US']['SinglePost.ss']['LASTEDITED'] = 'Last edited:';
+$lang['en_US']['TopicListing.ss']['BY'] = 'by';
+$lang['en_US']['TopicListing.ss']['CLICKTOUSER'] = 'Click here to view';
+$lang['en_US']['TopicListing.ss']['GOTOFIRSTUNREAD'] = 'Go to the first unread post in the %s topic.';
 
 ?>
