@@ -47,7 +47,7 @@
 			<div class="typography">
 				<p>
 					<% if Topics.PrevLink %><a style="float: left" href="$Topics.PrevLink">	&lt; <% _t('PREVLNK','Previous Page') %></a><% end_if %>
-					<% if Topics.NextLink %><a style="float: right" href="$Topics.NextLink"><% _t('PREVLNK','Previous Page') %> &gt;</a><% end_if %>
+					<% if Topics.NextLink %><a style="float: right" href="$Topics.NextLink"><% _t('NEXTLNK','Next Page') %> &gt;</a><% end_if %>
 					
 					<% control Topics.Pages %>
 						<% if CurrentBool %>

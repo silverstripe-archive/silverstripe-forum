@@ -101,9 +101,19 @@ class ForumMemberProfile extends Page_Controller {
  	 */
  	function LatestPosts() {
  		$memberID = $this->urlParams['ID'];
- 		$SQL_memberID = (int) $memberID;
- 		
- 		return DataObject::get("Post", "`AuthorID` = '$SQL_memberID'", "`Created` DESC", "", "0,10");
+		$SQL_memberID = (int) $memberID;
+
+		$posts = DataObject::get("Post", "`AuthorID` = '$SQL_memberID'", "`Created` DESC", "", "0,10");
+		if($posts) {
+			foreach($posts as $post) {
+				if(!$post->Forum()->CheckForumPermissions()) {
+	            	$posts->remove($post);
+				}
+			}
+		}
+
+	   return $posts;
+	   
  	}
 
 
