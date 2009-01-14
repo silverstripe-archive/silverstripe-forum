@@ -107,7 +107,7 @@ class ForumMemberProfile extends Page_Controller {
 		if($posts) {
 			foreach($posts as $post) {
 				if(!$post->Forum()->CheckForumPermissions()) {
-	            	$posts->remove($post);
+					$posts->remove($post);
 				}
 			}
 		}
