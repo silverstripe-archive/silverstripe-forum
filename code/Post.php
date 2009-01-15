@@ -277,7 +277,7 @@ class Post extends DataObject {
 		$posts = DataObject::get("Post", "TopicID = $this->TopicID AND Status = 'Moderated' AND ID < $this->ID");
 		if($posts) {
 			if($posts->Count() < 9) $count = 0;
-			else $count = round($posts->Count()/8)*8;
+			else $count = floor($posts->Count()/8)*8;
 		}
 		return $baseLink . "show/" . $this->TopicID  . '?start='.$count.'#post' . $this->ID;
 	}
