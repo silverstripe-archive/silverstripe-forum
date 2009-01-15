@@ -19,8 +19,8 @@
 									<% end_if %>
 								<% end_control %>
 							</span>
-							<% if SearchResults.PrevLink %><a class="paginationPrevLink" style="float: left" href="$SearchResults.PrevLink">&lt; <% _t('PREV','Prev') %></a><% end_if %>
 							<% if SearchResults.NextLink %><a class="paginationNextLink" style="float: right" href="$SearchResults.NextLink"><% _t('Next', 'Next') %> &gt;</a><% end_if %>
+							<% if SearchResults.PrevLink %><a class="paginationPrevLink" style="float: right" href="$SearchResults.PrevLink">&lt; <% _t('PREV','Prev') %></a><% end_if %>
 						</p>
 					</td>
 				</tr>
@@ -36,7 +36,7 @@
 				<tr class="$EvenOdd">
 					<td class="forumCategory" colspan="2">
 						<% control Topic %>
-							<a class="topicTitle" href="$Link" title="<% sprintf(_t('Forum.ss.GOTOTHISTOPIC',"Go to the %s topic"),$Title.EscapeXML) %>">$Title</a>
+							<a class="topicTitle" href="$Link" title="<% sprintf(_t('Forum.ss.GOTOTHISTOPIC',"Go to the %s topic"),$Title) %>">$Title</a>
 						<% end_control %>
 						<p class="dateInfo"</p>
 						<p>$Content.ContextSummary <span class="dateInfo">$Created.Ago</span></p>
@@ -60,8 +60,8 @@
 								<% end_if %>
 							<% end_control %>
 							</span>
-							<% if SearchResults.PrevLink %><a class="paginationPrevLink" style="float: left" href="$SearchResults.PrevLink">&lt; <% _t('PREV','Prev' ) %></a><% end_if %>
 							<% if SearchResults.NextLink %><a class="paginationNextLink" style="float: right" href="$SearchResults.NextLink"><% _t('Next', 'Next') %> &gt;</a><% end_if %>
+							<% if SearchResults.PrevLink %><a class="paginationPrevLink" style="float: right" href="$SearchResults.PrevLink">&lt; <% _t('PREV','Prev' ) %></a><% end_if %>
 						</p>
 					</td>
 				</tr>

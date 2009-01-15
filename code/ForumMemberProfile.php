@@ -125,7 +125,6 @@ class ForumMemberProfile extends Page_Controller {
 			"Title" => _t('ForumMemberProfile.FORUMREGTITLE','Forum Registration'), 
 		 	"Subtitle" => _t('ForumMemberProfile.REGISTER','Register'),
 			"Abstract" => DataObject::get_one("ForumHolder")->ProfileAbstract,
-			"Form" => $this->RegistrationForm(),
 		);
 	}
 
