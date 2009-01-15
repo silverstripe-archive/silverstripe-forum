@@ -1,6 +1,6 @@
 <p><% sprintf(_t('HI',"Hi %s,"),$Nickname) %></p>
 
-<p><% _t('NEWPOSTMESSAGE',"A new post has been added to a topic you've subscribed to.") %></a></p>
+<p><% _t('NEWPOSTMESSAGE',"A new post has been added to a topic you've subscribed to") %> - '$Title' <% if Author %><% _t('BY', "by") %> $Author.Nickname.<% end_if %></p>
 
 <ul>
 	<li><a href="$Link"><% _t('REPLYLINK', "View the topic") %></a></li>

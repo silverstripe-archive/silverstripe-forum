@@ -324,7 +324,6 @@ class Post_Subscription extends DataObject {
 		// Get all people subscribed to this topic, not including the post author, who have visited the forum since the last time they got sent an email
 		$list = DataObject::get("Post_Subscription",
 			"`TopicID` = '$post->TopicID' AND `MemberID` != '$post->AuthorID'", null, "LEFT JOIN Member ON `Post_Subscription`.`MemberID` = `Member`.`ID`");
-
 		if($list) {
 			foreach($list as $obj) {
 				$SQL_id = Convert::raw2sql((int)$obj->MemberID);
