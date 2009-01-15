@@ -108,23 +108,23 @@ class ForumHolder_Controller extends Page_Controller {
 
 		switch($order) {
 			case "joined":
-				$members = DataObject::get("Member", "`Member`.Nickname != 'NULL'","`Member`.Created ASC", "", "{$SQL_start},100");
+				$members = DataObject::get("Member", "","`Member`.Created ASC", "", "{$SQL_start},100");
 			break;
 			case "name":
-				$members = DataObject::get("Member", "`Member`.Nickname != 'NULL'","`Member`.Nickname ASC","","{$SQL_start},100");
+				$members = DataObject::get("Member", "","`Member`.Nickname ASC","","{$SQL_start},100");
 			break;
 			case "country":
-				$members = DataObject::get("Member", "`Member`.Nickname != 'NULL' AND `Member`.CountryPublic = TRUE","`Member`.Country ASC","","{$SQL_start},100");
+				$members = DataObject::get("Member", "`Member`.CountryPublic = TRUE","`Member`.Country ASC","","{$SQL_start},100");
 			break;
 			case "posts": 
-				$query = singleton('Member')->extendedSQL("`Member`.Nickname != 'NULL'","NumPosts DESC", "{$SQL_start},100");
+				$query = singleton('Member')->extendedSQL('',"NumPosts DESC", "{$SQL_start},100");
 				$query->select[] = "(SELECT COUNT(*) FROM `Post` WHERE `Post`.AuthorID = `Member`.ID) AS NumPosts";
 				$records = $query->execute();
 				$members = singleton('Member')->buildDataObjectSet($records, 'DataObjectSet', $query, 'Member');
 				$members->parseQueryLimit($query);
 			break;
 			default:
-				$members = DataObject::get("Member", "`Member`.Nickname != 'NULL'","`Member`.Created DESC","","{$SQL_start},100");
+				$members = DataObject::get("Member", "","`Member`.Created DESC","","{$SQL_start},100");
 			break;
 		}
 		
