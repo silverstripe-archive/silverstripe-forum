@@ -8,7 +8,7 @@
 	<% end_control %>
 </div>
 <div class="posterContent">
-	<h4><a href="#post$ID">$Title <img src="forum/images/right.png" alt="Link to this post" title="Link to this post" /></a></h4>
+	<h4><a href="$Link">$Title <img src="forum/images/right.png" alt="Link to this post" title="Link to this post" /></a></h4>
 	<p class="postDate">$Created.Long at $Created.Time 
 	<% if Updated %>
 		<strong><% _t('LASTEDITED','Last edited:') %> $Updated.Long <% _t('AT') %> $Updated.Time</strong>

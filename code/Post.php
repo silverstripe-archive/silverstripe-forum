@@ -205,7 +205,7 @@ class Post extends DataObject {
 
 
 	function getAllPostsUnderThisTopic() {
-		return DataObject::get("Post", "TopicID = $this->TopicID AND ParentID <> 0 AND Status = 'Moderated'");
+		return DataObject::get("Post", "TopicID = $this->TopicID AND ParentID <> 0 AND Status = 'Moderated'", "Created DESC");
 	}
 
 
@@ -272,7 +272,12 @@ class Post extends DataObject {
 	function Link() {
 		$baseLink = $this->Forum()->Link();
 		if($this->ParentID == 0) return $baseLink . "show/" . $this->ID;
-		else return $baseLink . "show/" . $this->TopicID  . '?showPost=' . $this->ID;
+		$count = 0;
+		$posts = DataObject::get("Post", "TopicID = $this->TopicID AND Status = 'Moderated' AND ID < $this->ID");
+		if($posts) {
+			$count = round($posts->Count()/8)*8;
+		}
+		return $baseLink . "show/" . $this->TopicID  . '?start='.$count.'#post' . $this->ID;
 	}
 }
 
