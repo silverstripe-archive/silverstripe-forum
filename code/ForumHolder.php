@@ -132,10 +132,10 @@ class ForumHolder_Controller extends Page_Controller {
 		}
 		
 		return array(
-			'Subtitle' => _t('ForumHolder.MEMBERLIST', 'Member List'),
+			'Subtitle' => _t('ForumHolder.MEMBERLIST', 'Forum member List'),
 			'Abstract' => $this->MemberListAbstract,
 			'Members' => $members,
-			'Title' => _t('ForumHolder.MEMBERLIST', 'Member List')
+			'Title' => _t('ForumHolder.MEMBERLIST', 'Forum member List')
 		);
 	}
 	
@@ -173,8 +173,8 @@ class ForumHolder_Controller extends Page_Controller {
 		}
 		
 		return array(
-			'Title' => _t('ForumHolder.POPULARTHREADS', 'Most popular threads'),
-			'Subtitle' => _t('ForumHolder.POPULARTHREADS', 'Most popular threads'),
+			'Title' => _t('ForumHolder.POPULARTHREADS', 'Most popular forum threads'),
+			'Subtitle' => _t('ForumHolder.POPULARTHREADS', 'Most popular forum threads'),
 			'Method' => $method,
 			'Threads' => $threads
 		);
