@@ -141,7 +141,48 @@ ul#Posts {
 	background: #fff;
 }
 
-
+/* SEARCH RESULTS 
+------------------------------------------ */
+#forum_search p,
+#forum_search p span {
+	font-size: 12px;
+	margin-bottom: 0px;
+}
+	#forum_search .topicTitle {
+		margin-bottom: 10px;
+	}
+	
+	#forum_search a.paginationPrevLink,
+	#forum_search a.paginationNextLink {
+		background: url(../images/replyButton.gif) no-repeat top left;
+		text-decoration: none;
+		width: 50px;
+		padding-left: 10px;
+		line-height: 20px;
+		height: 20px;
+		font-weight: bold;
+		font-size: 12px;
+		border-bottom: none;
+		margin-top: -18px !important;
+	}
+		#forum_search .paginationPageNumber,
+		#forum_search .paginationPageNumber a {
+			font-size: 13px;
+			color: #fff;
+		}
+			#forum_search .paginationPageNumber a {
+				color: #ccc;
+			}
+			#forum_search .paginationPageNumber a:hover {
+				color: #0194FF;
+			}
+	#forum_search .dateInfo {
+		font-size: 10px;
+		color: #999;
+	}
+	#forum_search a.current {
+		color: #999;
+	}
 /* FORUM TOP FEATURED BOX
 ------------------------------------------ */
 .forumFeatures {

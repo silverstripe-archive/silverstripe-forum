@@ -232,15 +232,19 @@ class ForumHolder_Controller extends Page_Controller {
 	 */
 	function search() {
 		$XML_keywords = Convert::raw2xml($_REQUEST['Search']);
+		$order = Convert::raw2xml($_REQUEST['order']);
 		$Abstract = !empty($_REQUEST['Search'])
 			? "<p>" . sprintf(_t('ForumHolder.SEARCHEDFOR',"You searched for '%s'."),$XML_keywords) . "</p>"
 			: null;
 
-		return array("Subtitle" => _t('ForumHolder.SEARCHRESULTS','Search results'),
-								 "Abstract" => $Abstract
+		return array(
+				"Subtitle" => _t('ForumHolder.SEARCHRESULTS','Search results'),
+				"Abstract" => $Abstract,
+				"Query" => $XML_keywords,
+				"Order" => ($order) ? $order : "relevance"
 		);
 	}
-
+	
 	/**
 	 * Returns the search results.
 	 * 
@@ -272,6 +276,18 @@ class ForumHolder_Controller extends Page_Controller {
 			$SQL_authorList = implode(", ", $SQL_potentialAuthorIDs);
 			$SQL_authorClause = "OR AuthorID IN ($SQL_authorList)";
 		}
+		// Work out what sorting method
+		$sort = "RelevancyScore DESC";
+		if(isset($_GET['order'])) {
+			switch($_GET['order']) {
+				case 'date':
+					$sort = "Created DESC";
+					break;
+				case 'title':
+					$sort = "Title ASC";
+					break;
+			}
+		}
 
 		// Perform the search
 		if(!empty($_GET['start'])) $limit = (int) $_GET['start'];
@@ -281,7 +297,8 @@ class ForumHolder_Controller extends Page_Controller {
 				MATCH (Title, Content) AGAINST ('$searchQuery') AS RelevancyScore
 			FROM Post
 			WHERE MATCH (Title, Content) AGAINST ('$searchQuery' IN BOOLEAN MODE) $SQL_authorClause 
-			ORDER BY RelevancyScore DESC";
+			GROUP BY TopicID
+			ORDER BY $sort";
 		
 		// Get the 10 posts from the starting record
 		$query = DB::query("
@@ -295,9 +312,10 @@ class ForumHolder_Controller extends Page_Controller {
 		
 		$baseClass = new Post();
 		$postsSet = $baseClass->buildDataObjectSet($query);
-		if($postsSet) $postsSet->setPageLimits($limit, 10, $allPostsCount);
-		
-		return $postsSet ? $postsSet : new DataObjectSet();
+		if($postsSet) {
+			$postsSet->setPageLimits($limit, 10, $allPostsCount);
+		}
+		return $postsSet ? $postsSet: new DataObjectSet();
 	}
 
 	/**

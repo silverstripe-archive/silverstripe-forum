@@ -268,6 +268,7 @@ class Post extends DataObject {
 
 	/*
 	 * Return a link to show this post
+	 * @return String
 	 */
 	function Link() {
 		$baseLink = $this->Forum()->Link();
@@ -275,7 +276,8 @@ class Post extends DataObject {
 		$count = 0;
 		$posts = DataObject::get("Post", "TopicID = $this->TopicID AND Status = 'Moderated' AND ID < $this->ID");
 		if($posts) {
-			$count = round($posts->Count()/8)*8;
+			if($posts->Count() < 9) $count = 0;
+			else $count = round($posts->Count()/8)*8;
 		}
 		return $baseLink . "show/" . $this->TopicID  . '?start='.$count.'#post' . $this->ID;
 	}
