@@ -229,7 +229,7 @@ class ForumRole extends DataObjectDecorator {
 	 */
 	function Nickname() {
 		if($this->owner->Nickname) return $this->owner->Nickname;
-		else if($this->owner->FirstName) return $this->owner->FirstName;
+		elseif($this->owner->FirstNamePublic && $this->owner->FirstName) return $this->owner->FirstName;
 		else return _t('ForumRole.ANONYMOUS','Anonymous user');
 	}
 	
