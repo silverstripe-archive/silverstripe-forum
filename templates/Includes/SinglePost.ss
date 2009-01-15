@@ -8,6 +8,13 @@
 	<% end_control %>
 </div>
 <div class="posterContent">
+	<div class="quickReply">
+		<% control Top %>
+			<% if CheckForumPermissions(post) %>
+				<p><a href="$ReplyLink" title="<% _t('CLICKREPLY', 'Click to Reply') %>"><% _t('REPLY', 'Reply') %></a></p>
+			<% end_if %>
+		<% end_control %>
+	</div>
 	<h4><a href="$Link">$Title <img src="forum/images/right.png" alt="Link to this post" title="Link to this post" /></a></h4>
 	<p class="postDate">$Created.Long at $Created.Time 
 	<% if Updated %>

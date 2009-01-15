@@ -128,7 +128,10 @@ ul#Posts {
 #PostContentNormal,	#FirstPost {
 	width: 100%;
 }
-
+#Posts .quickReply {
+	float: right;
+	margin-right: 6px;
+}
 #Posts li.even {
 	background: #f5f5f5;
 	border-top: 4px solid #ddd;
