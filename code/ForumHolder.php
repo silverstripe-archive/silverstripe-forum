@@ -70,6 +70,8 @@ class ForumHolder extends Page {
 			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('SEARCHBREADCRUMB', 'Search');
 		} elseif(Director::urlParam('Action') == 'memberlist') {
 			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('MEMBERLIST', 'Member List');
+		} elseif(Director::urlParam('Action') == 'popularthreads') {
+			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('MOSTPOPULARTHREADS', 'Most popular threads');
 		}
 	}
 
@@ -89,6 +91,7 @@ class ForumHolder_Controller extends Page_Controller {
 		RSSFeed::linkToFeed($this->Link("rss"), "Posts to all forums");
 		parent::init();
 	}
+	
 	/** 
 	 * Generate a complete list of all the members data. Return a 
 	 * set of all these members sorted by a GET variable
@@ -129,10 +132,51 @@ class ForumHolder_Controller extends Page_Controller {
 		}
 		
 		return array(
-			'Subtitle' => _t('MEMBERLIST', 'Member List'),
+			'Subtitle' => _t('ForumHolder.MEMBERLIST', 'Member List'),
 			'Abstract' => $this->MemberListAbstract,
 			'Members' => $members,
-			'Title' => _t('MEMBERLIST', 'Member List')
+			'Title' => _t('ForumHolder.MEMBERLIST', 'Member List')
+		);
+	}
+	
+	/**
+	 * Show the 20 most popular threads.
+	 * 
+	 * Two configuration options are available:
+	 * 1. "posts" - most popular threads by posts
+	 * 2. "views" - most popular threads by views
+	 * 
+	 * e.g. mysite.com/forums/popularthreads?by=posts
+	 *
+	 * @return array
+	 */
+	function popularthreads() {
+		$start = isset($_GET['start']) ? (int) $_GET['start'] : 0;
+		$method = isset($_GET['by']) ? $_GET['by'] : null;
+		if(!$method) $method = 'posts';
+		
+		if($method == 'posts') {
+			$threadRecords = DB::query("
+				SELECT *, (SELECT COUNT(*) FROM Post AS P WHERE Post.ID = P.TopicID) AS PostCount
+				FROM Post
+				WHERE TopicID = Post.ID
+				ORDER BY PostCount DESC
+				LIMIT $start,20
+			");
+			
+			$allThreadsCount = DB::query('SELECT * FROM Post WHERE TopicID = Post.ID')->numRecords();
+			$threads = singleton('Post')->buildDataObjectSet($threadRecords);
+			if($threads) $threads->setPageLimits($start, '20', $allThreadsCount);
+			
+		} elseif($method == 'views') {
+			$threads = DataObject::get('Post', '', 'NumViews DESC', '', "$start,20");
+		}
+		
+		return array(
+			'Title' => _t('ForumHolder.POPULARTHREADS', 'Most popular threads'),
+			'Subtitle' => _t('ForumHolder.POPULARTHREADS', 'Most popular threads'),
+			'Method' => $method,
+			'Threads' => $threads
 		);
 	}
 
@@ -232,7 +276,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 */
 	function search() {
 		$XML_keywords = Convert::raw2xml($_REQUEST['Search']);
-		$order = Convert::raw2xml($_REQUEST['order']);
+		$order = Convert::raw2xml((isset($_REQUEST['order'])) ? $_REQUEST['order'] : null);
 		$Abstract = !empty($_REQUEST['Search'])
 			? "<p>" . sprintf(_t('ForumHolder.SEARCHEDFOR',"You searched for '%s'."),$XML_keywords) . "</p>"
 			: null;

@@ -3,10 +3,10 @@
 		
 		<table id="MembersList">
 			<tr class="head">
-				<th><a href="{$URLSegment}/memberlist/?order=name" title="Order by Name">Member Name:</a></th>
-				<th><a href="{$URLSegment}/memberlist/?order=country" title="Order by Country">Country:</a></th>
-				<th><a href="{$URLSegment}/memberlist/?order=posts" title="Order by Posts">Forum Posts:</a></th>
-				<th><a href="{$URLSegment}/memberlist/?order=joined" title="Order by Joined">Joined:</a></th>
+				<th><a href="{$URLSegment}/memberlist/?order=name" title="<% _t('ORDERBYNAME', 'Order by Name') %>"><% _t('MEMBERNAME', 'Member Name') %>:</a></th>
+				<th><a href="{$URLSegment}/memberlist/?order=country" title="<% _t('ORDERBYCOUNTRY', 'Order by Country') %>"><% _t('COUNTRY', 'Country') %>:</a></th>
+				<th><a href="{$URLSegment}/memberlist/?order=posts" title="<% _t('ORDERBYPOSTS', 'Order by Posts') %>"><% _t('FORUMPOSTS', 'Forum Posts') %>:</a></th>
+				<th><a href="{$URLSegment}/memberlist/?order=joined" title="<% _t('ORDERBYJOINED', 'Order by Joined') %>"><% _t('JOINED', 'Joined') %>:</a></th>
 			</tr>
 			
 			<% control Members %>
@@ -23,7 +23,7 @@
 			<div id="ForumMembersPagination">
 				<p>
 					<% if Members.NotFirstPage %>
-						<a class="prev" href="$Members.PrevLink" title="View the previous page">Prev</a>
+						<a class="prev" href="$Members.PrevLink" title="View the previous page"><% _t('PREV', 'Prev') %></a>
 					<% end_if %>
 				
 					<span>
@@ -32,7 +32,7 @@
 								$PageNum
 							<% else %>
 								<% if PageNum %>
-									<a href="$Link" title="View page number $PageNum">$PageNum</a>
+									<a href="$Link">$PageNum</a>
 								<% else %>
 									...
 								<% end_if %>
@@ -41,7 +41,7 @@
 					</span>
 				
 					<% if Members.NotLastPage %>
-						<a class="next" href="$Members.NextLink" title="View the next page">Next</a>
+						<a class="next" href="$Members.NextLink" title="View the next page"><% _t('NEXT', 'Next') %></a>
 					<% end_if %>
 				</p>
 			</div>

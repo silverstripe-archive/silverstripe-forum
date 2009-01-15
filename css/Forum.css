@@ -837,44 +837,60 @@ form .BBCodeHint {
 	}
 
 /* ----------------------------
- MEMBERS LIST STYLING
+ MEMBERS/THREADS LIST STYLING
 ----------------------------- */
 
-#MembersList {
+#SortThreadsBy .current {
+	color: #999;
+	text-decoration: none;	
+}
+
+#MembersList,
+#ThreadsList {
 	font-size: 11px;
 	width: 100%;
 	border-collapse: collapse;
 }
-	#MembersList tr {
+	#MembersList tr,
+	#ThreadsList tr {
 		background: #fff;
 	}
-		#MembersList tr.odd {
+		#MembersList tr.odd,
+		#ThreadsList tr.odd {
 			background: #F5F5F5;
 		}
-			#MembersList tr td {
+			#MembersList tr td,
+			#ThreadsList tr td {
 				border: 1px solid #E3E3E3;
 			}
 		#MembersList tr:hover,
-		#MembersList tr.odd:hover {
+		#MembersList tr.odd:hover,
+		#ThreadsList tr:hover,
+		#ThreadsList tr.odd:hover {
 			background: #e2f3fa;
 			cursor: pointer;
 		}
-		#MembersList tr.head {
+		#MembersList tr.head,
+		#ThreadsList tr.head {
 			background: none;
 		}
 
-	#MembersList th {
+	#MembersList th,
+	#ThreadsList th {
 		font-weight: bold;
 		font-size: 11px;
 		padding: 4px 4px;
 	}
-	#MembersList td {
+	#MembersList td,
+	#ThreadsList td {
 		padding: 5px;
 	}
-			#MembersList td.numericField {
-				text-align: center;
-			}
-	#ForumMembersPagination p {
+		#MembersList td.numericField,
+		#ThreadsList td.numericField {
+			text-align: center;
+		}
+	#ForumMembersPagination p,
+	#ThreadsPagination p {
 		text-align: center;
 		font-size: 1.3em;
 		margin-top: 1em;
