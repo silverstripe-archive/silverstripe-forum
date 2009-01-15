@@ -26,19 +26,21 @@
 }
 #ForumContent textarea {
 	font-family: Verdana, Tahoma, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
 }
 
 #ForumContent .middleColumn {
 	background: #E9E9E9 none repeat scroll 0%;
-	clear: left;
 	display: block;
+	float: left;
 	margin: 10px 10px 10px 0pt;
 	padding: 4px;
 	width: 306px;
 }
 
 #ForumContent label.left {
-	font-size: 1.2em;
+	font-size: 12px;
 	font-weight: bold;
 }
 
@@ -639,20 +641,13 @@ table.postHeader td.gotoButtonEnd a {
 		margin-left: 5px;
 	}
 	#UserProfile div {
-		padding: 10px 0 0 20px;
-		margin-bottom: 10px;
 		clear: both;
 	}
 	#UserProfile label.left {
-		font-size: 1.4em;
-		float: left;
 		font-weight: bold;
 		width: 200px;
 	}
-	#UserProfile p {
-		font-size: 1.2em;
-		margin-left: 20px;
-	}
+
 	#UserProfile p.message {
 		font-size: 1.2em;
 		margin-left: 0;
@@ -779,6 +774,9 @@ form .BBCodeHint {
 	div.postType div.code code span {
 		font-family: "Courier New",Courier;
 }
+
+/* CODE SNIPPET
+---------------------------------- */
 
 
 /* FORUM REGISTER
