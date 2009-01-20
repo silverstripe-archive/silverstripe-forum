@@ -14,7 +14,7 @@
 	<% end_if %>
 	<div class="forumHolderFeatures">
 		<% if StickyTopics %>
-			<table id="StickyTopiclist" class="topicList">
+			<table id="StickyTopiclist" class="topicList" summary="List of sticky topics in this forum">
 				<tr>
 					<th class="odd"><% _t('ANNOUNCEMENTS','Announcements') %></th>
 					<th class="odd"><% _t('POSTS','Posts') %></th>
@@ -26,7 +26,7 @@
 				<% end_control %>
 			</table>
 		<% end_if %>
-		<table id="TopicList" class="topicList">
+		<table id="TopicList" class="topicList" summary="List of topics in this forum">
 			<tr>
 				<th class="odd"><% _t('TOPICS','Topics') %></th>
 				<th class="odd"><% _t('POSTS','Posts') %></th>
