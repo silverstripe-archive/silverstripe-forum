@@ -15,9 +15,17 @@ class ForumCategory extends DataObject {
 		'StackableOrder' => 'Varchar(2)'
 	);
 	
+	static $has_one = array();
+	
 	static $has_many = array(
 		'Forums' => 'Forum'
 	);
+	
+	static $many_many = array();
+	
+	static $belongs_many_many = array();
+	
+	static $defaults = array();
 	
 	static $default_sort = "StackableOrder DESC";
 	

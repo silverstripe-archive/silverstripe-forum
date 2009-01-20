@@ -45,10 +45,14 @@ class Post extends DataObject {
 		"Children" => "Post",
 		"Attachments" => "Post_Attachment"
 	);
-
+	
+	static $many_many = array();
+	
 	static $extensions = array(
 		"Hierarchy",
 	);
+	
+	static $defaults = array();
 
 	/**
 	 * Save the parent ID and the topic ID before
