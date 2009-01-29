@@ -51,11 +51,15 @@ class ForumRole extends DataObjectDecorator {
 			'db' => array(
 				'ForumRank' => 'Varchar',
 				'Occupation' => 'Varchar',
+				'Company' => 'Varchar',
+				'City' => 'Varchar',
 				'Country' => 'Varchar',
 				'Nickname' => 'Varchar',
 				'FirstNamePublic' => 'Boolean',
 				'SurnamePublic' => 'Boolean',
 				'OccupationPublic' => 'Boolean',
+				'CompanyPublic' => 'Boolean',
+				'CityPublic' => 'Boolean',
 				'CountryPublic' => 'Boolean',
 				'EmailPublic' => 'Boolean',
 				'LastViewed' => 'SSDatetime',
@@ -97,6 +101,12 @@ class ForumRole extends DataObjectDecorator {
 	}
 	function OccupationPublic() {
 		return $this->owner->OccupationPublic || Permission::check('ADMIN');
+	}
+	function CompanyPublic() {
+		return $this->owner->CompanyPublic || Permission::check('ADMIN');
+	}
+	function CityPublic() {
+		return $this->owner->CityPublic || Permission::check('ADMIN');
 	}
 	function CountryPublic() {
 		return $this->owner->CountryPublic || Permission::check('ADMIN');
@@ -155,24 +165,19 @@ class ForumRole extends DataObjectDecorator {
 			new CheckableOption("FirstNamePublic", new TextField("FirstName", _t('ForumRole.FIRSTNAME','First name'))),
 			new CheckableOption("SurnamePublic", new TextField("Surname", _t('ForumRole.SURNAME','Surname'))),
 			new CheckableOption("OccupationPublic", new TextField("Occupation", _t('ForumRole.OCCUPATION','Occupation')), true),
-			new CheckableOption("CountryPublic", new CountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true)
-		);
-		$personalDetailsFields->setID('PersonalDetailsFields');
-		
-		$userDetailsFields = new CompositeField(
-			new HeaderField( _t('ForumRole.USERDETAILS','User Details')),
-			
+			new CheckableOption('CompanyPublic', new TextField('Company', _t('ForumRole.COMPANY', 'Company')), true),
+			new CheckableOption('CityPublic', new TextField('City', _t('ForumRole.CITY', 'City')), true),
+			new CheckableOption("CountryPublic", new CountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true),
 			new CheckableOption("EmailPublic", new EmailField("Email", _t('ForumRole.EMAIL','Email'))),
 			new PasswordField("Password", _t('ForumRole.PASSWORD','Password')) ,
 			new PasswordField("ConfirmPassword", _t('ForumRole.CONFIRMPASS','Confirm Password')),
 			new SimpleImageField("Avatar", _t('ForumRole.AVATAR','Upload avatar ') .' '. $gravatarText),
 			new ReadonlyField("ForumRank", _t('ForumRole.RATING','User rating'))
 		);
-		$userDetailsFields->setID('UserDetailsFields');
+		$personalDetailsFields->setID('PersonalDetailsFields');
 		
 		$fieldset = new FieldSet(
-			$personalDetailsFields,
-			$userDetailsFields
+			$personalDetailsFields
 		);
 
 		if($showIdentityURL) {

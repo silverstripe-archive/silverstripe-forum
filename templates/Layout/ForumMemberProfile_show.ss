@@ -15,6 +15,12 @@
 			<% if OccupationPublic %>
 			<div id="ForumProfileOccupation"><label class="left"><% _t('OCCUPATION','Occupation') %>:</label> <p class="readonly">$Occupation</p></div>
 			<% end_if %>
+			<% if CompanyPublic %>
+			<div id="ForumProfileCompany"><label class="left"><% _t('COMPANY', 'Company') %>:</label> <p class="readonly">$Company</p></div>
+			<% end_if %>
+			<% if CityPublic %>
+			<div id="ForumProfileCity"><label class="left"><% _t('CITY','City') %>:</label> <p class="readonly">$City</p></div>
+			<% end_if %>
 			<% if CountryPublic %>
 			<div id="ForumProfileCountry"><label class="left"><% _t('COUNTRY','Country') %>:</label> <p class="readonly">$FullCountry</p></div>
 			<% end_if %>
