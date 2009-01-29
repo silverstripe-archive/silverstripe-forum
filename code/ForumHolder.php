@@ -280,7 +280,10 @@ class ForumHolder_Controller extends Page_Controller {
 		$Abstract = !empty($_REQUEST['Search'])
 			? "<p>" . sprintf(_t('ForumHolder.SEARCHEDFOR',"You searched for '%s'."),$XML_keywords) . "</p>"
 			: null;
-
+		if(isset($_REQUEST['rss'])) {
+			$rss = new RSSFeed($this->SearchResults(), $this->Link(), _t('ForumHolder.SEARCHRESULTS','Search results'), "", "Title", "RSSContent", "RSSAuthor");
+			return $rss->outputToBrowser();	
+		}
 		return array(
 				"Subtitle" => _t('ForumHolder.SEARCHRESULTS','Search results'),
 				"Abstract" => $Abstract,
@@ -337,7 +340,7 @@ class ForumHolder_Controller extends Page_Controller {
 		if(!empty($_GET['start'])) $limit = (int) $_GET['start'];
 		else $limit = $_GET['start'] = 0;
 
-		$queryString = "SELECT Created, LastEdited, ClassName, Title, Content, TopicID, AuthorID, ForumID,
+		$queryString = "SELECT ID, Created, LastEdited, ClassName, Title, Content, TopicID, AuthorID, ForumID,
 				MATCH (Title, Content) AGAINST ('$searchQuery') AS RelevancyScore
 			FROM Post
 			WHERE MATCH (Title, Content) AGAINST ('$searchQuery' IN BOOLEAN MODE) $SQL_authorClause 

@@ -85,7 +85,12 @@ class Post extends DataObject {
 		return Member::currentUser()==$this->Forum()->Moderator();
 	}
 
-
+	/**
+	 * Used in Post RSS Feed
+	 */
+	function AbsoluteLink() {
+		return $this->Forum()->Link().'show/'.$this->ID;
+	}
 	/**
 	 * This lets you see a list of all files that have been attached so far.
 	 *
