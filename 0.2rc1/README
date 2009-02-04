@@ -1,0 +1,43 @@
+###############################################
+Forum Module
+###############################################
+
+This is v0.2 of Forum module. While the forum module is quite stable enough for everyday use, it 
+is not feature complete as yet. If you have any suggestions please email or get in touch
+
+Maintainer Contact
+-----------------------------------------------
+Sean Harvey (Nickname: sharvey, halkyon) <sean (at) silverstripe (dot) com>
+Will Rossiter (Nickname: wrossiter, willr) <will (at) silverstripe (dot) com>
+
+Requirements
+-----------------------------------------------
+It is currently being tested again trunk (soon to be 2.3) but should be compatible all the way back
+to 2.2
+
+
+Documentation
+-----------------------------------------------
+http://doc.silverstripe.com/doku.php?id=modules:forum
+
+Installation Instructions
+-----------------------------------------------
+1. Place this directory in the root of your SilverStripe installation
+I.e. you will now have the following root folders
+
+assets
+mysite
+cms
+jsparty
+forum
+
+2. Visit http://www.yoursite.com/db/build/?flush=1 in your browser (where yoursite.com refers to the URL of your SilverStripe site)
+
+3. The CMS should now have "Forum Holder" and "Forum" page types in the page type dropdown.
+Add these and visit them on the public site.
+
+Usage Overview
+-----------------------------------------------
+
+Known issues
+-----------------------------------------------

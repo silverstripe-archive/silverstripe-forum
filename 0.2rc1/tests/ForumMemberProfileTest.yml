@@ -1,0 +1,27 @@
+Member:
+    test1:
+        Nickname: test1
+        FirstName: Test
+        Email: test1@example.com
+        Surname: One
+        Occupation: TestUser
+        Country: NZ
+        FirstNamePublic: 0
+        SurnamePublic: 0
+        OccupationPublic: 0
+        CountryPublic: 0
+        EmailPublic: 0
+        ForumRank: n00b
+    test2:
+        Nickname: test2
+        FirstName: Test
+        Surname: Two
+        Email: test2@example.com
+        Occupation: OtherUser
+        Country: AU
+        FirstNamePublic: 1
+        SurnamePublic: 1
+        OccupationPublic: 1
+        CountryPublic: 1
+        EmailPublic: 1
+        ForumRank: l33t
