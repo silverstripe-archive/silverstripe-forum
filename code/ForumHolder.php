@@ -284,11 +284,14 @@ class ForumHolder_Controller extends Page_Controller {
 			$rss = new RSSFeed($this->SearchResults(), $this->Link(), _t('ForumHolder.SEARCHRESULTS','Search results'), "", "Title", "RSSContent", "RSSAuthor");
 			return $rss->outputToBrowser();	
 		}
+		$rssLink = $this->Link() ."search/?Search=".$_REQUEST['Search']. "&order=".$order."&rss";
+		RSSFeed::linkToFeed($rssLink, _t('ForumHolder.SEARCHRESULTS','Search results'));
 		return array(
 				"Subtitle" => _t('ForumHolder.SEARCHRESULTS','Search results'),
 				"Abstract" => $Abstract,
 				"Query" => $XML_keywords,
-				"Order" => ($order) ? $order : "relevance"
+				"Order" => ($order) ? $order : "relevance",
+				"RSSLink" => $RSSLink
 		);
 	}
 	
