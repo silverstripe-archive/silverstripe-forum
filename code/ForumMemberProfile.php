@@ -706,7 +706,7 @@ class ForumMemberProfile extends Page_Controller {
 	/**
 	 * Get a subtitle
 	 */
-	function getSubtitle() {
+	function getHolderSubtitle() {
 		return _t('ForumMemberProfile.USERPROFILE','User profile');
 	}
 
@@ -716,8 +716,8 @@ class ForumMemberProfile extends Page_Controller {
 	 *
 	 * @see ForumHolder::getAbstract()
 	 */
-	function getAbstract() {
-		return $this->ForumHolder()->getAbstract();
+	function getHolderAbstract() {
+		return $this->ForumHolder()->ProfileAbstract;
 	}
 
 
