@@ -877,6 +877,13 @@ class Forum_Controller extends Page_Controller {
 
 		$replyform->loadDataFrom($_REQUEST);
 
+		// Optional spam protection
+		if(class_exists('SpamProtecterManager')) {
+			$protecter = SpamProtecterManager::update_form($replyform);
+			$protecter->setFieldMapping('Title', 'Content');
+		}
+
+
 		return $replyform;
 	}
 

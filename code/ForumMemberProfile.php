@@ -158,6 +158,13 @@ class ForumMemberProfile extends Page_Controller {
 			$form->loadDataFrom($data);
 		}
 
+		// Optional spam protection
+		if(class_exists('SpamProtecterManager')) {
+			// Update the form to add the protecter field to it
+			$protecter = SpamProtecterManager::update_form($form);
+			$protecter->setFieldMapping('Title', 'Message', 'Name', 'Website', 'Email');
+		}
+
 		return $form;
 	}
 
