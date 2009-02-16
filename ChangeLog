@@ -1,5 +1,23 @@
 Forum ChangeLog
 
+0.2
+	* Improved search functions
+	* Added basic front end reporting tools
+	* Sticky posts feature. Ability for admin users to make threads sticky. 
+	* New permission system, read-only threads and forums, and better Permission checking. Front end permission management for moderators. 
+	* Ability to subscribe / unsubscribe to a thread without replying/commenting. 
+	* Support for smilies in posts   . 
+	* Added ability for forum categories. 
+	* Added Gravatar support. 
+	* Added signature support.
+	* Fixed Post Attachment System
+	* Fixed timeout error on posts which take more then 20 minutes to type. 
+	* Added support for breadcrumbs and forum title to appear in the templates. 
+	* Added empty statics to forum module to allow decoration . 
+	* Fixed usage of deprecated APIs. 
+	* Removed all prototype javascript and rewrote in jQuery 
+	* Better i18n support. 
+	
 0.1.3
   - Compatible to OpenID 2.0 now
 

@@ -41,6 +41,7 @@
 
 #ForumContent label.left {
 	font-size: 12px;
+	clear: both;
 	font-weight: bold;
 }
 
@@ -750,6 +751,7 @@ ul.bbcodeExamples li span.example {
 }
 form .BBCodeHint {
 	font-size: 1.4em;
+	clear: both;
 	text-align: center;
 }
 #BBTagsHolder.hide {
