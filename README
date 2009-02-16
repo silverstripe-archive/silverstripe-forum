@@ -1,9 +1,6 @@
 ###############################################
-Forum Module
+Forum Module 0.2
 ###############################################
-
-This is v0.2 of Forum module. While the forum module is quite stable enough for everyday use, it 
-is not feature complete as yet. If you have any suggestions please email or get in touch
 
 Maintainer Contact
 -----------------------------------------------
@@ -12,9 +9,7 @@ Will Rossiter (Nickname: wrossiter, willr) <will (at) silverstripe (dot) com>
 
 Requirements
 -----------------------------------------------
-It is currently being tested again trunk (soon to be 2.3) but should be compatible all the way back
-to 2.2
-
+SilverStripe 2.3. If it runs on 2.2.3 please get in touch
 
 Documentation
 -----------------------------------------------
