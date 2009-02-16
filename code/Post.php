@@ -159,7 +159,7 @@ class Post extends DataObject {
 		$isOwner = ($memberID == $this->Author()->ID) ? true : false;
 		
 		if($isOwner || $this->Forum()->isAdmin()) {
-			return "<a href=\"{$this->Forum()->Link()}editpost/{$this->ID}\">" . _t('Post.EDIT','edit') . "</a>";
+			return "<a href=\"{$this->Forum()->Link()}editpost/{$this->ID}\">" . _t('Post.EDIT','Edit') . "</a>";
 		}
 	}
 
@@ -176,7 +176,17 @@ class Post extends DataObject {
 		if($this->ParentID == 0) $id = " id=\"firstPost\" ";
 
 		if($this->Forum()->isAdmin()) {
-			return "<a".$id."class=\"deletelink\" rel=\"$this->ID\" href=\"{$this->Forum()->Link()}deletepost/{$this->ID}\">" . _t('Post.DELETE','delete') ."</a>";
+			return "<a".$id."class=\"deletelink\" rel=\"$this->ID\" href=\"{$this->Forum()->Link()}deletepost/{$this->ID}\">" . _t('Post.DELETE','Delete') ."</a>";
+		}
+	}
+	
+	/**
+	 * Return a link to mark this post as spam.
+	 * used for the spamprotection module
+	 */
+	function MarkAsSpamLink() {
+		if(class_exists('SpamProtecterManager')) {
+			return "<a href=\"{$this->Forum()->Link()}markasspam/{$this->ID}\" class='markAsSpamLink' rel=\"$this->ID\">". _t('Post.MARKASSPAM', 'Mark as Spam') ."</a>";
 		}
 	}
 	
@@ -187,7 +197,6 @@ class Post extends DataObject {
 	function ShowLink() {
 		return "<a href=\"{$this->Forum()->Link()}show/{$this->ID}\">" . _t('Post.SHOWLINK','Show Thread') . "</a>";
 	}
-	
 	
 	/** 
 	 * Are Forum Signatures on Member profiles allowed

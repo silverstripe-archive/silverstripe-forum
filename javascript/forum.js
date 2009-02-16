@@ -74,6 +74,22 @@ $(document).ready(function() {
 	});
 	
 	/**
+	 * Mark Post as Spam Link.
+	 * It needs to warn the user that the post will be deleted
+	 */
+	
+	$('.postModifiers a.markAsSpamLink').click(function(){
+		if(!confirm("Are you sure you wish to mark this post as spam?")) return false;
+		var id = $(this).attr("rel");
+		$.post($(this).attr("href"), function(data) {
+			if(data == 1) {
+				// was successful
+				$("ul#Posts li#post"+id).fadeOut();
+			}
+		});
+		return false;
+	});
+	/**
 	 * Delete an Attachment via AJAX
 	 */
 	$('a.deleteAttachment').click(function() {

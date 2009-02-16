@@ -28,6 +28,9 @@
 			<% if DeleteLink %>
 				$DeleteLink
 			<% end_if %>
+			<% if MarkAsSpamLink %>
+				$MarkAsSpamLink
+			<% end_if %>
 		</div>
 	<% end_if %>
 	<div class="postType">

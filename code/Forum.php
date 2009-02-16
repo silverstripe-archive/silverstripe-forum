@@ -390,8 +390,6 @@ class Forum extends Page {
 		
 }
 
-
-
 /**
  * The forum controller class
  */
@@ -593,6 +591,35 @@ class Forum_Controller extends Page_Controller {
 			return Director::redirectBack();
 		}
 		
+		return false;
+	}
+	
+	/**
+	 * Mark a post as spam. Requires the use of the {@link spamprotection}
+	 * module. Called via ajax / url form the post view.
+	 * 
+	 * Must be logged in and have the correct permissions to do mark
+	 * @return bool
+	 */
+	function markasspam() {
+		if(class_exists('SpamProtecterManager')) {
+			if($this->isAdmin()) {
+				// Get the current post if we haven't found it yet
+			  	if(!$this->currentPost) {
+					$this->currentPost = $this->Post($this->urlParams['ID']);
+			    	if(!$this->currentPost) {
+						return false;
+					}
+				}
+
+		    	// Delete the post in question
+	      		if($this->currentPost) {
+					SpamProtecterManager::mark_spam($this->currentPost);
+				 	$this->deletepost();
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 	
