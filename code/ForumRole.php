@@ -157,7 +157,7 @@ class ForumRole extends DataObjectDecorator {
 		$gravatarText = (DataObject::get_one("ForumHolder", "AllowGravatars = True")) ? '<small>'. _t('ForumRole.CANGRAVATAR', 'If you use Gravatars then leave this blank') .'</small>' : "";
 
 		$personalDetailsFields = new CompositeField(
-			new HeaderField(_t('ForumRole.PERSONAL','Personal Details')),
+			new HeaderField("PersonalDetails", _t('ForumRole.PERSONAL','Personal Details')),
 	
 			new LiteralField("Blurb","<p id=\"helpful\">Tick the fields to show in public profile</p>"),
 	
