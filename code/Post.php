@@ -191,11 +191,13 @@ class Post extends DataObject {
 	}
 	
 	function ReplyLink() {
-		return "<a href=\"{$this->Forum()->Link()}reply/{$this->ID}\">" . _t('Post.REPLYLINK','Post Reply') . "</a>";
+		$url = $this->Link('reply');
+		return "<a href=\"$url\">" . _t('Post.REPLYLINK','Post Reply') . "</a>";
 	}
 	
 	function ShowLink() {
-		return "<a href=\"{$this->Forum()->Link()}show/{$this->ID}\">" . _t('Post.SHOWLINK','Show Thread') . "</a>";
+		$url = $this->Link('show');
+		return "<a href=\"$url\">" . _t('Post.SHOWLINK','Show Thread') . "</a>";
 	}
 	
 	/** 
@@ -288,16 +290,17 @@ class Post extends DataObject {
 	 * Return a link to show this post
 	 * @return String
 	 */
-	function Link() {
+	function Link($action = "show") {
 		$baseLink = $this->Forum()->Link();
-		if($this->ParentID == 0) return $baseLink . "show/" . $this->ID;
+		if($this->ParentID == 0) return $baseLink . "show/" . $this->ID .'#post' . $this->ID;
+		
 		$count = 0;
-		$posts = DataObject::get("Post", "TopicID = $this->TopicID AND Status = 'Moderated' AND ID < $this->ID");
+		$posts = DataObject::get("Post", "TopicID = '$this->TopicID' AND Status = 'Moderated' AND ID < $this->ID");
 		if($posts) {
 			if($posts->Count() < 9) $count = 0;
 			else $count = floor($posts->Count()/8)*8;
 		}
-		return $baseLink . "show/" . $this->TopicID  . '?start='.$count.'#post' . $this->ID;
+		return $baseLink . $action ."/" . $this->TopicID  . '?start='.$count.'#post' . $this->ID;
 	}
 }
 
