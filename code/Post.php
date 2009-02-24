@@ -89,7 +89,7 @@ class Post extends DataObject {
 	 * Used in Post RSS Feed
 	 */
 	function AbsoluteLink() {
-		return $this->Forum()->Link().'show/'.$this->ID;
+		return $this->Link();
 	}
 	/**
 	 * This lets you see a list of all files that have been attached so far.
@@ -302,6 +302,7 @@ class Post extends DataObject {
 		}
 		return $baseLink . $action ."/" . $this->TopicID  . '?start='.$count.'#post' . $this->ID;
 	}
+	
 }
 
 /**
