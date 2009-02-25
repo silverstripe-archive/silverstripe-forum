@@ -89,7 +89,7 @@ class Post extends DataObject {
 	 * Used in Post RSS Feed
 	 */
 	function AbsoluteLink() {
-		return $this->Link();
+		return Director::absoluteURL($this->Link());
 	}
 	/**
 	 * This lets you see a list of all files that have been attached so far.

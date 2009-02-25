@@ -384,7 +384,7 @@ class ForumHolder_Controller extends Page_Controller {
 			// just to get the version data..
 			$this->NewPostsAvailable(null, null, $data);
       		// No information provided by the client, just return the last posts
-			$rss = new RSSFeed($this->RecentPosts(50), $this->Link(),
+			$rss = new RSSFeed($this->RecentPosts(50), $this->Link() . 'rss',
 												 sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), "", "Title",
 												 "RSSContent", "RSSAuthor",
 												 $data['last_created'], $data['last_id']);
@@ -411,7 +411,7 @@ class ForumHolder_Controller extends Page_Controller {
 			if($this->NewPostsAvailable($since, $etag, $data)) {
 				HTTP::register_modification_timestamp($data['last_created']);
 				$rss = new RSSFeed($this->RecentPosts(50, null, $etag),
-													 $this->Link(),
+													 $this->Link() . 'rss',
 													 sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), "", "Title",
 													 "RSSContent", "RSSAuthor", $data['last_created'],
 													 $data['last_id']);

@@ -1186,7 +1186,7 @@ class Forum_Controller extends Page_Controller {
 
       		// No information provided by the client, just return the last posts
 			$rss = new RSSFeed($this->RecentPosts($this->urlParams['ID'], 30),
-												 $this->Link(),
+												 $this->Link() . 'rss',
 												 sprintf(_t('Forum.RSSFORUMPOSTSTO',"Forum posts to '%s'"),$this->Title), "", "Title",
 												 "RSSContent", "RSSAuthor",
 												 $data['last_created'], $data['last_id']);
@@ -1215,7 +1215,7 @@ class Forum_Controller extends Page_Controller {
 																	$data)) {
 				HTTP::register_modification_timestamp($data['last_created']);
 				$rss = new RSSFeed($this->RecentPosts($this->urlParams['ID'], 50, null, $etag),
-													 $this->Link(),
+													 $this->Link() . 'rss',
 													 sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), "", "Title",
 													 "RSSContent", "RSSAuthor", $data['last_created'],
 													 $data['last_id']);
