@@ -83,10 +83,11 @@ class ForumHolder extends Page {
 	 */
 	function CurrentlyOnline() {
 		$forumGroupID = (int) DataObject::get_one('Group', "Code = 'forum-members'")->ID;
+		$adminGroupID = (int) DataObject::get_one('Group', "(Code = 'administrators' OR Code = 'Administrators')")->ID;
 		
 		return DataObject::get(
 			'Member',
-			"LastVisited > NOW() - INTERVAL 15 MINUTE AND GroupID = '$forumGroupID'",
+			"LastVisited > NOW() - INTERVAL 15 MINUTE AND (GroupID = '$forumGroupID' OR GroupID = '$adminGroupID')",
 			'FirstName, Surname',
 			'LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID'
 		);
@@ -99,7 +100,9 @@ class ForumHolder extends Page {
 	 */
 	function LatestMember($limit = 1) {
 		$forumGroupID = (int) DataObject::get_one('Group', "Code = 'forum-members'")->ID;
-		return DataObject::get("Member", "GroupID = '$forumGroupID'", "`Member`.`ID` DESC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", $limit);
+		$adminGroupID = (int) DataObject::get_one('Group', "(Code = 'administrators' OR Code = 'Administrators')")->ID;
+		
+		return DataObject::get("Member", "(GroupID = '$forumGroupID' OR GroupID = '$adminGroupID')", "`Member`.`ID` DESC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", $limit);
 	}
 
 }
