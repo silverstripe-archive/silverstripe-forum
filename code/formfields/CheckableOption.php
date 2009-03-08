@@ -19,6 +19,18 @@ class CheckableOption extends CompositeField {
 		return FormField::FieldHolder();
 	}
 	
+	function Name() {
+		return $this->childField->Name();
+	}
+	
+	function Message() {
+		return $this->childField->Message();
+	}
+	
+	function MessageType() {
+		return $this->childField->MessageType();
+	}
+	
 	function Title() {
 		return $this->childField->Title();
 	}
