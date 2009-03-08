@@ -907,7 +907,7 @@ class Forum_Controller extends Page_Controller {
 		// Optional spam protection
 		if(class_exists('SpamProtecterManager')) {
 			$protecter = SpamProtecterManager::update_form($replyform);
-			$protecter->setFieldMapping('Title', 'Content');
+			$protecter->setFieldMapping('Title', null);
 		}
 
 

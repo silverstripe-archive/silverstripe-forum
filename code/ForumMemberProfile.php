@@ -162,9 +162,10 @@ class ForumMemberProfile extends Page_Controller {
 		if(class_exists('SpamProtecterManager')) {
 			// Update the form to add the protecter field to it
 			$protecter = SpamProtecterManager::update_form($form);
-			$protecter->setFieldMapping('Title', 'Message', 'Name', 'Website', 'Email');
+			if($protecter) {
+				$protecter->setFieldMapping('Email', null, 'Nickname');
+			}
 		}
-
 		return $form;
 	}
 
