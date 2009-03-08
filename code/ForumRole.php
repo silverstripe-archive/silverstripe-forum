@@ -161,7 +161,7 @@ class ForumRole extends DataObjectDecorator {
 	
 			new LiteralField("Blurb","<p id=\"helpful\">Tick the fields to show in public profile</p>"),
 	
-			new CheckableOption("UnnecessaryNicknamePublic", new TextField("Nickname", _t('ForumRole.NICKNAME','Nickname')), true, true),
+			new TextField("Nickname", _t('ForumRole.NICKNAME','Nickname')),
 			new CheckableOption("FirstNamePublic", new TextField("FirstName", _t('ForumRole.FIRSTNAME','First name'))),
 			new CheckableOption("SurnamePublic", new TextField("Surname", _t('ForumRole.SURNAME','Surname'))),
 			new CheckableOption("OccupationPublic", new TextField("Occupation", _t('ForumRole.OCCUPATION','Occupation')), true),
