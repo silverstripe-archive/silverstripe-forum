@@ -117,7 +117,6 @@ class Post extends DataObject {
 		return $doSet;
 	}
 
-
 	function ForumURLSegment(){
 		return $this->Forum()->URLSegment;
 	}
@@ -128,12 +127,6 @@ class Post extends DataObject {
 
 		return $title;
 	}
-
-
-	function LatestMember($limit = null) {
-		return DataObject::get("Member", "", "`Member`.`ID` DESC", "", 1);
-	}
-
 
 	/**
 	 * Return the last edited date, if it's different from created
