@@ -1613,16 +1613,15 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @param int $limit Number of members to return
 	 */
-	function LatestMember($limit = null) {
-		return DataObject::get("Member", "", "`Member`.`ID` DESC", "", 1);
+	function LatestMember($limit = 1) {
+		return $this->Parent()->LatestMember($limit);
 	}
 
 	/**
 	 * Get a list of currently online users (last 15 minutes)
 	 */
 	function CurrentlyOnline() {
-		return DataObject::get("Member", "LastVisited > NOW() - INTERVAL 15 MINUTE", "Nickname",
-			"INNER JOIN Group_Members ON Group_Members.GroupID IN (1,2,3) AND Group_Members.MemberID = Member.ID");
+		return $this->Parent()->CurrentlyOnline();
 	}
 
 	/**

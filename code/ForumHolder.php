@@ -74,6 +74,33 @@ class ForumHolder extends Page {
 			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('MOSTPOPULARTHREADS', 'Most popular threads');
 		}
 	}
+	
+	/**
+	 * Get a list of currently online users (last 15 minutes)
+	 * that belong to the "forum-members" code {@link Group}.
+	 * 
+	 * @return DataObjectSet of {@link Member} objects
+	 */
+	function CurrentlyOnline() {
+		$forumGroupID = (int) DataObject::get_one('Group', "Code = 'forum-members'")->ID;
+		
+		return DataObject::get(
+			'Member',
+			"LastVisited > NOW() - INTERVAL 15 MINUTE AND GroupID = '$forumGroupID'",
+			'FirstName, Surname',
+			'LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID'
+		);
+	}
+	
+	/**
+	 * Get the latest members
+	 *
+	 * @param int $limit Number of members to return
+	 */
+	function LatestMember($limit = 1) {
+		$forumGroupID = (int) DataObject::get_one('Group', "Code = 'forum-members'")->ID;
+		return DataObject::get("Member", "GroupID = '$forumGroupID'", "`Member`.`ID` DESC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", $limit);
+	}
 
 }
 
@@ -100,6 +127,8 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return DataObjectSet A DataObjectSet of all the members which are signed up
 	 */
 	function memberlist() {
+		$forumGroupID = (int) DataObject::get_one('Group', "Code = 'forum-members'")->ID;
+		
 		// If sort has been defined then save it as in the session
 		$order = (isset($_GET['order'])) ? $_GET['order']: "";
 		
@@ -111,23 +140,23 @@ class ForumHolder_Controller extends Page_Controller {
 
 		switch($order) {
 			case "joined":
-				$members = DataObject::get("Member", "","`Member`.Created ASC", "", "{$SQL_start},100");
+				$members = DataObject::get("Member", "GroupID = '$forumGroupID'", "`Member`.Created ASC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", "{$SQL_start},100");
 			break;
 			case "name":
-				$members = DataObject::get("Member", "","`Member`.Nickname ASC","","{$SQL_start},100");
+				$members = DataObject::get("Member", "GroupID = '$forumGroupID'", "`Member`.Nickname ASC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", "{$SQL_start},100");
 			break;
 			case "country":
-				$members = DataObject::get("Member", "`Member`.CountryPublic = TRUE","`Member`.Country ASC","","{$SQL_start},100");
+				$members = DataObject::get("Member", "GroupID = '$forumGroupID' AND `Member`.CountryPublic = TRUE", "`Member`.Country ASC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", "{$SQL_start},100");
 			break;
 			case "posts": 
-				$query = singleton('Member')->extendedSQL('',"NumPosts DESC", "{$SQL_start},100");
+				$query = singleton('Member')->extendedSQL('', "NumPosts DESC", "{$SQL_start},100");
 				$query->select[] = "(SELECT COUNT(*) FROM `Post` WHERE `Post`.AuthorID = `Member`.ID) AS NumPosts";
 				$records = $query->execute();
 				$members = singleton('Member')->buildDataObjectSet($records, 'DataObjectSet', $query, 'Member');
 				$members->parseQueryLimit($query);
 			break;
 			default:
-				$members = DataObject::get("Member", "","`Member`.Created DESC","","{$SQL_start},100");
+				$members = DataObject::get("Member", "GroupID = '$forumGroupID'", "`Member`.Created DESC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", "{$SQL_start},100");
 			break;
 		}
 		
@@ -262,13 +291,6 @@ class ForumHolder_Controller extends Page_Controller {
 		return DataObject::get("Forum");
 	}
 	
-	/**
-	 * Get a list of currently online users (last 15 minutes)
-	 */
-	function CurrentlyOnline() {
-		return DataObject::get("Member","LastVisited > NOW() - INTERVAL 15 MINUTE","Nickname");
-	}
-
 	/**
 	 * The search action
 	 *
@@ -501,20 +523,6 @@ class ForumHolder_Controller extends Page_Controller {
 
 		return false;
 	}
-
-
-	/**
-	 * Get the latest members
-	 *
-	 * @param int $limit Number of members to return
-	 */
-	function LatestMember($limit = null) {
-		$forumgroup = DataObject::get_one('Group', "Code = 'forum-members'");
-		if($forumgroup) {
-			return $forumgroup->getManyManyComponents('Members', '', 'Created DESC', '', 1);
-		}	
-	}
-
 
 	/**
 	 * Get the URL segment

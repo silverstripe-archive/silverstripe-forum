@@ -177,6 +177,8 @@ class ForumMemberProfile extends Page_Controller {
 	 * @param Form $form The used form
 	 */
 	function doregister($data, $form) {
+		$forumGroup = DataObject::get_one('Group', "Code = 'forum-members'");
+		
 		if($member = DataObject::get_one("Member", "`Email` = '". Convert::raw2sql($data['Email']) . "'")) {
   			if($member) {
   				$form->addErrorMessage("Blurb",
@@ -217,7 +219,7 @@ class ForumMemberProfile extends Page_Controller {
 		// create the new member
 		$member = Object::create('Member');
 		$form->saveInto($member);
-		
+				
 		// check password fields are the same before saving
 		if($data['Password'] == $data['ConfirmPassword']) {
 			$member->Password = $data['Password'];
@@ -234,7 +236,8 @@ class ForumMemberProfile extends Page_Controller {
   		
 		$member->write();
 		$member->login();
-		Group::addToGroupByName($member, 'forum-members');
+
+		$forumGroup->Members()->add($member);
 
 		return array("Form" => DataObject::get_one("ForumHolder")->ProfileAdd);
 	}
@@ -496,6 +499,7 @@ class ForumMemberProfile extends Page_Controller {
 	function dosave($data, $form) {
 		$member = DataObject::get_by_id('Member', $data['ID']);
 		$SQL_email = Convert::raw2sql($data['Email']);
+		$forumGroup = DataObject::get_one('Group', "Code = 'forum-members'");
 		
 		// An existing member may have the requested email that doesn't belong to the
 		// person who is editing their profile - if so, throw an error
@@ -544,6 +548,11 @@ class ForumMemberProfile extends Page_Controller {
 
 		$form->saveInto($member);
 		$member->write();
+		
+		if(!$member->inGroup($forumGroup)) {
+			$forumGroup->Members()->add($member);
+		}
+		
 		Director::redirect('thanks');
 	}
 
@@ -593,12 +602,14 @@ class ForumMemberProfile extends Page_Controller {
 
 
 	/**
-	 * Get the latest member in the system
+	 * Get the latest member in the system that belongs to the
+	 * "forum-members" code {@link Group}.
 	 *
+	 * @param int $limit The number of members to show as being the latest
 	 * @return Member Returns the latest member in the system.
 	 */
-	function LatestMember($limit = null) {
-		return DataObject::get("Member", "", "`Member`.`ID` DESC", "", 1);
+	function LatestMember($limit = 1) {
+		return $this->ForumHolder()->LatestMember($limit);
 	}
 
 	/**
@@ -631,12 +642,12 @@ class ForumMemberProfile extends Page_Controller {
 
 	/**
 	 * Get a list of currently online users (last 15 minutes)
+	 * that belong to the "forum-members" code {@link Group}.
+	 * 
+	 * @return DataObjectSet of {@link Member} objects
 	 */
 	function CurrentlyOnline() {
-		return DataObject::get("Member",
-			"LastVisited > NOW() - INTERVAL 15 MINUTE",
-			"FirstName, Surname",
-			"");
+		return $this->ForumHolder()->CurrentlyOnline();
 	}
 
 
