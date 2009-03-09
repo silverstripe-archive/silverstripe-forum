@@ -1,3 +1,10 @@
+Group:
+   members:
+      Title: Forum Members
+      Code: forum-members
+   admins:
+      Title: Administrators
+      Code: administrators
 Member:
     test1:
         Nickname: test1
@@ -25,3 +32,10 @@ Member:
         CountryPublic: 1
         EmailPublic: 1
         ForumRank: l33t
+ForumHolder:
+   fh:
+      Title: Forum
+Forum:
+   general:
+      Title: General Discussion
+      ParentID: =>ForumHolder.fh

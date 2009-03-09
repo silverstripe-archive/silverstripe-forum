@@ -2,6 +2,7 @@
 
 class ForumMemberProfileTest extends FunctionalTest {
 	static $fixture_file = "forum/tests/ForumMemberProfileTest.yml";
+	static $use_draft_site = true;
 	
 	function testMemberProfileDisplays() {
 		/* Get the profile of a secretive member */
