@@ -614,7 +614,7 @@ class Forum_Controller extends Page_Controller {
 
 		    	// Delete the post in question
 	      		if($this->currentPost) {
-					SpamProtecterManager::mark_spam($this->currentPost);
+					SpamProtecterManager::send_feedback($this->currentPost, 'spam');
 				 	$this->deletepost();
 					return true;
 				}
