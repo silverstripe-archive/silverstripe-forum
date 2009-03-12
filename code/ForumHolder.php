@@ -40,6 +40,24 @@ class ForumHolder extends Page {
 		"ProfileAdd" => "<p>Thanks, you are now signed up to the forum.</p>",
 	);
 	
+	/**
+	 * If the user has spam protection enabled and setup then we can provide spam
+	 * prevention for the forum. This stores whether we actually want the registration
+	 * form to have such protection
+	 * 
+	 * @var bool
+	 */
+	public static $use_spamprotection_on_register = true;
+	
+	/**
+	 * If the user has spam protection enabled and setup then we can provide spam
+	 * prevention for the forum. This stores whether we actually want the posting 
+	 * form (adding, replying) to have such protection
+	 * 
+	 * @var bool
+	 */
+	public static $use_spamprotection_on_posts = false;
+	
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
 		$fields->addFieldsToTab("Root.Content.Messages", array(
