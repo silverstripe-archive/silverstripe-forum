@@ -4,6 +4,7 @@ class CheckableOption extends CompositeField {
 	protected $childField, $checkbox;
 		
 	function __construct($checkName, $childField, $value = "", $readonly = false) {
+		$this->name = $checkName;
 		$this->checkbox = new CheckboxField($checkName, "", $value);
 		if($readonly) $this->checkbox->setDisabled(true);
 				
