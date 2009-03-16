@@ -193,6 +193,8 @@ class ForumRole extends DataObjectDecorator {
 				'IdentityURL'
 			);
 		}
+		
+		$this->owner->extend('updateForumFields', $fieldset);
 
 		return $fieldset;
 	}
