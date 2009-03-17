@@ -10,18 +10,16 @@ class CheckableOption extends CompositeField {
 				
 		$this->childField = $childField;
 		
-		$this->children = new FieldSet(
+		$children = new FieldSet(
 			$this->childField,
 			$this->checkbox
 		);
+		
+		parent::__construct($children);
 	}
 	
 	function FieldHolder() {
 		return FormField::FieldHolder();
-	}
-	
-	function Name() {
-		return $this->childField->Name();
 	}
 	
 	function Message() {
