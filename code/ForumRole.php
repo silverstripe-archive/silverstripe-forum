@@ -194,7 +194,7 @@ class ForumRole extends DataObjectDecorator {
 			);
 		}
 		
-		$this->owner->extend('updateForumFields', $fieldset);
+		$this->extend('updateForumFields', $fieldset);
 
 		return $fieldset;
 	}
