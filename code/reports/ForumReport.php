@@ -17,7 +17,12 @@ class ForumReport_MemberSignups extends SideReport {
 		return _t('Forum.FORUMSIGNUPS',"Forum Signups by Month");
 	}
 	function records() {
-		$members = DB::query("SELECT date_format( Created, '%M %Y' ) as Month , count( Created ) as NumberJoined FROM Member group by date_format( Created, '%M %Y' ) order by Month DESC");
+		$members = DB::query("
+			SELECT DATE_FORMAT(Created, '%Y %M') AS Month, COUNT(Created) AS NumberJoined
+			FROM Member
+			GROUP BY DATE_FORMAT(Created, '%Y %M')
+			ORDER BY Month DESC
+		");
 		$output = array();
 		foreach($members->map() as $record => $value) {
 			$output[$record] = $value;
@@ -49,7 +54,12 @@ class ForumReport_MonthlyPosts extends SideReport {
 	}
 	
 	function records() {
-		$members = DB::query("SELECT date_format( Created, '%Y %M' ) as Month , count( Created ) as PostsTotal FROM Post group by date_format( Created, '%M %Y' ) order by Created DESC");
+		$members = DB::query("
+			SELECT DATE_FORMAT(Created, '%Y %M') AS Month, COUNT(Created) AS PostsTotal
+			FROM Post
+			GROUP BY DATE_FORMAT(Created, '%Y %M')
+			ORDER BY Created DESC
+		");
 		$output = array();
 		foreach($members->map() as $record => $value) {
 			$output[$record] = $value;
