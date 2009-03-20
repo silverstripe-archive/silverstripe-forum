@@ -21,7 +21,7 @@ class ForumReport_MemberSignups extends SideReport {
 			SELECT DATE_FORMAT(Created, '%Y %M') AS Month, COUNT(Created) AS NumberJoined
 			FROM Member
 			GROUP BY DATE_FORMAT(Created, '%M %Y')
-			ORDER BY Month DESC
+			ORDER BY Created DESC
 		");
 		$output = array();
 		foreach($members->map() as $record => $value) {
