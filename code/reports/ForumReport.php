@@ -20,7 +20,7 @@ class ForumReport_MemberSignups extends SideReport {
 		$members = DB::query("
 			SELECT DATE_FORMAT(Created, '%Y %M') AS Month, COUNT(Created) AS NumberJoined
 			FROM Member
-			GROUP BY DATE_FORMAT(Created, '%Y %M')
+			GROUP BY DATE_FORMAT(Created, '%M %Y')
 			ORDER BY Month DESC
 		");
 		$output = array();
@@ -57,7 +57,7 @@ class ForumReport_MonthlyPosts extends SideReport {
 		$members = DB::query("
 			SELECT DATE_FORMAT(Created, '%Y %M') AS Month, COUNT(Created) AS PostsTotal
 			FROM Post
-			GROUP BY DATE_FORMAT(Created, '%Y %M')
+			GROUP BY DATE_FORMAT(Created, '%M %Y')
 			ORDER BY Created DESC
 		");
 		$output = array();
