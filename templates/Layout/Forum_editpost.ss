@@ -14,8 +14,7 @@
 			<ul class="bbcodeExamples">
 				<% control BBTags %>
 					<li class="$FirstLast">
-						<strong>$Title</strong><% if Description %>: $Description<% end_if %><br />
-						<strong><% _t('EXAMPLE','Example') %></strong>: <span class="example">$Example</span>
+						<strong>$Title</strong><% if Description %>: $Description<% end_if %> <span class="example">$Example</span>
 					</li>
 				<% end_control %>
 			</ul>
