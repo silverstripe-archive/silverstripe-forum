@@ -334,7 +334,7 @@ class ForumHolder_Controller extends Page_Controller {
 				"Abstract" => $Abstract,
 				"Query" => $XML_keywords,
 				"Order" => ($order) ? $order : "relevance",
-				"RSSLink" => $RSSLink
+				"RSSLink" => $rssLink
 		);
 	}
 	
