@@ -46,7 +46,7 @@ class ForumRole extends DataObjectDecorator {
 	 * Return an map where the keys are db, has_one, etc, and the values are
 	 * additional fields/relations to be defined
 	 */
-	function extraDBFields() {
+	function extraStatics() {
 		$fields = array(
 			'db' => array(
 				'ForumRank' => 'Varchar',
@@ -83,6 +83,7 @@ class ForumRole extends DataObjectDecorator {
 		);
 		
 		$this->extend('extraDBFields', $fields);
+		$this->extend('extraStatics', $fields);
 		
 		return $fields;
 	}
