@@ -349,7 +349,7 @@ class Forum extends Page {
 			// Check posting permissions
 			case "starttopic":
 				if($this->ForumPosters == "Anyone" || ($this->ForumPosters == "LoggedInUsers" && $member) 
-					|| ($this->ForumPosters == "OnlyTheseUsers" && $member && $member->isInGroup($this->ForumPostersGroup))) {
+					|| ($this->ForumPosters == "OnlyTheseUsers" && $member && $member->inGroup($this->ForumPostersGroup))) {
 						// now check post can write
 							return true;
 				} else {
@@ -358,7 +358,7 @@ class Forum extends Page {
 			break;
 			case "post":
 				if($this->ForumPosters == "Anyone" || ($this->ForumPosters == "LoggedInUsers" && $member) 
-					|| ($this->ForumPosters == "OnlyTheseUsers" && $member && $member->isInGroup($this->ForumPostersGroup))) {
+					|| ($this->ForumPosters == "OnlyTheseUsers" && $member && $member->inGroup($this->ForumPostersGroup))) {
 						// now check post can write
 
 						if($this->Post() && (!$this->Post()->IsReadOnly || $member->isAdmin()))	{
@@ -380,7 +380,7 @@ class Forum extends Page {
 					 ($this->ForumViewers == "LoggedInUsers" && Member::currentUser())
 					 || ($this->ForumViewers == "OnlyTheseUsers" &&
 					 Member::currentUser() &&
-							Member::currentUser()->isInGroup($this->ForumViewersGroup)))
+							Member::currentUser()->inGroup($this->ForumViewersGroup)))
 					return true;
 				else
 					return false;
