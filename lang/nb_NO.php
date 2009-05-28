@@ -213,6 +213,7 @@ $lang['nb_NO']['Forum_show.ss']['GOTOTOP'] = 'Gå til toppen';
 $lang['nb_NO']['Forum_show.ss']['NEXTLINK'] = 'Neste';
 $lang['nb_NO']['Forum_show.ss']['NEXTTITLE'] = 'Vis neste side';
 $lang['nb_NO']['Forum_show.ss']['PAGE'] = 'Side:';
+$lang['nb_NO']['Forum_show.ss']['PREVLINK'] = 'Forrige';
 $lang['nb_NO']['Forum_show.ss']['PREVTITLE'] = 'Vis forrige side';
 $lang['nb_NO']['Forum_show.ss']['REPLY'] = 'Svar';
 $lang['nb_NO']['Forum_show.ss']['SUBSCRIBE'] = 'Meld deg på';

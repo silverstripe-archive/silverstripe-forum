@@ -16,6 +16,11 @@ if(array_key_exists('ar_SA', $lang) && is_array($lang['ar_SA'])) {
 	$lang['ar_SA'] = $lang['en_US'];
 }
 
+$lang['ar_SA']['']['LOGINTOUNSUBSCRIBE'] = 'لإلغاء الاشتراك من الموضوع  فضلاً قم بتسجيل الدخول أولاً';
+$lang['ar_SA']['']['MEMBERLIST'] = 'قائمة الأعضاء';
+$lang['ar_SA']['']['MODERATOR'] = 'مدير المنتدى';
+$lang['ar_SA']['']['MODERATORS'] = 'مديروا هذا المنتدى';
+$lang['ar_SA']['']['SEARCHBREADCRUMB'] = 'البحث';
 $lang['ar_SA']['Forum']['ACCESSATTACH'] = 'هل يستطيع المستخدمون إرفاق الملفات ؟';
 $lang['ar_SA']['Forum']['ACCESSPOST'] = 'من يستطيع الكتابة في المنتدى ؟';
 $lang['ar_SA']['Forum']['ACCESSREAD'] = 'من يستطيع قراءة المنتدى ؟';
@@ -25,6 +30,8 @@ $lang['ar_SA']['Forum']['DEFAULTCATEGORY'] = 'عام';
 $lang['ar_SA']['Forum']['EDITPOST'] = 'تعديل موضوع';
 $lang['ar_SA']['Forum']['FORUMCREATED'] = 'تم إنشاء صفحة المنتدى';
 $lang['ar_SA']['Forum']['FORUMHOLDERCREATED'] = 'تم إنشاء صفحة المنتدى';
+$lang['ar_SA']['Forum']['FORUMMONTHLYPOSTS'] = 'تدوينات المنتدى بالشهر';
+$lang['ar_SA']['Forum']['FORUMSIGNUPS'] = 'المسجلون الجدد بالشهر';
 $lang['ar_SA']['Forum']['GROUPCREATED'] = 'تم إنشاء منتدى أعضاء المجموعة';
 $lang['ar_SA']['Forum']['LOGINAGAIN'] = 'تم تسجيل خروجك من المنتديات. إذا أردت الدخول مرة أخرى فضلاً أدخل اسم المستخدم و كلمة المرور بالأسفل';
 $lang['ar_SA']['Forum']['LOGINALREADY'] = 'عذراً لكن لا يسمح لك بمشاهدة هذا المنتدى حتى تسجل الدخول. إذا أردت الدخول بحساب آخر . انظر بالأسفل';
@@ -36,6 +43,7 @@ $lang['ar_SA']['Forum']['LOGINTOPOSTAGAIN'] = 'تم تسجيل خروجك من �
 $lang['ar_SA']['Forum']['LOGINTOPOSTLOGGEDIN'] = 'عذراً ، لايمكنك المشاركة بدون تسجيل الدخول. يمكنك الدخول بحساب آخر بالأسفل. إذا سجلت الدخول و لم تتمكن من المشاركة فأنت لا تملك الصلاحيات الخاصة بالكتابة ';
 $lang['ar_SA']['Forum']['NEWTOPIC'] = 'إنشاء موضوع جديد';
 $lang['ar_SA']['Forum']['NO'] = 'لا';
+$lang['ar_SA']['Forum']['PLURALNAME'] = 'المنتديات';
 $lang['ar_SA']['Forum']['POSTNOTFOUND'] = 'المشاركة الحالية غير موجودة في قاعدة البيانات. فضلاً ارجع للموضوع الأصلي و حاول تعديل الموضوع مرة أخرى. إذا استمرت المشكلة فضلاً أرسل رسالة للإدارة';
 $lang['ar_SA']['Forum']['POSTTOTOPIC'] = 'مواضيع في \'%s\'';
 $lang['ar_SA']['Forum']['READANYONE'] = 'الجميع';
@@ -49,10 +57,13 @@ $lang['ar_SA']['Forum']['RSSFORUM'] = 'المشاركات إلى منتدى \'%s
 $lang['ar_SA']['Forum']['RSSFORUMPOSTSTO'] = 'مواضيع المنتدى في \'%s\'';
 $lang['ar_SA']['Forum']['RSSFORUMS'] = 'المشاركات لكل المنتديات';
 $lang['ar_SA']['Forum']['SECONDS'] = 'ثواني';
+$lang['ar_SA']['Forum']['SINGULARNAME'] = 'المنتدى';
 $lang['ar_SA']['Forum.ss'][''] = 'الذهاب إلى موضوع %s';
+$lang['ar_SA']['Forum.ss']['ANNOUNCEMENTS'] = 'الإعلانات';
 $lang['ar_SA']['Forum.ss']['BY'] = 'بواسطة';
 $lang['ar_SA']['Forum.ss']['CLICKTOUSER'] = 'اضغط هنا لعرض';
 $lang['ar_SA']['Forum.ss']['GOTOFIRSTUNREAD'] = 'الذهاب لأول موضوع غير مقروء في موضوع %s';
+$lang['ar_SA']['Forum.ss']['GOTOTHISTOPIC'] = 'اذهب إلى الموضوع %s';
 $lang['ar_SA']['Forum.ss']['LASTPOST'] = 'آخر موضوع';
 $lang['ar_SA']['Forum.ss']['NEWTOPIC'] = 'اضغط هنا لكتابة موضوع جديد';
 $lang['ar_SA']['Forum.ss']['NEWTOPICIMAGE'] = 'موضوع جديد';
@@ -62,6 +73,7 @@ $lang['ar_SA']['Forum.ss']['POSTS'] = 'المواضيع';
 $lang['ar_SA']['Forum.ss']['PREVLNK'] = 'الصفحة السابقة';
 $lang['ar_SA']['Forum.ss']['READONLYFORUM'] = 'هذا المنتدى للقراءة فقط. لا تستطيع الرد أو كتابة موضوع جديد';
 $lang['ar_SA']['Forum.ss']['TOPIC'] = 'الموضوع';
+$lang['ar_SA']['Forum.ss']['TOPICS'] = 'المواضيع';
 $lang['ar_SA']['Forum']['SUBSCRIBETOPIC'] = 'شارك في هذا الموضوع ( تستقبل الرسائل البريدية لتنبيهك في حالة وجود ردود جديدة)';
 $lang['ar_SA']['Forum']['TITLE'] = 'النقاش العام';
 $lang['ar_SA']['Forum']['WELCOMEFORUM'] = 'أهلاً بك في منتدى SilverStripe. هذه هي الصفحة الافتراضية. تستطيع الآن إضافة المواضيع الجديدة';
@@ -75,6 +87,8 @@ $lang['ar_SA']['ForumAdmin']['MODERATED'] = 'مواضيع تحت الإشراف'
 $lang['ar_SA']['ForumAdmin']['REJECTED'] = 'مواضيع لم يتم الموافقة عليها';
 $lang['ar_SA']['ForumAdmin_right.ss']['EDITPAGE'] = 'تعديل الصفحة';
 $lang['ar_SA']['ForumAdmin_right.ss']['WELCOME'] = 'مرحباً بك في %s! فضلاً اختر أحد المدخلات من القائمة اليسرى';
+$lang['ar_SA']['ForumCategory']['PLURALNAME'] = 'تصنيفات المنتدى';
+$lang['ar_SA']['ForumCategory']['SINGULARNAME'] = 'تصنيف المنتدى';
 $lang['ar_SA']['ForumFooter.ss']['CURRENTLYON'] = 'المتواجدون حالياً:';
 $lang['ar_SA']['ForumFooter.ss']['ISONLINE'] = 'متصل';
 $lang['ar_SA']['ForumFooter.ss']['LATESTMEMBER'] = 'مرحباً بآخر الأعضاء';
@@ -88,9 +102,12 @@ $lang['ar_SA']['ForumHeader.ss']['SEARCH'] = 'البحث:';
 $lang['ar_SA']['ForumHeader.ss']['SEARCHBUTTON'] = 'البحث:';
 $lang['ar_SA']['ForumHeader.ss']['SELECT'] = 'اختيار';
 $lang['ar_SA']['ForumHeader.ss']['TOPICS'] = 'المواضيع';
+$lang['ar_SA']['ForumHolder']['PLURALNAME'] = 'حاويات المنتدى';
 $lang['ar_SA']['ForumHolder']['SEARCHEDFOR'] = 'قمت بالبحث عن \'%s\'';
 $lang['ar_SA']['ForumHolder']['SEARCHRESULTS'] = 'نتائج البحث';
+$lang['ar_SA']['ForumHolder']['SINGULARNAME'] = 'حاوية المنتدى';
 $lang['ar_SA']['ForumHolder.ss']['FORUM'] = 'المنتدى';
+$lang['ar_SA']['ForumHolder.ss']['FORUMS'] = 'المنتديات';
 $lang['ar_SA']['ForumHolder.ss']['LASTPOST'] = 'آخر موضوع';
 $lang['ar_SA']['ForumHolder.ss']['POSTS'] = 'المواضيع';
 $lang['ar_SA']['ForumHolder.ss']['THREADS'] = 'الموضوعات Threads';
@@ -158,9 +175,12 @@ $lang['ar_SA']['ForumMember_ForgotNicknameEmail.ss']['USERNAME'] = 'اسم ال�
 $lang['ar_SA']['ForumMember_TopicNotification.ss']['HI'] = 'أهلاً %s,';
 $lang['ar_SA']['ForumMember_TopicNotification.ss']['NEWPOSTMESSAGE'] = 'تم إضافة مشاركة جديدة إلى الموضوعالذي اشتركت فيه. تستطيع <a href="%s"> مشاهدة المشاركة بالضغط هنا </a>';
 $lang['ar_SA']['ForumMember_TopicNotification.ss']['NOTIFICATIONMESSAGE'] = 'لن تستقبل تنبيهات إضافية إلى أن تزور المندى مرة أخرى';
+$lang['ar_SA']['ForumMember_TopicNotification.ss']['REPLYLINK'] = 'مشاهدة الموضوع';
+$lang['ar_SA']['ForumMember_TopicNotification.ss']['UNSUBSCRIBETEXT'] = 'إلغاء الاشتراك من الموضوع';
 $lang['ar_SA']['ForumRole']['ADMIN'] = 'المدير';
 $lang['ar_SA']['ForumRole']['ANONYMOUS'] = 'عضو غير مسجل';
 $lang['ar_SA']['ForumRole']['AVATAR'] = 'رفع الصورة الشخصية';
+$lang['ar_SA']['ForumRole']['CANGRAVATAR'] = 'إذا كنت تستخدم الصور الشخصية فاترك هذا الحقل';
 $lang['ar_SA']['ForumRole']['COMMEMBER'] = 'أعضاء المجتمع';
 $lang['ar_SA']['ForumRole']['CONFIRMPASS'] = 'تأكيد الرقم السري';
 $lang['ar_SA']['ForumRole']['COUNTRY'] = 'الدولة';
@@ -215,13 +235,17 @@ $lang['ar_SA']['Post']['EDIT'] = 'تعديل';
 $lang['ar_SA']['Post']['LASTEDIT'] = 'آخر تعديل';
 $lang['ar_SA']['Post']['MAIN'] = 'الرئيسي';
 $lang['ar_SA']['Post']['MODERATED'] = 'بانتظار موافقة المشرف';
+$lang['ar_SA']['Post']['PLURALNAME'] = 'التدوينات';
 $lang['ar_SA']['Post']['POSTEDBY'] = 'مرسلة بواسطة %s';
 $lang['ar_SA']['Post']['POSTEDTO'] = 'نشر في: %s';
 $lang['ar_SA']['Post']['POSTREPLIEDTO'] = 'الموضوع تم الرد في %s';
 $lang['ar_SA']['Post']['REJECTED'] = 'مرفوض';
 $lang['ar_SA']['Post']['REJECTEDPOSTS'] = 'مواضيع مرفوضة';
+$lang['ar_SA']['Post']['REPLYLINK'] = 'رد التدوينة';
 $lang['ar_SA']['Post']['RESPONSE'] = 'إعادة إرسال:';
 $lang['ar_SA']['Post']['SAVE'] = 'حفظ';
+$lang['ar_SA']['Post']['SHOWLINK'] = 'مشاهدة الموضوع';
+$lang['ar_SA']['Post']['SINGULARNAME'] = 'التدوينة';
 $lang['ar_SA']['Post']['STATUS'] = 'الحالة';
 $lang['ar_SA']['Post']['TITLE'] = 'العنوان';
 $lang['ar_SA']['Post']['TOPICCREATED'] = 'تم إنشاء الموضوع';
@@ -231,5 +255,8 @@ $lang['ar_SA']['Post']['TOPICLASTEDIT'] = 'آخر تعديل للموضوع';
 $lang['ar_SA']['SinglePost.ss']['ATTACHED'] = 'الملفات المرفقة';
 $lang['ar_SA']['SinglePost.ss']['GOTOPROFILE'] = 'إذهب إلى الملف الشخصي للعضو';
 $lang['ar_SA']['SinglePost.ss']['LASTEDITED'] = 'آخر تعديل:';
+$lang['ar_SA']['TopicListing.ss']['BY'] = 'بواسطة';
+$lang['ar_SA']['TopicListing.ss']['CLICKTOUSER'] = 'اضغط هنا للعرض';
+$lang['ar_SA']['TopicListing.ss']['GOTOFIRSTUNREAD'] = 'اذهب إلى أول تدوينة غير مقروءة في الموضوع %s';
 
 ?>
