@@ -178,7 +178,7 @@ class Post extends DataObject {
 	 * used for the spamprotection module
 	 */
 	function MarkAsSpamLink() {
-		if(class_exists('SpamProtecterManager')) {
+		if(class_exists('SpamProtectorManager')) {
 			return "<a href=\"{$this->Forum()->Link()}markasspam/{$this->ID}\" class='markAsSpamLink' rel=\"$this->ID\">". _t('Post.MARKASSPAM', 'Mark as Spam') ."</a>";
 		}
 	}

@@ -602,7 +602,7 @@ class Forum_Controller extends Page_Controller {
 	 * @return bool
 	 */
 	function markasspam() {
-		if(class_exists('SpamProtecterManager')) {
+		if(class_exists('SpamProtectorManager')) {
 			if($this->isAdmin()) {
 				// Get the current post if we haven't found it yet
 			  	if(!$this->currentPost) {
@@ -614,7 +614,7 @@ class Forum_Controller extends Page_Controller {
 
 		    	// Delete the post in question
 	      		if($this->currentPost) {
-					SpamProtecterManager::send_feedback($this->currentPost, 'spam');
+					SpamProtectorManager::send_feedback($this->currentPost, 'spam');
 				 	$this->deletepost();
 					return true;
 				}
@@ -905,8 +905,8 @@ class Forum_Controller extends Page_Controller {
 		$replyform->loadDataFrom($_REQUEST);
 
 		// Optional spam protection
-		if(class_exists('SpamProtecterManager') && ForumHolder::$use_spamprotection_on_posts) {
-			$protecter = SpamProtecterManager::update_form($replyform);
+		if(class_exists('SpamProtectorManager') && ForumHolder::$use_spamprotection_on_posts) {
+			$protecter = SpamProtectorManager::update_form($replyform);
 			$protecter->setFieldMapping('Title', 'Content');
 		}
 
