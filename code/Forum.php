@@ -1701,7 +1701,7 @@ class Forum_Controller extends Page_Controller {
 		$oldTopic = Convert::raw2sql($data['Topic']);
 
 		// get all posts in that topic
-		$newForum = Convert::raw2sql($data['NewForum']);
+		$newForum = isset($data['NewForum']) ? Convert::raw2sql($data['NewForum']) : null;
 		$posts = DataObject::get("Post", "`Post`.TopicID = '$oldTopic'");
 		
 		if(!$posts) return user_error("No Posts Found", E_USER_ERROR);
