@@ -266,7 +266,7 @@ class ForumRole extends DataObjectDecorator {
 		}
 		if($holder = DataObject::get_one("ForumHolder", "AllowGravatars = True")) {
 			// ok. no image but can we find a gravatar. Will return the default image as defined above if not.
-			$grav_url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5($this->Email)."&default=".urlencode($default)."&size=80";
+			$grav_url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5($this->owner->Email)."&default=".urlencode($default)."&size=80";
 			return $grav_url;
 		}
 
