@@ -1,6 +1,6 @@
 <tr class="$EvenOdd <% if IsSticky %>stickyPost<% end_if %>">
 	<td class="topicName">
-		<a class="topicTitle" href="$Link" title="<% sprintf(_t('Forum.ss.GOTOTHISTOPIC',"Go to the %s topic"),$Title.EscapeXML) %>">$Title</a>
+		<a class="topicTitle" href="$Link">$Title</a>
 		<p class="summary">
 			<% _t('BY','By') %>
 			<% control Author %>
