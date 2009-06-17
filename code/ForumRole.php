@@ -82,9 +82,6 @@ class ForumRole extends DataObjectDecorator {
 			),
 		);
 		
-		$this->extend('extraDBFields', $fields);
-		$this->extend('extraStatics', $fields);
-		
 		return $fields;
 	}
 	
