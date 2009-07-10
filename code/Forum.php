@@ -308,7 +308,7 @@ class Forum extends Page {
 		if(isset($_GET['start']) && is_numeric($_GET['start'])) $limit = Convert::raw2sql($_GET['start']) . ", 30";
 		else $limit = 30;
 
-		return DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and `Post`.IsSticky = 0 and $statusFilter", "max(PostList.Created) DESC",
+		return DataObject::get("Post", "`Post`.ForumID = $this->ID AND `Post`.ParentID = 0 AND `Post`.IsGlobalSticky = 0 AND `Post`.IsSticky = 0 AND $statusFilter", "max(PostList.Created) DESC",
 			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID", $limit
 		);
 	}
@@ -318,11 +318,18 @@ class Forum extends Page {
 	 * @return DataObjectSet
 	 */
 	function StickyTopics() {
-		return DataObject::get("Post", "`Post`.ForumID = $this->ID and `Post`.ParentID = 0 and `Post`.IsSticky = 1", "max(PostList.Created) DESC",
+		$standard = DataObject::get("Post", "`Post`.ForumID = $this->ID AND `Post`.ParentID = 0 AND `Post`.IsSticky = 1", "max(PostList.Created) DESC",
 			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID"
 		);
+		$global = DataObject::get("Post", "`Post`.ParentID = 0 AND `Post`.IsGlobalSticky = 1", "max(PostList.Created) DESC",
+			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID"
+		);
+		if($global) {
+			$global->merge($standard);
+			return $global;
+		}
+		return $standard;
 	}
-	
 
 	function getTopicsByStatus($status){
 		if(is_numeric($this->ID)) {
@@ -1663,16 +1670,20 @@ class Forum_Controller extends Page_Controller {
 		
 		// Check to see if sticky
 		$checkedSticky = false;
+		$checkedGlobalSticky = false;
 		$checkedReadOnly = false;
+
 		if($posts = $this->Posts()) {
 			$checkedSticky = ($posts->First()->IsSticky) ? true : false;
+			$checkedGlobalSticky = ($posts->First()->IsGlobalSticky) ? true : false;
 			$checkedReadOnly = ($posts->First()->IsReadOnly) ? true : false;
 		}
 		
 		// Default Fields
 		$fields = new FieldSet(
-			new CheckboxField('IsSticky', 'Is this a Sticky Thread?', $checkedSticky),
-			new CheckboxField('IsReadOnly', 'Is this a Read only Thread?', $checkedReadOnly),
+			new CheckboxField('IsSticky', _t('Forum.ISSTICKYTHREAD','Is this a Sticky Thread?'), $checkedSticky),
+			new CheckboxField('IsGlobalSticky', _t('Forum.ISGLOBALSTICKY','Is this a Global Sticky (shown on all forums)'), $checkedGlobalSticky),
+			new CheckboxField('IsReadOnly', _t('Forum.ISREADONLYTHREAD','Is this a Read only Thread?'), $checkedReadOnly),
 			new HiddenField("Topic", "Topic",$id)
 		);
 		
@@ -1705,17 +1716,19 @@ class Forum_Controller extends Page_Controller {
 		$posts = DataObject::get("Post", "`Post`.TopicID = '$oldTopic'");
 		
 		if(!$posts) return user_error("No Posts Found", E_USER_ERROR);
-
 		// update all the posts under that topic to the sticky status and / or the 
 		// new thread location
+		Debug::show($data['IsGlobalSticky']);
 		foreach($posts as $post) {
 			if($newForum > 0) {
 				$post->ForumID = $newForum;
 			}
 			$post->IsReadOnly = (isset($data['IsReadOnly']) && $data['IsReadOnly']) ? true : false;
 			$post->IsSticky = (isset($data['IsSticky']) && $data['IsSticky']) ? true : false;
+			$post->IsGlobalSticky = (isset($data['IsGlobalSticky']) && $data['IsGlobalSticky']) ? true : false;
 			$post->write();
 		}
+
 		Session::set('ForumAdminMsg','Thread Settings Have Been Updated');
 		
 		return Director::redirect($this->URLSegment.'/');

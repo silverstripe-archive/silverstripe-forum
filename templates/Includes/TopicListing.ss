@@ -1,4 +1,4 @@
-<tr class="$EvenOdd <% if IsSticky %>stickyPost<% end_if %>">
+<tr class="$EvenOdd <% if IsSticky %>stickyPost<% end_if %> <% if IsGlobalSticky %>globalSticky<% end_if %>">
 	<td class="topicName">
 		<a class="topicTitle" href="$Link">$Title</a>
 		<p class="summary">

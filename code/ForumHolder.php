@@ -553,6 +553,12 @@ class ForumHolder_Controller extends Page_Controller {
 	function URLSegment() {
 		return $this->URLSegment;
 	}
+	
+	function GlobalAnnouncements() {
+		$announcement = DataObject::get("Post", "`Post`.ParentID = 0 AND `Post`.IsGlobalSticky = 1", "max(PostList.Created) DESC",
+			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID");
+		return $announcement;
+	}
 }
 
 ?>

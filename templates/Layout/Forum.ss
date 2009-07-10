@@ -15,20 +15,16 @@
 	<div class="forumHolderFeatures">
 		<% if StickyTopics %>
 			<table id="StickyTopiclist" class="topicList" summary="List of sticky topics in this forum">
-				<tr>
-					<th class="odd"><% _t('ANNOUNCEMENTS','Announcements') %></th>
-					<th class="odd"><% _t('POSTS','Posts') %></th>
-					<th class="even"><% _t('LASTPOST','Last Post') %></th>
-				</tr>
-
+				<tr class="category"><td colspan="3"><% _t('ANNOUNCEMENTS', 'Announcements') %></td></tr>
 				<% control StickyTopics %>
 					<% include TopicListing %>
 				<% end_control %>
 			</table>
 		<% end_if %>
 		<table id="TopicList" class="topicList" summary="List of topics in this forum">
+			<tr class="category"><td colspan="4"><% _t('THREADS', 'Threads') %></td></tr>
 			<tr>
-				<th class="odd"><% _t('TOPICS','Topics') %></th>
+				<th class="odd"><% _t('TOPIC','Topic') %></th>
 				<th class="odd"><% _t('POSTS','Posts') %></th>
 				<th class="even"><% _t('LASTPOST','Last Post') %></th>
 			</tr>
