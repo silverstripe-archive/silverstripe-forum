@@ -1718,7 +1718,7 @@ class Forum_Controller extends Page_Controller {
 		if(!$posts) return user_error("No Posts Found", E_USER_ERROR);
 		// update all the posts under that topic to the sticky status and / or the 
 		// new thread location
-		Debug::show($data['IsGlobalSticky']);
+		
 		foreach($posts as $post) {
 			if($newForum > 0) {
 				$post->ForumID = $newForum;
