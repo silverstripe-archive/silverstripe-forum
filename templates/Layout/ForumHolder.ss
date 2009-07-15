@@ -32,7 +32,7 @@
 				<% control Forums %>
 					<% if CheckForumPermissions %>
 						<% include ForumHolder_List %>
-					<% end_control %>
+					<% end_if %>
 				<% end_control %>
 			<% end_if %>
 		</table>
