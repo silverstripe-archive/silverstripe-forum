@@ -29,10 +29,10 @@
 			<% if Avatar %>
 				<div id="ForumProfileAvatar"><label class="left"><% _t('AVATAR','Avatar') %>:</label> <p>
 				<% control Avatar.SetWidth(80) %>
-					<img class="userAvatar" src="$URL" alt="<% _t('AVATAR') %>" />
+					<img class="userAvatar" src="$URL" alt="<% _t('AVATAR','Avatar') %>" />
 				<% end_control %> </p></div>
 			<% else %>
-				<div id="ForumProfileAvatar"><label class="left"><% _t('AVATAR') %>:</label> <p><img class="userAvatar" src="forum/images/forummember_holder.gif" width="80" alt="<% if Nickname %>$Nickname<% else %>Anon<% end_if %><% _t('USERSAVATAR','&#39;s avatar') %>" /></p></div>
+				<div id="ForumProfileAvatar"><label class="left"><% _t('AVATAR','Avatar') %>:</label> <p><img class="userAvatar" src="forum/images/forummember_holder.gif" width="80" alt="<% if Nickname %>$Nickname<% else %>Anon<% end_if %><% _t('USERSAVATAR','&#39;s avatar') %>" /></p></div>
 			<% end_if %>
 		</div>
 	<% end_control %>
