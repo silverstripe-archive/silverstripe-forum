@@ -120,8 +120,6 @@ $lang['en_US']['ForumHolder.ss']['FORUMS'] = 'Forums';
 $lang['en_US']['ForumHolder.ss']['LASTPOST'] = 'Last Post';
 $lang['en_US']['ForumHolder.ss']['POSTS'] = 'Posts';
 $lang['en_US']['ForumHolder.ss']['THREADS'] = 'Threads';
-$lang['en_US']['ForumHolder_List.ss']['GOTOLATEST'] = 'Go to latest post in %s';
-$lang['en_US']['ForumHolder_List.ss']['GOTOTHISTOPIC'] = 'Go to the %s topic';
 $lang['en_US']['ForumHolder_memberlist.ss']['COUNTRY'] = 'Country';
 $lang['en_US']['ForumHolder_memberlist.ss']['FORUMPOSTS'] = 'Forum Posts';
 $lang['en_US']['ForumHolder_memberlist.ss']['JOINED'] = 'Joined';
@@ -207,7 +205,7 @@ $lang['en_US']['ForumMemberProfile_show.ss']['PROFILE'] = 'Profile';
 $lang['en_US']['ForumMemberProfile_show.ss']['SURNAME'] = 'Surname';
 $lang['en_US']['ForumMemberProfile_show.ss']['USERSAVATAR'] = '&#39;s avatar';
 $lang['en_US']['ForumMember_ForgotNicknameEmail.ss']['HI'] = 'Hi,';
-$lang['en_US']['ForumMember_ForgotNicknameEmail.ss']['MESSAGE'] = 'Here\'s your user name for <a href=\"home/\">%s</a>.';
+$lang['en_US']['ForumMember_ForgotNicknameEmail.ss']['MESSAGE'] = 'Here\'s your user name for <a href="home/">%s</a>.';
 $lang['en_US']['ForumMember_ForgotNicknameEmail.ss']['USERNAME'] = 'Username:';
 $lang['en_US']['ForumMember_TopicNotification.ss']['BY'] = 'by';
 $lang['en_US']['ForumMember_TopicNotification.ss']['HI'] = 'Hi %s,';
@@ -275,6 +273,26 @@ $lang['en_US']['Post']['RESPONSE'] = array(
 $lang['en_US']['Post']['SHOWLINK'] = 'Show Thread';
 $lang['en_US']['Post']['SINGULARNAME'] = array(
 	'Post',
+	50,
+	'Singular name of the object, used in dropdowns and to generally identify a single object in the interface'
+);
+$lang['en_US']['Post_Attachment']['PLURALNAME'] = array(
+	'Files',
+	50,
+	'Pural name of the object, used in dropdowns and to generally identify a collection of this object in the interface'
+);
+$lang['en_US']['Post_Attachment']['SINGULARNAME'] = array(
+	'File',
+	50,
+	'Singular name of the object, used in dropdowns and to generally identify a single object in the interface'
+);
+$lang['en_US']['Post_Subscription']['PLURALNAME'] = array(
+	'Post Subscriptions',
+	50,
+	'Pural name of the object, used in dropdowns and to generally identify a collection of this object in the interface'
+);
+$lang['en_US']['Post_Subscription']['SINGULARNAME'] = array(
+	'Post Subscription',
 	50,
 	'Singular name of the object, used in dropdowns and to generally identify a single object in the interface'
 );
