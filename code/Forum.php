@@ -1169,7 +1169,7 @@ class Forum_Controller extends Page_Controller {
 			}
 		}
 		return array(	
-			'Title' => $title
+			'Title' => Convert::raw2xml($title)
 		);
 	}
 	
