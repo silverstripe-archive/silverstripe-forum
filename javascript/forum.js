@@ -97,7 +97,7 @@ $(document).ready(function() {
 		var id = $(this).attr("rel");
 		$.post($(this).attr("href"), function(data) {
 			if(data == 1) {
-				$(".currentAttachments li.attachment-"+id).fadeOut(); // hide the deleted attachment
+				$("#CurrentAttachments li.attachment-"+id).fadeOut(); // hide the deleted attachment
 			}
 		});
 		return false;
