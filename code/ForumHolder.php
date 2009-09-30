@@ -305,11 +305,11 @@ class ForumHolder_Controller extends Page_Controller {
 	 	$categories = DataObject::get("ForumCategory");	
 		if($this->ShowInCategories && $categories) {
 			foreach($categories as $category) {
-				$category->CategoryForums = DataObject::get("Forum", "CategoryID = '$category->ID'");
+				$category->CategoryForums = DataObject::get("Forum", "CategoryID = '$category->ID' AND ParentID = '$this->ID'");
 			}
 			return $categories;
 		}
-		return DataObject::get("Forum");
+		return DataObject::get("Forum", "ParentID = '$this->ID'");
 	}
 	
 	/**
