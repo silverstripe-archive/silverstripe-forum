@@ -1002,10 +1002,11 @@ class Forum_Controller extends Page_Controller {
 					if(!$file) {
 						$file = new Post_Attachment();
 						$file->PostID = $post->ID;
-					
+						$file->OwnerID = Member::currentUserID();
+						
 						$upload = new Upload();
 						$upload->loadIntoFile($image, $file);
-					
+						
 						$file->write();
 					}
 				}
@@ -1512,7 +1513,8 @@ class Forum_Controller extends Page_Controller {
 						if(!$file) {
 							$file = new Post_Attachment();
 							$file->PostID = $post->ID;
-						
+							$file->OwnerID = Member::currentUserID();
+							
 							$upload = new Upload();
 							$upload->loadIntoFile($image, $file);
 						
