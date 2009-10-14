@@ -134,7 +134,23 @@ class Forum extends Page {
 		$refreshTime = new NumericField("ForumRefreshTime", _t('Forum.REFRECHTIME','Refresh every '));
 		$refreshTime->setRightTitle(_t('Forum.SECONDS',' seconds'));
 		$fields->addFieldToTab("Root.Behaviour", $refreshTime);
-		
+
+		$fields->addFieldToTab("Root.Category",
+			new HasOneCTFWithDefaults(
+				$this,
+				'Category',
+				'ForumCategory',
+				array(
+					'Title' => 'Title'
+				),
+				'getCMSFields_forPopup',
+				"ForumHolderID={$this->ParentID}",
+				null,
+				null,
+				array("ForumHolderID" => $this->ParentID)
+			)
+		);
+/*
 		$fields->addFieldToTab("Root.Category",
 			new HasOneComplexTableField(
 				$this,
@@ -143,10 +159,11 @@ class Forum extends Page {
 				array(
 					'Title' => 'Title'
 				),
-				'getCMSFields_forPopup'
+				'getCMSFields_forPopup',
+				"ForumHolderID={$this->ParentID}"
 			)
 		);
-		
+*/		
 		// TagField comes in it's own module.
 		// If it's installed, use it to select moderators for this forum
 		if(class_exists('TagField')) {
@@ -394,7 +411,6 @@ class Forum extends Page {
 			break;
 		}
 	}
-		
 }
 
 /**
@@ -1314,7 +1330,7 @@ class Forum_Controller extends Page_Controller {
 	 * Get the forums
 	 */
 	function Forums() {
-	 	$categories = DataObject::get("ForumCategory");
+	 	$categories = DataObject::get("ForumCategory", "ForumHolderID='{$this->ParentID}'");
 	 	
 		if($this->ShowInCategories && $categories) {
 			foreach($categories as $category) {

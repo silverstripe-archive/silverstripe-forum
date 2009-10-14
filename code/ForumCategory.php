@@ -15,7 +15,9 @@ class ForumCategory extends DataObject {
 		'StackableOrder' => 'Varchar(2)'
 	);
 	
-	static $has_one = array();
+	static $has_one = array(
+		'ForumHolder' => 'ForumHolder'
+	);
 	
 	static $has_many = array(
 		'Forums' => 'Forum'
