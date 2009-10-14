@@ -1332,7 +1332,7 @@ class Forum_Controller extends Page_Controller {
 	 * Get the forums
 	 */
 	function Forums() {
-		return $this->holderPage->Forums();
+		return $this->Parent->Forums();
 /*	 	$categories = DataObject::get("ForumCategory", "ForumHolderID='{$this->ParentID}'");
 		if($this->ShowInCategories) {
 			// If there are no categories, we just don't display any.
