@@ -316,12 +316,13 @@ class ForumHolder_Controller extends Page_Controller {
 	}
 
 	/**
-	 * Get the forums. Actually its a bit more complex then that
+	 * Get the forums. Actually its a bit more complex than that
 	 * we need to group by the Forum Categories.
 	 */
 	function Forums() {
 	 	$categories = DataObject::get("ForumCategory", "ForumHolderID={$this->ID}");	
-		if($this->ShowInCategories && $categories) {
+		if($this->ShowInCategories) {
+			if (!$categories) return new DataObjectSet();
 			foreach($categories as $category) {
 				$category->CategoryForums = DataObject::get("Forum", "CategoryID = '$category->ID' AND ParentID = '$this->ID'");
 			}

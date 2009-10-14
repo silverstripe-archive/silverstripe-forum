@@ -338,8 +338,10 @@ class Forum extends Page {
 		$standard = DataObject::get("Post", "`Post`.ForumID = $this->ID AND `Post`.ParentID = 0 AND `Post`.IsSticky = 1", "max(PostList.Created) DESC",
 			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID"
 		);
-		$global = DataObject::get("Post", "`Post`.ParentID = 0 AND `Post`.IsGlobalSticky = 1", "max(PostList.Created) DESC",
-			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID"
+		// We have to join posts through their forums to their holders, and then restrict the holders to just the parent of this forum.
+		$global = DataObject::get("Post", "`Post`.ParentID = 0 AND `Post`.IsGlobalSticky = 1 AND ForumPageHolder.ID='{$this->ID}'", "max(PostList.Created) DESC",
+			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID INNER JOIN SiteTree_Live ForumPage on `Post`.ForumID=ForumPage.ID
+			INNER JOIN SiteTree_Love FormHolderPage on ForumPage.ParentID=ForumPageHolder.ID"
 		);
 		if($global) {
 			$global->merge($standard);
@@ -1330,15 +1332,17 @@ class Forum_Controller extends Page_Controller {
 	 * Get the forums
 	 */
 	function Forums() {
-	 	$categories = DataObject::get("ForumCategory", "ForumHolderID='{$this->ParentID}'");
-	 	
-		if($this->ShowInCategories && $categories) {
+		return $this->holderPage->Forums();
+/*	 	$categories = DataObject::get("ForumCategory", "ForumHolderID='{$this->ParentID}'");
+		if($this->ShowInCategories) {
+			// If there are no categories, we just don't display any.
+			if (!$categories) return new DataObjectSet();
 			foreach($categories as $category) {
 				$category->CategoryForums = DataObject::get("Forum", "CategoryID = '$category->ID'");
 			}
 			return $categories;
 		}
-		return DataObject::get("Forum");
+		return DataObject::get("Forum", "ParentID='{$this->ID}'");*/
 	}
 
 
