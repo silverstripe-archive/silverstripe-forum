@@ -127,6 +127,21 @@ class ForumHolder extends Page {
 		return DataObject::get("Member", "(GroupID = '$forumGroupID' OR GroupID = '$adminGroupID')", "`Member`.`ID` DESC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", $limit);
 	}
 
+	/**
+	 * Get the forums. Actually its a bit more complex than that
+	 * we need to group by the Forum Categories.
+	 */
+	function Forums() {
+	 	$categories = DataObject::get("ForumCategory", "ForumHolderID={$this->ID}");	
+		if($this->ShowInCategories) {
+			if (!$categories) return new DataObjectSet();
+			foreach($categories as $category) {
+				$category->CategoryForums = DataObject::get("Forum", "CategoryID = '$category->ID' AND ParentID = '$this->ID'");
+			}
+			return $categories;
+		}
+		return DataObject::get("Forum", "ParentID = '$this->ID'");
+	}
 }
 
 
@@ -313,22 +328,6 @@ class ForumHolder_Controller extends Page_Controller {
 	function TotalAuthors() {
 		return DB::query("SELECT COUNT(DISTINCT Post.AuthorID) FROM Post JOIN SiteTree_Live ForumPage ON Post.ForumID=ForumPage.ID and ForumPage.ParentID='{$this->ID}'")->value();
 //		return DB::query("SELECT COUNT(DISTINCT AuthorID) FROM Post")->value();
-	}
-
-	/**
-	 * Get the forums. Actually its a bit more complex than that
-	 * we need to group by the Forum Categories.
-	 */
-	function Forums() {
-	 	$categories = DataObject::get("ForumCategory", "ForumHolderID={$this->ID}");	
-		if($this->ShowInCategories) {
-			if (!$categories) return new DataObjectSet();
-			foreach($categories as $category) {
-				$category->CategoryForums = DataObject::get("Forum", "CategoryID = '$category->ID' AND ParentID = '$this->ID'");
-			}
-			return $categories;
-		}
-		return DataObject::get("Forum", "ParentID = '$this->ID'");
 	}
 	
 	/**
