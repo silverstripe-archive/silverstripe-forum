@@ -651,7 +651,7 @@ class ForumMemberProfile extends Page_Controller {
 	 *
 	 * @return ForumHolder_Controller Returns the forum holder controller.
 	 */
-	function _ForumHolder() {
+	function ForumHolder() {
 		return new ForumHolder_Controller(DataObject::get_one("ForumHolder"));
 	}
 
