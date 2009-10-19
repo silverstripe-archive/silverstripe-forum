@@ -142,6 +142,17 @@ class ForumHolder extends Page {
 		}
 		return DataObject::get("Forum", "ParentID = '$this->ID'");
 	}
+
+	/**
+	 * A function that returns the correct base table to use for custom forum queries. It uses the getVar stage to determine
+	 * what stage we are looking at, and determines whether to use SiteTree or SiteTree_Live (the general case). If the stage is
+	 * not specified, live is assumed (general case). It is a static function so it can be used for both ForumHolder and Forum.
+	 */
+	static function baseForumTable() {
+		$stage = Controller::curr()->getRequest()->getVar('stage');
+		if (!$stage) $stage = Versioned::get_live_stage();
+		return $stage == "Stage" ? "Sitetree" : "Sitetree_Live";
+	}
 }
 
 
@@ -242,7 +253,7 @@ class ForumHolder_Controller extends Page_Controller {
 			
 			$allThreadsCount = DB::query("
 				SELECT count(Post.*) as theCount
-				FROM Post JOIN SiteTree_Live ForumPage on Post.ForumID=ForumPage.ID
+				FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage on Post.ForumID=ForumPage.ID
 				WHERE TopicID = Post.ID AND ForumPage.ParentID='{$this->ID}'")->value();
 //			$allThreadsCount = DB::query('SELECT * FROM Post WHERE TopicID = Post.ID')->numRecords();
 			$threads = singleton('Post')->buildDataObjectSet($threadRecords);
@@ -304,7 +315,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return int Returns the number of posts
 	 */
 	function TotalPosts() {
-		return DB::query("SELECT COUNT(*) FROM Post JOIN SiteTree_Live ForumPage ON Post.ForumID=ForumPage.ID WHERE Post.Content != 'NULL' and ForumPage.ParentID='{$this->ID}'")->value(); 
+		return DB::query("SELECT COUNT(*) FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage ON Post.ForumID=ForumPage.ID WHERE Post.Content != 'NULL' and ForumPage.ParentID='{$this->ID}'")->value(); 
 //		return DB::query("SELECT COUNT(*) FROM Post WHERE Content != 'NULL'")->value(); 
 	}
 
@@ -315,7 +326,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return int Returns the number of topics (threads)
 	 */
 	function TotalTopics() {
-		return DB::query("SELECT COUNT(*) FROM Post JOIN SiteTree_Live ForumPage ON Post.ForumID=ForumPage.ID WHERE Post.ParentID = 0 AND Post.Content != 'NULL' and ForumPage.ParentID='{$this->ID}'")->value(); 
+		return DB::query("SELECT COUNT(*) FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage ON Post.ForumID=ForumPage.ID WHERE Post.ParentID = 0 AND Post.Content != 'NULL' and ForumPage.ParentID='{$this->ID}'")->value(); 
 //		return DB::query("SELECT COUNT(*) FROM Post WHERE ParentID = 0 AND Content != 'NULL'")->value(); 
 	}
 
@@ -326,7 +337,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return int Returns the number of distinct authors
 	 */
 	function TotalAuthors() {
-		return DB::query("SELECT COUNT(DISTINCT Post.AuthorID) FROM Post JOIN SiteTree_Live ForumPage ON Post.ForumID=ForumPage.ID and ForumPage.ParentID='{$this->ID}'")->value();
+		return DB::query("SELECT COUNT(DISTINCT Post.AuthorID) FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage ON Post.ForumID=ForumPage.ID and ForumPage.ParentID='{$this->ID}'")->value();
 //		return DB::query("SELECT COUNT(DISTINCT AuthorID) FROM Post")->value();
 	}
 	
@@ -407,7 +418,7 @@ class ForumHolder_Controller extends Page_Controller {
 
 		$queryString = "SELECT Post.ID, Post.Created, Post.LastEdited, Post.ClassName, Post.Title, Post.Content, Post.TopicID, Post.AuthorID, Post.ForumID,
 				MATCH (Post.Title, Post.Content) AGAINST ('$searchQuery') AS RelevancyScore
-			FROM Post JOIN SiteTree_Live ForumPage on Post.ForumID=ForumPage.ID
+			FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage on Post.ForumID=ForumPage.ID
 			WHERE
 				MATCH (Post.Title, Post.Content) AGAINST ('$searchQuery' IN BOOLEAN MODE)
 				$SQL_authorClause
@@ -525,7 +536,7 @@ class ForumHolder_Controller extends Page_Controller {
 		}
 
 		$filter .= " AND ForumPage.ParentID='{$this->ID}'";
-		return DataObject::get("Post", $filter, "Created DESC", "JOIN SiteTree_Live ForumPage on Post.ForumID=ForumPage.ID", $limit);
+		return DataObject::get("Post", $filter, "Created DESC", "JOIN " . ForumHolder::baseForumTable() . " ForumPage on Post.ForumID=ForumPage.ID", $limit);
 //		return DataObject::get("Post", $filter, "Created DESC", "", $limit);
 	}
 
@@ -545,7 +556,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 */
 	public function NewPostsAvailable($lastVisit, $lastPostID,array &$data = null) {
 		$version = DB::query("SELECT max(ID) as LastID, max(Created) " .
-			"as LastCreated FROM Post JOIN SiteTree_Live ForumPage on POST.ForumID=ForumPage.ID WHERE ForumPage.ParentID={$this->ID}")->first();
+			"as LastCreated FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage on POST.ForumID=ForumPage.ID WHERE ForumPage.ParentID={$this->ID}")->first();
 //		$version = DB::query("SELECT max(ID) as LastID, max(Created) " .
 //			"as LastCreated FROM Post")->first();
 		
@@ -588,7 +599,7 @@ class ForumHolder_Controller extends Page_Controller {
 	
 	function GlobalAnnouncements() {
 		$announcement = DataObject::get("Post", "`Post`.ParentID = 0 AND `Post`.IsGlobalSticky = 1 AND ForumPage.ParentID={$this->ID}", "max(PostList.Created) DESC",
-			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID INNER JOIN SiteTree_Live ForumPage on `Post`.ForumID=ForumPage.ID");
+			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID INNER JOIN " . ForumHolder::baseForumTable() . " ForumPage on `Post`.ForumID=ForumPage.ID");
 		return $announcement;
 	}
 }
