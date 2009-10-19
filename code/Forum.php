@@ -339,7 +339,7 @@ class Forum extends Page {
 			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID"
 		);
 		// We have to join posts through their forums to their holders, and then restrict the holders to just the parent of this forum.
-		$global = DataObject::get("Post", "`Post`.ParentID = 0 AND `Post`.IsGlobalSticky = 1 AND ForumHolderPage.ID='{$this->ID}'", "max(PostList.Created) DESC",
+		$global = DataObject::get("Post", "`Post`.ParentID = 0 AND `Post`.IsGlobalSticky = 1 AND ForumHolderPage.ID='{$this->ParentID}'", "max(PostList.Created) DESC",
 			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID INNER JOIN SiteTree_Live ForumPage on `Post`.ForumID=ForumPage.ID
 			INNER JOIN SiteTree_Live ForumHolderPage on ForumPage.ParentID=ForumHolderPage.ID"
 		);
