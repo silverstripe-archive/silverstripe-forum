@@ -1710,7 +1710,7 @@ class Forum_Controller extends Page_Controller {
 		);
 		
 		// Move Thread Dropdown
-		$forums = DataObject::get("Forum", "`Forum`.ID != '$this->ID'");
+		$forums = DataObject::get("Forum", "`Forum`.ID != '$this->ID' and ParentID='{$this->ParentID}'");
 		if($forums) {
 			$fields->push(new DropdownField("NewForum", "Change Thread Forum", $forums->toDropDownMap('ID', 'Title', 'Select New Category:')), '', null, 'Select New Location:');
 		}
