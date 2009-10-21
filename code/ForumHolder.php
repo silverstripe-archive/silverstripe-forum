@@ -151,7 +151,7 @@ class ForumHolder extends Page {
 	static function baseForumTable() {
 		$stage = Controller::curr()->getRequest()->getVar('stage');
 		if (!$stage) $stage = Versioned::get_live_stage();
-		return $stage == "Stage" ? "Sitetree" : "Sitetree_Live";
+		return $stage == "Stage" ? "SiteTree" : "SiteTree_Live";
 	}
 }
 
