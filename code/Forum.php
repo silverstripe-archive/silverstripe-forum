@@ -1179,16 +1179,16 @@ class Forum_Controller extends Page_Controller {
 		RSSFeed::linkToFeed($this->Link("rss") . '/' . $this->urlParams['ID'],sprintf(_t('Forum.POSTTOTOPIC',"Posts to the '%s' topic"),$this->Post()->Title));
 
 		$SQL_id = Convert::raw2sql($this->urlParams['ID']);
-		$title = $this->Title;
+		$title = Convert::raw2xml($this->Title);
 		if(is_numeric($SQL_id)) {
 			$topic = DataObject::get_by_id("Post", $SQL_id);
 			if($topic) {
 				$topic->incNumViews();
-				$title = $topic->Title . ' &raquo; ' . $title; // Set the Forum Thread Title.
+				$title = Convert::raw2xml($topic->Title) . ' &raquo; ' . $title;// Set the Forum Thread Title.
 			}
 		}
 		return array(	
-			'Title' => Convert::raw2xml($title)
+			'Title' => $title
 		);
 	}
 	
