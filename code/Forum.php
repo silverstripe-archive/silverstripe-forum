@@ -61,7 +61,7 @@ class Forum extends Page {
 			$group->write();
 
 			Permission::grant( $group->ID, $code );
-			Database::alteration_message(_t('Forum.GROUPCREATED','Forum Members group created'),"created"); 
+			if(method_exists('DB', 'alteration_message')) DB::alteration_message(_t('Forum.GROUPCREATED','Forum Members group created'),"created"); 
 		}
 		else if(DB::query(
 			"SELECT * FROM Permission WHERE `GroupID` = '$forumGroup->ID' AND `Code` LIKE '$code'")
@@ -81,7 +81,7 @@ class Forum extends Page {
 			$forumholder->Status = "Published";
 			$forumholder->write();
 			$forumholder->publish("Stage", "Live");
-			Database::alteration_message(_t('Forum.FORUMHOLDERCREATED','ForumHolder page created'),"created");
+			if(method_exists('DB', 'alteration_message')) DB::alteration_message(_t('Forum.FORUMHOLDERCREATED','ForumHolder page created'),"created");
 			$forum = new Forum();
 			$forum->Title = _t('Forum.TITLE','General Discussion');
 			$forum->URLSegment = "general-discussion";
@@ -92,7 +92,7 @@ class Forum extends Page {
 			$forum->write();
 			$forum->publish("Stage", "Live");
 
-			Database::alteration_message(_t('Forum.FORUMCREATED','Forum page created'),"created");
+			if(method_exists('DB', 'alteration_message')) DB::alteration_message(_t('Forum.FORUMCREATED','Forum page created'),"created");
 		}
 	}
 
