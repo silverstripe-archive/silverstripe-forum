@@ -69,6 +69,7 @@ $(document).ready(function() {
 				// was successful
 				$("ul#Posts li#post"+id).fadeOut();
 			}
+			else eval(data);
 		});
 		return false;
 	});

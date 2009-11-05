@@ -1626,8 +1626,9 @@ class Forum_Controller extends Page_Controller {
 		      			// Delete the post
             			$post->delete();
           			}
-		    	}	
-				if(!Director::is_ajax()) return	Director::redirect($this->urlParams['URLSegment'] . "/show/" .$this->currentPost->TopicID . "/");
+		    	}
+		    	if (Director::is_ajax()) return 'window.location="' . $this->currentPost->Forum()->Link() . '";';
+				Director::redirect($this->urlParams['URLSegment'] . "/show/" .$this->currentPost->TopicID . "/");
 		    	return true;
 		  	} 
 			return true;
