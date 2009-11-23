@@ -530,8 +530,14 @@ class ForumMemberProfile extends Page_Controller {
 		}
 
 
-		$nicknameCheck = DataObject::get_one("Member",
-			"`Nickname` = '{$data['Nickname']}' AND `Member`.`ID` != '{$member->ID}'");
+		$nicknameCheck = DataObject::get_one(
+			"Member",
+			sprintf(
+				"`Nickname` = '%s' AND `Member`.`ID` != '%d'",
+				Convert::raw2sql($data['Nickname']),
+				$member->ID
+			)
+		);
 
 		if($nicknameCheck) {
 			$form->addErrorMessage("Blurb",
