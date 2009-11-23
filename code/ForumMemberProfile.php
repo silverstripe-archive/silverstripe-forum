@@ -44,7 +44,7 @@ class ForumMemberProfile extends Page_Controller {
 		$member = $this->Member() ? $this->Member() : null;
 		$nicknameText = ($member) ? ($member->Nickname . '\'s ') : '';
 		
-		$this->Title = $nicknameText . 'User Profile';
+		$this->Title = Convert::raw2xml($nicknameText) . 'User Profile';
 		
 		parent::init();
  	}
