@@ -574,10 +574,11 @@ class ForumHolder_Controller extends Page_Controller {
 	 *              FALSE.
 	 */
 	public function NewPostsAvailable($lastVisit, $lastPostID,array &$data = null) {
-		$version = DB::query("SELECT max(ID) as LastID, max(Created) " .
-			"as LastCreated FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage on POST.ForumID=ForumPage.ID WHERE ForumPage.ParentID={$this->ID}")->first();
-//		$version = DB::query("SELECT max(ID) as LastID, max(Created) " .
-//			"as LastCreated FROM Post")->first();
+		$version = DB::query("
+			SELECT max(Post.ID) as LastID, max(Post.Created) as LastCreated 
+			FROM Post 
+			JOIN " . ForumHolder::baseForumTable() . " as ForumPage on Post.ForumID=ForumPage.ID 
+			WHERE ForumPage.ParentID={$this->ID}")->first();
 		
 		if($version == false)
 			return false;
@@ -586,7 +587,7 @@ class ForumHolder_Controller extends Page_Controller {
 			$data['last_id'] = (int)$version['LastID'];
 			$data['last_created'] = strtotime($version['LastCreated']);
 		}
-
+	
 		$lastVisit = (int) $lastVisit;
 		if($lastVisit <= 0)
 			$lastVisit = false;
