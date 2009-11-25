@@ -83,6 +83,25 @@ class ForumHolder extends Page {
 	}
 	
 	/**
+	 * Ensure that any categories that exist with no forum holder are updated to be owned by the first forum holder
+	 * if there is one. This is required now that multiple forum holds are allowed, and categories belong to holders.
+	 *
+	 * @see sapphire/core/model/DataObject#requireDefaultRecords()
+	 */
+	public function requireDefaultRecords() {
+		parent::requireDefaultRecords();
+
+		if (!$cats = DataObject::get("ForumCategory", "ForumHolderID = 0")) return;
+
+		if (!$holder = DataObject::get_one("ForumHolder")) return;
+
+		foreach ($cats as $c) {
+			$c->ForumHolderID = $holder->ID;
+			$c->write();
+		}
+	}
+	
+	/**
 	 * If we're on the search action, we need to at least show
 	 * a breadcrumb to get back to the ForumHolder page.
 	 * @return string
