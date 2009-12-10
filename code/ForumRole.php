@@ -199,9 +199,6 @@ class ForumRole extends DataObjectDecorator {
 
 	function updateCMSFields(FieldSet &$fields) {
 		if(Permission::checkMember($this->owner->ID, "ACCESS_FORUM")) {
-			$fields->addFieldToTab('Root.Forum',new TextField("Nickname", "Nickname"), "FirstName");
-			$fields->addFieldToTab('Root.Forum',new TextField("Occupation", "Occupation"), "Surname");
-			$fields->addFieldToTab('Root.Forum',new CountryDropdownField("Country", "Country"), "Occupation");
 			$fields->addFieldToTab('Root.Forum',new ImageField("Avatar", "Upload avatar."));
 			$fields->addFieldToTab('Root.Forum',new DropdownField("ForumRank", "User rating", array(
 				"Community Member" => _t('ForumRole.COMMEMBER'),
