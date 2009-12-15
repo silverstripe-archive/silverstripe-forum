@@ -271,7 +271,7 @@ class ForumHolder_Controller extends Page_Controller {
 //			");
 			
 			$allThreadsCount = DB::query("
-				SELECT count(Post.*) as theCount
+				SELECT count(*) as theCount
 				FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage on Post.ForumID=ForumPage.ID
 				WHERE TopicID = Post.ID AND ForumPage.ParentID='{$this->ID}'")->value();
 //			$allThreadsCount = DB::query('SELECT * FROM Post WHERE TopicID = Post.ID')->numRecords();
