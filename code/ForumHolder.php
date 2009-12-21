@@ -182,7 +182,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 */
 	function init() {
 		Requirements::themedCSS('Forum');
-		Requirements::javascript("jsparty/jquery/jquery.js");
+		Requirements::javascript("forum/javascript/jquery.js");
 		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
 		Requirements::javascript("forum/javascript/forum.js");
 		RSSFeed::linkToFeed($this->Link("rss"), "Posts to all forums");
