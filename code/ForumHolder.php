@@ -21,7 +21,8 @@ class ForumHolder extends Page {
 		"ProfileAdd" => "HTMLText",
 		"DisplaySignatures" => "Boolean",
 		"ShowInCategories" => "Boolean",
-		"AllowGravatars" => "Boolean"
+		"AllowGravatars" => "Boolean",
+		"ForbiddenWords" => "Text"	
 	);
 	
 	static $has_one = array(
@@ -78,6 +79,10 @@ class ForumHolder extends Page {
 			new CheckboxField("DisplaySignatures", "Display Member Signatures?"),
 			new CheckboxField("ShowInCategories", "Show Forums In Categories?"),
 			new CheckboxField("AllowGravatars", "Allow <a href='http://www.gravatar.com/' target='_blank'>Gravatars</a>?")
+		));
+		$fields->addFieldsToTab("Root.Content.LanguageFilter", array(
+			new TextField("ForbiddenWords", "Forbidden words (comma separated)"),
+			new LiteralField("FWLabel","These words will be replaced by an asterisk")
 		));
 		return $fields;
 	}
