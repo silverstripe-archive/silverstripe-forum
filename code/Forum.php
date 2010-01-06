@@ -948,6 +948,28 @@ class Forum_Controller extends Page_Controller {
 		$this->setViewMode($data['action_preview']);
 		Director::redirectBack();
 	}
+	
+	function getForbiddenWords() {
+		$words = DataObject::get_one("ForumHolder")->ForbiddenWords;
+		return $words;
+	}
+	
+	/**
+	* This function filters $content by forbidden words, entered in forum holder.
+	*
+	* @param String $content (it can be Post Content or Post Title)
+	* @return String $content (filtered string)
+	**/
+	function filterLanguage( $content ) {
+		$words = $this->getForbiddenWords();
+		if($words != ""){
+			$words = explode(",",$words);
+			foreach($words as $word){
+				$content = str_ireplace(trim($word),"*",$content);
+			}
+		}
+		return $content;
+	}
 
 
 	/**
@@ -960,9 +982,11 @@ class Forum_Controller extends Page_Controller {
 	 * @param Form $form The used form
 	 */
 	function postAMessage($data, $form) {
+		
+		$data["Content"] = $this->filterLanguage($data["Content"]);
+		$data["Title"] = $this->filterLanguage($data["Title"]);
 		$member = Member::currentUser();
 		$parent = null;
-		
 		if($data['Parent']) $parent = DataObject::get_by_id('Post',	Convert::raw2sql($data['Parent']));
 		
 		// check they have correct posting rights
@@ -1071,7 +1095,7 @@ class Forum_Controller extends Page_Controller {
 				DB::query("DELETE FROM Post_Subscription WHERE `TopicID` = '$post->TopicID' AND `MemberID` = '$SQL_memberID'");
 			}
 		}
-
+		
 		Director::redirect($this->Link() . 'show/' . $post->TopicID .'?showPost=' . $post->ID);
 	}
 
