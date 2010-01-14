@@ -19,8 +19,8 @@ class ForumRole extends DataObjectDecorator {
 	 * Update the database schema as required by this extension
 	 */
 	function augmentDatabase() {
-		$exist =  DB::query( "SHOW TABLES LIKE 'ForumMember'" )->numRecords();
-		if( $exist > 0 ) {
+		$exist = DB::tableList();
+ 		if(isset($exist['ForumMember'])) {
 			DB::query( "UPDATE `Member`, `ForumMember` " .
 				"SET `Member`.`ClassName` = 'Member'," .
 				"`Member`.`ForumRank` = `ForumMember`.`ForumRank`," .
