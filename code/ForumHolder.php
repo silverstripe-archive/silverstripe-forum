@@ -372,6 +372,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 */
 	function search() {
 		$XML_keywords = Convert::raw2xml((isset($_REQUEST['Search'])) ? $_REQUEST['Search'] : null);
+		$ATT_keywords = Convert::raw2att((isset($_REQUEST['Search'])) ? $_REQUEST['Search'] : null);
 		$order = Convert::raw2xml((isset($_REQUEST['order'])) ? $_REQUEST['order'] : null);
 		
 		$Abstract = !empty($_REQUEST['Search'])
@@ -386,7 +387,7 @@ class ForumHolder_Controller extends Page_Controller {
 		return array(
 				"Subtitle" => _t('ForumHolder.SEARCHRESULTS','Search results'),
 				"Abstract" => $Abstract,
-				"Query" => $XML_keywords,
+				"Query" => $ATT_keywords,
 				"Order" => ($order) ? $order : "relevance",
 				"RSSLink" => $rssLink
 		);
