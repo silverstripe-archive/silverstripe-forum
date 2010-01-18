@@ -27,9 +27,9 @@
 				<tr>
 					<th><% _t('THREAD', 'Thread') %></th>
 					<th><% _t('ORDER', 'Order:') %>
-						<a href="{$URLSegment}/search/?Search={$Query}" <% if Order = relevance %>class="current"<% end_if %> title="<% _t('ORDERBYRELEVANCE', 'Order by Relevance. Most relevant first') %>"><% _t('RELEVANCE', 'Relevance') %></a> |
-						<a href="{$URLSegment}/search/?Search={$Query}&amp;order=date" <% if Order = date %>class="current"<% end_if %> title="<% _t('ORDERBYDATE', 'Order by Date. Newest First') %>"><% _t('DATE', 'Date') %></a> |
-						<a href="{$URLSegment}/search/?Search={$Query}&amp;order=title" <% if Order = title %>class="current"<% end_if %>title="<% _t('ORDERBYTITLE', 'Order by Title') %>"><% _t('TITLE', 'Title') %></a>
+						<a href="{$URLSegment}/search/?Search={$Query.ATT}" <% if Order = relevance %>class="current"<% end_if %> title="<% _t('ORDERBYRELEVANCE', 'Order by Relevance. Most relevant first') %>"><% _t('RELEVANCE', 'Relevance') %></a> |
+						<a href="{$URLSegment}/search/?Search={$Query.ATT}&amp;order=date" <% if Order = date %>class="current"<% end_if %> title="<% _t('ORDERBYDATE', 'Order by Date. Newest First') %>"><% _t('DATE', 'Date') %></a> |
+						<a href="{$URLSegment}/search/?Search={$Query.ATT}&amp;order=title" <% if Order = title %>class="current"<% end_if %>title="<% _t('ORDERBYTITLE', 'Order by Title') %>"><% _t('TITLE', 'Title') %></a>
 					</th>
 					<th>
 						<a href="$RSSLink"><% _t('RSSFEED', 'RSS Feed') %></a>

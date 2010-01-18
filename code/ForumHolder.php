@@ -371,25 +371,24 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return array Returns an array to render the search results.
 	 */
 	function search() {
-		$XML_keywords = Convert::raw2xml((isset($_REQUEST['Search'])) ? $_REQUEST['Search'] : null);
-		$ATT_keywords = Convert::raw2att((isset($_REQUEST['Search'])) ? $_REQUEST['Search'] : null);
+		$keywords = (isset($_REQUEST['Search'])) ? $_REQUEST['Search'] : null;
 		$order = Convert::raw2xml((isset($_REQUEST['order'])) ? $_REQUEST['order'] : null);
 		
 		$Abstract = !empty($_REQUEST['Search'])
-			? "<p>" . sprintf(_t('ForumHolder.SEARCHEDFOR',"You searched for '%s'."),$XML_keywords) . "</p>"
+			? "<p>" . sprintf(_t('ForumHolder.SEARCHEDFOR',"You searched for '%s'."),Convert::raw2xml($keywords)) . "</p>"
 			: null;
 		if(isset($_REQUEST['rss'])) {
 			$rss = new RSSFeed($this->SearchResults(), $this->Link(), _t('ForumHolder.SEARCHRESULTS','Search results'), "", "Title", "RSSContent", "RSSAuthor");
 			return $rss->outputToBrowser();	
 		}
-		$rssLink = $this->Link() ."search/?Search=".$XML_keywords. "&amp;order=".$order."&amp;rss";
+		$rssLink = $this->Link() ."search/?Search=".urlencode($keywords). "&order=".urlencode($order)."&rss";
 		RSSFeed::linkToFeed($rssLink, _t('ForumHolder.SEARCHRESULTS','Search results'));
 		return array(
-				"Subtitle" => _t('ForumHolder.SEARCHRESULTS','Search results'),
-				"Abstract" => $Abstract,
-				"Query" => $ATT_keywords,
-				"Order" => ($order) ? $order : "relevance",
-				"RSSLink" => $rssLink
+			"Subtitle" => DBField::create('Text', _t('ForumHolder.SEARCHRESULTS','Search results')),
+			"Abstract" => DBField::create('HTMLText', $Abstract),
+			"Query" => DBField::create('Text', $keywords),
+			"Order" => DBField::create('Text', ($order) ? $order : "relevance"),
+			"RSSLink" => DBField::create('HTMLText', $rssLink)
 		);
 	}
 	
