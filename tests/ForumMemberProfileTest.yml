@@ -35,6 +35,7 @@ Member:
 ForumHolder:
    fh:
       Title: Forum
+      ForbiddenWords: shit,fuck
    fh2:
       Title: Forum 2
 ForumCategory:
