@@ -914,7 +914,7 @@ class Forum_Controller extends Page_Controller {
 		}
 
 		$actions = 	new FieldSet(
-			new FormAction("postAMessage", "Post")
+			new FormAction("postAMessage", _t('Forum.POSTSUBMIT', 'Post'))
 		);
 
 		$required = new RequiredFields("Title", "Content");
