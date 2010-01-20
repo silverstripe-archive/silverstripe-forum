@@ -180,8 +180,9 @@ class Post extends DataObject {
 	 */
 	function MarkAsSpamLink() {
 		if(class_exists('SpamProtectorManager') && $member = Member::currentUser()) {
-		 	if($member->ID != $this->AuthorID)
+		 	if($this->Forum()->isAdmin() && $member->ID != $this->AuthorID) {
 				return "<a href=\"{$this->Forum()->Link()}markasspam/{$this->ID}\" class='markAsSpamLink' rel=\"$this->ID\">". _t('Post.MARKASSPAM', 'Mark as Spam') ."</a>";
+			}
 		}
 	}
 	
