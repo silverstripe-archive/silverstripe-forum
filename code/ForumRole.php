@@ -198,6 +198,10 @@ class ForumRole extends DataObjectDecorator {
 	}
 
 	function updateCMSFields(FieldSet &$fields) {
+		$allForums = DataObject::get('Forum');
+		$fields->removeByName('ModeratedForums');
+		$fields->addFieldToTab('Root.ModeratedForums', new CheckboxSetField('ModeratedForums', 'Moderated forums', ($allForums ? $allForums->map('ID', 'Title') : array())));
+		
 		if(Permission::checkMember($this->owner->ID, "ACCESS_FORUM")) {
 			$fields->addFieldToTab('Root.Forum',new ImageField("Avatar", "Upload avatar."));
 			$fields->addFieldToTab('Root.Forum',new DropdownField("ForumRank", "User rating", array(
