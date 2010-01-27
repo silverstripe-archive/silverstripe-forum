@@ -20,7 +20,7 @@ class ForumRole extends DataObjectDecorator {
 	 */
 	function augmentDatabase() {
 		$exist = DB::tableList();
- 		if(isset($exist['ForumMember'])) {
+ 		if(!empty($exist) && array_search('ForumMember', $exist) !== false) {
 			DB::query( "UPDATE `Member`, `ForumMember` " .
 				"SET `Member`.`ClassName` = 'Member'," .
 				"`Member`.`ForumRank` = `ForumMember`.`ForumRank`," .
