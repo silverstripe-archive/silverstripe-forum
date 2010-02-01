@@ -131,9 +131,14 @@ class ForumHolder extends Page {
 		$forumGroupID = (int) DataObject::get_one('Group', "Code = 'forum-members'")->ID;
 		$adminGroupID = (int) DataObject::get_one('Group', "(Code = 'administrators' OR Code = 'Administrators')")->ID;
 		
+		if(method_exists(DB::getConn(), 'datetimeIntervalClause')) {
+			$timeconstrain = 'LastVisited > ' . DB::getConn()->datetimeIntervalClause('now', '-15 MINUTE');
+		} else {
+			$timeconstrain = "LastVisited > NOW() - INTERVAL 15 MINUTE";
+		}
 		return DataObject::get(
 			'Member',
-			"LastVisited > NOW() - INTERVAL 15 MINUTE AND (GroupID = '$forumGroupID' OR GroupID = '$adminGroupID')",
+			$timeconstrain . " AND (GroupID = '$forumGroupID' OR GroupID = '$adminGroupID')",
 			'FirstName, Surname',
 			'LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID'
 		);
