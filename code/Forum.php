@@ -523,7 +523,8 @@ class Forum_Controller extends Page_Controller {
 	 * has time to do so.
 	 */
 	function deleteUntitledPosts() {
-		DB::query("DELETE FROM Post WHERE `Title` IS NULL AND `Content` IS NULL AND `Created` < NOW() - INTERVAL 24 HOUR");
+		$datetime = method_exists(DB::getConn(), 'datetimeIntervalClause') ? DB::getConn()->datetimeIntervalClause('now', '-24 Hours') : 'NOW() - INTERVAL 24 HOUR';
+		DB::query("DELETE FROM Post WHERE `Title` IS NULL AND `Content` IS NULL AND `Created` < " . $datetime);
 	}
 
 	/**
