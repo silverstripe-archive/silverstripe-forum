@@ -152,7 +152,7 @@ class ForumRole extends DataObjectDecorator {
 	 *                  the registration of new users
 	 */
 	function getForumFields($showIdentityURL = false, $addmode = false) {
-		$gravatarText = (DataObject::get_one("ForumHolder", "AllowGravatars = True")) ? '<small>'. _t('ForumRole.CANGRAVATAR', 'If you use Gravatars then leave this blank') .'</small>' : "";
+		$gravatarText = (DataObject::get_one("ForumHolder", "AllowGravatars = 1")) ? '<small>'. _t('ForumRole.CANGRAVATAR', 'If you use Gravatars then leave this blank') .'</small>' : "";
 
 		$personalDetailsFields = new CompositeField(
 			new HeaderField("PersonalDetails", _t('ForumRole.PERSONAL','Personal Details')),
@@ -262,7 +262,7 @@ class ForumRole extends DataObjectDecorator {
 			
 			return $resizedAvatar->URL;
 		}
-		if($holder = DataObject::get_one("ForumHolder", "AllowGravatars = True")) {
+		if($holder = DataObject::get_one("ForumHolder", "AllowGravatars = 1")) {
 			// ok. no image but can we find a gravatar. Will return the default image as defined above if not.
 			$grav_url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5($this->owner->Email)."&default=".urlencode($default)."&size=80";
 			return $grav_url;
