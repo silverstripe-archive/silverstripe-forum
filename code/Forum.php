@@ -455,7 +455,7 @@ class Forum_Controller extends Page_Controller {
 
  		// Log this visit to the ForumMember if they exist
  		$member = Member::currentUser();
- 		if(isset($member)) {
+ 		if($member) {
  			$member->LastViewed = date("Y-m-d H:i:s");
  			$member->write();
  		}
