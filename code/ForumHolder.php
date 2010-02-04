@@ -96,7 +96,7 @@ class ForumHolder extends Page {
 	public function requireDefaultRecords() {
 		parent::requireDefaultRecords();
 
-		if (!$cats = DataObject::get("ForumCategory", "ForumHolderID = 0")) return;
+		if (!$cats = DataObject::get("ForumCategory", '"ForumCategory"."ForumHolderID" = 0')) return;
 
 		if (!$holder = DataObject::get_one("ForumHolder")) return;
 
