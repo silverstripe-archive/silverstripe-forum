@@ -54,7 +54,7 @@ class Forum extends Page {
 
 		$code = "ACCESS_FORUM";
 
-		if(!$forumGroup = DataObject::get_one("Group", "Code = 'forum-members'")) {
+		if(!$forumGroup = DataObject::get_one("Group", "\"Group\".\"Code\" = 'forum-members'")) {
 			$group = new Group();
 			$group->Code = 'forum-members';
 			$group->Title = "Forum Members";
@@ -64,7 +64,7 @@ class Forum extends Page {
 			if(method_exists('DB', 'alteration_message')) DB::alteration_message(_t('Forum.GROUPCREATED','Forum Members group created'),"created"); 
 		}
 		else if(DB::query(
-			"SELECT * FROM Permission WHERE `GroupID` = '$forumGroup->ID' AND `Code` LIKE '$code'")
+			"SELECT * FROM \"Permission\" WHERE \"GroupID\" = '$forumGroup->ID' AND \"Code\" LIKE '$code'")
 				->numRecords() == 0 ) {
 			Permission::grant($forumGroup->ID, $code);
 		}
