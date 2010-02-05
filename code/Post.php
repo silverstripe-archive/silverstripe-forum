@@ -25,7 +25,7 @@ class Post extends DataObject {
 	static $default_sort = "LastEdited DESC";
 
 	static $indexes = array(
-		"SearchFields" => Array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Title, Content'),
+		"SearchFields" => "fulltext (Title, Content)"
 	);
 
 	static $casting = array(
