@@ -383,7 +383,8 @@ class Post_Attachment extends File {
 		$SQL_ID = Convert::raw2sql($this->urlParams['ID']);
 		if(is_numeric($SQL_ID)) {
 			$file = DataObject::get_by_id("Post_Attachment", $SQL_ID);
-			HTTP::sendFileToBrowser(file_get_contents($file->getFullPath()), $file->Name);
+			$response = SS_HTTPRequest::send_file(file_get_contents($file->getFullPath()), $file->Name);
+			$response->output();
 		}
 
 		// Missing something or hack attempt
