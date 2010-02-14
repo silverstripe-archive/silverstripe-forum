@@ -38,5 +38,3 @@ class CheckableOption extends CompositeField {
 		return $this->childField->Field() . ' ' . $this->checkbox->Field();
 	}
 }
-
-?>

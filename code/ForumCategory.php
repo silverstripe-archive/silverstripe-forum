@@ -35,7 +35,6 @@ class ForumCategory extends DataObject {
 	 * Get the fields for the category edit/ add
 	 * in the complex table field popup window. 
 	 * 
-	 * @see Forum
 	 * @return FieldSet
 	 */
 	function getCMSFields_forPopup() {
@@ -51,4 +50,3 @@ class ForumCategory extends DataObject {
 		);
 	}
 }
-?>

@@ -4,6 +4,7 @@
  * Extension to has-one CTF that lets you specify additional values to populate into created records.
  * This is not ideal, it would be much better if this were done lower down, perhaps in ComplexTableField,
  * but we're not living in utopia yet.
+ *
  * @author mstephens
  */
 class HasOneCTFWithDefaults extends HasOneComplexTableField {
@@ -74,5 +75,3 @@ class HasOneCTFWithDefaults extends HasOneComplexTableField {
 //		parent::saveInto($record);
 //	}
 }
-
-?>

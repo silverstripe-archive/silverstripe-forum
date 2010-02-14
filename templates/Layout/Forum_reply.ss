@@ -1,5 +1,6 @@
 <% include ForumHeader %>
-	$ReplyForm
+	$PostMessageForm
+	
 	<% if BBTags %>
 		<div id="BBTagsHolder" class="hide">
 			<h2 class="bbcodeExamples"><% _t('AVAILABLEBB','Available BB Code tags') %></h2>

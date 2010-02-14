@@ -27,11 +27,11 @@ class ForumMemberProfile extends Page_Controller {
 		$nonPageParts = array();
 		$parts = array();
 
-		$forumHolder = $this->ForumHolder();
+		$forumHolder = $this->getForumHolder();
 		$member = $this->Member();
 		
 		$parts[] = "<a href=\"{$forumHolder->Link()}\">{$forumHolder->Title}</a>";
-		$nonPageParts[] = $this->Title;
+		$nonPageParts[] = _t('ForumMemberProfile.USERPROFILE', 'User Profile');
 		
 		return implode(" &raquo; ", array_reverse(array_merge($nonPageParts, $parts)));
 	}
@@ -44,58 +44,11 @@ class ForumMemberProfile extends Page_Controller {
 		$member = $this->Member() ? $this->Member() : null;
 		$nicknameText = ($member) ? ($member->Nickname . '\'s ') : '';
 		
-		$this->Title = Convert::raw2xml($nicknameText) . 'User Profile';
+		$this->Title = DBField::create('HTMLText',Convert::raw2xml($nicknameText) . _t('ForumMemberProfile.USERPROFILE', 'User Profile'));
 		
 		parent::init();
  	}
 
-	/**
-	 * Get the URL for the login action
-	 *
-	 * @return string URL to the login action
-	 */
-	function LoginURL() {
-		return $this->Link("login");
-	}
-	
-	/**
-	 * Is OpenID support available?
-	 *
-	 * This method checks if the {@link OpenIDAuthenticator} is available and
-	 * registered.
-	 *
-	 * @return bool Returns TRUE if OpenID is available, FALSE otherwise.
-	 */
-	function OpenIDAvailable() {
-		if(class_exists('Authenticator') == false)
-			return false;
-
-		return Authenticator::is_registered("OpenIDAuthenticator");
-	}
-
-	/**
-	 * The login action
-	 *
-	 * It simple sets the return URL and forwards to the standard login form.
-	 */
-	function login() {
-		Session::set('Security.Message.message', _t('Forum.CREDENTIALS'));
-		Session::set('Security.Message.type', 'status');
-		Session::set("BackURL", $this->Link());
-		Director::redirect('Security/login');
-	}
-
-	function logout() {
-		if($member = Member::currentUser())
-			$member->logOut();
-		$returnTo = DataObject::get_one("ForumHolder");
-		if($returnTo)
-			return Director::redirect(Director::absoluteBaseURL().$returnTo->URLSegment);
-		else {
-			return Director::redirectBack();
-		}
-	}
-	
  	/**
  	 * Get the latest 10 posts by this member
  	 */
@@ -103,17 +56,16 @@ class ForumMemberProfile extends Page_Controller {
  		$memberID = $this->urlParams['ID'];
 		$SQL_memberID = (int) $memberID;
 
-		$posts = DataObject::get("Post", "`AuthorID` = '$SQL_memberID'", "`Created` DESC", "", "0,10");
+		$posts = DataObject::get("Post", "AuthorID = '$SQL_memberID'", "Created DESC", "", "0,10");
 		if($posts) {
 			foreach($posts as $post) {
-				if(!$post->Forum()->CheckForumPermissions()) {
+				if(!$post->canView()) {
 					$posts->remove($post);
 				}
 			}
 		}
 
-	   return $posts;
-	   
+		return $posts;   
  	}
 
 
@@ -124,7 +76,7 @@ class ForumMemberProfile extends Page_Controller {
 		return array(
 			"Title" => _t('ForumMemberProfile.FORUMREGTITLE','Forum Registration'), 
 		 	"Subtitle" => _t('ForumMemberProfile.REGISTER','Register'),
-			"Abstract" => DataObject::get_one("ForumHolder")->ProfileAbstract,
+			"Abstract" => $this->getForumHolder()->ProfileAbstract,
 		);
 	}
 
@@ -138,7 +90,7 @@ class ForumMemberProfile extends Page_Controller {
 		$data = Session::get("FormInfo.Form_RegistrationForm.data");
 
 		$use_openid =
-			($this->OpenIDAvailable() == true) &&
+			($this->getForumHolder()->OpenIDAvailable() == true) &&
 			(isset($data['IdentityURL']) && !empty($data['IdentityURL'])) ||
 			(isset($_POST['IdentityURL']) && !empty($_POST['IdentityURL']));
 
@@ -465,10 +417,9 @@ class ForumMemberProfile extends Page_Controller {
 		$show_openid = (isset($member->IdentityURL) && !empty($member->IdentityURL));
 
 		$fields = singleton('Member')->getForumFields($show_openid);
-		if(singleton('Post')->DisplaySignatures()) {
+		if($holder = DataObject::get_one('ForumHolder', "DisplaySignatures = '1'")) {
 			$fields->push(new TextareaField('Signature', 'Forum Signature'));
 		}
-		$fields->push(new HiddenField("ID"));
 
 		$form = new Form($this, 'EditProfileForm', $fields,
 			new FieldSet(new FormAction("dosave", _t('ForumMemberProfile.SAVECHANGES','Save changes'))),
@@ -479,9 +430,9 @@ class ForumMemberProfile extends Page_Controller {
 			$member->Password = '';
 			$form->loadDataFrom($member);
 			return $form;
-		} else {
-			return null;
 		}
+
+		return null;
 	}
 
 
@@ -492,7 +443,8 @@ class ForumMemberProfile extends Page_Controller {
 	 * @param $form
 	 */
 	function dosave($data, $form) {
-		$member = DataObject::get_by_id('Member', $data['ID']);
+		$member = Member::currentUser();
+		
 		$SQL_email = Convert::raw2sql($data['Email']);
 		$forumGroup = DataObject::get_one('Group', "Code = 'forum-members'");
 		
@@ -601,127 +553,28 @@ class ForumMemberProfile extends Page_Controller {
 		return $member;
 	}
 
-
 	/**
-	 * Get the latest member in the system that belongs to the
-	 * "forum-members" code {@link Group}.
-	 *
-	 * @param int $limit The number of members to show as being the latest
-	 * @return Member Returns the latest member in the system.
-	 */
-	function LatestMember($limit = 1) {
-		return $this->ForumHolder()->LatestMember($limit);
-	}
-
-	/**
-	 * This will trick SilverStripe into placing this page within the site
-	 * tree
-	 */
-	function getParent() {
-		$siblingForum = Forum_Controller::getLastForumAccessed();
-		if($siblingForum) return $siblingForum->Parent;
-	}
-
-
-	/**
-	 * This will trick SilverStripe into placing this page within the site
-	 * tree
-	 */
-	function getParentID() {
-		$siblingForum = Forum_Controller::getLastForumAccessed();
-		return $siblingForum->ParentID;
-	}
-
-
-	/**
-	 * Just return a pointer to $this
-	 */
-	function data() {
-		return $this;
-	}
-
-
-	/**
-	 * Get a list of currently online users (last 15 minutes)
-	 * that belong to the "forum-members" code {@link Group}.
+	 * Get the forum holder controller. Sadly we can't work out which forum holder
 	 * 
-	 * @return DataObjectSet of {@link Member} objects
+	 * @return ForumHolder Returns the forum holder controller.
 	 */
-	function CurrentlyOnline() {
-		return $this->ForumHolder()->CurrentlyOnline();
+	function getForumHolder() {
+		$holders = DataObject::get("ForumHolder");
+		if($holders) {
+			foreach($holders as $holder) {
+				if($holder->canView()) return $holder;
+			}
+		}
+		
+		// no usable forums
+		$messageSet = array(
+			'default' => _t('Forum.LOGINTOPOST','You\'ll need to login before you can post to that forum. Please do so below.'),
+			'alreadyLoggedIn' => _t('Forum.NOPOSTPERMISSION','I\'m sorry, but you do not have permission to this edit this profile.'),
+			'logInAgain' => _t('Forum.LOGINTOPOSTAGAIN','You have been logged out of the forums.  If you would like to log in again to post, enter a username and password below.'),
+		);
+
+		return Security::permissionFailure($this, $messageSet);
 	}
-
-
-	/**
-	 * Get the forum holder controller
-	 *
-	 * @return ForumHolder_Controller Returns the forum holder controller.
-	 */
-	function ForumHolder() {
-		return new ForumHolder_Controller(DataObject::get_one("ForumHolder"));
-	}
-
-
-	/**
-	 * Get the forum holder's total posts
-	 *
-	 * @return int Returns the number of total posts
-	 *
-	 * @see ForumHolder::TotalPosts()
-	 */
-	function TotalPosts() {
-		return $this->ForumHolder()->TotalPosts();
-	}
-
-
-	/**
-	 * Get the number of total topics (threads) of the forum holder
-	 *
-	 * @see ForumHolder::TotalTopics()
-	 */
-	function TotalTopics() {
-		return $this->ForumHolder()->TotalTopics();
-	}
-
-
-	/**
-	 * Get the number of distinct authors of the forum holder
-	 *
-	 * @see ForumHolder::TotalAuthors()
-	 */
-	function TotalAuthors() {
-		return $this->ForumHolder()->TotalAuthors();
-	}
-
-
-	/**
-	 * Get the forums
-	 *
-	 * @see ForumHolder::Forums()
-	 */
-	function Forums() {
-		return $this->ForumHolder()->Forums();
-	}
-	
-	/**
-	 * Determines whether forums should be showed in categories
-	 * (required for the "jump to" dropdown to be populated).
-	 *
-	 * @return boolean
-	 */
-	function ShowInCategories() {
-		return $this->ForumHolder()->ShowInCategories;
-	}	
-
-	/**
-	 * Returns the search results
-	 *
-	 * @see ForumHolder::SearchResults()
-	 */
-	function SearchResults() {
-		return $this->ForumHolder()->SearchResults();
-	}
-
 
 	/**
 	 * Get a subtitle
@@ -732,22 +585,12 @@ class ForumMemberProfile extends Page_Controller {
 
 
 	/**
-	 * Get the forum holders' abstract
-	 *
-	 * @see ForumHolder::getAbstract()
-	 */
-	function getHolderAbstract() {
-		return $this->ForumHolder()->ProfileAbstract;
-	}
-
-
-	/**
 	 * Get the URL segment of the forum holder
 	 *
 	 * @see ForumHolder::URLSegment()
 	 */
 	function URLSegment() {
-		return $this->ForumHolder()->URLSegment();
+		return $this->ForumHolder()->URLSegment;
 	}
 
 
@@ -756,17 +599,17 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function MetaTags($includeTitle = true) {
 		$tags = "";
-		$Title = _t('ForumMemberProfile.FORUMUSERPROFILE','Forum User Profile');
-		if(Director::urlParam('Action') == "register") { 
-			_t('ForumMemberProfile.FORUMUSERREGISTER','Forum Registration');
+		$title = _t('ForumMemberProfile.FORUMUSERPROFILE','Forum User Profile');
+		
+		if(isset($this->urlParams['Action'])) {
+			if($this->urlParams['Action'] == "register") { 
+				$title = _t('ForumMemberProfile.FORUMUSERREGISTER','Forum Registration');
+			}
 		}
 		if($includeTitle == true) {
-			$tags .= "<title>" . $Title . "</title>\n";
+			$tags .= "<title>" . $title . "</title>\n";
 		}
 
 		return $tags;
 	}
 }
-
-
-?>

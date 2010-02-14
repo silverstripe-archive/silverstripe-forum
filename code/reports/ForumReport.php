@@ -12,7 +12,7 @@
  * Lists the Number of people who have signed up in the past months categorized 
  * by month.
  */
-class ForumReport_MemberSignups extends SideReport {
+class ForumReport_MemberSignups extends SS_Report {
 	function title() {
 		return _t('Forum.FORUMSIGNUPS',"Forum Signups by Month");
 	}
@@ -48,7 +48,7 @@ class ForumReport_MemberSignups extends SideReport {
  * Lists the Number of Posts made in the forums in the past months categorized 
  * by month.
  */
-class ForumReport_MonthlyPosts extends SideReport {
+class ForumReport_MonthlyPosts extends SS_Report {
 	function title() {
 		return _t('Forum.FORUMMONTHLYPOSTS',"Forum Posts by Month");
 	}
@@ -81,4 +81,3 @@ class ForumReport_MonthlyPosts extends SideReport {
 		return $result;
 	}
 }
-?>

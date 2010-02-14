@@ -16,12 +16,12 @@
 				<a href="#Footer" title="<% _t('CLICKGOTOEND','Click here to go the end of this post') %>"><% _t('GOTOEND','Go to End') %></a>
 			</td>
 			<td class="replyButton">
-				<% if CheckForumPermissions(post) %>
+				<% if canCreate %>
 					<a href="$ReplyLink" title="<% _t('CLICKREPLY','Click here to reply to this topic') %>"><% _t('REPLY','Reply') %></a>
 				<% end_if %>
 				<% if CurrentMember %>
-					<a href="{$URLSegment}/unsubscribe/{$Post.TopicID}" class="unsubscribe <% if SubscribeLink %><% else %>hidden<% end_if %>" title="<% _t('CLICKUNSUBSCRIBE','Click here to Unsubscribe to this topic') %>"><% _t('UNSUBSCRIBE','Unsubscribe') %></a>
-					<a href="{$URLSegment}/subscribe/{$Post.TopicID}" class="subscribe <% if SubscribeLink %>hidden<% end_if %>" title="<% _t('CLICKSUBSCRIBE','Click here to subscribe to this topic') %>"><% _t('SUBSCRIBE','Subscribe') %></a>
+					<a href="{$URLSegment}/unsubscribe/{$ForumThread.ID}" class="unsubscribe <% if ForumThread.HasSubscribed %><% else %>hidden<% end_if %>" title="<% _t('CLICKUNSUBSCRIBE','Click here to Unsubscribe to this topic') %>"><% _t('UNSUBSCRIBE','Unsubscribe') %></a>
+					<a href="{$URLSegment}/subscribe/{$ForumThread.ID}" class="subscribe <% if ForumThread.HasSubscribed %>hidden<% end_if %>" title="<% _t('CLICKSUBSCRIBE','Click here to subscribe to this topic') %>"><% _t('SUBSCRIBE','Subscribe') %></a>
 				<% end_if %>
 			</td>
 		</tr>
@@ -31,10 +31,10 @@
 				<span><% _t('AUTHOR','Author') %></span>
 			</td>
 			<td class="topicTitle">
-				<span><strong><% _t('TOPIC','Topic:') %></strong> $Post.Title</span>
+				<span><strong><% _t('TOPIC','Topic:') %></strong>$ForumThread.Title</span>
 			</td>
-			<td class="noOfReads"<% if FlatThreadedDropdown %> rowspan="2"<% end_if %>>
-				<span><strong>$Post.NumViews <% _t('VIEWS','Views') %></strong></span>
+			<td class="noOfReads">
+				<span><strong>$ForumThread.NumViews <% _t('VIEWS','Views') %></strong></span>
 			</td>
 		</tr>
 	</table>
@@ -50,7 +50,7 @@
 			<td class="author">&nbsp;</td>
 			<td class="topicTitle">&nbsp;</td>
 			<td class="noOfReads">
-				<span><strong>$Post.NumViews <% _t('VIEWS','Views') %></strong></span>
+				<span><strong>$ForumThread.NumViews <% _t('VIEWS','Views') %></strong></span>
 			</td>
 		</tr>
 		<tr class="rowOne">
@@ -65,7 +65,7 @@
 				<a href="#Header" title="<% _t('CLICKGOTOTOP','Click here to go the top of this post') %>"><% _t('GOTOTOP','Go to Top') %></a>
 			</td>
 			<td class="replyButton">
-				<% if CheckForumPermissions(post) %>
+				<% if canCreate %>
 					<a href="$ReplyLink" title="<% _t('CLICKREPLY', 'Click to Reply') %>"><% _t('REPLY', 'Reply') %></a>
 				<% end_if %>
 				<% if Posts.MoreThanOnePage %>

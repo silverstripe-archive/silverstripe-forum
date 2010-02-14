@@ -1,13 +1,7 @@
 <% include ForumHeader %>
-	<% if CurrentMember %>
-		<% if ViewMode = Edit %>
-			$EditForm
-		<% else %>
-			$EditForm_Preview
-		<% end_if %>
-	<% else %>
-		<p class="error message"><% _t('NOTLOGGEDINPOST','If you would like to post, please <a href="Security/login" title="log in">log in</a> or <a href="ForumMemberProfile/register" title="register">register</a> first.') %></p>
-	<% end_if %>
+
+	$EditForm
+
 	<% if BBTags %>
 		<div id="BBTagsHolder" class="hide">
 			<h2 class="bbcodeExamples"><% _t('AVAILABLEBB','Available BB Code tags') %></h2>

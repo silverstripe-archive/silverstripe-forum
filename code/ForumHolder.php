@@ -10,7 +10,7 @@
 
 class ForumHolder extends Page {
 
-	static $db = array (
+	static $db = array(
 		"HolderSubtitle" => "Varchar(200)",
 		"ProfileSubtitle" => "Varchar(200)",
 		"ForumSubtitle" => "Varchar(200)",
@@ -25,8 +25,7 @@ class ForumHolder extends Page {
 		"ForbiddenWords" => "Text"	
 	);
 	
-	static $has_one = array(
-	);
+	static $has_one = array();
 
 	static $has_many = array(
 		"Categories" => "ForumCategory"
@@ -112,13 +111,60 @@ class ForumHolder extends Page {
 	 * @return string
 	 */
 	function Breadcrumbs() {
-		if(Director::urlParam('Action') == 'search') {
-			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('SEARCHBREADCRUMB', 'Search');
-		} elseif(Director::urlParam('Action') == 'memberlist') {
-			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('MEMBERLIST', 'Member List');
-		} elseif(Director::urlParam('Action') == 'popularthreads') {
-			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('MOSTPOPULARTHREADS', 'Most popular threads');
+		if(isset($this->urlParams['Action'])) {
+			switch($this->urlParams['Action']) {
+				case 'search':
+					return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('SEARCHBREADCRUMB', 'Search');
+				case 'memberlist':
+					return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('MEMBERLIST', 'Member List');				
+				case 'popularthreads':
+					return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('MOSTPOPULARTHREADS', 'Most popular threads');
+			}
 		}
+	}
+	
+	
+	/**
+	 * Get the number of total posts
+	 *
+	 * @return int Returns the number of posts
+	 */
+	function getNumPosts() {
+		return DB::query("
+			SELECT COUNT(Post.ID) 
+			FROM Post 
+			JOIN ForumThread ON Post.ThreadID = ForumThread.ID
+			JOIN " . ForumHolder::baseForumTable() . " ForumPage ON ForumThread.ForumID = ForumPage.ID 
+			WHERE ForumPage.ParentID='{$this->ID}'")->value(); 
+	}
+
+
+	/**
+	 * Get the number of total topics (threads)
+	 *
+	 * @return int Returns the number of topics (threads)
+	 */
+	function getNumTopics() {
+		return DB::query("
+			SELECT COUNT(ForumThread.ID) 
+			FROM ForumThread 
+			JOIN " . ForumHolder::baseForumTable() . " ForumPage ON ForumThread.ForumID = ForumPage.ID
+			WHERE ForumPage.ParentID='{$this->ID}'")->value(); 
+	}
+
+
+	/**
+	 * Get the number of distinct authors
+	 *
+	 * @return int Returns the number of distinct authors
+	 */
+	function getNumAuthors() {
+		return DB::query("
+			SELECT COUNT(DISTINCT Post.AuthorID) 
+			FROM Post 
+			JOIN ForumThread ON Post.ThreadID = ForumThread.ID
+			JOIN " . ForumHolder::baseForumTable() . " ForumPage ON ForumThread.ForumID=ForumPage.ID 
+				AND ForumPage.ParentID='{$this->ID}'")->value();
 	}
 	
 	/**
@@ -128,9 +174,15 @@ class ForumHolder extends Page {
 	 * @return DataObjectSet of {@link Member} objects
 	 */
 	function CurrentlyOnline() {
-		$forumGroupID = (int) DataObject::get_one('Group', "Code = 'forum-members'")->ID;
-		$adminGroupID = (int) DataObject::get_one('Group', "(Code = 'administrators' OR Code = 'Administrators')")->ID;
+		$filter = '';
 		
+		if($forumGroup = DataObject::get_one('Group', "Code = 'forum-members'")) {
+			$filter = "GroupID = '". $forumGroup->ID ."' ";
+		}
+		if($adminGroup = DataObject::get_one('Group', "(Code = 'administrators' OR Code = 'Administrators')")) {
+			$filter .= ($filter) ? "OR GroupID = '". $adminGroup->ID ."'" : "GroupID = '". $adminGroup->ID ."'";
+		}
+
 		if(method_exists(DB::getConn(), 'datetimeIntervalClause')) {
 			$timeconstrain = 'LastVisited > ' . DB::getConn()->datetimeIntervalClause('now', '-15 MINUTE');
 		} else {
@@ -138,7 +190,7 @@ class ForumHolder extends Page {
 		}
 		return DataObject::get(
 			'Member',
-			$timeconstrain . " AND (GroupID = '$forumGroupID' OR GroupID = '$adminGroupID')",
+			$timeconstrain . " AND ($filter)",
 			'FirstName, Surname',
 			'LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID'
 		);
@@ -150,19 +202,27 @@ class ForumHolder extends Page {
 	 * @param int $limit Number of members to return
 	 */
 	function LatestMember($limit = 1) {
-		$forumGroupID = (int) DataObject::get_one('Group', "Code = 'forum-members'")->ID;
-		$adminGroupID = (int) DataObject::get_one('Group', "(Code = 'administrators' OR Code = 'Administrators')")->ID;
+		$filter = '';
 		
-		return DataObject::get("Member", "(GroupID = '$forumGroupID' OR GroupID = '$adminGroupID')", "`Member`.`ID` DESC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", $limit);
+		if($forumGroup = DataObject::get_one('Group', "Code = 'forum-members'")) {
+			$filter = "GroupID = '". $forumGroup->ID ."' ";
+		}
+		if($adminGroup = DataObject::get_one('Group', "(Code = 'administrators' OR Code = 'Administrators')")) {
+			$filter .= ($filter) ? "OR GroupID = '". $adminGroup->ID ."'" : "GroupID = '". $adminGroup->ID ."'";
+		}
+		
+		return DataObject::get("Member", "($filter)", "`Member`.`ID` DESC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", $limit);
 	}
 
 	/**
 	 * Get the forums. Actually its a bit more complex than that
 	 * we need to group by the Forum Categories.
+	 *
+	 * @return DataObjectSet
 	 */
 	function Forums() {
 	 	$categories = DataObject::get("ForumCategory", "ForumHolderID={$this->ID}");	
-		if($this->ShowInCategories) {
+		if($categories && $this->ShowInCategories) {
 			if (!$categories) return new DataObjectSet();
 			foreach($categories as $category) {
 				$category->CategoryForums = DataObject::get("Forum", "CategoryID = '$category->ID' AND ParentID = '$this->ID'");
@@ -176,26 +236,151 @@ class ForumHolder extends Page {
 	 * A function that returns the correct base table to use for custom forum queries. It uses the getVar stage to determine
 	 * what stage we are looking at, and determines whether to use SiteTree or SiteTree_Live (the general case). If the stage is
 	 * not specified, live is assumed (general case). It is a static function so it can be used for both ForumHolder and Forum.
+	 *
+	 * @return String
 	 */
 	static function baseForumTable() {
-		$stage = Controller::curr()->getRequest()->getVar('stage');
+		$stage = (Controller::curr()->getRequest()) ? Controller::curr()->getRequest()->getVar('stage') : false;
 		if (!$stage) $stage = Versioned::get_live_stage();
-		return $stage == "Stage" ? "SiteTree" : "SiteTree_Live";
+		
+		return (SapphireTest::is_running_test() || $stage == "Stage") ? "SiteTree" : "SiteTree_Live";
+	}
+	
+	
+	/**
+	 * Is OpenID support available?
+	 *
+	 * This method checks if the {@link OpenIDAuthenticator} is available and
+	 * registered.
+	 *
+	 * @return bool Returns TRUE if OpenID is available, FALSE otherwise.
+	 */
+	function OpenIDAvailable() {
+		if(class_exists('Authenticator') == false)
+			return false;
+
+		return Authenticator::is_registered("OpenIDAuthenticator");
+	}
+	
+	
+	/**
+	 * Get the latest posts
+	 *
+	 * @param int $limit Number of posts to return
+	 * @param int $forumID - Forum ID to limit it to
+	 * @param int $threadID - Thread ID to limit it to
+	 * @param int $lastVisit Optional: Unix timestamp of the last visit (GMT)
+	 * @param int $lastPostID Optional: ID of the last read post
+	 */
+	function getRecentPosts($limit = 50, $forumID = null, $threadID = null, $lastVisit = null, $lastPostID = null) {
+		$filter = array();
+		
+		if($lastVisit) $lastVisit = @date('Y-m-d H:i:s', $lastVisit);
+
+		$lastPostID = (int) $lastPostID;
+		
+		// last post viewed
+		if($lastPostID > 0) $filter[] = "ID > '". Convert::raw2sql($lastPostID) ."'";
+		
+		// last time visited
+		if($lastVisit) $filter[] = "Created > '". Convert::raw2sql($lastVisit) ."'";
+
+		// limit to a forum
+		if($forumID) $filter[] = "ForumThread.ForumID = '". Convert::raw2sql($forumID) ."'";
+
+		// limit to a thread
+		if($threadID) $filter[] = "ForumThread.ID = '". Convert::raw2sql($threadID) ."'";
+		
+		// limit to just this forum install
+		$filter[] = "ForumPage.ParentID='{$this->ID}'";
+		
+		return DataObject::get(
+			"Post",
+			implode(" AND ", $filter),
+			"Post.ID DESC",
+			"LEFT JOIN ForumThread on Post.ThreadID = ForumThread.ID 
+			 LEFT JOIN " . ForumHolder::baseForumTable() . " ForumPage ON ForumThread.ForumID = ForumPage.ID",
+			$limit
+		);
+	}
+
+
+	/**
+	 * Are new posts available?
+	 *
+	 * @param int $lastVisit Unix timestamp of the last visit (GMT)
+	 * @param int $lastPostID ID of the last read post
+	 * @param int $thread ID of the relevant topic (set to NULL for all
+	 *                     topics)
+	 * @param array $data Optional: If an array is passed, the timestamp of
+	 *                    the last created post and it's ID will be stored in
+	 *                    it (keys: 'last_id', 'last_created')
+	 * @return bool Returns TRUE if there are new posts available, otherwise
+	 *              FALSE.
+	 */
+	public function getNewPostsAvailable($lastVisit = null, $lastPostID = null, $forumID = null, $threadID = null, array &$data = null) {
+	
+		$filter = array();
+		
+		// last post viewed
+		if($lastPostID) $filter[] = "Post.ID > '". Convert::raw2sql($lastPostID) ."'";
+		if($lastVisit) $filter[] = "Created > '". Convert::raw2sql($lastVisit) ."'";
+		if($forumID) $filter[] = "ForumThread.ForumID = '". Convert::raw2sql($forumID) ."'";
+		if($threadID) $filter[] = "ThreadID = '". Convert::raw2sql($threadID) ."'";
+		
+		$filter = implode(" AND ", $filter);
+		
+		$version = DB::query("
+			SELECT max(Post.ID) as LastID, max(Post.Created) as LastCreated 
+			FROM Post
+			JOIN ForumThread on Post.ThreadID = ForumThread.ID
+			JOIN " . ForumHolder::baseForumTable() . " as ForumPage on ForumThread.ForumID=ForumPage.ID 
+			WHERE ForumPage.ParentID={$this->ID} $filter")->first();
+		
+		if($version == false) return false;
+
+		if($data) {
+			$data['last_id'] = (int)$version['LastID'];
+			$data['last_created'] = strtotime($version['LastCreated']);
+		}
+	
+		$lastVisit = (int) $lastVisit;
+		
+		if($lastVisit <= 0) $lastVisit = false;
+
+		$lastPostID = (int)$lastPostID;
+		if($lastPostID <= 0) $lastPostID = false;
+
+		if(!$lastVisit && !$lastPostID) return true; 
+		if($lastVisit && (strtotime($version['LastCreated']) > $lastVisit)) return true;
+
+		if($lastPostID && ((int)$version['LastID'] > $lastPostID)) return true;
+
+		return false;
+	}
+	
+	/**
+	 * Helper Method from the template includes. Uses $ForumHolder so in order for it work 
+	 * it needs to be included on this page
+	 *
+	 * @return ForumHolder
+	 */
+	function getForumHolder() {
+		return $this;
 	}
 }
 
 
 class ForumHolder_Controller extends Page_Controller {
 
-	/**
-	 * Initialise the controller
-	 */
-	function init() {
+
+	public function init() {
 		Requirements::themedCSS('Forum');
 		Requirements::javascript("forum/javascript/jquery.js");
 		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
 		Requirements::javascript("forum/javascript/forum.js");
 		RSSFeed::linkToFeed($this->Link("rss"), "Posts to all forums");
+		
 		parent::init();
 	}
 	
@@ -272,24 +457,17 @@ class ForumHolder_Controller extends Page_Controller {
 				ORDER BY PostCount DESC
 				LIMIT $start,20
 			");
-//			$threadRecords = DB::query("
-//				SELECT *, (SELECT COUNT(*) FROM Post AS P WHERE Post.ID = P.TopicID) AS PostCount
-//				FROM Post
-//				WHERE TopicID = Post.ID
-//				ORDER BY PostCount DESC
-//				LIMIT $start,20
-//			");
 			
 			$allThreadsCount = DB::query("
 				SELECT count(*) as theCount
 				FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage on Post.ForumID=ForumPage.ID
 				WHERE TopicID = Post.ID AND ForumPage.ParentID='{$this->ID}'")->value();
-//			$allThreadsCount = DB::query('SELECT * FROM Post WHERE TopicID = Post.ID')->numRecords();
+				
 			$threads = singleton('Post')->buildDataObjectSet($threadRecords);
 			if($threads) $threads->setPageLimits($start, '20', $allThreadsCount);
 			
 		} elseif($method == 'views') {
-			$threads = DataObject::get('Post', '', 'NumViews DESC', '', "$start,20");
+			$threads = DataObject::get('ForumThread', '', 'NumViews DESC', '', "$start,20");
 		}
 		
 		return array(
@@ -301,32 +479,6 @@ class ForumHolder_Controller extends Page_Controller {
 	}
 
 	/**
-	 * Is OpenID support available?
-	 *
-	 * This method checks if the {@link OpenIDAuthenticator} is available and
-	 * registered.
-	 *
-	 * @return bool Returns TRUE if OpenID is available, FALSE otherwise.
-	 */
-	function OpenIDAvailable() {
-		if(class_exists('Authenticator') == false)
-			return false;
-
-		return Authenticator::is_registered("OpenIDAuthenticator");
-	}
-
-
-	/**
-	 * Get the URL for the login action
-	 *
-	 * @return string URL to the login action
-	 */
-	function LoginURL() {
-		return $this->Link("login");
-	}
-
-
-	/**
 	 * The login action
 	 *
 	 * It simple sets the return URL and forwards to the standard login form.
@@ -335,39 +487,15 @@ class ForumHolder_Controller extends Page_Controller {
 		Session::set('Security.Message.message',_t('Forum.CREDENTIALS'));
 		Session::set('Security.Message.type', 'status');
 		Session::set("BackURL", $this->Link());
-		Director::redirect('Security/login');
+		
+		$this->redirect('Security/login');
 	}
 	
-	/**
-	 * Get the number of total posts
-	 *
-	 * @return int Returns the number of posts
-	 */
-	function TotalPosts() {
-		return DB::query("SELECT COUNT(*) FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage ON Post.ForumID=ForumPage.ID WHERE Post.Content != 'NULL' and ForumPage.ParentID='{$this->ID}'")->value(); 
-//		return DB::query("SELECT COUNT(*) FROM Post WHERE Content != 'NULL'")->value(); 
-	}
 
-
-	/**
-	 * Get the number of total topics (threads)
-	 *
-	 * @return int Returns the number of topics (threads)
-	 */
-	function TotalTopics() {
-		return DB::query("SELECT COUNT(*) FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage ON Post.ForumID=ForumPage.ID WHERE Post.ParentID = 0 AND Post.Content != 'NULL' and ForumPage.ParentID='{$this->ID}'")->value(); 
-//		return DB::query("SELECT COUNT(*) FROM Post WHERE ParentID = 0 AND Content != 'NULL'")->value(); 
-	}
-
-
-	/**
-	 * Get the number of distinct authors
-	 *
-	 * @return int Returns the number of distinct authors
-	 */
-	function TotalAuthors() {
-		return DB::query("SELECT COUNT(DISTINCT Post.AuthorID) FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage ON Post.ForumID=ForumPage.ID and ForumPage.ParentID='{$this->ID}'")->value();
-//		return DB::query("SELECT COUNT(DISTINCT AuthorID) FROM Post")->value();
+	function logout() {
+		if($member = Member::currentUser()) $member->logOut();
+		
+		$this->redirect($this->Link());
 	}
 	
 	/**
@@ -388,12 +516,13 @@ class ForumHolder_Controller extends Page_Controller {
 		}
 		$rssLink = $this->Link() ."search/?Search=".urlencode($keywords). "&order=".urlencode($order)."&rss";
 		RSSFeed::linkToFeed($rssLink, _t('ForumHolder.SEARCHRESULTS','Search results'));
+		
 		return array(
-			"Subtitle" => DBField::create('Text', _t('ForumHolder.SEARCHRESULTS','Search results')),
-			"Abstract" => DBField::create('HTMLText', $Abstract),
-			"Query" => DBField::create('Text', $keywords),
-			"Order" => DBField::create('Text', ($order) ? $order : "relevance"),
-			"RSSLink" => DBField::create('HTMLText', $rssLink)
+			"Subtitle" 	=> DBField::create('Text', _t('ForumHolder.SEARCHRESULTS','Search results')),
+			"Abstract" 	=> DBField::create('HTMLText', $Abstract),
+			"Query"	 	=> DBField::create('Text', $keywords),
+			"Order" 	=> DBField::create('Text', ($order) ? $order : "relevance"),
+			"RSSLink" 	=> DBField::create('HTMLText', $rssLink)
 		);
 	}
 	
@@ -445,21 +574,17 @@ class ForumHolder_Controller extends Page_Controller {
 		if(!empty($_GET['start'])) $limit = (int) $_GET['start'];
 		else $limit = $_GET['start'] = 0;
 
-		$queryString = "SELECT Post.ID, Post.Created, Post.LastEdited, Post.ClassName, Post.Title, Post.Content, Post.TopicID, Post.AuthorID, Post.ForumID,
-				MATCH (Post.Title, Post.Content) AGAINST ('$searchQuery') AS RelevancyScore
-			FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage on Post.ForumID=ForumPage.ID
+		$queryString = "
+			SELECT Post.ID, Post.Created, Post.LastEdited, Post.ClassName, ForumThread.Title, Post.Content, Post.ThreadID, Post.AuthorID, ForumThread.ForumID,
+			MATCH (Post.Content) AGAINST ('$searchQuery') AS RelevancyScore
+			FROM Post 
+			JOIN ForumThread on Post.ThreadID = ForumThread.ID
+			JOIN " . ForumHolder::baseForumTable() . " ForumPage on ForumThread.ForumID=ForumPage.ID
 			WHERE
-				MATCH (Post.Title, Post.Content) AGAINST ('$searchQuery' IN BOOLEAN MODE)
+				MATCH (ForumThread.Title, Post.Content) AGAINST ('$searchQuery' IN BOOLEAN MODE)
 				$SQL_authorClause
-				AND ForumPage.ParentID='{$this->ID}' 
-			GROUP BY Post.TopicID
+				AND ForumPage.ParentID='{$this->ID}'
 			ORDER BY $sort";
-//		$queryString = "SELECT ID, Created, LastEdited, ClassName, Title, Content, TopicID, AuthorID, ForumID,
-//				MATCH (Title, Content) AGAINST ('$searchQuery') AS RelevancyScore
-//			FROM Post
-//			WHERE MATCH (Title, Content) AGAINST ('$searchQuery' IN BOOLEAN MODE) $SQL_authorClause 
-//			GROUP BY TopicID
-//			ORDER BY $sort";
 		
 		// Get the 10 posts from the starting record
 		$query = DB::query("
@@ -482,26 +607,38 @@ class ForumHolder_Controller extends Page_Controller {
 	/**
 	 * Get the RSS feed
 	 *
-	 * This method will output the RSS feed with the last 10 posts to the
+	 * This method will output the RSS feed with the last 50 posts to the
 	 * browser.
 	 */
 	function rss() {
 		HTTP::set_cache_age(3600); // cache for one hour
-
+		
+		$threadID = (isset($_GET['ThreadID'])) ? $_GET['ThreadID'] : null;
+		$forumID = (isset($_GET['ForumID'])) ? $_GET['ForumID']	 : null;
+		
 		$data = array('last_created' => null, 'last_id' => null);
 
-    	if(!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&
-			!isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+    	if(!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && !isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
 			// just to get the version data..
-			$this->NewPostsAvailable(null, null, $data);
+			$this->getNewPostsAvailable(null, null, $forumID, $threadID, &$data);
+			
       		// No information provided by the client, just return the last posts
-			$rss = new RSSFeed($this->RecentPosts(50), $this->Link() . 'rss',
-												 sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), "", "Title",
-												 "RSSContent", "RSSAuthor",
-												 $data['last_created'], $data['last_id']);
+			$rss = new RSSFeed(
+				$this->getRecentPosts(50, $forumID, $threadID), 
+				$this->Link() . 'rss',
+				sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), 
+				"", 
+				"Title",
+				"RSSContent", 
+				"RSSAuthor",
+				$data['last_created'], 
+				$data['last_id']
+			);
+			
 			$rss->outputToBrowser();
 
     	} else {
+	
 			// Return only new posts, check the request headers!
 			$since = null;
 			$etag = null;
@@ -511,21 +648,25 @@ class ForumHolder_Controller extends Page_Controller {
 				$since = explode(';', $_SERVER['HTTP_IF_MODIFIED_SINCE']);
 				// Turn the client request If-Modified-Since into a timestamp
 				$since = @strtotime($since[0]);
-				if(!$since)
-					$since = null;
+				if(!$since) $since = null;
 			}
 
-			if(isset($_SERVER['HTTP_IF_NONE_MATCH']) &&
-				 is_numeric($_SERVER['HTTP_IF_NONE_MATCH'])) {
+			if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && is_numeric($_SERVER['HTTP_IF_NONE_MATCH'])) {
 				$etag = (int)$_SERVER['HTTP_IF_NONE_MATCH'];
 			}
-			if($this->NewPostsAvailable($since, $etag, $data)) {
+			if($this->getNewPostsAvailable($since, $etag, $forumID, $threadID, $data)) {
 				HTTP::register_modification_timestamp($data['last_created']);
-				$rss = new RSSFeed($this->RecentPosts(50, null, $etag),
-													 $this->Link() . 'rss',
-													 sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), "", "Title",
-													 "RSSContent", "RSSAuthor", $data['last_created'],
-													 $data['last_id']);
+				$rss = new RSSFeed(
+					$this->RecentPosts(50, $forumID, $threadID, $etag),
+					$this->Link() . 'rss',
+					sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), 
+					"", 
+					"Title",
+					"RSSContent", 
+					"RSSAuthor", 
+					$data['last_created'],
+					$data['last_id']
+				);
 				$rss->outputToBrowser();
 			} else {
 				if($data['last_created'])
@@ -541,97 +682,18 @@ class ForumHolder_Controller extends Page_Controller {
 		}
 		exit;
 	}
-
-
-	/**
-	 * Get the last posts
-	 *
-	 * @param int $limit Number of posts to return
-	 * @param int $lastVisit Optional: Unix timestamp of the last visit (GMT)
-	 * @param int $lastPostID Optional: ID of the last read post
-	 */
-	function RecentPosts($limit = null, $lastVisit = null, $lastPostID = null) {
-		$filter = "TopicID > 0";   
-		
-		if($lastVisit)
-			$lastVisit = @date('Y-m-d H:i:s', $lastVisit);
-
-		$lastPostID = (int)$lastPostID;
-		if($lastPostID > 0)
-			$filter .= " AND ID > $lastPostID";
-
-		if($lastVisit) {
-			$filter .= " AND Created > '$lastVisit'";
-		}
-
-		$filter .= " AND ForumPage.ParentID='{$this->ID}'";
-		return DataObject::get("Post", $filter, "Created DESC", "JOIN " . ForumHolder::baseForumTable() . " ForumPage on Post.ForumID=ForumPage.ID", $limit);
-//		return DataObject::get("Post", $filter, "Created DESC", "", $limit);
-	}
-
-
-	/**
-	 * Are new posts available?
-	 *
-	 * @param int $lastVisit Unix timestamp of the last visit (GMT)
-	 * @param int $lastPostID ID of the last read post
-	 * @param int $topicID ID of the relevant topic (set to NULL for all
-	 *                     topics)
-	 * @param array $data Optional: If an array is passed, the timestamp of
-	 *                    the last created post and it's ID will be stored in
-	 *                    it (keys: 'last_id', 'last_created')
-	 * @return bool Returns TRUE if there are new posts available, otherwise
-	 *              FALSE.
-	 */
-	public function NewPostsAvailable($lastVisit, $lastPostID,array &$data = null) {
-		$version = DB::query("
-			SELECT max(Post.ID) as LastID, max(Post.Created) as LastCreated 
-			FROM Post 
-			JOIN " . ForumHolder::baseForumTable() . " as ForumPage on Post.ForumID=ForumPage.ID 
-			WHERE ForumPage.ParentID={$this->ID}")->first();
-		
-		if($version == false)
-			return false;
-
-		if($data) {
-			$data['last_id'] = (int)$version['LastID'];
-			$data['last_created'] = strtotime($version['LastCreated']);
-		}
 	
-		$lastVisit = (int) $lastVisit;
-		if($lastVisit <= 0)
-			$lastVisit = false;
-
-		$lastPostID = (int)$lastPostID;
-		if($lastPostID <= 0)
-			$lastPostID = false;
-
-		if(!$lastVisit && !$lastPostID)
-			return true; // no check possible!
-
-		if($lastVisit && (strtotime($version['LastCreated']) > $lastVisit))
-			return true;
-
-		if($lastPostID && ((int)$version['LastID'] > $lastPostID))
-			return true;
-
-		return false;
-	}
-
 	/**
-	 * Get the URL segment
-	 * 
-	 * @TODO Why this is explicitly defined?
+	 * Return the GlobalAnnouncements from the individual forums
+	 *
+	 * @return DataObjectSet
 	 */
-	function URLSegment() {
-		return $this->URLSegment;
-	}
-	
 	function GlobalAnnouncements() {
-		$announcement = DataObject::get("Post", "`Post`.ParentID = 0 AND `Post`.IsGlobalSticky = 1 AND ForumPage.ParentID={$this->ID}", "max(PostList.Created) DESC",
-			"INNER JOIN `Post` AS PostList ON PostList.TopicID = `Post`.TopicID INNER JOIN " . ForumHolder::baseForumTable() . " ForumPage on `Post`.ForumID=ForumPage.ID");
-		return $announcement;
+		return DataObject::get(
+			"ForumThread", 
+			"ForumThread.IsGlobalSticky = 1 AND ForumPage.ParentID={$this->ID}", 
+			"MAX(PostList.Created) DESC",	
+			"INNER JOIN Post AS PostList ON PostList.ThreadID = ForumThread.ID 
+		  	 INNER JOIN " . ForumHolder::baseForumTable() . " ForumPage on ForumThread.ForumID=ForumPage.ID");
 	}
 }
-
-?>

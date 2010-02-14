@@ -1,11 +1,7 @@
 <% include ForumHeader %>
 	<div id="TopicTree">
 		<div id="Root">
-			<% if ViewMode = Edit %>
-				$ReplyForm(true)
-			<% else %>
-				$ReplyForm_Preview
-			<% end_if %>
+			$PostMessageForm
 			<% if BBTags %>
 				<div id="BBTagsHolder" class="hide">
 					<h2 class="bbcodeExamples"><% _t('AVAILABLEBB','Available BB Code tags') %></h2>

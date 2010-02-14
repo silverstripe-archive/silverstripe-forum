@@ -3,14 +3,16 @@
 		<a class="topicTitle" href="$Link">$Title</a>
 		<p class="summary">
 			<% _t('BY','By') %>
-			<% control Author %>
-				<% if Link %>
-					<a href="$Link" title="<% _t('CLICKTOUSER','Click here to view') %>"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a>
-				<% else %>
-					<span>Anon</span>
-				<% end_if %>
+			<% control FirstPost %>
+				<% control Author %>
+					<% if Link %>
+						<a href="$Link" title="<% _t('CLICKTOUSER','Click here to view') %>"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a>
+					<% else %>
+						<span>Anon</span>
+					<% end_if %>
+				<% end_control %>
+				on $Created.Long
 			<% end_control %>
-			on $Created.Long
 		</p>
 	</td>
 	<td class="count">

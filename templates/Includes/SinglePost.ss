@@ -3,14 +3,14 @@
 		<a class="authorTitle" href="$Link" title="<% _t('GOTOPROFILE','Go to this User\'s Profile') %>">$Nickname</a><br />
 	
 		<img class="userAvatar" src="$GetAvatar" alt="avatar" /><br />
-	<% if ForumRank %><span class="rankingTitle expert">$ForumRank</span><br /><% end_if %>
-	<% if NumPosts %><span class="postCount">$NumPosts posts</span><% end_if %>
+		<% if ForumRank %><span class="rankingTitle expert">$ForumRank</span><br /><% end_if %>
+		<% if NumPosts %><span class="postCount">$NumPosts posts</span><% end_if %>
 	<% end_control %>
 </div>
 <div class="posterContent">
 	<div class="quickReply">
 		<% control Top %>
-			<% if CheckForumPermissions(post) %>
+			<% if canCreate %>
 				<p><a href="$ReplyLink" title="<% _t('CLICKREPLY', 'Click to Reply') %>"><% _t('REPLY', 'Reply') %></a></p>
 			<% end_if %>
 		<% end_control %>
@@ -20,6 +20,7 @@
 	<% if Updated %>
 		<strong><% _t('LASTEDITED','Last edited:') %> $Updated.Long <% _t('AT') %> $Updated.Time</strong>
 	<% end_if %></p>
+	
 	<% if EditLink || DeleteLink %>
 		<div class="postModifiers">
 			<% if EditLink %>
