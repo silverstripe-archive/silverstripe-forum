@@ -8,17 +8,21 @@ $lang['en_US']['']['MODERATOR'] = 'Forum Moderator';
 $lang['en_US']['']['MODERATORS'] = 'Moderators for this forum';
 $lang['en_US']['']['MOSTPOPULARTHREADS'] = 'Most popular threads';
 $lang['en_US']['']['SEARCHBREADCRUMB'] = 'Search';
+$lang['en_US']['ComplexTableField']['CLOSEPOPUP'] = 'Close Popup';
+$lang['en_US']['ComplexTableField']['SUCCESSADD'] = 'Added %s %s %s';
 $lang['en_US']['Forum']['ACCESSATTACH'] = 'Can users attach files?';
 $lang['en_US']['Forum']['ACCESSPOST'] = 'Who can post to the forum?';
 $lang['en_US']['Forum']['ACCESSREAD'] = 'Who can read the forum?';
 $lang['en_US']['Forum']['BBCODEHINT'] = 'View Formatting Help';
-$lang['en_US']['Forum']['CREDENTIALS'] = 'Please enter your credentials to access the forum.';
+$lang['en_US']['Forum']['CURRENTATTACHMENTS'] = 'Current Attachments';
 $lang['en_US']['Forum']['DEFAULTCATEGORY'] = 'General';
 $lang['en_US']['Forum']['EDITPOST'] = 'Edit a post';
 $lang['en_US']['Forum']['FORUMCREATED'] = 'Forum page created';
 $lang['en_US']['Forum']['FORUMHOLDERCREATED'] = 'ForumHolder page created';
 $lang['en_US']['Forum']['FORUMMONTHLYPOSTS'] = 'Forum Posts by Month';
+$lang['en_US']['Forum']['FORUMREPLYCONTENT'] = 'Content';
 $lang['en_US']['Forum']['FORUMSIGNUPS'] = 'Forum Signups by Month';
+$lang['en_US']['Forum']['FORUMTHREADTITLE'] = 'Title';
 $lang['en_US']['Forum']['GROUPCREATED'] = 'Forum Members group created';
 $lang['en_US']['Forum']['ISGLOBALSTICKY'] = 'Is this a Global Sticky (shown on all forums)';
 $lang['en_US']['Forum']['ISREADONLYTHREAD'] = 'Is this a Read only Thread?';
@@ -26,31 +30,27 @@ $lang['en_US']['Forum']['ISSTICKYTHREAD'] = 'Is this a Sticky Thread?';
 $lang['en_US']['Forum']['LOGINAGAIN'] = 'You have been logged out of the forums.  If you would like to log in again, enter a username and password below.';
 $lang['en_US']['Forum']['LOGINALREADY'] = 'I\'m sorry, but you can\'t access this forum until you\'ve logged in.  If you want to log in as someone else, do so below';
 $lang['en_US']['Forum']['LOGINDEFAULT'] = 'Enter your email address and password to view this forum.';
-$lang['en_US']['Forum']['LOGINTOEDIT'] = 'Enter your email address and password to edit this post.';
-$lang['en_US']['Forum']['LOGINTOEDITLOGGEDIN'] = 'I\'m sorry, but you can\'t edit this post until you\'ve logged in.  You need to be either an administrator or the author of the post in order to edit it.';
 $lang['en_US']['Forum']['LOGINTOPOST'] = 'You\'ll need to login before you can post to that forum. Please do so below.';
 $lang['en_US']['Forum']['LOGINTOPOSTAGAIN'] = 'You have been logged out of the forums.  If you would like to log in again to post, enter a username and password below.';
 $lang['en_US']['Forum']['LOGINTOPOSTLOGGEDIN'] = 'I\'m sorry, but you can\'t post to this forum until you\'ve logged in.  If you want to log in as someone else, do so below. If you\'re logged in and you still can\'t post, you don\'t have the correct permissions to post.';
 $lang['en_US']['Forum']['NEWTOPIC'] = 'Start a new topic';
 $lang['en_US']['Forum']['NO'] = 'No';
+$lang['en_US']['Forum']['NOPOSTPERMISSION'] = 'I\'m sorry, but you do not have permission to this edit this profile.';
 $lang['en_US']['Forum']['PLURALNAME'] = array(
 	'Forums',
 	50,
 	'Pural name of the object, used in dropdowns and to generally identify a collection of this object in the interface'
 );
-$lang['en_US']['Forum']['POSTNOTFOUND'] = 'The current post couldn\'t be found in the database. Please go back to the thread you were editing and try to edit the post again. If this error persists, please email the administrator.';
 $lang['en_US']['Forum']['POSTTOTOPIC'] = 'Posts to the \'%s\' topic';
 $lang['en_US']['Forum']['READANYONE'] = 'Anyone';
 $lang['en_US']['Forum']['READLIST'] = 'Only these people (choose from list)';
 $lang['en_US']['Forum']['READLOGGEDIN'] = 'Logged-in users';
 $lang['en_US']['Forum']['READNOONE'] = 'Nobody. Make Forum Read Only';
-$lang['en_US']['Forum']['REFRECHTIME'] = 'Refresh every ';
-$lang['en_US']['Forum']['REFRESHFORUM'] = 'Refresh this forum';
 $lang['en_US']['Forum']['REMOVE'] = 'remove';
+$lang['en_US']['Forum']['REPLYFORMPOST'] = 'Post';
 $lang['en_US']['Forum']['RSSFORUM'] = 'Posts to the \'%s\' forum';
-$lang['en_US']['Forum']['RSSFORUMPOSTSTO'] = 'Forum posts to \'%s\'';
 $lang['en_US']['Forum']['RSSFORUMS'] = 'Posts to all forums';
-$lang['en_US']['Forum']['SECONDS'] = ' seconds';
+$lang['en_US']['Forum']['SAVE'] = 'Save';
 $lang['en_US']['Forum']['SINGULARNAME'] = array(
 	'Forum',
 	50,
@@ -60,7 +60,6 @@ $lang['en_US']['Forum']['SUBSCRIBETOPIC'] = 'Subscribe to this topic (Receive em
 $lang['en_US']['Forum']['TITLE'] = 'General Discussion';
 $lang['en_US']['Forum']['WELCOMEFORUM'] = 'Welcome to SilverStripe Forum Module! This is the default Forum page. You can now add topics.';
 $lang['en_US']['Forum']['WELCOMEFORUMHOLDER'] = 'Welcome to SilverStripe Forum Module! This is the default ForumHolder page. You can now add forums.';
-$lang['en_US']['Forum']['WRONGPERMISSION'] = 'You don\'t have the correct permissions to edit this post.';
 $lang['en_US']['Forum']['YES'] = 'Yes';
 $lang['en_US']['Forum.ss']['ANNOUNCEMENTS'] = 'Announcements';
 $lang['en_US']['Forum.ss']['GOTOTHISTOPIC'] = 'Go to the %s topic';
@@ -96,7 +95,6 @@ $lang['en_US']['ForumHeader.ss']['IN'] = 'in';
 $lang['en_US']['ForumHeader.ss']['JUMPTO'] = 'Jump to:';
 $lang['en_US']['ForumHeader.ss']['MEMBERS'] = 'members';
 $lang['en_US']['ForumHeader.ss']['POSTS'] = 'Posts';
-$lang['en_US']['ForumHeader.ss']['SEARCH'] = 'Search:';
 $lang['en_US']['ForumHeader.ss']['SEARCHBUTTON'] = 'Search';
 $lang['en_US']['ForumHeader.ss']['SELECT'] = 'Select';
 $lang['en_US']['ForumHeader.ss']['TOPICS'] = 'Topics';
@@ -152,6 +150,7 @@ $lang['en_US']['ForumHolder_search.ss']['RELEVANCE'] = 'Relevance';
 $lang['en_US']['ForumHolder_search.ss']['RSSFEED'] = 'RSS Feed';
 $lang['en_US']['ForumHolder_search.ss']['THREAD'] = 'Thread';
 $lang['en_US']['ForumHolder_search.ss']['TITLE'] = 'Title';
+$lang['en_US']['ForumLogin.ss']['ANONYMOUS'] = 'Anonymous';
 $lang['en_US']['ForumLogin.ss']['LOGGEDINAS'] = 'You\'re logged in as';
 $lang['en_US']['ForumLogin.ss']['LOGIN'] = 'Login';
 $lang['en_US']['ForumLogin.ss']['LOGINEXPLICATION'] = 'Click here to login';
@@ -233,8 +232,27 @@ $lang['en_US']['ForumRole']['PERSONAL'] = 'Personal Details';
 $lang['en_US']['ForumRole']['RATING'] = 'User rating';
 $lang['en_US']['ForumRole']['SURNAME'] = 'Surname';
 $lang['en_US']['ForumRole']['TRANSFERSUCCEEDED'] = 'The data transfer has succeeded. However, to complete it, you must delete the ForumMember table. To do this, execute the query \"DROP TABLE \'ForumMember\'\".';
+$lang['en_US']['ForumThread']['PLURALNAME'] = array(
+	'Forum Threads',
+	50,
+	'Pural name of the object, used in dropdowns and to generally identify a collection of this object in the interface'
+);
+$lang['en_US']['ForumThread']['SINGULARNAME'] = array(
+	'Forum Thread',
+	50,
+	'Singular name of the object, used in dropdowns and to generally identify a single object in the interface'
+);
+$lang['en_US']['ForumThread_Subscription']['PLURALNAME'] = array(
+	'Forum Thread Subscriptions',
+	50,
+	'Pural name of the object, used in dropdowns and to generally identify a collection of this object in the interface'
+);
+$lang['en_US']['ForumThread_Subscription']['SINGULARNAME'] = array(
+	'Forum Thread Subscription',
+	50,
+	'Singular name of the object, used in dropdowns and to generally identify a single object in the interface'
+);
 $lang['en_US']['Forum_editpost.ss']['AVAILABLEBB'] = 'Available BB Code tags';
-$lang['en_US']['Forum_editpost.ss']['NOTLOGGEDINPOST'] = 'If you would like to post, please <a href="Security/login" title="log in">log in</a> or <a href="ForumMemberProfile/register" title="register">register</a> first.';
 $lang['en_US']['Forum_reply.ss']['AVAILABLEBB'] = 'Available BB Code tags';
 $lang['en_US']['Forum_show.ss']['AUTHOR'] = 'Author';
 $lang['en_US']['Forum_show.ss']['CLICKGOTOEND'] = 'Click here to go the end of this post';
@@ -283,16 +301,6 @@ $lang['en_US']['Post_Attachment']['PLURALNAME'] = array(
 );
 $lang['en_US']['Post_Attachment']['SINGULARNAME'] = array(
 	'File',
-	50,
-	'Singular name of the object, used in dropdowns and to generally identify a single object in the interface'
-);
-$lang['en_US']['Post_Subscription']['PLURALNAME'] = array(
-	'Post Subscriptions',
-	50,
-	'Pural name of the object, used in dropdowns and to generally identify a collection of this object in the interface'
-);
-$lang['en_US']['Post_Subscription']['SINGULARNAME'] = array(
-	'Post Subscription',
 	50,
 	'Singular name of the object, used in dropdowns and to generally identify a single object in the interface'
 );
