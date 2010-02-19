@@ -619,7 +619,7 @@ class Forum_Controller extends Page_Controller {
 		
 		// Check if we can attach files to this forum's posts
 		if($this->canAttach()) {
-			$fileUploadField = new FileField("Attachment", "Attach File");
+			$fileUploadField = new FileField("Attachment", _t('Forum.ATTACH', 'Attach file'));
 			$fileUploadField->setAllowedMaxFileSize(1000000);
 			$fields->push($fileUploadField);
 		}

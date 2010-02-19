@@ -157,7 +157,7 @@ class ForumRole extends DataObjectDecorator {
 		$personalDetailsFields = new CompositeField(
 			new HeaderField("PersonalDetails", _t('ForumRole.PERSONAL','Personal Details')),
 	
-			new LiteralField("Blurb","<p id=\"helpful\">Tick the fields to show in public profile</p>"),
+			new LiteralField("Blurb","<p id=\"helpful\">" . _t('ForumRole.TICK', 'Tick the fields to show in public profile') . "</p>"),
 	
 			new TextField("Nickname", _t('ForumRole.NICKNAME','Nickname')),
 			new CheckableOption("FirstNamePublic", new TextField("FirstName", _t('ForumRole.FIRSTNAME','First name'))),
@@ -200,11 +200,11 @@ class ForumRole extends DataObjectDecorator {
 	function updateCMSFields(FieldSet &$fields) {
 		$allForums = DataObject::get('Forum');
 		$fields->removeByName('ModeratedForums');
-		$fields->addFieldToTab('Root.ModeratedForums', new CheckboxSetField('ModeratedForums', 'Moderated forums', ($allForums ? $allForums->map('ID', 'Title') : array())));
+		$fields->addFieldToTab('Root.ModeratedForums', new CheckboxSetField('ModeratedForums', _t('ForumRole.MODERATEDFORUMS', 'Moderated forums'), ($allForums ? $allForums->map('ID', 'Title') : array())));
 		
 		if(Permission::checkMember($this->owner->ID, "ACCESS_FORUM")) {
-			$fields->addFieldToTab('Root.Forum',new ImageField("Avatar", "Upload avatar."));
-			$fields->addFieldToTab('Root.Forum',new DropdownField("ForumRank", "User rating", array(
+			$fields->addFieldToTab('Root.Forum',new ImageField("Avatar", _t('ForumRole.UPLOADAVATAR', "Upload avatar")));
+			$fields->addFieldToTab('Root.Forum',new DropdownField("ForumRank", _t('ForumRole.FORUMRANK', "User rating"), array(
 				"Community Member" => _t('ForumRole.COMMEMBER'),
 				"Administrator" => _t('ForumRole.ADMIN','Administrator'),
 				"Moderator" => _t('ForumRole.MOD','Moderator')

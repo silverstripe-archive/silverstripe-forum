@@ -96,7 +96,7 @@ class ForumMemberProfile extends Page_Controller {
 
 		$fields = singleton('Member')->getForumFields($use_openid, true);
 		$form = new Form($this, 'RegistrationForm', $fields,
-			new FieldSet(new FormAction("doregister", "Register")),
+			new FieldSet(new FormAction("doregister", _t('ForumMemberProfile.REGISTER','Register'))),
 			($use_openid)
 				? new RequiredFields("Nickname", "Email")
 				: new RequiredFields("Nickname", "Email", "Password", "ConfirmPassword")
@@ -218,7 +218,7 @@ class ForumMemberProfile extends Page_Controller {
 	function RegistrationWithOpenIDForm() {
 		$form = new Form($this, 'RegistrationWithOpenIDForm',
       new FieldSet(new TextField("OpenIDURL", "OpenID URL", "", null)),
-			new FieldSet(new FormAction("doregisterwithopenid", "Register")),
+			new FieldSet(new FormAction("doregisterwithopenid", _t('ForumMemberProfile.REGISTER','Register'))),
 			new RequiredFields("OpenIDURL")
 		);
 

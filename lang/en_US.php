@@ -13,6 +13,7 @@ $lang['en_US']['ComplexTableField']['SUCCESSADD'] = 'Added %s %s %s';
 $lang['en_US']['Forum']['ACCESSATTACH'] = 'Can users attach files?';
 $lang['en_US']['Forum']['ACCESSPOST'] = 'Who can post to the forum?';
 $lang['en_US']['Forum']['ACCESSREAD'] = 'Who can read the forum?';
+$lang['en_US']['Forum']['ATTACH'] = 'Attach file';
 $lang['en_US']['Forum']['BBCODEHINT'] = 'View Formatting Help';
 $lang['en_US']['Forum']['CURRENTATTACHMENTS'] = 'Current Attachments';
 $lang['en_US']['Forum']['DEFAULTCATEGORY'] = 'General';
@@ -222,7 +223,9 @@ $lang['en_US']['ForumRole']['CONFIRMPASS'] = 'Confirm Password';
 $lang['en_US']['ForumRole']['COUNTRY'] = 'Country';
 $lang['en_US']['ForumRole']['EMAIL'] = 'Email';
 $lang['en_US']['ForumRole']['FIRSTNAME'] = 'First name';
+$lang['en_US']['ForumRole']['FORUMRANK'] = 'User rating';
 $lang['en_US']['ForumRole']['MOD'] = 'Moderator';
+$lang['en_US']['ForumRole']['MODERATEDFORUMS'] = 'Moderated forums';
 $lang['en_US']['ForumRole']['NICKNAME'] = 'Nickname';
 $lang['en_US']['ForumRole']['OCCUPATION'] = 'Occupation';
 $lang['en_US']['ForumRole']['OPENIDINAME'] = 'OpenID/i-name';
@@ -231,7 +234,9 @@ $lang['en_US']['ForumRole']['PASSWORD'] = 'Password';
 $lang['en_US']['ForumRole']['PERSONAL'] = 'Personal Details';
 $lang['en_US']['ForumRole']['RATING'] = 'User rating';
 $lang['en_US']['ForumRole']['SURNAME'] = 'Surname';
+$lang['en_US']['ForumRole']['TICK'] = 'Tick the fields to show in public profile';
 $lang['en_US']['ForumRole']['TRANSFERSUCCEEDED'] = 'The data transfer has succeeded. However, to complete it, you must delete the ForumMember table. To do this, execute the query \"DROP TABLE \'ForumMember\'\".';
+$lang['en_US']['ForumRole']['UPLOADAVATAR'] = 'Upload avatar';
 $lang['en_US']['ForumThread']['PLURALNAME'] = array(
 	'Forum Threads',
 	50,
