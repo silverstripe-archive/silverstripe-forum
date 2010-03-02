@@ -26,14 +26,11 @@
 			<% end_if %>
 			<div id="ForumProfilePosts"><label class="left"><% _t('POSTNO','Number of posts') %>:</label> <p class="readonly">$NumPosts</p></div>
 			<div id="ForumProfileRank"><label class="left"><% _t('FORUMRANK','Forum ranking') %>:</label> <% if ForumRank %><p class="readonly">$ForumRank</p><% else %><p><% _t('NORANK','No ranking') %></p><% end_if %></div>
-			<% if Avatar %>
-				<div id="ForumProfileAvatar"><label class="left"><% _t('AVATAR','Avatar') %>:</label> <p>
-				<% control Avatar.SetWidth(80) %>
-					<img class="userAvatar" src="$URL" alt="<% _t('AVATAR','Avatar') %>" />
-				<% end_control %> </p></div>
-			<% else %>
-				<div id="ForumProfileAvatar"><label class="left"><% _t('AVATAR','Avatar') %>:</label> <p><img class="userAvatar" src="forum/images/forummember_holder.gif" width="80" alt="<% if Nickname %>$Nickname<% else %>Anon<% end_if %><% _t('USERSAVATAR','&#39;s avatar') %>" /></p></div>
-			<% end_if %>
+
+			<div id="ForumProfileAvatar">
+				<label class="left"><% _t('AVATAR','Avatar') %>:</label> 
+				<p><img class="userAvatar" src="$FormattedAvatar" width="80" alt="<% if Nickname %>$Nickname<% else %>Anon<% end_if %><% _t('USERSAVATAR','&#39;s avatar') %>" /></p>
+			</div>
 		</div>
 	<% end_control %>
 	<% if LatestPosts %>

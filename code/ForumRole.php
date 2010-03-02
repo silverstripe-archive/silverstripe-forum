@@ -246,8 +246,7 @@ class ForumRole extends DataObjectDecorator {
 	 * 
 	 * @return String
 	 */
-	function GetAvatar() {
-
+	function getFormattedAvatar() {
 		$default = "forum/images/forummember_holder.gif";
 		if(file_exists('themes/'. SSViewer::current_theme().'_forum/images/forummember_holder.gif')) {
 			$default = 'themes/'. SSViewer::current_theme().'_forum/images/forummember_holder.gif';
@@ -258,14 +257,14 @@ class ForumRole extends DataObjectDecorator {
 			if(!$avatar) return $default;
 			
 			$resizedAvatar = $avatar->SetWidth(80);
-			if(!$resizedAvatar) return false;
+			if(!$resizedAvatar) return $default;
 			
 			return $resizedAvatar->URL;
 		}
+
 		if($holder = DataObject::get_one("ForumHolder", "AllowGravatars = 1")) {
 			// ok. no image but can we find a gravatar. Will return the default image as defined above if not.
-			$grav_url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5($this->owner->Email)."&default=".urlencode($default)."&size=80";
-			return $grav_url;
+			return "http://www.gravatar.com/avatar/".md5($this->owner->Email)."?default=".urlencode($default)."&amp;size=80";
 		}
 
 		return $default;
