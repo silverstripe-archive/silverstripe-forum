@@ -1453,7 +1453,7 @@ class Forum_Controller extends Page_Controller {
 		$fields = new FieldSet(
 			new TextField("Title", "Title", ($this->currentPost) ? $this->currentPost->Title : "" ),
 			new TextareaField("Content", "Content", 5, 40, ($this->currentPost) ? $this->currentPost->Content : "" ),
-			new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"?#BBTagsHolder\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT') . "</a> ]</div>"),
+			new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"#BBTagsHolder\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT') . "</a> ]</div>"),
 			new CheckboxField("TopicSubscription", _t('Forum.SUBSCRIBETOPIC'), $subscribed),
 			new LiteralField("CurrentAttachments", $Attachments),
 			new HiddenField("ID", "ID", ($this->currentPost) ? $this->currentPost->ID: "" )
