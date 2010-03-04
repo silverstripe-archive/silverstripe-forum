@@ -1,21 +1,20 @@
-Forum Module
-================================
+# Forum Module
 
-Maintainer Contact
------------------------------------------------
+## Maintainer Contact
+
 Sean Harvey (Nickname: sharvey, halkyon) <sean (at) silverstripe (dot) com>
 Will Rossiter (Nickname: wrossiter, willr) <will (at) silverstripe (dot) com>
 
-Requirements
------------------------------------------------
+## Requirements
+
 SilverStripe 2.4
 
-Documentation
------------------------------------------------
+## Documentation
+
 http://doc.silverstripe.com/doku.php?id=modules:forum
 
-See offline docs in the /forum/docs/ folder.
+See offline docs in the /forum/doc/ folder.
 
-Installation Instructions
------------------------------------------------
-See forum/docs/ for documentation
+## Installation Instructions
+
+See forum/doc/ for documentation
