@@ -16,7 +16,7 @@ class Post extends DataObject {
 	);
 	
 	static $indexes = array(
-		"SearchFields" => "fulltext (Content)"
+		"SearchFields" => Array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Content'),
 	);
 
 	static $casting = array(
