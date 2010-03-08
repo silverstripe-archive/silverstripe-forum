@@ -221,7 +221,7 @@ class ForumHolder extends Page {
 	 * @return DataObjectSet
 	 */
 	function Forums() {
-	 	$categories = DataObject::get("ForumCategory", "ForumHolderID={$this->ID}");	
+	 	$categories = DataObject::get("ForumCategory", "\"ForumHolderID\"={$this->ID}");	
 		if($categories && $this->ShowInCategories) {
 			if (!$categories) return new DataObjectSet();
 			foreach($categories as $category) {
@@ -451,23 +451,23 @@ class ForumHolder_Controller extends Page_Controller {
 		
 		if($method == 'posts') {
 			$threadRecords = DB::query("
-				SELECT Post.*, (SELECT COUNT(*) FROM Post AS P WHERE Post.ID = P.TopicID) AS PostCount
-				FROM Post JOIN SiteTree_Live ForumPage on Post.ForumID = ForumPage.ID
-				WHERE TopicID = Post.ID AND ForumPage.ParentID='{$this->ID}'
-				ORDER BY PostCount DESC
+				SELECT \"Post\".*, (SELECT COUNT(*) FROM \"Post\" AS P WHERE \"Post\".\"ID\" = P.\"TopicID\") AS PostCount
+				FROM \"Post\" JOIN \"SiteTree_Live\" \"ForumPage\" on \"Post\".\"ForumID\" = \"ForumPage\".\"ID\"
+				WHERE \"TopicID\" = \"Post\".\"ID\" AND \"ForumPage\".\"ParentID\"='{$this->ID}'
+				ORDER BY \"PostCount\" DESC
 				LIMIT $start,20
 			");
 			
 			$allThreadsCount = DB::query("
 				SELECT count(*) as theCount
-				FROM Post JOIN " . ForumHolder::baseForumTable() . " ForumPage on Post.ForumID=ForumPage.ID
-				WHERE TopicID = Post.ID AND ForumPage.ParentID='{$this->ID}'")->value();
+				FROM \"Post\" JOIN \"" . ForumHolder::baseForumTable() . "\" \"ForumPage\" on \"Post\".\"ForumID\"=\"ForumPage\".\"ID\"
+				WHERE \"TopicID\" = \"Post\".\"ID\" AND \"ForumPage\".\"ParentID\"='{$this->ID}'")->value();
 				
 			$threads = singleton('Post')->buildDataObjectSet($threadRecords);
 			if($threads) $threads->setPageLimits($start, '20', $allThreadsCount);
 			
 		} elseif($method == 'views') {
-			$threads = DataObject::get('ForumThread', '', 'NumViews DESC', '', "$start,20");
+			$threads = DataObject::get('ForumThread', '', '"NumViews" DESC', '', "$start,20");
 		}
 		
 		return array(
@@ -543,10 +543,10 @@ class ForumHolder_Controller extends Page_Controller {
 		// Search for authors
 		$SQL_queryParts = split(' +', trim($searchQuery));
 		foreach($SQL_queryParts as $SQL_queryPart ) { 
-			$SQL_clauses[] = "FirstName LIKE '%$SQL_queryPart%' OR Surname LIKE '%$SQL_queryPart' OR Nickname LIKE '%$SQL_queryPart'";
+			$SQL_clauses[] = "\"FirstName\" LIKE '%$SQL_queryPart%' OR \"Surname\" LIKE '%$SQL_queryPart' OR \"Nickname\" LIKE '%$SQL_queryPart'";
 		}
 
-		$potentialAuthors = DataObject::get('Member', implode(" OR ", $SQL_clauses), 'ID ASC');
+		$potentialAuthors = DataObject::get('Member', implode(" OR ", $SQL_clauses), '"ID" ASC');
 		$SQL_authorClause = '';
 		$SQL_potentialAuthorIDs = array();
 		
@@ -555,17 +555,17 @@ class ForumHolder_Controller extends Page_Controller {
 				$SQL_potentialAuthorIDs[] = $potentialAuthor->ID;
 			}
 			$SQL_authorList = implode(", ", $SQL_potentialAuthorIDs);
-			$SQL_authorClause = "OR Post.AuthorID IN ($SQL_authorList)";
+			$SQL_authorClause = "OR \"Post\".\"AuthorID\" IN ($SQL_authorList)";
 		}
 		// Work out what sorting method
-		$sort = "RelevancyScore DESC";
+		$sort = "\"RelevancyScore\" DESC";
 		if(isset($_GET['order'])) {
 			switch($_GET['order']) {
 				case 'date':
-					$sort = "Post.Created DESC";
+					$sort = "\"Post\".\"Created\" DESC";
 					break;
 				case 'title':
-					$sort = "Post.Title ASC";
+					$sort = "\"Post\".\"Title\" ASC";
 					break;
 			}
 		}
@@ -574,6 +574,7 @@ class ForumHolder_Controller extends Page_Controller {
 		if(!empty($_GET['start'])) $limit = (int) $_GET['start'];
 		else $limit = $_GET['start'] = 0;
 
+		//TODO: make a Postgres / MSSQL version of this query
 		$queryString = "
 			SELECT Post.ID, Post.Created, Post.LastEdited, Post.ClassName, ForumThread.Title, Post.Content, Post.ThreadID, Post.AuthorID, ForumThread.ForumID,
 			MATCH (Post.Content) AGAINST ('$searchQuery') AS RelevancyScore

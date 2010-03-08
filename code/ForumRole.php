@@ -21,20 +21,20 @@ class ForumRole extends DataObjectDecorator {
 	function augmentDatabase() {
 		$exist = DB::tableList();
  		if(!empty($exist) && array_search('ForumMember', $exist) !== false) {
-			DB::query( "UPDATE `Member`, `ForumMember` " .
-				"SET `Member`.`ClassName` = 'Member'," .
-				"`Member`.`ForumRank` = `ForumMember`.`ForumRank`," .
-				"`Member`.`Occupation` = `ForumMember`.`Occupation`," .
-				"`Member`.`Country` = `ForumMember`.`Country`," .
-				"`Member`.`Nickname` = `ForumMember`.`Nickname`," .
-				"`Member`.`FirstNamePublic` = `ForumMember`.`FirstNamePublic`," .
-				"`Member`.`SurnamePublic` = `ForumMember`.`SurnamePublic`," .
-				"`Member`.`OccupationPublic` = `ForumMember`.`OccupationPublic`," .
-				"`Member`.`CountryPublic` = `ForumMember`.`CountryPublic`," .
-				"`Member`.`EmailPublic` = `ForumMember`.`EmailPublic`," .
-				"`Member`.`AvatarID` = `ForumMember`.`AvatarID`," .
-				"`Member`.`LastViewed` = `ForumMember`.`LastViewed`" .
-				"WHERE `Member`.`ID` = `ForumMember`.`ID`"
+			DB::query( "UPDATE \"Member\", \"ForumMember\" " .
+				"SET \"Member\".\"ClassName\" = 'Member'," .
+				"\"Member\".\"ForumRank\" = \"ForumMember\".\"ForumRank\"," .
+				"\"Member\".\"Occupation\" = \"ForumMember\".\"Occupation\"," .
+				"\"Member\".\"Country\" = \"ForumMember\".\"Country\"," .
+				"\"Member\".\"Nickname\" = \"ForumMember\".\"Nickname\"," .
+				"\"Member\".\"FirstNamePublic\" = \"ForumMember\".\"FirstNamePublic\"," .
+				"\"Member\".\"SurnamePublic\" = \"ForumMember\".\"SurnamePublic\"," .
+				"\"Member\".\"OccupationPublic\" = \"ForumMember\".\"OccupationPublic\"," .
+				"\"Member\".\"CountryPublic\" = \"ForumMember\".\"CountryPublic\"," .
+				"\"Member\".\"EmailPublic\" = \"ForumMember\".\"EmailPublic\"," .
+				"\"Member\".\"AvatarID\" = \"ForumMember\".\"AvatarID\"," .
+				"\"Member\".\"LastViewed\" = \"ForumMember\".\"LastViewed\"" .
+				"WHERE \"Member\".\"ID\" = \"ForumMember\".\"ID\""
 			);
 			echo("<div style=\"padding:5px; color:white; background-color:blue;\">" . _t('ForumRole.TRANSFERSUCCEEDED','The data transfer has succeeded. However, to complete it, you must delete the ForumMember table. To do this, execute the query \"DROP TABLE \'ForumMember\'\".') . "</div>" );
 		}
@@ -120,7 +120,7 @@ class ForumRole extends DataObjectDecorator {
 	}
 	function NumPosts() {
 		if(is_numeric($this->owner->ID)) {
-			return (int)DB::query("SELECT count(*) FROM Post WHERE AuthorID = '" . $this->owner->ID . "'")->value();
+			return (int)DB::query("SELECT count(*) FROM \"Post\" WHERE \"AuthorID\" = '" . $this->owner->ID . "'")->value();
 		} else {
 			return 0;
 		}

@@ -194,7 +194,7 @@ class Forum extends Page {
 					'Title' => 'Title'
 				),
 				'getCMSFields_forPopup',
-				"ForumHolderID={$this->ParentID}",
+				"\"ForumHolderID\"={$this->ParentID}",
 				null,
 				null,
 				array("ForumHolderID" => $this->ParentID)
