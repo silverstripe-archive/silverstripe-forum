@@ -318,17 +318,15 @@ class Forum extends Page {
 	 * @return Post
 	 */
 	function getLatestPost() {
-		$postID = DB::query("
-			SELECT Post.ID FROM Post
-			LEFT JOIN ForumThread ON Post.ThreadID = ForumThread.ID
-			WHERE ForumThread.ForumID = '$this->ID'
-			ORDER BY Post.ID DESC
-			LIMIT 1
-		")->value();
-		
-		return ($postID) ? DataObject::get_by_id('Post', $postID) : false;
+		$result = DataObject::get(
+			'Post',
+			"ForumThread.ForumID = '$this->ID'",
+			'Post.ID DESC',
+			'LEFT JOIN ForumThread ON Post.ThreadID = ForumThread.ID',
+			1
+		);
+		return ($result) ? $result->First() : false;
 	}
-
 
 	/**
 	 * Get the number of total topics (threads) in this Forum
