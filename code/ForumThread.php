@@ -195,7 +195,7 @@ class ForumThread_Subscription extends DataObject {
 				$SQL_id = Convert::raw2sql((int)$obj->MemberID);
 
 				// Get the members details
-				$member = DataObject::get_one("Member", "`Member`.`ID` = '$SQL_id'");
+				$member = DataObject::get_one("Member", "\"Member\".\"ID\" = '$SQL_id'");
 				
 				if($member) {
 					$email = new Email();
