@@ -56,7 +56,7 @@ class ForumMemberProfile extends Page_Controller {
  		$memberID = $this->urlParams['ID'];
 		$SQL_memberID = (int) $memberID;
 
-		$posts = DataObject::get("Post", "AuthorID = '$SQL_memberID'", "Created DESC", "", "0,10");
+		$posts = DataObject::get("Post", "\"AuthorID\" = '$SQL_memberID'", "Created DESC", "", "0,10");
 		if($posts) {
 			foreach($posts as $post) {
 				if(!$post->canView()) {
@@ -124,9 +124,9 @@ class ForumMemberProfile extends Page_Controller {
 	 * @param Form $form The used form
 	 */
 	function doregister($data, $form) {
-		$forumGroup = DataObject::get_one('Group', "Code = 'forum-members'");
+		$forumGroup = DataObject::get_one('Group', "\"Code\" = 'forum-members'");
 		
-		if($member = DataObject::get_one("Member", "`Email` = '". Convert::raw2sql($data['Email']) . "'")) {
+		if($member = DataObject::get_one("Member", "\"Email\" = '". Convert::raw2sql($data['Email']) . "'")) {
   			if($member) {
   				$form->addErrorMessage("Blurb",
 					_t('ForumMemberProfile.EMAILEXISTS','Sorry, that email address already exists. Please choose another.'),
@@ -138,7 +138,7 @@ class ForumMemberProfile extends Page_Controller {
   				return;
   			}
   		} elseif($this->OpenIDAvailable() && ($member = DataObject::get_one("Member",
-					"`IdentityURL` = '". Convert::raw2sql($data['IdentityURL']) ."'"))) {
+					"\"IdentityURL\" = '". Convert::raw2sql($data['IdentityURL']) ."'"))) {
   						
 				if($member) {
   					$form->addErrorMessage("Blurb",
@@ -151,7 +151,7 @@ class ForumMemberProfile extends Page_Controller {
   					return;
 			}
   		} elseif($member = DataObject::get_one("Member",
-				"`Nickname` = '". Convert::raw2sql($data['Nickname']) . "'")) {
+				"\"Nickname\" = '". Convert::raw2sql($data['Nickname']) . "'")) {
   					if($member) {
   						$form->addErrorMessage("Blurb",
 							_t('ForumMemberProfile.NICKNAMEEXISTS','Sorry, that nickname already exists. Please choose another.'),
@@ -265,7 +265,7 @@ class ForumMemberProfile extends Page_Controller {
 
 		$SQL_identity = Convert::raw2sql($auth_request->endpoint->claimed_id);
 		if($member = DataObject::get_one("Member",
-				"Member.IdentityURL = '$SQL_identity'")) {
+				"\"Member\".\"IdentityURL\" = '$SQL_identity'")) {
 			if(!is_null($form)) {
   			$form->addErrorMessage("Blurb",
 					"That OpenID or i-name is already registered. Use another one.",
@@ -417,7 +417,7 @@ class ForumMemberProfile extends Page_Controller {
 		$show_openid = (isset($member->IdentityURL) && !empty($member->IdentityURL));
 
 		$fields = singleton('Member')->getForumFields($show_openid);
-		if($holder = DataObject::get_one('ForumHolder', "DisplaySignatures = '1'")) {
+		if($holder = DataObject::get_one('ForumHolder', "\"DisplaySignatures\" = '1'")) {
 			$fields->push(new TextareaField('Signature', 'Forum Signature'));
 		}
 
@@ -446,11 +446,11 @@ class ForumMemberProfile extends Page_Controller {
 		$member = Member::currentUser();
 		
 		$SQL_email = Convert::raw2sql($data['Email']);
-		$forumGroup = DataObject::get_one('Group', "Code = 'forum-members'");
+		$forumGroup = DataObject::get_one('Group', "\"Code\" = 'forum-members'");
 		
 		// An existing member may have the requested email that doesn't belong to the
 		// person who is editing their profile - if so, throw an error
-		$existingMember = DataObject::get_one('Member', "Email = '$SQL_email'");
+		$existingMember = DataObject::get_one('Member', "\"Email\" = '$SQL_email'");
 		if($existingMember) {
 			if($existingMember->ID != $member->ID) {
   				$form->addErrorMessage('Blurb',
@@ -485,7 +485,7 @@ class ForumMemberProfile extends Page_Controller {
 		$nicknameCheck = DataObject::get_one(
 			"Member",
 			sprintf(
-				"`Nickname` = '%s' AND `Member`.`ID` != '%d'",
+				"\"Nickname\" = '%s' AND \"Member\".\"ID\" != '%d'",
 				Convert::raw2sql($data['Nickname']),
 				$member->ID
 			)
