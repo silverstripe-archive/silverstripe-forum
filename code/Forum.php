@@ -383,7 +383,7 @@ class Forum extends Page {
 		return DataObject::get(
 			"ForumThread", 
 			"ForumThread.ForumID = $this->ID AND ForumThread.IsGlobalSticky = 0 AND ForumThread.IsSticky = 0 AND $statusFilter", 
-			"max(PostList.Created) DESC",
+			"max(PostList.Created) DESC, max(PostList.ID) DESC",
 			"INNER JOIN Post AS PostList ON PostList.ThreadID = ForumThread.ID", 
 			$limit
 		);
