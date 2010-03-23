@@ -14,7 +14,7 @@ class ForumMigrationTask extends BuildTask {
 	
 	function run($request) {
 		// go through all the posts with a parent ID = 0 and create the new thread objects
-		$oldThreads = DB::query("SELECT * FROM Post WHERE ParentID = '0'");
+		$oldThreads = DB::query("SELECT * FROM \"Post\" WHERE \"ParentID\" = '0'");
 		
 		if($oldThreads) {
 			$holder = DataObject::get_one("ForumHolder");
@@ -59,7 +59,7 @@ class ForumMigrationTask extends BuildTask {
 				$thread->write();
 				
 				// find all children of the old post and redirect them to here
-				$children = DataObject::get('Post', "TopicID = '". $oldThread['ID'] ."'");
+				$children = DataObject::get('Post', "\"TopicID\" = '". $oldThread['ID'] ."'");
 				
 				if($children) {
 					foreach($children as $child) {
@@ -85,7 +85,7 @@ class ForumMigrationTask extends BuildTask {
 
 		// transfer subscriptions
 		// was a rename table but mysql had locking issues.
-		$subscriptions = DB::query("SELECT * FROM Post_Subscription");
+		$subscriptions = DB::query("SELECT * FROM \"Post_Subscription\"");
 		$subCount = 0;
 		if($subscriptions) {
 			while($sub = $subscriptions->nextRecord()) {
@@ -107,8 +107,8 @@ class ForumMigrationTask extends BuildTask {
 		$forums = DataObject::get('Forum');
 		if($forums) {
 			foreach($forums as $forum) {
-				$forum->ForumPostersGroupID = DB::query("SELECT ForumPostersGroup FROM Forum WHERE ID = '$forum->ID'")->value();
-				$forum->ForumViewersGroupID = DB::query("SELECT ForumViewersGroup FROM Forum WHERE ID = '$forum->ID'")->value();
+				$forum->ForumPostersGroupID = DB::query("SELECT \"ForumPostersGroup\" FROM \"Forum\" WHERE \"ID\" = '$forum->ID'")->value();
+				$forum->ForumViewersGroupID = DB::query("SELECT \"ForumViewersGroup\" FROM \"Forum\" WHERE \"ID\" = '$forum->ID'")->value();
 				
 				$forum->write();
 			}
