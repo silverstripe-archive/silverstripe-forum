@@ -76,7 +76,7 @@ class Post extends DataObject {
 	 * @return String
 	 */
 	function getTitle() {
-		$value = DB::query("SELECT count(ID) FROM Post WHERE ThreadID = '$this->ThreadID' AND ID < '$this->ID'")->value();
+		$value = DB::query("SELECT count(\"ID\") FROM \"Post\" WHERE \"ThreadID\" = '$this->ThreadID' AND \"ID\" < '$this->ID'")->value();
 		
 		if($value > 0) {
 			return sprintf(_t('Post.RESPONSE',"Re: %s",PR_HIGH,'Post Subject Prefix'),$this->Thread()->Title);
@@ -98,7 +98,7 @@ class Post extends DataObject {
 	 * @return bool
 	 */
 	function isFirstPost() {
-		return (DataObject::get_one('Post', "ThreadID = '$this->ThreadID' AND ID < '$this->ID'")) ? false : true;
+		return (DataObject::get_one('Post', "\"ThreadID\" = '$this->ThreadID' AND \"ID\" < '$this->ID'")) ? false : true;
 	}
 	
 	/**
@@ -199,9 +199,9 @@ class Post extends DataObject {
 
 		// calculate what page results the post is on count is the position of the post in the thread
 		$count = DB::query("
-			SELECT COUNT(ID) 
-			FROM Post 
-			WHERE ThreadID = '$this->ThreadID' AND Status = 'Moderated' AND ID <= $this->ID")->value();
+			SELECT COUNT(\"ID\") 
+			FROM \"Post\" 
+			WHERE \"ThreadID\" = '$this->ThreadID' AND \"Status\" = 'Moderated' AND \"ID\" <= $this->ID")->value();
 		
 		// round it to the correct page
 		$count = ($count < (Forum::$posts_per_page + 1)) ? 0 : floor($count/Forum::$posts_per_page);
