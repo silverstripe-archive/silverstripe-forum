@@ -25,8 +25,7 @@ class PostTest extends FunctionalTest {
 	
 	function testReplyLink() {
 		$post = $this->objFromFixture('Post', 'Post1');
-		
-		$this->assertContains($post->Thread()->URLSegment .'/reply/'.$post->ID , $post->ReplyLink());
+		$this->assertContains($post->Thread()->URLSegment .'/reply/'.$post->ThreadID , $post->ReplyLink());
 	}
 	
 	function testShowLink() {
