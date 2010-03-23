@@ -56,7 +56,7 @@ class ForumMemberProfile extends Page_Controller {
  		$memberID = $this->urlParams['ID'];
 		$SQL_memberID = (int) $memberID;
 
-		$posts = DataObject::get("Post", "\"AuthorID\" = '$SQL_memberID'", "Created DESC", "", "0,10");
+		$posts = DataObject::get("Post", "\"AuthorID\" = '$SQL_memberID'", "\"Created\" DESC", "", "0,10");
 		if($posts) {
 			foreach($posts as $post) {
 				if(!$post->canView()) {
