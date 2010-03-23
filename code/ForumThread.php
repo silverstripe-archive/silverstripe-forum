@@ -79,7 +79,7 @@ class ForumThread extends DataObject {
 	 * @return Post
 	 */
 	function getLatestPost() {
-		return DataObject::get_one('Post', "ThreadID = '$this->ID'", true, "ID DESC");
+		return DataObject::get_one('Post', "\"ThreadID\" = '$this->ID'", true, "\"ID\" DESC");
 	}
 	
 	/**
@@ -88,7 +88,7 @@ class ForumThread extends DataObject {
 	 * @return Post
 	 */
 	function getFirstPost() {
-		return DataObject::get_one('Post', "ThreadID = '$this->ID'", true, "ID ASC");
+		return DataObject::get_one('Post', "\"ThreadID\" = '$this->ID'", true, "\"ID\" ASC");
 	}
 
 	/**
@@ -98,7 +98,7 @@ class ForumThread extends DataObject {
 	 * @return int
 	 */
 	function getNumPosts() {
-		return (int)DB::query("SELECT count(*) FROM Post WHERE ThreadID = $this->ID")->value();
+		return (int)DB::query("SELECT count(*) FROM \"Post\" WHERE \"ThreadID\" = $this->ID")->value();
 	}
 	
 	/**
@@ -111,7 +111,7 @@ class ForumThread extends DataObject {
 		Session::set('ForumViewed-' . $this->ID, 'true');
 		$this->NumViews++;
 		$SQL_numViews = Convert::raw2sql($this->NumViews);
-		DB::query("UPDATE ForumThread SET NumViews = '$SQL_numViews' WHERE ID = $this->ID");
+		DB::query("UPDATE \"ForumThread\" SET \"NumViews\" = '$SQL_numViews' WHERE \"ID\" = $this->ID");
 	}
 	
 	/**
@@ -171,9 +171,9 @@ class ForumThread_Subscription extends DataObject {
 		$SQL_memberID = Convert::raw2sql($memberID);
 
 		return (DB::query("
-			SELECT COUNT(ID) 
-			FROM ForumThread_Subscription 
-			WHERE ThreadID = '$SQL_threadID' AND MemberID = '$SQL_memberID'"
+			SELECT COUNT(\"ID\") 
+			FROM \"ForumThread_Subscription\" 
+			WHERE \"ThreadID\" = '$SQL_threadID' AND \"MemberID\" = '$SQL_memberID'"
 		)->value() > 0) ? true : false;
 	}
 
@@ -187,7 +187,7 @@ class ForumThread_Subscription extends DataObject {
 	static function notify(Post $post) {
 		$list = DataObject::get(
 			"ForumThread_Subscription",
-			"ThreadID = '". $post->ThreadID ."' AND MemberID != '$post->AuthorID'"
+			"\"ThreadID\" = '". $post->ThreadID ."' AND \"MemberID\" != '$post->AuthorID'"
 		);
 		
 		if($list) {
