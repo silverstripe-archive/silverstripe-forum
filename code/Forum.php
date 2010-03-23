@@ -320,9 +320,9 @@ class Forum extends Page {
 	function getLatestPost() {
 		$result = DataObject::get(
 			'Post',
-			"ForumThread.ForumID = '$this->ID'",
-			'Post.ID DESC',
-			'LEFT JOIN ForumThread ON Post.ThreadID = ForumThread.ID',
+			"\"ForumThread\".\"ForumID\" = '$this->ID'",
+			"\"Post\".\"ID\" DESC",
+			"LEFT JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"",
 			1
 		);
 		return ($result) ? $result->First() : false;
@@ -335,9 +335,9 @@ class Forum extends Page {
 	 */
 	function getNumTopics() {
 		return (int)DB::query("
-			SELECT count(ID) 
-			FROM ForumThread 
-			WHERE ForumID = $this->ID")->value();
+			SELECT count(\"ID\") 
+			FROM \"ForumThread\" 
+			WHERE \"ForumID\" = $this->ID")->value();
 	}
 
 	/**
@@ -348,9 +348,9 @@ class Forum extends Page {
 	function getNumPosts() {
 		return (int)DB::query("
 			SELECT count(*) 
-			FROM Post 
-			JOIN ForumThread ON Post.ThreadID = ForumThread.ID
-			WHERE ForumThread.ForumID = $this->ID")->value();
+			FROM \"Post\" 
+			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
+			WHERE \"ForumThread\".\"ForumID\" = $this->ID")->value();
 	}
 
 	/**
@@ -360,10 +360,10 @@ class Forum extends Page {
 	 */
 	function getNumAuthors() {
 		return DB::query("
-			SELECT COUNT(DISTINCT AuthorID) 
-			FROM Post 
-			JOIN ForumThread ON Post.ThreadID = ForumThread.ID
-			WHERE ForumThread.ForumID = $this->ID")->value();
+			SELECT COUNT(DISTINCT \"AuthorID\") 
+			FROM \"Post\" 
+			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
+			WHERE \"ForumThread\".\"ForumID\" = $this->ID")->value();
 	}
 
 	/**
@@ -372,9 +372,9 @@ class Forum extends Page {
 	 */
 	function getTopics() {
 		if(Member::currentUser()==$this->Moderator() && is_numeric($this->ID)) {
-			$statusFilter = "(PostList.Status IN ('Moderated', 'Awaiting')";
+			$statusFilter = "(\"PostList\".\"Status\" IN ('Moderated', 'Awaiting')";
 		} else {
-			$statusFilter = "PostList.Status = 'Moderated'";
+			$statusFilter = "\"PostList\".\"Status\" = 'Moderated'";
 		}
 		
 		if(isset($_GET['start']) && is_numeric($_GET['start'])) $limit = Convert::raw2sql($_GET['start']) . ", 30";
@@ -382,9 +382,9 @@ class Forum extends Page {
 
 		return DataObject::get(
 			"ForumThread", 
-			"ForumThread.ForumID = $this->ID AND ForumThread.IsGlobalSticky = 0 AND ForumThread.IsSticky = 0 AND $statusFilter", 
-			"max(PostList.Created) DESC, max(PostList.ID) DESC",
-			"INNER JOIN Post AS PostList ON PostList.ThreadID = ForumThread.ID", 
+			"\"ForumThread\".\"ForumID\" = $this->ID AND \"ForumThread\".\"IsGlobalSticky\" = 0 AND \"ForumThread\".\"IsSticky\" = 0 AND $statusFilter", 
+			"max(\"PostList\".\"Created\") DESC, max(\"PostList\".\"ID\") DESC",
+			"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\"", 
 			$limit
 		);
 	}
@@ -396,17 +396,17 @@ class Forum extends Page {
 	function getStickyTopics() {
 		$standard = DataObject::get(
 			"ForumThread", 
-			"ForumThread.ForumID = $this->ID AND ForumThread.IsSticky = 1", 
-			"max(PostList.Created) DESC",
-			"INNER JOIN Post AS PostList ON PostList.ThreadID = ForumThread.ID"
+			"\"ForumThread\".\"ForumID\" = $this->ID AND \"ForumThread\".\"IsSticky\" = 1", 
+			"max(\"PostList\".\"Created\") DESC",
+			"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\""
 		);
 
 		// We have to join posts through their forums to their holders, and then restrict the holders to just the parent of this forum.
 		$global = DataObject::get(
 			"ForumThread", 
-			"ForumThread.IsGlobalSticky = 1", 
-			"max(PostList.Created) DESC",
-			"INNER JOIN Post AS PostList ON PostList.ThreadID = ForumThread.ID"
+			"\"ForumThread\".\"IsGlobalSticky\" = 1", 
+			"max(\"PostList\".\"Created\") DESC",
+			"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\""
 		);
 		
 		// @todo this doesn't work 
@@ -512,9 +512,9 @@ class Forum_Controller extends Page_Controller {
 		if(ForumThread_Subscription::already_subscribed($this->urlParams['ID'], $member->ID)) {
 
 			DB::query("
-				DELETE FROM ForumThread_Subscription 
-				WHERE ThreadID = '". Convert::raw2sql($this->urlParams['ID']) ."' 
-				AND MemberID = '$member->ID'");
+				DELETE FROM \"ForumThread_Subscription\" 
+				WHERE \"ThreadID\" = '". Convert::raw2sql($this->urlParams['ID']) ."' 
+				AND \"MemberID\" = '$member->ID'");
 			
 			die('1');
 		}
@@ -557,7 +557,7 @@ class Forum_Controller extends Page_Controller {
 		$numPerPage = Forum::$posts_per_page;
 
 		if(isset($_GET['showPost']) && !isset($_GET['start'])) {
-			$allIDs = DB::query("SELECT ID FROM Post WHERE ThreadID = '$SQL_id' ORDER BY Created")->column();
+			$allIDs = DB::query("SELECT \"ID\" FROM \"Post\" WHERE \"ThreadID\" = '$SQL_id' ORDER BY \"Created\"")->column();
 			if($allIDs) {
 				$foundPos = array_search($_GET['showPost'], $allIDs);
 				$_GET['start'] = floor($foundPos / $numPerPage) * $numPerPage;
@@ -566,7 +566,7 @@ class Forum_Controller extends Page_Controller {
 
 		if(!isset($_GET['start'])) $_GET['start'] = 0;
 
-		return DataObject::get("Post", "ThreadID = '$SQL_id'", "Created $order" , "", (int)$_GET['start'] . ", $numPerPage");
+		return DataObject::get("Post", "\"ThreadID\" = '$SQL_id'", "\"Created\" $order" , "", (int)$_GET['start'] . ", $numPerPage");
 	}
 
 	/**
@@ -738,7 +738,7 @@ class Forum_Controller extends Page_Controller {
 				if($image) {
 					// check to see if a file of same exists
 					$title = Convert::raw2sql($image['name']);
-					$file = DataObject::get_one("Post_Attachment", "Title = '$title' AND PostID = '$post->ID'");
+					$file = DataObject::get_one("Post_Attachment", "\"Title\" = '$title' AND \"PostID\" = '$post->ID'");
 					if(!$file) {
 						$file = new Post_Attachment();
 						$file->PostID = $post->ID;
@@ -767,7 +767,7 @@ class Forum_Controller extends Page_Controller {
 		} else {
 			// See if the member wanted to remove themselves
 			if(ForumThread_Subscription::already_subscribed($post->TopicID)) {
-				DB::query("DELETE FROM ForumThread_Subscription WHERE ThreadID = '$post->ThreadID' AND MemberID = '$member->ID'");
+				DB::query("DELETE FROM \"ForumThread_Subscription\" WHERE \"ThreadID\" = '$post->ThreadID' AND \"MemberID\" = '$member->ID'");
 			}
 		}
 		
@@ -930,7 +930,7 @@ class Forum_Controller extends Page_Controller {
 				
 				// delete the whole thread if this is the first one
 				if($post->isFirstPost()) {
-		    		$posts = DataObject::get("Post","ThreadID = '$post->ID'");
+		    		$posts = DataObject::get("Post","\"ThreadID\" = '$post->ID'");
 			
 			    	if($posts) {
 	          			foreach($posts as $childPost) {
