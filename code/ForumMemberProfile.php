@@ -137,7 +137,7 @@ class ForumMemberProfile extends Page_Controller {
   				Director::redirectBack();
   				return;
   			}
-  		} elseif($this->OpenIDAvailable() && ($member = DataObject::get_one("Member",
+  		} elseif($this->getForumHolder()->OpenIDAvailable() && ($member = DataObject::get_one("Member",
 					"\"IdentityURL\" = '". Convert::raw2sql($data['IdentityURL']) ."'"))) {
   						
 				if($member) {
