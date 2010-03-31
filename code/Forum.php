@@ -170,7 +170,7 @@ class Forum extends Page {
 				"OnlyTheseUsers" => _t('Forum.READLIST','Only these people (choose from list)'))
 			)
 		);
-		$fields->addFieldToTab("Root.Access", new TreeMultiselectField("ForumViewersGroup", "Group"));
+		$fields->addFieldToTab("Root.Access", new TreeDropdownField("ForumViewersGroupID", "Group"));
 		$fields->addFieldToTab("Root.Access", new HeaderField(_t('Forum.ACCESSPOST','Who can post to the forum?'), 2));
 		$fields->addFieldToTab("Root.Access", new OptionsetField("ForumPosters", "", array(
 		  	"Anyone" => _t('Forum.READANYONE'),
@@ -178,7 +178,7 @@ class Forum extends Page {
 		  	"OnlyTheseUsers" => _t('Forum.READLIST'),
 			"NoOne" => _t('Forum.READNOONE', 'Nobody. Make Forum Read Only')
 		)));
-		$fields->addFieldToTab("Root.Access", new TreeMultiselectField("ForumPostersGroup", "Group"));
+		$fields->addFieldToTab("Root.Access", new TreeDropdownField("ForumPostersGroup", "Group"));
 
 		$fields->addFieldToTab("Root.Access", new OptionsetField("CanAttachFiles", _t('Forum.ACCESSATTACH','Can users attach files?'), array(
 			"1" => _t('Forum.YES','Yes'),

@@ -1,5 +1,5 @@
 ForumViewersGroupHide = function() {
-	$('ForumViewersGroup').style.display = "none";
+	$('ForumViewersGroupID').style.display = "none";
 }
 
 ForumPostersGroupHide = function() {
@@ -9,12 +9,12 @@ ForumPostersGroupHide = function() {
 Behaviour.register({
 	'#Form_EditForm_ForumViewers_OnlyTheseUsers': {
 		onclick: function() {
-			$('ForumViewersGroup').style.display = "block";
+			$('ForumViewersGroupID').style.display = "block";
 		},
 		initialize: function() {
 			if($('Form_EditForm_ForumViewers_OnlyTheseUsers')) {
-				if($('Form_EditForm_ForumViewers_OnlyTheseUsers').checked) $('ForumViewersGroup').style.display = "block";
-				else $('ForumViewersGroup').style.display = "none";
+				if($('Form_EditForm_ForumViewers_OnlyTheseUsers').checked) $('ForumViewersGroupID').style.display = "block";
+				else $('ForumViewersGroupID').style.display = "none";
 			}
 		}
 	},
