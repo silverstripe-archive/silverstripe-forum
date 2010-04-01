@@ -587,10 +587,9 @@ class ForumMemberProfile extends Page_Controller {
 	/**
 	 * Get the URL segment of the forum holder
 	 *
-	 * @see ForumHolder::URLSegment()
 	 */
 	function URLSegment() {
-		return $this->ForumHolder()->URLSegment;
+		return $this->getForumHolder()->URLSegment;
 	}
 
 
