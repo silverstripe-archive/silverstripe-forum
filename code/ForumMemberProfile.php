@@ -233,6 +233,11 @@ class ForumMemberProfile extends Page_Controller {
 		$member->login();
 
 		$forumGroup->Members()->add($member);
+		if($backURL = Session::get('BackURL')) {
+			Session::clear('BackURL');
+			Director::redirect($backURL);
+			return;
+		}
 
 		return array("Form" => DataObject::get_one("ForumHolder")->ProfileAdd);
 	}
