@@ -59,15 +59,19 @@ ForumHolder:
 ForumCategory:
    fh1cat1:
       Title: cat1
+      StackableOrder: 1
       ForumHolderID: =>ForumHolder.fh
    fh1cat2:
       Title: cat2
+      StackableOrder: 2
       ForumHolderID: =>ForumHolder.fh
    fh2cat3:
       Title: cat3
+      StackableOrder: 3
       ForumHolderID: =>ForumHolder.fh2
    fh2cat4:
       Title: cat4
+      StackableOrder: 4
       ForumHolderID: =>ForumHolder.fh2
 Forum:
     general:
