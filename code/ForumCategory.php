@@ -29,7 +29,7 @@ class ForumCategory extends DataObject {
 	
 	static $defaults = array();
 	
-	static $default_sort = "StackableOrder DESC";
+	static $default_sort = "\"StackableOrder\" DESC";
 	
 	/**
 	 * Get the fields for the category edit/ add
