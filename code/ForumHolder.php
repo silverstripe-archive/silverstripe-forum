@@ -323,8 +323,9 @@ class ForumHolder extends Page {
 		$filter = array();
 		
 		// last post viewed
+		$filter[] = "ForumPage.ParentID = {$this->ID}";  
 		if($lastPostID) $filter[] = "Post.ID > '". Convert::raw2sql($lastPostID) ."'";
-		if($lastVisit) $filter[] = "Created > '". Convert::raw2sql($lastVisit) ."'";
+		if($lastVisit) $filter[] = "Post.Created > '". Convert::raw2sql($lastVisit) ."'"; 
 		if($forumID) $filter[] = "ForumThread.ForumID = '". Convert::raw2sql($forumID) ."'";
 		if($threadID) $filter[] = "ThreadID = '". Convert::raw2sql($threadID) ."'";
 		
@@ -335,7 +336,7 @@ class ForumHolder extends Page {
 			FROM Post
 			JOIN ForumThread on Post.ThreadID = ForumThread.ID
 			JOIN " . ForumHolder::baseForumTable() . " as ForumPage on ForumThread.ForumID=ForumPage.ID 
-			WHERE ForumPage.ParentID={$this->ID} $filter")->first();
+			WHERE $filter" )->first();  
 		
 		if($version == false) return false;
 
@@ -658,7 +659,7 @@ class ForumHolder_Controller extends Page_Controller {
 			if($this->getNewPostsAvailable($since, $etag, $forumID, $threadID, $data)) {
 				HTTP::register_modification_timestamp($data['last_created']);
 				$rss = new RSSFeed(
-					$this->RecentPosts(50, $forumID, $threadID, $etag),
+					$this->getRecentPosts(50, $forumID, $threadID, $etag),
 					$this->Link() . 'rss',
 					sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), 
 					"", 
