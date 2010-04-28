@@ -575,25 +575,46 @@ class ForumHolder_Controller extends Page_Controller {
 		if(!empty($_GET['start'])) $limit = (int) $_GET['start'];
 		else $limit = $_GET['start'] = 0;
 
-		//TODO: make a Postgres / MSSQL version of this query
-		$queryString = "
-			SELECT Post.ID, Post.Created, Post.LastEdited, Post.ClassName, ForumThread.Title, Post.Content, Post.ThreadID, Post.AuthorID, ForumThread.ForumID,
-			MATCH (Post.Content) AGAINST ('$searchQuery') AS RelevancyScore
-			FROM Post 
-			JOIN ForumThread on Post.ThreadID = ForumThread.ID
-			JOIN " . ForumHolder::baseForumTable() . " ForumPage on ForumThread.ForumID=ForumPage.ID
+		$baseSelect="SELECT \"Post\".\"ID\", \"Post\".\"Created\", \"Post\".\"LastEdited\", \"Post\".\"ClassName\", \"ForumThread\".\"Title\", \"Post\".\"Content\", \"Post\".\"ThreadID\", \"Post\".\"AuthorID\", \"ForumThread\".\"ForumID\"";
+		$baseFrom="FROM \"Post\"
+			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
+			JOIN \"" . ForumHolder::baseForumTable() . "\" \"ForumPage\" ON \"ForumThread\".\"ForumID\"=\"ForumPage\".\"ID\"";
+		
+		if(DB::getConn()->getDatabaseServer()=='postgresql'){
+			//TODO: insert relevancy ordering here
+			$queryString="
+			$baseSelect
+			$baseFrom	
+			, to_tsquery('english', '$searchQuery') AS q
+			LIMIT 10 OFFSET $limit;		
+			";
+		} elseif(DB::getConn()->getDatabaseServer()=='mssql'){
+			//TODO: fix this to use MSSQL's version of limit/offsetB
+			$queryString="
+			$baseSelect
+			$baseFrom
 			WHERE
-				MATCH (ForumThread.Title, Post.Content) AGAINST ('$searchQuery' IN BOOLEAN MODE)
+			(CONTAINS(\"ForumThread\".\"Title\", '$searchQuery') OR CONTAINS(\"Post\".\"Content\", '$searchQuery')
+			";
+		} else {
+			//Mysql
+			$queryString = "
+			$baseSelect,
+			MATCH (\"Post\".\"Content\") AGAINST ('$searchQuery') AS RelevancyScore
+			$baseFrom
+			WHERE
+				MATCH (\"ForumThread\".\"Title\", \"Post\".\"Content\") AGAINST ('$searchQuery' IN BOOLEAN MODE)
 				$SQL_authorClause
-				AND ForumPage.ParentID='{$this->ID}'
-			ORDER BY $sort";
+				AND \"ForumPage\".\"ParentID\"='{$this->ID}'
+			ORDER BY $sort
+			LIMIT $limit, 10;";
+		}
 		
 		// Get the 10 posts from the starting record
 		$query = DB::query("
 			$queryString
-			LIMIT $limit, 10
 		");
-		
+			
 		// Find out how many posts that match with no limit
 		$allPosts = DB::query($queryString);
 		$allPostsCount = $allPosts ? $allPosts->numRecords() : 0;
@@ -721,5 +742,16 @@ class ForumHolder_Controller extends Page_Controller {
 		
 		
 		
+	}
+	
+	/*
+	 * Temporary check to prevent the search options showing up for anything other than MySQL sites
+	 * When fulltext search methods have been finished for the other databases, then remove this.
+	 */
+	function CanShowSearch(){
+		if(DB::getConn()->databaseServer=='mysql')
+			return true;
+		else
+			return false;
 	}
 }
