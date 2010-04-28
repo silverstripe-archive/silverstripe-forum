@@ -170,10 +170,13 @@ class ForumThread_Subscription extends DataObject {
 		$SQL_threadID = Convert::raw2sql($threadID);
 		$SQL_memberID = Convert::raw2sql($memberID);
 
+		if($SQL_threadID=='' || $SQL_memberID=='')
+			return false;
+			
 		return (DB::query("
 			SELECT COUNT(\"ID\") 
 			FROM \"ForumThread_Subscription\" 
-			WHERE \"ThreadID\" = '$SQL_threadID' AND \"MemberID\" = '$SQL_memberID'"
+			WHERE \"ThreadID\" = '$SQL_threadID' AND \"MemberID\" = $SQL_memberID"
 		)->value() > 0) ? true : false;
 	}
 
