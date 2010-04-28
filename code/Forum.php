@@ -299,7 +299,10 @@ class Forum extends Page {
 	 * @return ForumThread
 	 */
 	public function getForumThread() {
- 		return DataObject::get_by_id("ForumThread", Director::urlParam('OtherID'));
+		if(Director::urlParam('OtherID')!='')
+			return DataObject::get_by_id("ForumThread", Director::urlParam('OtherID'));
+		else
+			return false;
 	}
 	
 	/**
@@ -397,7 +400,7 @@ class Forum extends Page {
 		$standard = DataObject::get(
 			"ForumThread", 
 			"\"ForumThread\".\"ForumID\" = $this->ID AND \"ForumThread\".\"IsSticky\" = 1", 
-			"max(\"PostList\".\"Created\") DESC",
+			"MAX(\"PostList\".\"Created\") DESC",
 			"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\""
 		);
 
@@ -405,7 +408,7 @@ class Forum extends Page {
 		$global = DataObject::get(
 			"ForumThread", 
 			"\"ForumThread\".\"IsGlobalSticky\" = 1", 
-			"max(\"PostList\".\"Created\") DESC",
+			"MAX(\"PostList\".\"Created\") DESC",
 			"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\""
 		);
 		

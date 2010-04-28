@@ -131,11 +131,11 @@ class ForumHolder extends Page {
 	 */
 	function getNumPosts() {
 		return DB::query("
-			SELECT COUNT(Post.ID) 
-			FROM Post 
-			JOIN ForumThread ON Post.ThreadID = ForumThread.ID
-			JOIN " . ForumHolder::baseForumTable() . " ForumPage ON ForumThread.ForumID = ForumPage.ID 
-			WHERE ForumPage.ParentID='{$this->ID}'")->value(); 
+			SELECT COUNT(\"Post\".\"ID\") 
+			FROM \"Post\" 
+			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
+			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"ForumThread\".\"ForumID\" = \"ForumPage\".\"ID\" 
+			WHERE \"ForumPage\".\"ParentID\"='{$this->ID}'")->value(); 
 	}
 
 
@@ -146,10 +146,10 @@ class ForumHolder extends Page {
 	 */
 	function getNumTopics() {
 		return DB::query("
-			SELECT COUNT(ForumThread.ID) 
-			FROM ForumThread 
-			JOIN " . ForumHolder::baseForumTable() . " ForumPage ON ForumThread.ForumID = ForumPage.ID
-			WHERE ForumPage.ParentID='{$this->ID}'")->value(); 
+			SELECT COUNT(\"ForumThread\".\"ID\") 
+			FROM \"ForumThread\" 
+			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"ForumThread\".\"ForumID\" = \"ForumPage\".\"ID\"
+			WHERE \"ForumPage\".\"ParentID\"='{$this->ID}'")->value(); 
 	}
 
 
@@ -160,11 +160,11 @@ class ForumHolder extends Page {
 	 */
 	function getNumAuthors() {
 		return DB::query("
-			SELECT COUNT(DISTINCT Post.AuthorID) 
-			FROM Post 
-			JOIN ForumThread ON Post.ThreadID = ForumThread.ID
-			JOIN " . ForumHolder::baseForumTable() . " ForumPage ON ForumThread.ForumID=ForumPage.ID 
-				AND ForumPage.ParentID='{$this->ID}'")->value();
+			SELECT COUNT(DISTINCT \"Post\".\"AuthorID\") 
+			FROM \"Post\" 
+			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
+			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"ForumThread\".\"ForumID\"=\"ForumPage\".\"ID\" 
+			AND \"ForumPage\".\"ParentID\"='{$this->ID}'")->value();
 	}
 	
 	/**
@@ -176,23 +176,23 @@ class ForumHolder extends Page {
 	function CurrentlyOnline() {
 		$filter = '';
 		
-		if($forumGroup = DataObject::get_one('Group', "Code = 'forum-members'")) {
-			$filter = "GroupID = '". $forumGroup->ID ."' ";
+		if($forumGroup = DataObject::get_one('Group', "\"Code\" = 'forum-members'")) {
+			$filter = "\"GroupID\" = '". $forumGroup->ID ."' ";
 		}
-		if($adminGroup = DataObject::get_one('Group', "(Code = 'administrators' OR Code = 'Administrators')")) {
-			$filter .= ($filter) ? "OR GroupID = '". $adminGroup->ID ."'" : "GroupID = '". $adminGroup->ID ."'";
+		if($adminGroup = DataObject::get_one('Group', "(\"Code\" = 'administrators' OR \"Code\" = 'Administrators')")) {
+			$filter .= ($filter) ? "OR \"GroupID\" = '". $adminGroup->ID ."'" : "\"GroupID\" = '". $adminGroup->ID ."'";
 		}
 
 		if(method_exists(DB::getConn(), 'datetimeIntervalClause')) {
-			$timeconstrain = 'LastVisited > ' . DB::getConn()->datetimeIntervalClause('now', '-15 MINUTE');
+			$timeconstrain = "\"LastVisited\" > " . DB::getConn()->datetimeIntervalClause('now', '-15 MINUTE');
 		} else {
-			$timeconstrain = "LastVisited > NOW() - INTERVAL 15 MINUTE";
+			$timeconstrain = "\"LastVisited\" > NOW() - INTERVAL 15 MINUTE";
 		}
 		return DataObject::get(
 			'Member',
 			$timeconstrain . " AND ($filter)",
-			'FirstName, Surname',
-			'LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID'
+			"\"FirstName\", \"Surname\"",
+			"LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\""
 		);
 	}
 	
@@ -204,14 +204,14 @@ class ForumHolder extends Page {
 	function LatestMember($limit = 1) {
 		$filter = '';
 		
-		if($forumGroup = DataObject::get_one('Group', "Code = 'forum-members'")) {
-			$filter = "GroupID = '". $forumGroup->ID ."' ";
+		if($forumGroup = DataObject::get_one('Group', "\"Code\" = 'forum-members'")) {
+			$filter = "\"GroupID\" = '". $forumGroup->ID ."' ";
 		}
-		if($adminGroup = DataObject::get_one('Group', "(Code = 'administrators' OR Code = 'Administrators')")) {
-			$filter .= ($filter) ? "OR GroupID = '". $adminGroup->ID ."'" : "GroupID = '". $adminGroup->ID ."'";
+		if($adminGroup = DataObject::get_one('Group', "(\"Code\" = 'administrators' OR \"Code\" = 'Administrators')")) {
+			$filter .= ($filter) ? "OR \"GroupID\" = '". $adminGroup->ID ."'" : "\"GroupID\" = '". $adminGroup->ID ."'";
 		}
 		
-		return DataObject::get("Member", "($filter)", "`Member`.`ID` DESC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", $limit);
+		return DataObject::get("Member", "($filter)", "\"Member\".\"ID\" DESC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", $limit);
 	}
 
 	/**
@@ -225,11 +225,11 @@ class ForumHolder extends Page {
 		if($categories && $this->ShowInCategories) {
 			if (!$categories) return new DataObjectSet();
 			foreach($categories as $category) {
-				$category->CategoryForums = DataObject::get("Forum", "CategoryID = '$category->ID' AND ParentID = '$this->ID'");
+				$category->CategoryForums = DataObject::get("Forum", "\"CategoryID\" = '$category->ID' AND \"ParentID\" = '$this->ID'");
 			}
 			return $categories;
 		}
-		return DataObject::get("Forum", "ParentID = '$this->ID'");
+		return DataObject::get("Forum", "\"ParentID\" = '$this->ID'");
 	}
 
 	/**
@@ -280,26 +280,26 @@ class ForumHolder extends Page {
 		$lastPostID = (int) $lastPostID;
 		
 		// last post viewed
-		if($lastPostID > 0) $filter[] = "ID > '". Convert::raw2sql($lastPostID) ."'";
+		if($lastPostID > 0) $filter[] = "\"ID\" > '". Convert::raw2sql($lastPostID) ."'";
 		
 		// last time visited
-		if($lastVisit) $filter[] = "Created > '". Convert::raw2sql($lastVisit) ."'";
+		if($lastVisit) $filter[] = "\"Created\" > '". Convert::raw2sql($lastVisit) ."'";
 
 		// limit to a forum
-		if($forumID) $filter[] = "ForumThread.ForumID = '". Convert::raw2sql($forumID) ."'";
+		if($forumID) $filter[] = "\"ForumThread\".\"ForumID\" = '". Convert::raw2sql($forumID) ."'";
 
 		// limit to a thread
-		if($threadID) $filter[] = "ForumThread.ID = '". Convert::raw2sql($threadID) ."'";
+		if($threadID) $filter[] = "\"ForumThread\".\"ID\" = '". Convert::raw2sql($threadID) ."'";
 		
 		// limit to just this forum install
-		$filter[] = "ForumPage.ParentID='{$this->ID}'";
+		$filter[] = "\"ForumPage\".\"ParentID\"='{$this->ID}'";
 		
 		return DataObject::get(
 			"Post",
 			implode(" AND ", $filter),
-			"Post.ID DESC",
-			"LEFT JOIN ForumThread on Post.ThreadID = ForumThread.ID 
-			 LEFT JOIN " . ForumHolder::baseForumTable() . " ForumPage ON ForumThread.ForumID = ForumPage.ID",
+			"\"Post\".\"ID\" DESC",
+			"LEFT JOIN \"ForumThread\" on \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\" 
+			 LEFT JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"ForumThread\".\"ForumID\" = \"ForumPage\".\"ID\"",
 			$limit
 		);
 	}
@@ -323,19 +323,19 @@ class ForumHolder extends Page {
 		$filter = array();
 		
 		// last post viewed
-		$filter[] = "ForumPage.ParentID = {$this->ID}";  
-		if($lastPostID) $filter[] = "Post.ID > '". Convert::raw2sql($lastPostID) ."'";
-		if($lastVisit) $filter[] = "Post.Created > '". Convert::raw2sql($lastVisit) ."'"; 
-		if($forumID) $filter[] = "ForumThread.ForumID = '". Convert::raw2sql($forumID) ."'";
-		if($threadID) $filter[] = "ThreadID = '". Convert::raw2sql($threadID) ."'";
+		$filter[] = "\"ForumPage\".\"ParentID\" = {$this->ID}";  
+		if($lastPostID) $filter[] = "\"Post\".\"ID\" > '". Convert::raw2sql($lastPostID) ."'";
+		if($lastVisit) $filter[] = "\"Post\".\"Created\" > '". Convert::raw2sql($lastVisit) ."'"; 
+		if($forumID) $filter[] = "\"ForumThread\".\"ForumID\" = '". Convert::raw2sql($forumID) ."'";
+		if($threadID) $filter[] = "\"ThreadID\" = '". Convert::raw2sql($threadID) ."'";
 		
 		$filter = implode(" AND ", $filter);
 		
 		$version = DB::query("
-			SELECT max(Post.ID) as LastID, max(Post.Created) as LastCreated 
-			FROM Post
-			JOIN ForumThread on Post.ThreadID = ForumThread.ID
-			JOIN " . ForumHolder::baseForumTable() . " as ForumPage on ForumThread.ForumID=ForumPage.ID 
+			SELECT MAX(\"Post\".\"ID\") AS \"LastID\", MAX(\"Post\".\"Created\") AS \"LastCreated\" 
+			FROM \"Post\"
+			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
+			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"ForumThread\".\"ForumID\"=\"ForumPage\".\"ID\" 
 			WHERE $filter" )->first();  
 		
 		if($version == false) return false;
@@ -393,7 +393,7 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return DataObjectSet A DataObjectSet of all the members which are signed up
 	 */
 	function memberlist() {
-		$forumGroupID = (int) DataObject::get_one('Group', "Code = 'forum-members'")->ID;
+		$forumGroupID = (int) DataObject::get_one('Group', "\"Code\" = 'forum-members'")->ID;
 		
 		// If sort has been defined then save it as in the session
 		$order = (isset($_GET['order'])) ? $_GET['order']: "";
@@ -406,23 +406,23 @@ class ForumHolder_Controller extends Page_Controller {
 
 		switch($order) {
 			case "joined":
-				$members = DataObject::get("Member", "GroupID = '$forumGroupID'", "`Member`.Created ASC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", "{$SQL_start},100");
+				$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID'", "\"Member\".\"Created\" ASC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", "{$SQL_start},100");
 			break;
 			case "name":
-				$members = DataObject::get("Member", "GroupID = '$forumGroupID'", "`Member`.Nickname ASC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", "{$SQL_start},100");
+				$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID'", "\"Member\".\"Nickname\" ASC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", "{$SQL_start},100");
 			break;
 			case "country":
-				$members = DataObject::get("Member", "GroupID = '$forumGroupID' AND `Member`.CountryPublic = TRUE", "`Member`.Country ASC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", "{$SQL_start},100");
+				$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID' AND \"Member\".\"CountryPublic\" = TRUE", "\"Member\".\"Country\" ASC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", "{$SQL_start},100");
 			break;
 			case "posts": 
-				$query = singleton('Member')->extendedSQL('', "NumPosts DESC", "{$SQL_start},100");
-				$query->select[] = "(SELECT COUNT(*) FROM `Post` WHERE `Post`.AuthorID = `Member`.ID) AS NumPosts";
+				$query = singleton('Member')->extendedSQL('', "\"NumPosts\" DESC", "{$SQL_start},100");
+				$query->select[] = "(SELECT COUNT(*) FROM \"Post\" WHERE \"Post\".\"AuthorID\" = \"Member\".\"ID\") AS \"NumPosts\"";
 				$records = $query->execute();
 				$members = singleton('Member')->buildDataObjectSet($records, 'DataObjectSet', $query, 'Member');
 				$members->parseQueryLimit($query);
 			break;
 			default:
-				$members = DataObject::get("Member", "GroupID = '$forumGroupID'", "`Member`.Created DESC", "LEFT JOIN Group_Members ON Member.ID = Group_Members.MemberID", "{$SQL_start},100");
+				$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID'", "\"Member\".\"Created\" DESC", "LEFT JOIN \"Group_Members ON Member.ID = Group_Members\".\"MemberID\"", "{$SQL_start},100");
 			break;
 		}
 		
@@ -452,16 +452,16 @@ class ForumHolder_Controller extends Page_Controller {
 		
 		if($method == 'posts') {
 			$threadRecords = DB::query("
-				SELECT \"Post\".*, (SELECT COUNT(*) FROM \"Post\" AS P WHERE \"Post\".\"ID\" = P.\"TopicID\") AS PostCount
-				FROM \"Post\" JOIN \"SiteTree_Live\" \"ForumPage\" on \"Post\".\"ForumID\" = \"ForumPage\".\"ID\"
+				SELECT \"Post\".*, (SELECT COUNT(*) FROM \"Post\" AS \"P\" WHERE \"Post\".\"ID\" = P.\"TopicID\") AS \"PostCount\"
+				FROM \"Post\" JOIN \"SiteTree_Live\" \"ForumPage\" ON \"Post\".\"ForumID\" = \"ForumPage\".\"ID\"
 				WHERE \"TopicID\" = \"Post\".\"ID\" AND \"ForumPage\".\"ParentID\"='{$this->ID}'
 				ORDER BY \"PostCount\" DESC
 				LIMIT $start,20
 			");
 			
 			$allThreadsCount = DB::query("
-				SELECT count(*) as theCount
-				FROM \"Post\" JOIN \"" . ForumHolder::baseForumTable() . "\" \"ForumPage\" on \"Post\".\"ForumID\"=\"ForumPage\".\"ID\"
+				SELECT COUNT(*) AS \"theCount\"
+				FROM \"Post\" JOIN \"" . ForumHolder::baseForumTable() . "\" \"ForumPage\" ON \"Post\".\"ForumID\"=\"ForumPage\".\"ID\"
 				WHERE \"TopicID\" = \"Post\".\"ID\" AND \"ForumPage\".\"ParentID\"='{$this->ID}'")->value();
 				
 			$threads = singleton('Post')->buildDataObjectSet($threadRecords);
@@ -691,11 +691,35 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return DataObjectSet
 	 */
 	function GlobalAnnouncements() {
-		return DataObject::get(
+		/*return DataObject::get(
 			"ForumThread", 
-			"ForumThread.IsGlobalSticky = 1 AND ForumPage.ParentID={$this->ID}", 
-			"MAX(PostList.Created) DESC",	
-			"INNER JOIN Post AS PostList ON PostList.ThreadID = ForumThread.ID 
-		  	 INNER JOIN " . ForumHolder::baseForumTable() . " ForumPage on ForumThread.ForumID=ForumPage.ID");
+			"\"ForumThread\".\"IsGlobalSticky\" = 1 AND \"ForumPage\".\"ParentID\"={$this->ID}", 
+			"MAX(\"PostList\".\"Created\") DESC",	
+			"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\" 
+		  	 INNER JOIN \"" . ForumHolder::baseForumTable() . "\" \"ForumPage\" ON \"ForumThread\".\"ForumID\"=\"ForumPage\".\"ID\"");
+		*/
+		
+		
+		
+		//Get all the forums with global sticky threads, and then get the most recent post for each of these
+		
+		$threads=DataObject::get(
+			'ForumThread',
+			"\"ForumThread\".\"IsGlobalSticky\"=1 AND \"ForumPage\".\"ParentID\"={$this->ID}",
+			'',
+			"INNER JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"ForumThread\".\"ForumID\"=\"ForumPage\".\"ID\""
+		);
+		
+		//Now go and get the most recent post for each of these forum threads
+		if($threads){
+			foreach($threads as $thread){
+				$post=DataObject::get_one('Post', "\"Post\".\"ThreadID\"={$thread->ID}", "\"Created\" DESC");
+				$thread->Post=$post;
+			}
+		}
+		return $threads;
+		
+		
+		
 	}
 }
