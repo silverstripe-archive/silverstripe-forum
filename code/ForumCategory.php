@@ -49,4 +49,15 @@ class ForumCategory extends DataObject {
 			new DropdownField('StackableOrder', 'Select the Ordering (99 top of the page, 1 bottom)', $values)
 		);
 	}
+	
+	/*
+	 * Temporary check to prevent the search options showing up for anything other than MySQL sites
+	 * When fulltext search methods have been finished for the other databases, then remove this.
+	 */
+	function CanShowSearch(){
+		if(DB::getConn()->databaseServer=='mysql')
+			return true;
+		else
+			return false;
+	}
 }

@@ -1027,4 +1027,15 @@ class Forum_Controller extends Page_Controller {
 		}
 		return Director::redirect($this->URLSegment.'/');
 	}
+	
+	/*
+	 * Temporary check to prevent the search options showing up for anything other than MySQL sites
+	 * When fulltext search methods have been finished for the other databases, then remove this.
+	 */
+	function CanShowSearch(){
+		if(DB::getConn()->databaseServer=='mysql')
+			return true;
+		else
+			return false;
+	}
 }

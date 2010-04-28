@@ -34,6 +34,7 @@
 					<% end_if %>
 				</select>
 				
+				<% if CanShowSearch %>
 				<div id="ForumSearch">
 				<form action="$Link(search)" method="get">
 					<fieldset>
@@ -44,6 +45,7 @@
 					</fieldset>
 				</form>
 			</div>
+				<% end_if %>
 			<% end_control %>
 		</div>
 		<div class="featureLeft">

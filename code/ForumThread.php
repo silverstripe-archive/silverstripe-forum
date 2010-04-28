@@ -33,6 +33,10 @@ class ForumThread extends DataObject {
 		'IsGlobalSticky' => false
 	);
 	
+	static $indexes = array(
+		"SearchFields" => Array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Title'),
+	);
+	
 	/**
 	 * Check to see if the user can perform editing tasks on this thread. This should
 	 * be moderators and admins. For editing posts canCreate() is what referred to since
@@ -215,5 +219,16 @@ class ForumThread_Subscription extends DataObject {
 				}
 			}
 		}
+	}
+	
+	/*
+	 * Temporary check to prevent the search options showing up for anything other than MySQL sites
+	 * When fulltext search methods have been finished for the other databases, then remove this.
+	 */
+	function CanShowSearch(){
+		if(DB::getConn()->databaseServer=='mysql')
+			return true;
+		else
+			return false;
 	}
 }
