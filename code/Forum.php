@@ -203,8 +203,9 @@ class Forum extends Page {
 
 		// TagField comes in it's own module.
 		// If it's installed, use it to select moderators for this forum
+		$fields->addFieldToTab('Root.Content.Moderators', new HeaderField('Moderators', 2));
 		if(class_exists('TagField')) {
-			$fields->addFieldToTab('Root.Content.Main',
+			$fields->addFieldToTab('Root.Content.Moderators',
 				new TagField(
 					'Moderators',
 					_t('MODERATORS', 'Moderators for this forum'),
@@ -214,9 +215,8 @@ class Forum extends Page {
 				),
 				'Content'
 			);
-		}
-		else {
-			$fields->addFieldToTab('Root.Content.Main', new LiteralField('ModeratorWarning', 'Please install the TagField module to manage moderators'));
+		} else {
+			$fields->addFieldToTab('Root.Content.Moderators', new LiteralField('ModeratorWarning', '<p>Please install the <a href="http://silverstripe.org/tag-field-module/" target="_blank">TagField module</a> to manage moderators for this forum.</p>'));
 		}
 
 		return $fields;
