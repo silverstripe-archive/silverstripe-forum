@@ -203,7 +203,6 @@ class Forum extends Page {
 
 		// TagField comes in it's own module.
 		// If it's installed, use it to select moderators for this forum
-		$fields->addFieldToTab('Root.Content.Moderators', new HeaderField('Moderators', 2));
 		if(class_exists('TagField')) {
 			$fields->addFieldToTab('Root.Content.Moderators',
 				new TagField(
