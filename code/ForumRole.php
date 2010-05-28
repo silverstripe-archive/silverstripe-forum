@@ -170,6 +170,7 @@ class ForumRole extends DataObjectDecorator {
 			new PasswordField("ConfirmPassword", _t('ForumRole.CONFIRMPASS','Confirm Password')),
 			new SimpleImageField('Avatar', $avatarText)
 		);
+
 		$personalDetailsFields->setID('PersonalDetailsFields');
 		
 		$fieldset = new FieldSet(
@@ -245,7 +246,7 @@ class ForumRole extends DataObjectDecorator {
 	 * @return String
 	 */
 	function getFormattedAvatar() {
-		$default = "forum/images/forummember_holder.gif";
+		$default = Director::absoluteBaseURL() . 'forum/images/forummember_holder.gif';
 		if(file_exists('themes/'. SSViewer::current_theme().'_forum/images/forummember_holder.gif')) {
 			$default = 'themes/'. SSViewer::current_theme().'_forum/images/forummember_holder.gif';
 		}

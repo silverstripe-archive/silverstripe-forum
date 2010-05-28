@@ -464,7 +464,7 @@ class ForumMemberProfile extends Page_Controller {
 		$member = $this->Member();
 		$show_openid = (isset($member->IdentityURL) && !empty($member->IdentityURL));
 
-		$fields = singleton('Member')->getForumFields($show_openid);
+		$fields = $member->getForumFields($show_openid);
 		if(singleton('Post')->DisplaySignatures()) {
 			$fields->push(new TextareaField('Signature', 'Forum Signature'));
 		}
