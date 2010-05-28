@@ -27,7 +27,7 @@
 				<% end_if %>
 			</select>
 			<div id="ForumSearch">
-				<form action="<% if ForumHolderURLSegment %>{$ForumHolderURLSegment}<% else %>{$URLSegment}<% end_if %>/search/" method="get">
+				<form action="<% if ForumHolderLink %>{$ForumHolderLink}<% else %>{$Link}<% end_if %>search/" method="get">
 					<fieldset>
 						<!-- span><% _t('SEARCH','Search:') %></span -->
 						<input class="text" type="text" name="Search" />

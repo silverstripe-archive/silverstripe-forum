@@ -108,7 +108,7 @@ $(document).ready(function() {
 	 * Do the Subscribe / Unsubscribe button
 	 */
 	$("td.replyButton a.subscribe").click(function() {
-		$.post($(this).attr("href"), function(data) {
+		$.get($(this).attr("href"), function(data) {
 			if(data == 1) {
 				$("td.replyButton a.subscribe").fadeOut().hide();
 				$("td.replyButton a.unsubscribe").fadeIn();
@@ -118,7 +118,7 @@ $(document).ready(function() {
 	});
 	
 	$("td.replyButton a.unsubscribe").click(function() {
-		$.post($(this).attr("href"), function(data) {
+		$.get($(this).attr("href"), function(data) {
 			if(data == 1) {
 				$("td.replyButton a.unsubscribe").fadeOut().hide();
 				$("td.replyButton a.subscribe").fadeIn();

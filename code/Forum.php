@@ -593,7 +593,7 @@ class Forum_Controller extends Page_Controller {
 			$obj->MemberID = Member::currentUserID();
 			$obj->LastSent = date("Y-m-d H:i:s"); // The user was last notified right now
 			$obj->write();
-			if(Director::is_ajax()) return true;
+			if($this->isAjax()) return true;
 			return Director::redirectBack();
 		}
 		return false;
@@ -613,7 +613,7 @@ class Forum_Controller extends Page_Controller {
 			$SQL_memberID = Member::currentUserID();
 			$topicID = (int) Director::urlParam('ID');
 			DB::query("DELETE FROM Post_Subscription WHERE `TopicID` = '$topicID' AND `MemberID` = '$SQL_memberID'");
-			if(Director::is_ajax()) return true;
+			if($this->isAjax()) return true;
 			return Director::redirectBack();
 		}
 		
@@ -1688,11 +1688,16 @@ class Forum_Controller extends Page_Controller {
 		return $this->CanAttachFiles ? true : false;
 	}
 
+	function ForumHolderURLSegment() {
+		trigger_error('Forum::ForumHolderURLSegment is deprecated. Please use Forum::ForumHolderLink() instead which works with nested URLs.', E_USER_WARNING);
+		return $this->ForumHolderLink();
+	}
+
 	/**
 	 * Get the forum holder's URL segment
 	 */
-	function ForumHolderURLSegment() {
-		return DataObject::get_by_id("ForumHolder", $this->ParentID)->URLSegment;
+	function ForumHolderLink() {
+		return DataObject::get_by_id("ForumHolder", $this->ParentID)->Link();
 	}
 	
 	/**

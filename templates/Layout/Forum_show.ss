@@ -20,8 +20,8 @@
 					<a href="$ReplyLink" title="<% _t('CLICKREPLY','Click here to reply to this topic') %>"><% _t('REPLY','Reply') %></a>
 				<% end_if %>
 				<% if CurrentMember %>
-					<a href="{$URLSegment}/unsubscribe/{$Post.TopicID}" class="unsubscribe <% if SubscribeLink %><% else %>hidden<% end_if %>" title="<% _t('CLICKUNSUBSCRIBE','Click here to Unsubscribe to this topic') %>"><% _t('UNSUBSCRIBE','Unsubscribe') %></a>
-					<a href="{$URLSegment}/subscribe/{$Post.TopicID}" class="subscribe <% if SubscribeLink %>hidden<% end_if %>" title="<% _t('CLICKSUBSCRIBE','Click here to subscribe to this topic') %>"><% _t('SUBSCRIBE','Subscribe') %></a>
+					<a href="{$Link}unsubscribe/{$Post.TopicID}" class="unsubscribe <% if SubscribeLink %><% else %>hidden<% end_if %>" title="<% _t('CLICKUNSUBSCRIBE','Click here to Unsubscribe to this topic') %>"><% _t('UNSUBSCRIBE','Unsubscribe') %></a>
+					<a href="{$Link}subscribe/{$Post.TopicID}" class="subscribe <% if SubscribeLink %>hidden<% end_if %>" title="<% _t('CLICKSUBSCRIBE','Click here to subscribe to this topic') %>"><% _t('SUBSCRIBE','Subscribe') %></a>
 				<% end_if %>
 			</td>
 		</tr>
