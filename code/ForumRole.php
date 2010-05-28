@@ -153,12 +153,11 @@ class ForumRole extends DataObjectDecorator {
 	 */
 	function getForumFields($showIdentityURL = false, $addmode = false) {
 		$gravatarText = (DataObject::get_one("ForumHolder", "AllowGravatars = 1")) ? '<small>'. _t('ForumRole.CANGRAVATAR', 'If you use Gravatars then leave this blank') .'</small>' : "";
+		$avatarText = $gravatarText ? (_t('ForumRole.AVATAR', 'Avatar') . ' (' . $gravatarText . ')') : _t('ForumRole.AVATAR');
 
 		$personalDetailsFields = new CompositeField(
 			new HeaderField("PersonalDetails", _t('ForumRole.PERSONAL','Personal Details')),
-	
 			new LiteralField("Blurb","<p id=\"helpful\">Tick the fields to show in public profile</p>"),
-	
 			new TextField("Nickname", _t('ForumRole.NICKNAME','Nickname')),
 			new CheckableOption("FirstNamePublic", new TextField("FirstName", _t('ForumRole.FIRSTNAME','First name'))),
 			new CheckableOption("SurnamePublic", new TextField("Surname", _t('ForumRole.SURNAME','Surname'))),
@@ -169,8 +168,7 @@ class ForumRole extends DataObjectDecorator {
 			new CheckableOption("EmailPublic", new EmailField("Email", _t('ForumRole.EMAIL','Email'))),
 			new PasswordField("Password", _t('ForumRole.PASSWORD','Password')) ,
 			new PasswordField("ConfirmPassword", _t('ForumRole.CONFIRMPASS','Confirm Password')),
-
-			new ReadonlyField("ForumRank", _t('ForumRole.RATING','User rating'))
+			new SimpleImageField('Avatar', $avatarText)
 		);
 		$personalDetailsFields->setID('PersonalDetailsFields');
 		
