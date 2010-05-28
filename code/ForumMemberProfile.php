@@ -42,9 +42,9 @@ class ForumMemberProfile extends Page_Controller {
 	function init() {
 		Requirements::themedCSS('Forum');
 		$member = $this->Member() ? $this->Member() : null;
-		$nicknameText = ($member) ? ($member->Nickname . '\'s ') : '';
+		$nicknameText = ($member) ? ($member->Nickname) : '';
 		
-		$this->Title = Convert::raw2xml($nicknameText) . 'User Profile';
+		$this->Title = sprintf(_t('ForumMemberProfile.USERPROFILE', '%s\'s User profile'), Convert::raw2xml($nicknameText));
 		
 		parent::init();
  	}
@@ -727,7 +727,7 @@ class ForumMemberProfile extends Page_Controller {
 	 * Get a subtitle
 	 */
 	function getHolderSubtitle() {
-		return _t('ForumMemberProfile.USERPROFILE','User profile');
+		return _t('ForumMemberProfile.USERPROFILESUBTITLE','User profile');
 	}
 
 
