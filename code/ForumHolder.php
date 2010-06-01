@@ -211,7 +211,16 @@ class ForumHolder extends Page {
 			$filter .= ($filter) ? "OR \"GroupID\" = '". $adminGroup->ID ."'" : "\"GroupID\" = '". $adminGroup->ID ."'";
 		}
 		
-		return DataObject::get("Member", "($filter)", "\"Member\".\"ID\" DESC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", $limit);
+		// do a lookup on the specific Group_Members table for the latest member ID
+		if($filter) {
+			$latestMemberID = DB::query("SELECT \"MemberID\" FROM \"Group_Members\" WHERE $filter ORDER BY \"ID\" DESC LIMIT 1")->value();
+			
+			if($latestMemberID) {
+				return DataObject::get_by_id('Member', $latestMemberID);
+			}
+		}
+		
+		return DataObject::get_one("Member", "", true, "ID DESC");
 	}
 
 	/**
