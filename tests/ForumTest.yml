@@ -159,64 +159,77 @@ Post:
     Post1:
         Content: This is my first post
         Thread: =>ForumThread.Thread1
+        Forum: =>Forum.general
         Author: =>Member.test1
     
     Post2:
         Content: This is a reply to the first post
         Thread: =>ForumThread.Thread1
+        Forum: =>Forum.general
         Author: =>Member.test2
         
     Post3:
         Content: This is a post without a reply
         Thread: =>ForumThread.Thread2
         Author: =>Member.test2
+        Forum: =>Forum.general
         
     StickyPost:
         Content: This is a sticky post
         Thread: =>ForumThread.StickyThread1
         Author: =>Member.test1
+        Forum: =>Forum.general
     
     StickyGlobal:
         Content: This is a global sticky
         Thread: =>ForumThread.GlobalStickyThread1
         Author: =>Member.test1
+        Forum: =>Forum.general
         
     StickyReply:
         Content: This is a reply to sticky
         Thread: =>ForumThread.StickyThread1
         Author: =>Member.test2
+        Forum: =>Forum.general
         
     Post4:
         Content: This is a post to a long thread
         Thread: =>ForumThread.Thread1
         Author: =>Member.test1
-
+        Forum: =>Forum.general
+        
     Post5:
         Content: This is a post to a long thread
         Thread: =>ForumThread.Thread1
         Author: =>Member.test2
-
+        Forum: =>Forum.general
+        
     Post6:
         Content: This is a post to a long thread
         Thread: =>ForumThread.Thread1
         Author: =>Member.test2
-
+        Forum: =>Forum.general
+        
     Post7:
         Content: This is a post to a long thread
         Thread: =>ForumThread.Thread1
         Author: =>Member.test1
-
+        Forum: =>Forum.general
+        
     Post8:
         Content: This is a post to a long thread
         Thread: =>ForumThread.Thread1
         Author: =>Member.test2
-
+        Forum: =>Forum.general
+        
     Post9:
         Content: This is a post to a long thread
         Thread: =>ForumThread.Thread1
         Author: =>Member.test2
-        
+        Forum: =>Forum.general
+              
     Post10:
         Content: This is the last post to a long thread
         Thread: =>ForumThread.Thread1
         Author: =>Member.test2
+        Forum: =>Forum.general

@@ -1,7 +1,10 @@
 <?php
 
 /**
- * Forum represents a collection of posts related to threads
+ * Forum represents a collection of forum threads. Each thread is a different topic on
+ * the site. You can customize permissions on a per forum basis in the CMS.
+ *
+ * @todo Implement PermissionProvider for editing, creating forums.
  * 
  * @package forum
  */
@@ -118,7 +121,7 @@ class Forum extends Page {
 			$group->write();
 
 			Permission::grant( $group->ID, $code );
-			if(method_exists('DB', 'alteration_message')) DB::alteration_message(_t('Forum.GROUPCREATED','Forum Members group created'),"created"); 
+			DB::alteration_message(_t('Forum.GROUPCREATED','Forum Members group created'),"created"); 
 		}
 		else if(DB::query("SELECT * FROM \"Permission\" WHERE \"GroupID\" = '$forumGroup->ID' AND \"Code\" LIKE '$code'")->numRecords() == 0 ) {
 			Permission::grant($forumGroup->ID, $code);
@@ -136,7 +139,7 @@ class Forum extends Page {
 			$forumholder->Status = "Published";
 			$forumholder->write();
 			$forumholder->publish("Stage", "Live");
-			if(method_exists('DB', 'alteration_message')) DB::alteration_message(_t('Forum.FORUMHOLDERCREATED','ForumHolder page created'),"created");
+			DB::alteration_message(_t('Forum.FORUMHOLDERCREATED','ForumHolder page created'),"created");
 			$forum = new Forum();
 			$forum->Title = _t('Forum.TITLE','General Discussion');
 			$forum->URLSegment = "general-discussion";
@@ -147,7 +150,7 @@ class Forum extends Page {
 			$forum->write();
 			$forum->publish("Stage", "Live");
 
-			if(method_exists('DB', 'alteration_message')) DB::alteration_message(_t('Forum.FORUMCREATED','Forum page created'),"created");
+			DB::alteration_message(_t('Forum.FORUMCREATED','Forum page created'),"created");
 		}
 	}
 
@@ -283,25 +286,11 @@ class Forum extends Page {
 							 Convert::raw2xml($page->Title) . "</a>");
 				}
 			}
-			// this casued problems; the page would have been previously
-			// referenced due to caching
-			// $page->destroy();
+
 			$page = $page->Parent;
 		}
 
 		return implode(" &raquo; ", array_reverse(array_merge($nonPageParts,$parts)));
-	}
-	
-	/**
-	 * Return the currently viewed thread
-	 *
-	 * @return ForumThread
-	 */
-	public function getForumThread() {
-		if(Director::urlParam('OtherID')!='')
-			return DataObject::get_by_id("ForumThread", Director::urlParam('OtherID'));
-		else
-			return false;
 	}
 	
 	/**
@@ -315,19 +304,13 @@ class Forum extends Page {
 	}
 
 	/**
-	 * Get the latest posting of the forum.
+	 * Get the latest posting of the forum. For performance the forum ID is stored on the
+	 * {@link Post} object as well as the {@link Forum} object
 	 * 
 	 * @return Post
 	 */
 	function getLatestPost() {
-		$result = DataObject::get(
-			'Post',
-			"\"ForumThread\".\"ForumID\" = '$this->ID'",
-			"\"Post\".\"ID\" DESC",
-			"LEFT JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"",
-			1
-		);
-		return ($result) ? $result->First() : false;
+		return DataObject::get_one('Post', "\"Post\".\"ForumID\" = '$this->ID'", true, "\"Post\".\"ID\" DESC");
 	}
 
 	/**
@@ -349,10 +332,9 @@ class Forum extends Page {
 	 */
 	function getNumPosts() {
 		return (int)DB::query("
-			SELECT count(*) 
+			SELECT COUNT(*) 
 			FROM \"Post\" 
-			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
-			WHERE \"ForumThread\".\"ForumID\" = $this->ID")->value();
+			WHERE \"Post\".\"ForumID\" = $this->ID")->value();
 	}
 
 	/**
@@ -364,8 +346,7 @@ class Forum extends Page {
 		return DB::query("
 			SELECT COUNT(DISTINCT \"AuthorID\") 
 			FROM \"Post\" 
-			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
-			WHERE \"ForumThread\".\"ForumID\" = $this->ID")->value();
+			WHERE \"Post\".\"ForumID\" = $this->ID")->value();
 	}
 
 	/**
@@ -410,10 +391,6 @@ class Forum extends Page {
 			"MAX(\"PostList\".\"Created\") DESC",
 			"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\""
 		);
-		
-		// @todo this doesn't work 
-		// JOIN " . ForumHolder::baseForumTable() . " ForumPage ON ForumThread.ForumID = ForumPage.ID
-		// JOIN " . ForumHolder::baseForumTable() . " ForumHolder ON ForumPage.ParentID = ForumHolder.ID"
 
 		if($global) {
 			$global->merge($standard);
@@ -725,10 +702,10 @@ class Forum_Controller extends Page_Controller {
 			$post->ThreadID = $thread->ID;
 		}
 		
+		$post->ForumID = $thread->ForumID;
 		$post->Content = $content;
 		$post->write();
-
-
+		
 		// Upload and Save all files attached to the field
 		// Attachment will always be blank, If they had an image it will be at least in Attachment-0
 		if(!empty($data['Attachment'])) {

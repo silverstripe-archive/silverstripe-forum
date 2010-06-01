@@ -16,7 +16,7 @@ class Post extends DataObject {
 	);
 	
 	static $indexes = array(
-		"SearchFields" => Array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Content'),
+		"SearchFields" => array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Content'),
 	);
 
 	static $casting = array(
@@ -28,13 +28,29 @@ class Post extends DataObject {
 
 	static $has_one = array(
 		"Author" => "Member",
-		"Thread" => "ForumThread"
+		"Thread" => "ForumThread",
+		"Forum" => "Forum" // denormalized data but used for read speed
 	);
 
 	static $has_many = array(
 		"Attachments" => "Post_Attachment"
 	);
-	
+
+	/**
+	 * Update all the posts to have a forum ID of their thread ID
+	 */
+	function requireDefaultRecords() {
+		$posts = DataObject::get('Post');
+		
+		if($posts) {
+			foreach($posts as $post) {
+				if($post->ThreadID) {
+					$post->ForumID = $post->Thread()->ForumID;
+					$post->write();
+				}
+			}
+		}
+	}
 	/**
 	 * Return whether we can edit this post. Only the user, moderator
 	 * or admin can edit post
@@ -76,12 +92,7 @@ class Post extends DataObject {
 	 * @return String
 	 */
 	function getTitle() {
-		$value = DB::query("SELECT count(\"ID\") FROM \"Post\" WHERE \"ThreadID\" = '$this->ThreadID' AND \"ID\" < '$this->ID'")->value();
-		
-		if($value > 0) {
-			return sprintf(_t('Post.RESPONSE',"Re: %s",PR_HIGH,'Post Subject Prefix'),$this->Thread()->Title);
-		}
-		return $this->Thread()->Title;
+		return ($this->isFirstPost()) ? $this->Thread()->Title : sprintf(_t('Post.RESPONSE',"Re: %s",PR_HIGH,'Post Subject Prefix'),$this->Thread()->Title);
 	}
 
 	/**
@@ -98,7 +109,7 @@ class Post extends DataObject {
 	 * @return bool
 	 */
 	function isFirstPost() {
-		return (DataObject::get_one('Post', "\"ThreadID\" = '$this->ThreadID' AND \"ID\" < '$this->ID'")) ? false : true;
+		return (DB::query("SELECT count(\"ID\") FROM \"Post\" WHERE \"ThreadID\" = '$this->ThreadID' AND \"ID\" < '$this->ID'")->value() > 0) ? false : true;
 	}
 	
 	/**
@@ -168,7 +179,7 @@ class Post extends DataObject {
 	function MarkAsSpamLink() {
 		if(class_exists('SpamProtectorManager') && $member = Member::currentUser()) {
 		 	if($member->ID != $this->AuthorID)
-				return "<a href=\"{$this->Thread()->Forum()->Link('markasspam')}{$this->ID}\" class='markAsSpamLink' rel=\"$this->ID\">". _t('Post.MARKASSPAM', 'Mark as Spam') ."</a>";
+				return "<a href=\"{$this->Forum()->Link('markasspam')}{$this->ID}\" class='markAsSpamLink' rel=\"$this->ID\">". _t('Post.MARKASSPAM', 'Mark as Spam') ."</a>";
 		}
 	}
 
@@ -209,15 +220,14 @@ class Post extends DataObject {
 		return ($action == "show") ? $link . '?start='.$count.'#post' . $this->ID : $link;
 	}
 	
-	/*
+	/**
 	 * Temporary check to prevent the search options showing up for anything other than MySQL sites
 	 * When fulltext search methods have been finished for the other databases, then remove this.
+	 *
+	 * @return false
 	 */
-	function CanShowSearch(){
-		if(DB::getConn()->databaseServer=='mysql')
-			return true;
-		else
-			return false;
+	function CanShowSearch(){	
+		return (DB::getConn()->databaseServer=='mysql') ? true : false;
 	}
 	
 }
@@ -228,6 +238,7 @@ class Post extends DataObject {
  * @package forum
  */
 class Post_Attachment extends File {
+	
 	static $has_one = array(
 		"Post" => "Post"
 	);

@@ -12,7 +12,17 @@ class ForumMigrationTask extends BuildTask {
 
 	protected $description = "Upgrades your 0.2 forum version to the 0.3 structure";
 	
-	function run($request) {
+	function run($request = false) {
+		// check to see if this has been run before. If it has then we will have already
+		// have removed the parentID field
+		$checkForMigration = DB::query("SHOW COLUMNS FROM \"Post\"")->column();
+		
+		if(!in_array('ParentID', $checkForMigration)) {
+			echo "Script has already ran. You can only run the migration script once.\n";
+			
+			return false;
+		}
+
 		// go through all the posts with a parent ID = 0 and create the new thread objects
 		$oldThreads = DB::query("SELECT * FROM \"Post\" WHERE \"ParentID\" = '0'");
 		
@@ -57,6 +67,7 @@ class ForumMigrationTask extends BuildTask {
 				}
 
 				$thread->write();
+				echo "Converted Thread: $thread->ID - $thread->Title. \n";	
 				
 				// find all children of the old post and redirect them to here
 				$children = DataObject::get('Post', "\"TopicID\" = '". $oldThread['ID'] ."'");
@@ -64,6 +75,7 @@ class ForumMigrationTask extends BuildTask {
 				if($children) {
 					foreach($children as $child) {
 						$child->ThreadID = $thread->ID;
+						$child->ForumID = $thread->ForumID;
 						$child->write();
 					}
 				}
@@ -79,8 +91,9 @@ class ForumMigrationTask extends BuildTask {
 		echo "Converted $totalThreadsSuccessfulCount threads. Could not import $totalThreadsErroredCount threads.<br />";
 		
 		if(!$needsFailback) $failbackForum->delete();
+		
 		else {
-			echo "Incorrectly imported threads are available to self moderator at <a href='". $failbackForum->Link() ."'>here</a><br />";
+			echo "Incorrectly imported threads are available to self moderate at <a href='". $failbackForum->Link() ."'>here</a><br />";
 		}
 
 		// transfer subscriptions
@@ -100,6 +113,7 @@ class ForumMigrationTask extends BuildTask {
 				}
 			}
 		}
+		
 		echo "Transferred $subCount Thread Subscriptions<br />";
 		
 		// Update the permissions on the forums. The Posters, Viewers have changed from a int field
@@ -117,7 +131,6 @@ class ForumMigrationTask extends BuildTask {
 		// cleanup task. Delete old columns which are hanging round
 		DB::dontRequireField('Post', 'ParentID');
 		DB::dontRequireField('Post', 'TopicID');
-		DB::dontRequireField('Post', 'ForumID');
 		
 		DB::dontRequireField('Post', 'Title');
 		DB::dontRequireField('Post', 'NumViews');

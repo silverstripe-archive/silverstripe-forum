@@ -1,8 +1,8 @@
 <?php
 
 /**
- * A representation of a forum thread. A single thread is 1 topic
- * on the forum
+ * A representation of a forum thread. A forum thread is 1 topic on the forum which
+ * has multiple posts underneath it.
  *
  * @package forum
  */
@@ -34,7 +34,7 @@ class ForumThread extends DataObject {
 	);
 	
 	static $indexes = array(
-		"SearchFields" => Array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Title'),
+		"SearchFields" => array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Title'),
 	);
 	
 	/**
@@ -226,9 +226,6 @@ class ForumThread_Subscription extends DataObject {
 	 * When fulltext search methods have been finished for the other databases, then remove this.
 	 */
 	function CanShowSearch(){
-		if(DB::getConn()->databaseServer=='mysql')
-			return true;
-		else
-			return false;
+		return (DB::getConn()->databaseServer=='mysql') ? true : false;
 	}
 }
