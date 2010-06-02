@@ -95,11 +95,10 @@ class ForumMemberProfile extends Page_Controller {
 			(isset($_POST['IdentityURL']) && !empty($_POST['IdentityURL']));
 
 		$fields = singleton('Member')->getForumFields($use_openid, true);
+		$validator = singleton('Member')->getForumValidator(!$use_openid);
 		$form = new Form($this, 'RegistrationForm', $fields,
 			new FieldSet(new FormAction("doregister", _t('ForumMemberProfile.REGISTER','Register'))),
-			($use_openid)
-				? new RequiredFields("Nickname", "Email")
-				: new RequiredFields("Nickname", "Email", "Password", "ConfirmPassword")
+			$validator
 		);
 
 		$member = new Member();
@@ -417,13 +416,14 @@ class ForumMemberProfile extends Page_Controller {
 		$show_openid = (isset($member->IdentityURL) && !empty($member->IdentityURL));
 
 		$fields = singleton('Member')->getForumFields($show_openid);
+		$validator = singleton('Member')->getForumValidator(false);
 		if($holder = DataObject::get_one('ForumHolder', "\"DisplaySignatures\" = '1'")) {
 			$fields->push(new TextareaField('Signature', 'Forum Signature'));
 		}
 
 		$form = new Form($this, 'EditProfileForm', $fields,
 			new FieldSet(new FormAction("dosave", _t('ForumMemberProfile.SAVECHANGES','Save changes'))),
-			new RequiredFields("Nickname")
+			$validator
 		);
 
 		if($member && $member->hasMethod('canEdit') && $member->canEdit()) {

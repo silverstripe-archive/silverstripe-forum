@@ -196,6 +196,24 @@ class ForumRole extends DataObjectDecorator {
 
 		return $fieldset;
 	}
+	
+	/**
+	 * Get the fields needed by the forum module
+	 *
+	 * @param bool $needPassword Should a password be required?
+	 * @return Validator Returns a Validator for the fields required for the
+	 * 								registration of new users
+	 */
+	function getForumValidator($needPassword = true) {
+		if ($needPassword) {
+			$validator = new RequiredFields("Nickname", "Email", "Password", "ConfirmPassword");
+		} else {
+			$validator = new RequiredFields("Nickname", "Email");
+		}
+		$this->owner->extend('updateForumValidator', $validator);
+
+		return $validator;
+	}
 
 	function updateCMSFields(FieldSet &$fields) {
 		$allForums = DataObject::get('Forum');
