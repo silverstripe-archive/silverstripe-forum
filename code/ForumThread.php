@@ -213,7 +213,7 @@ class ForumThread_Subscription extends DataObject {
 					$email->populateTemplate($member);
 					$email->populateTemplate($post);
 					$email->populateTemplate(array(
-						'UnsubscribeLink' => Director::absoluteBaseURL() . $post->Thread()->Forum()->URLSegment . '/unsubscribe/' . $post->ID
+						'UnsubscribeLink' => Director::absoluteBaseURL() . $post->Thread()->Forum()->Link() . '/unsubscribe/' . $post->ID
 					));
 					$email->send();
 				}

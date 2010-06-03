@@ -633,7 +633,7 @@ class Forum_Controller extends Page_Controller {
 	 * forms, they have now been refactored into 1 form. But in order to not break existing 
 	 * themes too much just include this.
 	 *
-	 * @deprecated 0.3 
+	 * @deprecated 0.5 
 	 * @return Form
 	 */
 	function ReplyForm() {
@@ -772,7 +772,7 @@ class Forum_Controller extends Page_Controller {
 	* @param String $content (it can be Post Content or Post Title)
 	* @return String $content (filtered string)
 	*/
-	function filterLanguage( $content ) {
+	function filterLanguage($content) {
 		$words = $this->getForbiddenWords();
 		if($words != ""){
 			$words = explode(",",$words);
@@ -780,6 +780,7 @@ class Forum_Controller extends Page_Controller {
 				$content = str_ireplace(trim($word),"*",$content);
 			}
 		}
+		
 		return $content;
 	}
 
@@ -799,18 +800,15 @@ class Forum_Controller extends Page_Controller {
 	 * @return Array
 	 */
 	function show() {
-		$SQL_id = Convert::raw2sql($this->urlParams['ID']);
 		$title = Convert::raw2xml($this->Title);
 		
-		if(is_numeric($SQL_id)) {
-			if($thread = $this->getForumThread()) {
-				$thread->incNumViews();
-
-				RSSFeed::linkToFeed($this->Link("rss") . '/' . $this->urlParams['ID'],sprintf(_t('Forum.POSTTOTOPIC',"Posts to the '%s' topic"),$title));
-				$title = Convert::raw2xml($thread->Title) . ' &raquo; ' . $title;
-			}
-			
+		if($thread = $this->getForumThread()) {
+			$posts = sprintf(_t('Forum.POSTTOTOPIC',"Posts to the '%s' topic"),$title);
+			RSSFeed::linkToFeed($this->Link("rss") . '/' . $this->urlParams['ID'], $posts);
+				
+			$title = Convert::raw2xml($thread->Title) . ' &raquo; ' . $title;
 		}
+	
 		return array(
 			'Title' => DBField::create('HTMLText',$title)
 		);
@@ -828,7 +826,6 @@ class Forum_Controller extends Page_Controller {
 		);
 	}
 
-
 	/**
 	 * Get the forum title
 	 *
@@ -838,6 +835,31 @@ class Forum_Controller extends Page_Controller {
 		return $this->Title;
 	}
 
+	/**
+	 * Get the currently viewed forum. Ensure that the user can access it
+	 *
+	 * @return ForumThread
+	 */
+	function getForumThread() {
+		if(isset($this->urlParams['ID'])) {
+			$SQL_id = Convert::raw2sql($this->urlParams['ID']);
+
+			if(is_numeric($SQL_id)) {
+				if($thread = DataObject::get_by_id('ForumThread', $SQL_id)) {
+					if(!$thread->canView()) {
+						Security::permissionFailure($this);
+						
+						return false;
+					}
+					
+					return $thread;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Delete an Attachment 
 	 * Called from the EditPost method. Its Done via Ajax

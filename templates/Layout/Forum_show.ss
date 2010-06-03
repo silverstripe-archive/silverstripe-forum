@@ -20,8 +20,7 @@
 					<a href="$ReplyLink" title="<% _t('CLICKREPLY','Click here to reply to this topic') %>"><% _t('REPLY','Reply') %></a>
 				<% end_if %>
 				<% if CurrentMember %>
-					<a href="{$URLSegment}/unsubscribe/{$ForumThread.ID}" class="unsubscribe <% if ForumThread.HasSubscribed %><% else %>hidden<% end_if %>" title="<% _t('CLICKUNSUBSCRIBE','Click here to Unsubscribe to this topic') %>"><% _t('UNSUBSCRIBE','Unsubscribe') %></a>
-					<a href="{$URLSegment}/subscribe/{$ForumThread.ID}" class="subscribe <% if ForumThread.HasSubscribed %>hidden<% end_if %>" title="<% _t('CLICKSUBSCRIBE','Click here to subscribe to this topic') %>"><% _t('SUBSCRIBE','Subscribe') %></a>
+					<% include ForumThreadSubscribe %>
 				<% end_if %>
 			</td>
 		</tr>
@@ -68,6 +67,7 @@
 				<% if canCreate %>
 					<a href="$ReplyLink" title="<% _t('CLICKREPLY', 'Click to Reply') %>"><% _t('REPLY', 'Reply') %></a>
 				<% end_if %>
+				
 				<% if Posts.MoreThanOnePage %>
 					<% if Posts.NotLastPage %>
 						<a class="next" href="$Posts.NextLink" title="<% _t('NEXTTITLE','View the next page') %>"><% _t('NEXTLINK','Next') %> &gt;</a>
