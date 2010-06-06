@@ -220,12 +220,4 @@ class ForumThread_Subscription extends DataObject {
 			}
 		}
 	}
-	
-	/*
-	 * Temporary check to prevent the search options showing up for anything other than MySQL sites
-	 * When fulltext search methods have been finished for the other databases, then remove this.
-	 */
-	function CanShowSearch(){
-		return (DB::getConn()->databaseServer=='mysql') ? true : false;
-	}
 }

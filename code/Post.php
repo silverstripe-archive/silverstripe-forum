@@ -219,17 +219,6 @@ class Post extends DataObject {
 		
 		return ($action == "show") ? $link . '?start='.$count.'#post' . $this->ID : $link;
 	}
-	
-	/**
-	 * Temporary check to prevent the search options showing up for anything other than MySQL sites
-	 * When fulltext search methods have been finished for the other databases, then remove this.
-	 *
-	 * @return false
-	 */
-	function CanShowSearch(){	
-		return (DB::getConn()->databaseServer=='mysql') ? true : false;
-	}
-	
 }
 
 /**

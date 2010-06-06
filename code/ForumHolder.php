@@ -378,6 +378,17 @@ class ForumHolder extends Page {
 	function getForumHolder() {
 		return $this;
 	}
+	
+	
+	/**
+	 * Temporary check to prevent the search options showing up for anything other than MySQL sites
+	 * When fulltext search methods have been finished for the other databases, then remove this.
+	 *
+	 * @return bool
+	 */
+	function CanShowSearch(){
+		return (is_a(DB::getConn(), 'MySQLDatabase')) ? true : false;
+	}
 }
 
 
@@ -751,16 +762,5 @@ class ForumHolder_Controller extends Page_Controller {
 		
 		
 		
-	}
-	
-	/*
-	 * Temporary check to prevent the search options showing up for anything other than MySQL sites
-	 * When fulltext search methods have been finished for the other databases, then remove this.
-	 */
-	function CanShowSearch(){
-		if(DB::getConn()->databaseServer=='mysql')
-			return true;
-		else
-			return false;
 	}
 }
