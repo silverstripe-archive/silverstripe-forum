@@ -188,6 +188,7 @@ class ForumHolder extends Page {
 		} else {
 			$timeconstrain = "\"LastVisited\" > NOW() - INTERVAL 15 MINUTE";
 		}
+		
 		return DataObject::get(
 			'Member',
 			$timeconstrain . " AND ($filter)",
@@ -197,11 +198,21 @@ class ForumHolder extends Page {
 	}
 	
 	/**
+	 * @deprecated 0.5
+	 */
+	function LatestMember($limit) {
+		user_error('Please use LatestMembers($limit) instead of LatestMember', E_USER_NOTICE);
+		
+		return $this->LatestMembers($limit);
+	}
+	
+	/**
 	 * Get the latest members
 	 *
 	 * @param int $limit Number of members to return
+	 * @return DataObjectSet
 	 */
-	function LatestMember($limit = 1) {
+	function getLatestMembers($limit = 1) {
 		$filter = '';
 		
 		if($forumGroup = DataObject::get_one('Group', "\"Code\" = 'forum-members'")) {
@@ -213,14 +224,22 @@ class ForumHolder extends Page {
 		
 		// do a lookup on the specific Group_Members table for the latest member ID
 		if($filter) {
-			$latestMemberID = DB::query("SELECT \"MemberID\" FROM \"Group_Members\" WHERE $filter ORDER BY \"ID\" DESC LIMIT 1")->value();
+			$limit = (int) $limit;
+
+			$latestMemberIDs = DB::query("SELECT \"MemberID\" FROM \"Group_Members\" WHERE $filter ORDER BY \"ID\" DESC LIMIT $limit")->column();
 			
-			if($latestMemberID) {
-				return DataObject::get_by_id('Member', $latestMemberID);
+			if($latestMemberIDs) {
+				$members = new DataObjectSet();
+				
+				foreach($latestMemberIDs as $key => $id) {
+					$members->push(DataObject::get_by_id('Member', $id));
+				}
+				
+				return $members;
 			}
 		}
 		
-		return DataObject::get_one("Member", "", true, "ID DESC");
+		return DataObject::get("Member", "", "ID DESC", "", $limit);
 	}
 
 	/**
@@ -757,9 +776,7 @@ class ForumHolder_Controller extends Page_Controller {
 				$thread->Post=$post;
 			}
 		}
+		
 		return $threads;
-		
-		
-		
 	}
 }
