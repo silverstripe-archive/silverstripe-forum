@@ -586,7 +586,7 @@ class ForumHolder_Controller extends Page_Controller {
 					$sort = "\"Post\".\"Created\" DESC";
 					break;
 				case 'title':
-					$sort = "\"Post\".\"Title\" ASC";
+					$sort = "\"ForumThread\".\"Title\" ASC";
 					break;
 			}
 		}
@@ -631,9 +631,7 @@ class ForumHolder_Controller extends Page_Controller {
 		}
 		
 		// Get the 10 posts from the starting record
-		$query = DB::query("
-			$queryString
-		");
+		$query = DB::query($queryString);
 			
 		// Find out how many posts that match with no limit
 		$allPosts = DB::query($queryString);
@@ -644,6 +642,7 @@ class ForumHolder_Controller extends Page_Controller {
 		if($postsSet) {
 			$postsSet->setPageLimits($limit, 10, $allPostsCount);
 		}
+		
 		return $postsSet ? $postsSet: new DataObjectSet();
 	}
 
