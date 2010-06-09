@@ -200,7 +200,7 @@ class ForumHolder extends Page {
 	/**
 	 * @deprecated 0.5
 	 */
-	function LatestMember($limit) {
+	function LatestMember($limit = 1) {
 		user_error('Please use LatestMembers($limit) instead of LatestMember', E_USER_NOTICE);
 		
 		return $this->LatestMembers($limit);
@@ -621,43 +621,55 @@ class ForumHolder_Controller extends Page_Controller {
 		
 		if(DB::getConn()->getDatabaseServer()=='postgresql'){
 			//TODO: insert relevancy ordering here
-			$queryString="
-			$baseSelect
-			$baseFrom	
-			, to_tsquery('english', '$searchQuery') AS q
-			LIMIT 10 OFFSET $limit;		
-			";
+			$queryString = "
+				$baseSelect
+				$baseFrom	
+				, to_tsquery('english', '$searchQuery') AS q";
+			
+			$limitString = "LIMIT 10 OFFSET $limit;";
 		} elseif(DB::getConn()->getDatabaseServer()=='mssql'){
 			//TODO: fix this to use MSSQL's version of limit/offsetB
-			$queryString="
-			$baseSelect
-			$baseFrom
-			WHERE
-			(CONTAINS(\"ForumThread\".\"Title\", '$searchQuery') OR CONTAINS(\"Post\".\"Content\", '$searchQuery')
-			";
-		} else {
-			//Mysql
 			$queryString = "
-			$baseSelect,
-			MATCH (\"Post\".\"Content\") AGAINST ('$searchQuery') AS RelevancyScore
-			$baseFrom
-			WHERE
-				MATCH (\"ForumThread\".\"Title\", \"Post\".\"Content\") AGAINST ('$searchQuery' IN BOOLEAN MODE)
-				$SQL_authorClause
-				AND \"ForumPage\".\"ParentID\"='{$this->ID}'
-			ORDER BY $sort
-			LIMIT $limit, 10;";
-		}
-		
-		// Get the 10 posts from the starting record
-		$query = DB::query($queryString);
+				$baseSelect
+				$baseFrom
+				WHERE
+				(CONTAINS(\"ForumThread\".\"Title\", '$searchQuery') OR CONTAINS(\"Post\".\"Content\", '$searchQuery')";
+				
+			$limitString = false;
+		} else {
+			// MySQL
+			$queryString = "
+				$baseSelect,
+				MATCH (\"Post\".\"Content\") AGAINST ('$searchQuery') AS RelevancyScore
+				$baseFrom
+				WHERE
+					MATCH (\"ForumThread\".\"Title\", \"Post\".\"Content\") AGAINST ('$searchQuery' IN BOOLEAN MODE)
+					$SQL_authorClause
+					AND \"ForumPage\".\"ParentID\"='{$this->ID}'
+				ORDER BY $sort";
 			
+			$limitString = " LIMIT $limit, 10;";
+		}
+
 		// Find out how many posts that match with no limit
 		$allPosts = DB::query($queryString);
+		
+		// Get the 10 posts from the starting record
+		if($limitString) {
+			$query = DB::query("
+				$queryString
+				$limitString
+			");
+		}
+		else {
+			$query = $allPosts;
+		}
+		
 		$allPostsCount = $allPosts ? $allPosts->numRecords() : 0;
 		
 		$baseClass = new Post();
 		$postsSet = $baseClass->buildDataObjectSet($query);
+		
 		if($postsSet) {
 			$postsSet->setPageLimits($limit, 10, $allPostsCount);
 		}

@@ -166,7 +166,7 @@ class ForumThread extends DataObject {
 class ForumThread_Subscription extends DataObject {
 	
 	static $db = array(
-		"LastSent" => "SSDatetime"
+		"LastSent" => "SS_Datetime"
 	);
 
 	static $has_one = array(

@@ -20,7 +20,7 @@ class Post extends DataObject {
 	);
 
 	static $casting = array(
-		"Updated" => "SSDatetime",
+		"Updated" => "SS_Datetime",
 		"RSSContent" => "HTMLText",
 		"RSSAuthor" => "Varchar",
 		"Content" => "Text"
@@ -40,7 +40,7 @@ class Post extends DataObject {
 	 * Update all the posts to have a forum ID of their thread ID
 	 */
 	function requireDefaultRecords() {
-		$posts = DataObject::get('Post');
+		$posts = DataObject::get('Post', "\"ForumID\" = 0 AND \"ThreadID\" > 0");
 		
 		if($posts) {
 			foreach($posts as $post) {
