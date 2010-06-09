@@ -264,7 +264,7 @@ class Forum extends Page {
 
 		$SQL_id = $params['ID'];
 		if(is_numeric($SQL_id)) {
-			$topic = DataObject::get_by_id("Post", "$SQL_id");
+			$topic = DataObject::get_by_id("ForumThread", $SQL_id);
 
 			if($topic) {
 				$nonPageParts[] = Convert::raw2xml($topic->getTitle());
@@ -803,6 +803,8 @@ class Forum_Controller extends Page_Controller {
 		$title = Convert::raw2xml($this->Title);
 		
 		if($thread = $this->getForumThread()) {
+			$thread->incNumViews();
+			
 			$posts = sprintf(_t('Forum.POSTTOTOPIC',"Posts to the '%s' topic"),$title);
 			RSSFeed::linkToFeed($this->Link("rss") . '/' . $this->urlParams['ID'], $posts);
 				
