@@ -921,36 +921,15 @@ class Forum_Controller extends Page_Controller {
 		if($this->isAdmin() && isset($this->urlParams['ID'])) {
       		if($post = DataObject::get_by_id('Post', (int) $this->urlParams['ID'])) {
 	
-      			// Delete attachments (if any) from this post
-      			if($attachments = $post->Attachments()) {
-      				foreach($attachments as $file) {
-      					$file->delete();
-      					$file->destroy();
-      				}
-      			}
-				
 				// delete the whole thread if this is the first one
 				if($post->isFirstPost()) {
-		    		$posts = DataObject::get("Post","\"ThreadID\" = '$post->ID'");
-			
-			    	if($posts) {
-	          			foreach($posts as $childPost) {
-	            			// Delete attachments (if any) from this post
-			      			if($attachments = $childPost->Attachments()) {
-			      				foreach($attachments as $file) {
-			      					$file->delete();
-			      					$file->destroy();
-			      				}
-			      			}
-
-			      			// Delete the post
-	            			$childPost->delete();
-	          			}
-			    	}
+		    		$thread = DataObject::get_by_id("ForumThread", $post->ThreadID);
+					$thread->delete();
 				}
-				
-				// delete the post
-      			$post->delete();
+				else {
+					// delete the post
+      				$post->delete();
+				}
 				
 				return true;
       		}

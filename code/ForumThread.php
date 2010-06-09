@@ -22,8 +22,7 @@ class ForumThread extends DataObject {
 	);
 	
 	static $has_many = array(
-		'Posts' => 'Post',
-		'Subscribers' => 'Member'
+		'Posts' => 'Post'
 	);
 	
 	static $defaults = array(
@@ -141,7 +140,20 @@ class ForumThread extends DataObject {
 
 		return ($member) ? ForumThread_Subscription::already_subscribed($this->ID, $member->ID) : false;
 	}
+	
+	/**
+	 * Before deleting the thread remove all the posts
+	 */
+	function onBeforeDelete() {
+		parent::onBeforeDelete(); 
 
+		if($posts = $this->Posts()) {
+			foreach($posts as $post) {
+				// attachment deletion is handled by the {@link Post::onBeforeDelete}
+				$post->delete();
+			}
+		}
+	}
 }
 
 

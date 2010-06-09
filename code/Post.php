@@ -51,6 +51,21 @@ class Post extends DataObject {
 			}
 		}
 	}
+	
+	/**
+	 * Before deleting a post make sure all attachments are also deleted
+	 */
+	function onBeforeDelete() {
+		parent::onBeforeDelete();
+		
+		if($attachments = $this->Attachments()) {
+			foreach($attachments as $file) {
+				$file->delete();
+				$file->destroy();
+			}
+		}	
+	}
+	
 	/**
 	 * Return whether we can edit this post. Only the user, moderator
 	 * or admin can edit post

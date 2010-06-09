@@ -50,6 +50,21 @@ class ForumThreadTest extends FunctionalTest {
 		
 		$this->assertFalse(ForumThread_Subscription::already_subscribed($thread2->ID, $member->ID));
 		$this->assertFalse(ForumThread_Subscription::already_subscribed($thread2->ID, $member2->ID));
+	}
+	
+	function testOnBeforeDelete() {
+		$thread = new ForumThread();
+		$thread->write();
 		
+		$post = new Post();
+		$post->ThreadID = $thread->ID;
+		$post->write();
+		
+		$postID = $post->ID;
+		
+		$thread->delete();
+		
+		$this->assertFalse(DataObject::get_by_id('Post', $postID));
+		$this->assertFalse(DataObject::get_by_id('ForumThread', $thread->ID));
 	}
 }
