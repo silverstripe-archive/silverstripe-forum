@@ -81,6 +81,16 @@ class Post extends DataObject {
 	}
 	
 	/**
+	 * Return whether we can delete this post. If a user can edit
+	 * a post then they can delete the post
+	 *
+	 * @return bool
+	 */
+	function canDelete() {
+		return $this->canEdit();
+	}
+	
+	/**
 	 * Return whether we can view this post. Needs to check the forums can
 	 * view since an individual posts won't be 'hidden' but whole forums will
 	 * be. Readonly posts aren't supported but read only threads are
@@ -227,7 +237,8 @@ class Post extends DataObject {
 		$count = DB::query("
 			SELECT COUNT(\"ID\") 
 			FROM \"Post\" 
-			WHERE \"ThreadID\" = '$this->ThreadID' AND \"Status\" = 'Moderated' AND \"ID\" <= $this->ID")->value();
+			WHERE \"ThreadID\" = '$this->ThreadID' AND \"Status\" = 'Moderated' AND \"ID\" <= $this->ID
+		")->value();
 		
 		// round it to the correct page
 		$count = ($count < (Forum::$posts_per_page + 1)) ? 0 : floor($count/Forum::$posts_per_page);
@@ -248,17 +259,37 @@ class Post_Attachment extends File {
 	);
 
 	/**
+	 * Can a user delete this attachment
+	 *
+	 * @return bool
+	 */
+	function canDelete() {
+		return ($this->Post()) ? $this->Post()->canDelete() : true;
+	}
+	
+	/**
+	 * Can a user edit this attachement
+	 *
+	 * @return bool
+	 */
+	function canEdit() {
+		return ($this->Post()) ? $this->Post()->canEdit() : true;
+	}
+
+	/**
 	 * Allows the user to download a file without right-clicking
 	 */
 	function download() {
-		$SQL_ID = Convert::raw2sql($this->urlParams['ID']);
-		if(is_numeric($SQL_ID)) {
-			$file = DataObject::get_by_id("Post_Attachment", $SQL_ID);
-			$response = SS_HTTPRequest::send_file(file_get_contents($file->getFullPath()), $file->Name);
-			$response->output();
+		if(isset($this->urlParams['ID'])) {
+			$SQL_ID = Convert::raw2sql($this->urlParams['ID']);
+			
+			if(is_numeric($SQL_ID)) {
+				$file = DataObject::get_by_id("Post_Attachment", $SQL_ID);
+				$response = SS_HTTPRequest::send_file(file_get_contents($file->getFullPath()), $file->Name);
+				$response->output();
+			}
 		}
-
-		// Missing something or hack attempt
+		
 		return Director::redirectBack();
 	}
 }

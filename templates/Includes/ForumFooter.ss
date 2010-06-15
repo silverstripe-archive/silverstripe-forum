@@ -13,7 +13,7 @@
 			</p>
 			<p>
 				<strong><% _t('LATESTMEMBER','Welcome to our latest member:') %></strong>			
-				<% if LatestMembers %>
+				<% if LatestMembers(1) %>
 					<% control LatestMembers(1) %>
 						<% if Link %>
 							<a href="$Link" <% if Nickname %>title="$Nickname<% _t('ISONLINE') %>"<% end_if %>><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a><% if Last %><% else %>,<% end_if %> 

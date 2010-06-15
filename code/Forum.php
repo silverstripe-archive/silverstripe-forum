@@ -409,6 +409,23 @@ class Forum extends Page {
  */
 class Forum_Controller extends Page_Controller {
 
+	static $allowed_actions = array(
+		'AdminFormFeatures',
+		'deleteattachment',
+		'deletepost',
+		'doAdminFormFeatures',
+		'doPostMessageForm',
+		'editpost',
+		'markasspam',
+		'PostMessageForm',
+		'reply',
+		'show',
+		'starttopic',
+		'subscribe',
+		'unsubscribe'
+	);
+	
+	
 	function init() {
 		parent::init();
 		if(Director::redirected_to()) return;
@@ -473,6 +490,7 @@ class Forum_Controller extends Page_Controller {
 			
 			die('1');
 		}
+		
 		return false;
 	}
 	
@@ -522,6 +540,7 @@ class Forum_Controller extends Page_Controller {
 				}
 			}
 		}
+		
 		return false;
 	}
 
@@ -578,8 +597,10 @@ class Forum_Controller extends Page_Controller {
 				'alreadyLoggedIn' => _t('Forum.LOGINTOPOSTLOGGEDIN','I\'m sorry, but you can\'t post to this forum until you\'ve logged in.  If you want to log in as someone else, do so below. If you\'re logged in and you still can\'t post, you don\'t have the correct permissions to post.'),
 				'logInAgain' => _t('Forum.LOGINTOPOSTAGAIN','You have been logged out of the forums.  If you would like to log in again to post, enter a username and password below.'),
 			);
+			
+ 			Security::permissionFailure($this, $messageSet);
 
-			return Security::permissionFailure($this, $messageSet);
+			return false;
 		}
 
 		$fields = new FieldSet(
@@ -596,9 +617,7 @@ class Forum_Controller extends Page_Controller {
 		
 		// Check if we can attach files to this forum's posts
 		if($this->canAttach()) {
-			$fileUploadField = new FileField("Attachment", _t('Forum.ATTACH', 'Attach file'));
-			$fileUploadField->setAllowedMaxFileSize(1000000);
-			$fields->push($fileUploadField);
+			$fields->push(new FileField("Attachment", _t('Forum.ATTACH', 'Attach file')));
 		}
 		
 		// If this is an existing post check for current attachments and generate
@@ -606,8 +625,10 @@ class Forum_Controller extends Page_Controller {
 		if($post && $attachmentList = $post->Attachments()) {
 			if($attachmentList->exists()) {
 				$attachments = "<div id=\"CurrentAttachments\"><h4>". _t('Forum.CURRENTATTACHMENTS', 'Current Attachments') ."</h4><ul>";
+				$link = $this->Link();
+				
 				foreach($attachmentList as $attachment) {
-					$attachments .= "<li class='attachment-$attachment->ID'>$attachment->Name [<a href='$this->URLSegment/deleteAttachment/$attachment->ID' rel='$attachment->ID' class='deleteAttachment'>". _t('Forum.REMOVE','remove') ."</a>]</li>";
+					$attachments .= "<li class='attachment-$attachment->ID'>$attachment->Name [<a href='{$link}deleteattachment/$attachment->ID' rel='$attachment->ID' class='deleteAttachment'>". _t('Forum.REMOVE','remove') ."</a>]</li>";
 				}
 				$attachments .= "<ul></div>";
 			
@@ -676,7 +697,9 @@ class Forum_Controller extends Page_Controller {
 				'logInAgain' => _t('Forum.LOGINTOPOSTAGAIN','You have been logged out of the forums.  If you would like to log in again to post, enter a username and password below.'),
 			);
 
-			return Security::permissionFailure($this, $messageSet);
+			Security::permissionFailure($this, $messageSet);
+			
+			return false;
 		}
 
 		// If this is a simple edit the post then handle it here. Look up the correct post,
@@ -705,12 +728,15 @@ class Forum_Controller extends Page_Controller {
 		$post->ForumID = $thread->ForumID;
 		$post->Content = $content;
 		$post->write();
-		
+
 		// Upload and Save all files attached to the field
 		// Attachment will always be blank, If they had an image it will be at least in Attachment-0
 		if(!empty($data['Attachment'])) {
 
 			$id = 0;
+			// 
+			// @todo this only supports ajax uploads. Needs to change the key (to simply Attachment).
+			//
 			while(isset($data['Attachment-' . $id])) {
 				$image = $data['Attachment-' . $id];
 				
@@ -732,6 +758,7 @@ class Forum_Controller extends Page_Controller {
 				
 				$id++;
 			}
+			
 		}
 
 		// Add a topic subscription entry if required
@@ -868,26 +895,20 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @return boolean
 	 */
-	function deleteAttachment() {
-
-		// check we were passed an id and member is logged in
-		if(!isset($this->urlParams['ID']) || !Member::currentUser()) return false;
+	function deleteattachment() {
 		
-		// try and get the file
+		// check we were passed an id and member is logged in
+		if(!isset($this->urlParams['ID'])) return false;
+		
 		$file = DataObject::get_by_id("Post_Attachment", (int) $this->urlParams['ID']);
 	
-		// woops no file with that ID
-		if(!$file) return false;
+		if($file && $file->canDelete()) {
+			$file->delete();
+			
+			return (!Director::is_ajax()) ? Director::redirectBack() : true;
+		}
 		
-		// check permissions
-		if(!$this->isAdmin() && $file->OwnerID != Member::currentUserID()) return false;
-	
-		// Ok we are good
-		$file->delete();
-		
-		if(!Director::is_ajax()) return Director::redirectBack(); // if Javascript is disabled 
-		
-		return true; 
+		return false;
 	}
 
 	/**
@@ -1004,6 +1025,6 @@ class Forum_Controller extends Page_Controller {
 				$thread->write();
 			}
 		}
-		return Director::redirect($this->URLSegment.'/');
+		return Director::redirect($this->Link());
 	}
 }

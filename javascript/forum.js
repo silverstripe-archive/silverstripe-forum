@@ -48,8 +48,7 @@ $(document).ready(function() {
 	/** 
 	 * MultiFile Uploader called on Reply and Edit Forms
 	 */
-	$('#Form_ReplyForm_Attachment').MultiFile(); 
-	$('#Form_EditPostForm_Attachment').MultiFile();
+	$('#Form_PostMessageForm_Attachment').MultiFile(); 
 	
 	/**
 	 * Delete post Link.
@@ -94,13 +93,13 @@ $(document).ready(function() {
 	 * Delete an Attachment via AJAX
 	 */
 	$('a.deleteAttachment').click(function() {
-		if(!confirm("Are you sure you wish to delete this Attachment")) return false;
+		if(!confirm("Are you sure you wish to delete this attachment")) return false;
 		var id = $(this).attr("rel");
+		
 		$.post($(this).attr("href"), function(data) {
-			if(data == 1) {
-				$("#CurrentAttachments li.attachment-"+id).fadeOut(); // hide the deleted attachment
-			}
+			$("#CurrentAttachments li.attachment-"+id).fadeOut(); // hide the deleted attachment
 		});
+		
 		return false;
 	});
 	
