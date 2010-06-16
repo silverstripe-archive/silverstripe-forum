@@ -226,8 +226,11 @@ class ForumHolder extends Page {
 		if($filter) {
 			$limit = (int) $limit;
 
-			$latestMemberIDs = DB::query("SELECT \"MemberID\" FROM \"Group_Members\" WHERE $filter ORDER BY \"ID\" DESC LIMIT $limit")->column();
-			
+			$query = new SQLQuery();
+			$query->select('"MemberID"')->from('"Group_Members"')->where($filter)->orderby('"ID" DESC')->limit($limit);
+
+			$latestMemberIDs = $query->execute()->column();
+
 			if($latestMemberIDs) {
 				$members = new DataObjectSet();
 				
