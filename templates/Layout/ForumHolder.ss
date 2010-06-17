@@ -17,9 +17,7 @@
 						<th class="even"><% _t('LASTPOST','Last Post') %></th>
 					</tr>
 					<% control CategoryForums %>
-						<% if canView %>
-							<% include ForumHolder_List %>
-						<% end_if %>
+						<% include ForumHolder_List %>
 					<% end_control %>
 				<% end_control %>
 			<% else %>
@@ -30,9 +28,7 @@
 					<th class="even"><% _t('LASTPOST','Last Post') %></th>
 				</tr>
 				<% control Forums %>
-					<% if canView %>
-						<% include ForumHolder_List %>
-					<% end_if %>
+					<% include ForumHolder_List %>
 				<% end_control %>
 			<% end_if %>
 		</table>

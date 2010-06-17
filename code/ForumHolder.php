@@ -253,14 +253,36 @@ class ForumHolder extends Page {
 	 */
 	function Forums() {
 	 	$categories = DataObject::get("ForumCategory", "\"ForumHolderID\"={$this->ID}");	
+
 		if($categories && $this->ShowInCategories) {
-			if (!$categories) return new DataObjectSet();
 			foreach($categories as $category) {
-				$category->CategoryForums = DataObject::get("Forum", "\"CategoryID\" = '$category->ID' AND \"ParentID\" = '$this->ID'");
+				$category->CategoryForums = new DataObjectSet();
+				
+				$forums = DataObject::get("Forum", "\"CategoryID\" = '$category->ID' AND \"ParentID\" = '$this->ID'");
+				
+				if($forums) {
+					foreach($forums as $forum) {
+						if($forum->canView()) {
+							$category->CategoryForums->push($forum);
+						}
+					}
+				}
+				
+				if($category->CategoryForums->Count() < 1) $categories->remove($category);
 			}
+			
 			return $categories;
 		}
-		return DataObject::get("Forum", "\"ParentID\" = '$this->ID'");
+		
+		$forums = DataObject::get("Forum", "\"ParentID\" = '$this->ID'");
+		Debug::show($forums);
+		if($forums) {
+			foreach($forums as $forum) {
+				if(!$forum->canView()) $forums->remove($forum);
+			}
+		}
+		
+		return $forums;
 	}
 
 	/**

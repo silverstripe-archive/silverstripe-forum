@@ -14,13 +14,14 @@ class ForumHolderTest extends FunctionalTest {
 	 * @return unknown_type
 	 */
 	function testGetForums() {
-		// Test ForumHolder::Forums() on 'fh', from which we expect 2 forums
 		$fh = $this->objFromFixture("ForumHolder", "fh");
 		$fh_controller = new ForumHolder_Controller($fh);
-		$this->assertTrue($fh_controller->Forums()->Count() == 2, "fh has 2 forums");
+		
+		// one forum which is viewable.
+		$this->assertTrue($fh_controller->Forums()->Count() == 1, "fh has 1 forum");
 
 		// Test ForumHolder::Categories() on 'fh', from which we expect 2 categories
-		$this->assertTrue($fh_controller->Categories()->Count() == 2, "fh first forum has two categories");
+		$this->assertTrue($fh_controller->Categories()->Count() == 2, "fh has two categories");
 
 		// Test what we got back from the two categories. The first expects 2 forums, the second
 		// expects none.
