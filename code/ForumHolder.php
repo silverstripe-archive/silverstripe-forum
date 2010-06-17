@@ -275,7 +275,7 @@ class ForumHolder extends Page {
 		}
 		
 		$forums = DataObject::get("Forum", "\"ParentID\" = '$this->ID'");
-		Debug::show($forums);
+
 		if($forums) {
 			foreach($forums as $forum) {
 				if(!$forum->canView()) $forums->remove($forum);
