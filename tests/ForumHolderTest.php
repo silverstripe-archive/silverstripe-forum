@@ -56,7 +56,7 @@ class ForumHolderTest extends FunctionalTest {
 	function testGetNumPosts() {
 		// test holder with posts
 		$fh = $this->objFromFixture("ForumHolder", "fh");
-		$this->assertEquals($fh->getNumPosts(), 13);
+		$this->assertEquals($fh->getNumPosts(), 21);
 		
 		// test holder that doesn't have posts
 		$fh2 = $this->objFromFixture("ForumHolder", "fh2");
@@ -88,7 +88,7 @@ class ForumHolderTest extends FunctionalTest {
 		$fh = $this->objFromFixture("ForumHolder", "fh");
 
 		// make sure all the posts are included
-		$this->assertEquals($fh->getRecentPosts()->Count(), 13);
+		$this->assertEquals($fh->getRecentPosts()->Count(), 21);
 
 		// check they're in the right order (well if the first and last are right its fairly safe)
 		$this->assertEquals($fh->getRecentPosts()->First()->Content, "This is the last post to a long thread");
@@ -105,14 +105,15 @@ class ForumHolderTest extends FunctionalTest {
 		// test trying to get recent posts specific to a forum which has posts
 		$forum = $this->objFromFixture("Forum", "general");
 
-		$this->assertEquals($fh->getRecentPosts(50, $forum->ID)->Count(), 13);
+		$this->assertEquals($fh->getRecentPosts(50, $forum->ID)->Count(), 21);
 		$this->assertEquals($fh->getRecentPosts(50, $forum->ID)->First()->Content, "This is the last post to a long thread");
 		$this->assertEquals($fh->getRecentPosts(50, $forum->ID)->Last()->Content, "This is my first post");
 		
 		// test trying to filter by a specific thread
 		$thread = $this->objFromFixture("ForumThread","Thread1");
 		
-		$this->assertEquals($fh->getRecentPosts(50, null, $thread->ID)->Count(), 9);
+		$this->assertEquals($fh->getRecentPosts(50, null, $thread->ID)->Count(), 17);
+		$this->assertEquals($fh->getRecentPosts(10, null, $thread->ID)->Count(), 10);
 		$this->assertEquals($fh->getRecentPosts(50, null, $thread->ID)->First()->Content, 'This is the last post to a long thread');
 		
 		// test limiting the response

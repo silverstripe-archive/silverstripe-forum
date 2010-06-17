@@ -223,12 +223,59 @@ Post:
         Forum: =>Forum.general
         
     Post9:
-        Content: This is a post to a long thread
+        Content: This is a post to a long thread. On an 8 displayed forum. This will be the last
         Thread: =>ForumThread.Thread1
         Author: =>Member.test2
         Forum: =>Forum.general
               
     Post10:
+        Content: This is post 1 on page 2
+        Thread: =>ForumThread.Thread1
+        Author: =>Member.test2
+        Forum: =>Forum.general
+    Post11:
+        Content: This is post 2 on page 2
+        Thread: =>ForumThread.Thread1
+        Author: =>Member.test1
+        Forum: =>Forum.general
+
+    Post12:
+        Content: This is post 3 on page 2
+        Thread: =>ForumThread.Thread1
+        Author: =>Member.test2
+        Forum: =>Forum.general
+
+    Post13:
+        Content: This is post 4 on page 2
+        Thread: =>ForumThread.Thread1
+        Author: =>Member.test2
+        Forum: =>Forum.general
+
+    Post14:
+        Content: This is post 5 on page 2
+        Thread: =>ForumThread.Thread1
+        Author: =>Member.test1
+        Forum: =>Forum.general
+
+    Post15:
+        Content: This is post 6 on page 2
+        Thread: =>ForumThread.Thread1
+        Author: =>Member.test2
+        Forum: =>Forum.general
+
+    Post16:
+        Content: This is post 7 on page 2
+        Thread: =>ForumThread.Thread1
+        Author: =>Member.test2
+        Forum: =>Forum.general
+
+    Post17:
+        Content: This is a post to a long thread. On an 8 displayed forum. This will be the last
+        Thread: =>ForumThread.Thread1
+        Author: =>Member.test2
+        Forum: =>Forum.general
+            
+    Post18:
         Content: This is the last post to a long thread
         Thread: =>ForumThread.Thread1
         Author: =>Member.test2

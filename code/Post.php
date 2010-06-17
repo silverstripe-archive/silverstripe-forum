@@ -237,13 +237,12 @@ class Post extends DataObject {
 		$count = DB::query("
 			SELECT COUNT(\"ID\") 
 			FROM \"Post\" 
-			WHERE \"ThreadID\" = '$this->ThreadID' AND \"Status\" = 'Moderated' AND \"ID\" <= $this->ID
+			WHERE \"ThreadID\" = '$this->ThreadID' AND \"Status\" = 'Moderated' AND \"ID\" < $this->ID
 		")->value();
+
+		$page = floor($count / Forum::$posts_per_page);
 		
-		// round it to the correct page
-		$count = ($count < (Forum::$posts_per_page + 1)) ? 0 : floor($count/Forum::$posts_per_page);
-		
-		return ($action == "show") ? $link . '?start='.$count.'#post' . $this->ID : $link;
+		return ($action == "show") ? $link . '?start='. $page .'#post' . $this->ID : $link;
 	}
 }
 
