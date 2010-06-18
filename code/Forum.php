@@ -826,7 +826,7 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @return Array
 	 */
-	function show() {
+ 	function show() {
 		$title = Convert::raw2xml($this->Title);
 		
 		if($thread = $this->getForumThread()) {

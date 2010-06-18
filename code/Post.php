@@ -240,9 +240,16 @@ class Post extends DataObject {
 			WHERE \"ThreadID\" = '$this->ThreadID' AND \"Status\" = 'Moderated' AND \"ID\" < $this->ID
 		")->value();
 
-		$page = floor($count / Forum::$posts_per_page);
+		// count is pages which are before this page3
+		// 8th = 0
+		// 9th = 8
+		// 10th = 8
 		
-		return ($action == "show") ? $link . '?start='. $page .'#post' . $this->ID : $link;
+	//	Debug::show($count);
+	//	Debug::show(Forum::$posts_per_page);
+		$start = ($count >= Forum::$posts_per_page) ? floor($count / Forum::$posts_per_page) * Forum::$posts_per_page : 0;
+		
+		return ($action == "show") ? $link . '?start='. $start .'#post' . $this->ID : $link;
 	}
 }
 

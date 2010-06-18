@@ -30,6 +30,7 @@ class PostTest extends FunctionalTest {
 	
 	function testShowLink() {
 		$post = $this->objFromFixture('Post', 'Post1');
+		Forum::$posts_per_page = 8;
 		
 		// test for show link on first page
 		$this->assertContains($post->Thread()->URLSegment .'/show/'.$post->ThreadID.'?start=0#post'.$post->ID , $post->ShowLink());
@@ -40,15 +41,15 @@ class PostTest extends FunctionalTest {
 		
 		// test for a show link on a subpage
 		$lastPost = $this->objFromFixture('Post', 'Post10');
-		$this->assertContains($lastPost->Thread()->URLSegment .'/show/'. $lastPost->ThreadID . '?start=1#post'.$lastPost->ID, $lastPost->ShowLink());
+		$this->assertContains($lastPost->Thread()->URLSegment .'/show/'. $lastPost->ThreadID . '?start=8#post'.$lastPost->ID, $lastPost->ShowLink());
 		
 		// this is the last post on page 2
 		$lastPost = $this->objFromFixture('Post', 'Post17');
-		$this->assertContains($lastPost->Thread()->URLSegment .'/show/'. $lastPost->ThreadID . '?start=1#post'.$lastPost->ID, $lastPost->ShowLink());
+		$this->assertContains($lastPost->Thread()->URLSegment .'/show/'. $lastPost->ThreadID . '?start=8#post'.$lastPost->ID, $lastPost->ShowLink());
 			
 		// test for a show link on the last subpage
 		$lastPost = $this->objFromFixture('Post', 'Post18');
-		$this->assertContains($lastPost->Thread()->URLSegment .'/show/'. $lastPost->ThreadID . '?start=2#post'.$lastPost->ID, $lastPost->ShowLink());
+		$this->assertContains($lastPost->Thread()->URLSegment .'/show/'. $lastPost->ThreadID . '?start=16#post'.$lastPost->ID, $lastPost->ShowLink());
 	}
 	
 	function testEditLink() {
