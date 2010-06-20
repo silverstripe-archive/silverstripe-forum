@@ -4,9 +4,18 @@
 	
 		<img class="userAvatar" src="$FormattedAvatar" alt="Avatar" /><br />
 		<% if ForumRank %><span class="rankingTitle expert">$ForumRank</span><br /><% end_if %>
-		<% if NumPosts %><span class="postCount">$NumPosts posts</span><% end_if %>
+		<% if NumPosts %>
+			<span class="postCount">$NumPosts 
+			<% if NumPosts = 1 %>
+				<% _t('POST', 'Post') %>
+			<% else %>
+				<% _t('POSTS', 'Posts') %>
+			<% end_if %>
+			</span>
+		<% end_if %>
 	<% end_control %>
 </div>
+
 <div class="posterContent">
 	<div class="quickReply">
 		<% control Top %>
@@ -16,7 +25,7 @@
 		<% end_control %>
 	</div>
 	<h4><a href="$Link">$Title <img src="forum/images/right.png" alt="Link to this post" title="Link to this post" /></a></h4>
-	<p class="postDate">$Created.Long at $Created.Time 
+	<p class="postDate">$Created.Long at $Created.Time
 	<% if Updated %>
 		<strong><% _t('LASTEDITED','Last edited:') %> $Updated.Long <% _t('AT') %> $Updated.Time</strong>
 	<% end_if %></p>
