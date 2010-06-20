@@ -13,6 +13,8 @@ class ForumMigrationTask extends BuildTask {
 	protected $description = "Upgrades your 0.2 forum version to the 0.3 structure";
 	
 	function run($request) {
+		set_time_limit(0);
+
 		// check to see if this has been run before. If it has then we will have already
 		// have removed the parentID field
 		$checkForMigration = DB::query("SHOW COLUMNS FROM \"Post\"")->column();
