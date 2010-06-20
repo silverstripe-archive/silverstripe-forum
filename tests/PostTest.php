@@ -112,6 +112,19 @@ class PostTest extends FunctionalTest {
 		$this->assertFalse(strstr($memberOthersPost->DeleteLink(), "id=\"firstPost\""));
 	}
 	
+	function testGetUpdated() {
+		$post = new Post();
+		$post->Content = "Original Content";
+		$post->write();
+
+		$this->assertNull($post->Updated);
+		sleep(2);
+		$post->Content = "Some Content Now";
+		$post->write();
+		
+		$this->assertNotNull($post->Updated);
+	}
+	
 	function testRSSContent() {
 		// @todo escaping tests. They are handled by bbcode parser tests?
 	}

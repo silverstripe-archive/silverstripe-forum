@@ -941,22 +941,24 @@ class Forum_Controller extends Page_Controller {
 	 * @return bool
 	 */
 	function deletepost() {
-		if($this->isAdmin() && isset($this->urlParams['ID'])) {
+		if(isset($this->urlParams['ID'])) {
 			if($post = DataObject::get_by_id('Post', (int) $this->urlParams['ID'])) {
-	
-				// delete the whole thread if this is the first one
-				if($post->isFirstPost()) {
-					$thread = DataObject::get_by_id("ForumThread", $post->ThreadID);
-					$thread->delete();
-				}
-				else {
-					// delete the post
-					$post->delete();
-				}
+				if($post->canEdit()) {
+					// delete the whole thread if this is the first one
+					if($post->isFirstPost()) {
+						$thread = DataObject::get_by_id("ForumThread", $post->ThreadID);
+						$thread->delete();
+					}
+					else {
+						// delete the post
+						$post->delete();
+					}
 				
-				return true;
+					return true;
+				}
 			}
 	  	}
+	
 		return false;
 	}
 	

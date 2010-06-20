@@ -3,7 +3,7 @@
 /**
  * Forum Post Object. Contains a single post by the user. A thread is generated with multiple posts
  * 
- * @todo Implement the Moderation.
+ * @todo Implement Moderation.
  *
  * @package forum
  */
@@ -37,7 +37,7 @@ class Post extends DataObject {
 	);
 
 	/**
-	 * Update all the posts to have a forum ID of their thread ID
+	 * Update all the posts to have a forum ID of their thread ID. 
 	 */
 	function requireDefaultRecords() {
 		$posts = DataObject::get('Post', "\"ForumID\" = 0 AND \"ThreadID\" > 0");
@@ -123,7 +123,7 @@ class Post extends DataObject {
 	/**
 	 * Return the last edited date, if it's different from created
 	 */
-	function Updated() {
+	function getUpdated() {
 		if($this->LastEdited != $this->Created) return $this->LastEdited;
 	}
 	
@@ -240,13 +240,6 @@ class Post extends DataObject {
 			WHERE \"ThreadID\" = '$this->ThreadID' AND \"Status\" = 'Moderated' AND \"ID\" < $this->ID
 		")->value();
 
-		// count is pages which are before this page3
-		// 8th = 0
-		// 9th = 8
-		// 10th = 8
-		
-	//	Debug::show($count);
-	//	Debug::show(Forum::$posts_per_page);
 		$start = ($count >= Forum::$posts_per_page) ? floor($count / Forum::$posts_per_page) * Forum::$posts_per_page : 0;
 		
 		return ($action == "show") ? $link . '?start='. $start .'#post' . $this->ID : $link;
