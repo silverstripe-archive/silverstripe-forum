@@ -145,6 +145,10 @@ ForumThread:
         Title: Readonly Thread
         IsReadOnly: true
         Forum: =>Forum.general
+    
+    ThreadWhichIsInReadonlyForum:
+        Title: Thread is set to a readonly forum but you can edit this because its not readonly
+        Forum: =>Forum.noPostingForum
         
 ForumThread_Subscription:
     Subscription1: 

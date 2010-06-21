@@ -67,4 +67,26 @@ class ForumThreadTest extends FunctionalTest {
 		$this->assertFalse(DataObject::get_by_id('Post', $postID));
 		$this->assertFalse(DataObject::get_by_id('ForumThread', $thread->ID));
 	}
+	
+	function testCanCreate() {
+		// read only thread. No one should be able to post to this (apart from the )
+		$readonly = $this->objFromFixture('ForumThread', 'ReadonlyThread');
+		
+		$member = $this->objFromFixture('Member', 'moderator');
+		$this->session()->inst_set('loggedInAs', $member->ID);
+		
+		$this->assertFalse($readonly->canCreate());
+		
+		// normal thread. They can post to these
+		$thread = $this->objFromFixture('ForumThread', 'Thread1');
+		$this->assertTrue($thread->canCreate());
+		
+		// normal thread in a read only 
+		$disabledforum = $this->objFromFixture('ForumThread', 'ThreadWhichIsInReadonlyForum');
+		$this->assertFalse($disabledforum->canCreate());
+		
+		// even forcing to not readonly it inherits the forum rights
+		$disabledforum->IsReadOnly = false;
+		$this->assertFalse($disabledforum->canCreate());
+	}
 }

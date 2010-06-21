@@ -44,7 +44,7 @@ class ForumThread extends DataObject {
 	 * @return bool
 	 */
 	function canEdit() {
-		return $this->Forum()->canEdit();
+		return (!$this->IsReadOnly && $this->Forum()->canEdit()) ? true : false;
 	}
 	
 	/**
@@ -58,12 +58,12 @@ class ForumThread extends DataObject {
 	}
 	
 	/**
-	 * Check to see if the user can create new posts in this thread.
+	 * Check to see if the user can create new posts in this thread rather than new threads
 	 *
 	 * @return bool
 	 */
 	function canCreate() {
-		return $this->Forum()->canPost();
+		return (!$this->IsReadOnly && $this->Forum()->canPost()) ? true : false;
 	}
 	
 	/** 

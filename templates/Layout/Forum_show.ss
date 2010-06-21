@@ -16,7 +16,7 @@
 				<a href="#Footer" title="<% _t('CLICKGOTOEND','Click here to go the end of this post') %>"><% _t('GOTOEND','Go to End') %></a>
 			</td>
 			<td class="replyButton">
-				<% if canCreate %>
+				<% if ForumThread.canCreate %>
 					<a href="$ReplyLink" title="<% _t('CLICKREPLY','Click here to reply to this topic') %>"><% _t('REPLY','Reply') %></a>
 				<% end_if %>
 				<% if CurrentMember %>
@@ -64,7 +64,7 @@
 				<a href="#Header" title="<% _t('CLICKGOTOTOP','Click here to go the top of this post') %>"><% _t('GOTOTOP','Go to Top') %></a>
 			</td>
 			<td class="replyButton">
-				<% if canCreate %>
+				<% if ForumThread.canCreate %>
 					<a href="$ReplyLink" title="<% _t('CLICKREPLY', 'Click to Reply') %>"><% _t('REPLY', 'Reply') %></a>
 				<% end_if %>
 				
