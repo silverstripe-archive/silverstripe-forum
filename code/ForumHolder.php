@@ -333,10 +333,10 @@ class ForumHolder extends Page {
 		$lastPostID = (int) $lastPostID;
 		
 		// last post viewed
-		if($lastPostID > 0) $filter[] = "\"ID\" > '". Convert::raw2sql($lastPostID) ."'";
+		if($lastPostID > 0) $filter[] = "\"Post\".\"ID\" > '". Convert::raw2sql($lastPostID) ."'";
 		
 		// last time visited
-		if($lastVisit) $filter[] = "\"Created\" > '". Convert::raw2sql($lastVisit) ."'";
+		if($lastVisit) $filter[] = "\"Post\".\"Created\" > '". Convert::raw2sql($lastVisit) ."'";
 
 		// limit to a forum
 		if($forumID) $filter[] = "\"ForumThread\".\"ForumID\" = '". Convert::raw2sql($forumID) ."'";
@@ -716,11 +716,11 @@ class ForumHolder_Controller extends Page_Controller {
 		
 		$data = array('last_created' => null, 'last_id' => null);
 
-    	if(!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && !isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+		if(!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && !isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
 			// just to get the version data..
 			$this->getNewPostsAvailable(null, null, $forumID, $threadID, &$data);
 			
-      		// No information provided by the client, just return the last posts
+			// No information provided by the client, just return the last posts
 			$rss = new RSSFeed(
 				$this->getRecentPosts(50, $forumID, $threadID), 
 				$this->Link() . 'rss',
@@ -732,9 +732,7 @@ class ForumHolder_Controller extends Page_Controller {
 				$data['last_created'], 
 				$data['last_id']
 			);
-			
 			$rss->outputToBrowser();
-
     	} else {
 	
 			// Return only new posts, check the request headers!

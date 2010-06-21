@@ -208,16 +208,17 @@ class Post extends DataObject {
 		}
 	}
 
-	function RSSContent() {
+	function getRSSContent() {
 		$parser = new BBCodeParser($this->Content);
 		$html = $parser->parse();
 		if($this->Thread()) $html .= '<br><br>' . sprintf(_t('Post.POSTEDTO',"Posted to: %s"),$this->Thread()->Title);
 		$html .= " ". $this->ShowLink() . " | " .$this->ReplyLink();
+
 		return $html;
 	}
 
 	
-	function RSSAuthor() {
+	function getRSSAuthor() {
 		$author = $this->Author();
 		return $author->Nickname;
 	}
