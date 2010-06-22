@@ -44,8 +44,9 @@ class ForumMemberProfile extends Page_Controller {
 		$member = $this->Member() ? $this->Member() : null;
 		$nicknameText = ($member) ? ($member->Nickname) : '';
 		
-		$this->Title = sprintf(_t('ForumMemberProfile.USERPROFILE', '%s\'s User profile'), Convert::raw2xml($nicknameText));
-		
+		if($member)
+			$this->Title = sprintf(_t('ForumMemberProfile.USERPROFILE', '%s\'s User profile'), Convert::raw2xml($nicknameText));
+	
 		parent::init();
  	}
 
@@ -121,10 +122,13 @@ class ForumMemberProfile extends Page_Controller {
 	 * Show the registration form
 	 */
 	function register() {
+		$this->Title = _t('ForumMemberProfile.FORUMREGTITLE','Forum Registration');
+		$this->Subtitle = _t('ForumMemberProfile.REGISTER','Register');
+		
 		return array(
-			"Title" => _t('ForumMemberProfile.FORUMREGTITLE','Forum Registration'), 
-		 	"Subtitle" => _t('ForumMemberProfile.REGISTER','Register'),
-			"Abstract" => DataObject::get_one("ForumHolder")->ProfileAbstract,
+			"Title" => $this->Title,
+		 	"Subtitle" => $this->Subtitle,
+			"Abstract" => DataObject::get_one("ForumHolder")->ProfileAbstract
 		);
 	}
 
@@ -756,17 +760,16 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function MetaTags($includeTitle = true) {
 		$tags = "";
-		$Title = _t('ForumMemberProfile.FORUMUSERPROFILE','Forum User Profile');
-		if(Director::urlParam('Action') == "register") { 
-			_t('ForumMemberProfile.FORUMUSERREGISTER','Forum Registration');
+		$title = _t('ForumMemberProfile.FORUMUSERPROFILE','Forum User Profile');
+		
+		if(isset($this->urlParam['Action']) && $this->urlParam['Action'] == "register") { 
+			$title = _t('ForumMemberProfile.FORUMUSERREGISTER','Forum Registration');
 		}
+		
 		if($includeTitle == true) {
-			$tags .= "<title>" . $Title . "</title>\n";
+			$tags .= "<title>" . $title . "</title>\n";
 		}
 
 		return $tags;
 	}
 }
-
-
-?>

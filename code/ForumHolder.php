@@ -112,12 +112,20 @@ class ForumHolder extends Page {
 	 * @return string
 	 */
 	function Breadcrumbs() {
-		if(Director::urlParam('Action') == 'search') {
-			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('SEARCHBREADCRUMB', 'Search');
-		} elseif(Director::urlParam('Action') == 'memberlist') {
-			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('MEMBERLIST', 'Member List');
-		} elseif(Director::urlParam('Action') == 'popularthreads') {
-			return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('MOSTPOPULARTHREADS', 'Most popular threads');
+		$params = Controller::curr()->getURLParams();
+
+		if(isset($params['Action'])) {
+			switch($params['Action']) {
+				case 'search':
+					return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('SEARCHBREADCRUMB', 'Search');
+					break;
+				case 'memberlist':
+					return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('MEMBERLIST', 'Member List');
+					break;
+				case 'popularthreads':
+					return "<a href=\"{$this->Link()}\">{$this->Title}</a> &raquo; " . _t('MOSTPOPULARTHREADS', 'Most popular threads');
+					break;
+			}
 		}
 	}
 	

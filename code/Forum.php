@@ -265,11 +265,14 @@ class Forum extends Page {
 	 * @todo This is causing some errors, temporarily added is_numeric.
 	 */
 	function Post($id = null) {
-		if($id == null)
-			$id = Director::urlParam("ID");
 
-		if(is_numeric($id))
-			return DataObject::get_by_id("Post", $id);
+		if($id == null) {
+			$params = Controller::curr()->getURLParams();
+			
+			$id = (isset($params)) ? $params['ID'] : false;
+		}
+
+		return (is_numeric($id)) ? DataObject::get_by_id("Post", $id) : false;
 	}
 
 
@@ -371,6 +374,7 @@ class Forum extends Page {
 	 */
 	function CheckForumPermissions($type = "view") {
 		$member = Member::currentUser();
+		
 		switch($type) {
 			// Check posting permissions
 			case "starttopic":
@@ -574,7 +578,7 @@ class Forum_Controller extends Page_Controller {
 	 * @return String
 	 */
 	function SubscribeLink() {
-		if(Post_Subscription::already_subscribed(Director::urlParam('ID'))) {
+		if(Post_Subscription::already_subscribed($this->urlParams['ID'])) {
 			return true;
 		}
 		return false;
@@ -587,9 +591,9 @@ class Forum_Controller extends Page_Controller {
 	 * @return Boolean | Redirection for non AJAX requests
 	 */
 	function subscribe() {
-		if(Member::currentUser() && !Post_Subscription::already_subscribed(Director::urlParam('ID'))) {
+		if(Member::currentUser() && !Post_Subscription::already_subscribed($this->urlParams['ID'])) {
 			$obj = new Post_Subscription;
-			$obj->TopicID = Director::urlParam('ID');
+			$obj->TopicID = $this->urlParams['ID'];
 			$obj->MemberID = Member::currentUserID();
 			$obj->LastSent = date("Y-m-d H:i:s"); // The user was last notified right now
 			$obj->write();
@@ -609,9 +613,9 @@ class Forum_Controller extends Page_Controller {
 		$loggedIn = Member::currentUserID() ? true : false;
 		if(!$loggedIn) Security::permissionFailure($this, _t('LOGINTOUNSUBSCRIBE', 'To unsubscribe from that thread, please log in first.'));
 		
-		if(Member::currentUser() && Post_Subscription::already_subscribed(Director::urlParam('ID'))) {
+		if(Member::currentUser() && Post_Subscription::already_subscribed($this->urlParams['ID'])) {
 			$SQL_memberID = Member::currentUserID();
-			$topicID = (int) Director::urlParam('ID');
+			$topicID = (int) $this->urlParams['ID'];
 			DB::query("DELETE FROM Post_Subscription WHERE `TopicID` = '$topicID' AND `MemberID` = '$SQL_memberID'");
 			if($this->isAjax()) return true;
 			return Director::redirectBack();
@@ -1394,10 +1398,10 @@ class Forum_Controller extends Page_Controller {
 	function deleteAttachment() {
 
 		// check we were passed an id and member is logged in
-		if(!Director::urlParam('ID') || !Member::currentUser()) return false;
+		if(!$this->urlParams['ID'] || !Member::currentUser()) return false;
 		
 		// try and get the file
-		$file = DataObject::get_by_id("Post_Attachment", (int) Director::urlParam('ID'));
+		$file = DataObject::get_by_id("Post_Attachment", (int) $this->urlParams['ID']);
 	
 		// woops no file with that ID
 		if(!$file) return false;
@@ -1719,7 +1723,7 @@ class Forum_Controller extends Page_Controller {
 	 * @return Form
 	 */
 	function AdminFormFeatures() {
-		$id = Convert::raw2sql(Director::urlParam('ID'));
+		$id = Convert::raw2sql($this->urlParams['ID']);
 		
 		// Check to see if sticky
 		$checkedSticky = false;
