@@ -41,6 +41,7 @@
 						<% control Thread %>
 							<a class="topicTitle" href="$Link" title="<% sprintf(_t('Forum.ss.GOTOTHISTOPIC',"Go to the %s topic"),$Title) %>">$Title</a>
 						<% end_control %>
+					
 						<p>$Content.ContextSummary <span class="dateInfo">$Created.Ago</span></p>
 					</td>
 				</tr>

@@ -34,18 +34,18 @@
 					<% end_if %>
 				</select>
 				
-				<% if CanShowSearch %>
-					<div id="ForumSearch">
-						<form action="$Link(search)" method="get">
-							<fieldset>
-								<legend><% _t('SEARCHBUTTON','Search Legend') %></legend>
-						
-								<input class="text" type="text" name="Search" />
-								<input class="submit" type="submit" value="<% _t('SEARCHBUTTON','Search') %>"/>
-							</fieldset>
-						</form>
-					</div>
-				<% end_if %>
+
+				<div id="ForumSearch">
+					<form action="$Link(search)" method="get">
+						<fieldset>
+							<legend><% _t('SEARCHBUTTON','Search') %></legend>
+					
+							<input class="text" type="text" name="Search" />
+							<input class="submit" type="submit" value="<% _t('SEARCHBUTTON','Search') %>"/>
+						</fieldset>
+					</form>
+				</div>
+
 			<% end_control %>
 		</div>
 		<div class="featureLeft">

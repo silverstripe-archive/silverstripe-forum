@@ -422,17 +422,6 @@ class ForumHolder extends Page {
 	function getForumHolder() {
 		return $this;
 	}
-	
-	
-	/**
-	 * Temporary check to prevent the search options showing up for anything other than MySQL sites
-	 * When fulltext search methods have been finished for the other databases, then remove this.
-	 *
-	 * @return bool
-	 */
-	function CanShowSearch(){
-		return (is_a(DB::getConn(), 'MySQLDatabase')) ? true : false;
-	}
 }
 
 
@@ -569,139 +558,47 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return array Returns an array to render the search results.
 	 */
 	function search() {
-		$keywords = (isset($_REQUEST['Search'])) ? $_REQUEST['Search'] : null;
-		$order = Convert::raw2xml((isset($_REQUEST['order'])) ? $_REQUEST['order'] : null);
+		$keywords	= (isset($_REQUEST['Search'])) ? Convert::raw2xml($_REQUEST['Search']) : null;
+		$order		= (isset($_REQUEST['order'])) ? Convert::raw2xml($_REQUEST['order']) : null;
+		$start		= (isset($_REQUEST['start'])) ? (int) $_REQUEST['start'] : 0;
+
+		$abstract = ($keywords) ? "<p>" . sprintf(_t('ForumHolder.SEARCHEDFOR',"You searched for '%s'."),$keywords) . "</p>": null;
 		
-		$Abstract = !empty($_REQUEST['Search'])
-			? "<p>" . sprintf(_t('ForumHolder.SEARCHEDFOR',"You searched for '%s'."),Convert::raw2xml($keywords)) . "</p>"
-			: null;
+		// get the results of the query from the current search engine
+		$search = ForumSearch::get_search_engine();	
+		
+		if($search) {
+			$engine = new $search();
+
+			$results = $engine->getResults($this->ID, $keywords, $order, $start);
+		}
+		else {
+			$results = false;
+		}
+
+		
+		// if the user has requested this search as an RSS feed then output the contents as xml
+		// rather than passing it to the template
 		if(isset($_REQUEST['rss'])) {
 			$rss = new RSSFeed($this->SearchResults(), $this->Link(), _t('ForumHolder.SEARCHRESULTS','Search results'), "", "Title", "RSSContent", "RSSAuthor");
+			
 			return $rss->outputToBrowser();	
 		}
+		
+		// attach a link to a RSS feed version of the search results
 		$rssLink = $this->Link() ."search/?Search=".urlencode($keywords). "&amp;order=".urlencode($order)."&amp;rss";
 		RSSFeed::linkToFeed($rssLink, _t('ForumHolder.SEARCHRESULTS','Search results'));
 		
 		return array(
-			"Subtitle" 	=> DBField::create('Text', _t('ForumHolder.SEARCHRESULTS','Search results')),
-			"Abstract" 	=> DBField::create('HTMLText', $Abstract),
-			"Query"	 	=> DBField::create('Text', $keywords),
-			"Order" 	=> DBField::create('Text', ($order) ? $order : "relevance"),
-			"RSSLink" 	=> DBField::create('HTMLText', $rssLink)
+			"Subtitle"		=> DBField::create('Text', _t('ForumHolder.SEARCHRESULTS','Search results')),
+			"Abstract"		=> DBField::create('HTMLText', $abstract),
+			"Query"			=> DBField::create('Text', $keywords),
+			"Order"			=> DBField::create('Text', ($order) ? $order : "relevance"),
+			"RSSLink"		=> DBField::create('HTMLText', $rssLink),
+			"SearchResults"	=> $results
 		);
 	}
 	
-	/**
-	 * Returns the search results.
-	 * 
-	 * Perform a specific DB query in order to get relevant search
-	 * results, this means we can sort by relevancy score, thanks
-	 * to MySQL FULLTEXT searches.
-	 * 
-	 * @todo Specific to MySQL at this point.
-	 * 
-	 * @return DataObjectSet
-	 */
-	function SearchResults() {
-		$searchQuery = Convert::raw2sql($_REQUEST['Search']);
-
-		// Search for authors
-		$SQL_queryParts = split(' +', trim($searchQuery));
-		foreach($SQL_queryParts as $SQL_queryPart ) { 
-			$SQL_clauses[] = "\"FirstName\" LIKE '%$SQL_queryPart%' OR \"Surname\" LIKE '%$SQL_queryPart' OR \"Nickname\" LIKE '%$SQL_queryPart'";
-		}
-
-		$potentialAuthors = DataObject::get('Member', implode(" OR ", $SQL_clauses), '"ID" ASC');
-		$SQL_authorClause = '';
-		$SQL_potentialAuthorIDs = array();
-		
-		if($potentialAuthors) {
-			foreach($potentialAuthors as $potentialAuthor) {
-				$SQL_potentialAuthorIDs[] = $potentialAuthor->ID;
-			}
-			$SQL_authorList = implode(", ", $SQL_potentialAuthorIDs);
-			$SQL_authorClause = "OR \"Post\".\"AuthorID\" IN ($SQL_authorList)";
-		}
-		// Work out what sorting method
-		$sort = "\"RelevancyScore\" DESC";
-		if(isset($_GET['order'])) {
-			switch($_GET['order']) {
-				case 'date':
-					$sort = "\"Post\".\"Created\" DESC";
-					break;
-				case 'title':
-					$sort = "\"ForumThread\".\"Title\" ASC";
-					break;
-			}
-		}
-
-		// Perform the search
-		if(!empty($_GET['start'])) $limit = (int) $_GET['start'];
-		else $limit = $_GET['start'] = 0;
-
-		$baseSelect="SELECT \"Post\".\"ID\", \"Post\".\"Created\", \"Post\".\"LastEdited\", \"Post\".\"ClassName\", \"ForumThread\".\"Title\", \"Post\".\"Content\", \"Post\".\"ThreadID\", \"Post\".\"AuthorID\", \"ForumThread\".\"ForumID\"";
-		$baseFrom="FROM \"Post\"
-			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
-			JOIN \"" . ForumHolder::baseForumTable() . "\" \"ForumPage\" ON \"ForumThread\".\"ForumID\"=\"ForumPage\".\"ID\"";
-		
-		if(DB::getConn()->getDatabaseServer()=='postgresql'){
-			//TODO: insert relevancy ordering here
-			$queryString = "
-				$baseSelect
-				$baseFrom	
-				, to_tsquery('english', '$searchQuery') AS q";
-			
-			$limitString = "LIMIT 10 OFFSET $limit;";
-		} elseif(DB::getConn()->getDatabaseServer()=='mssql'){
-			//TODO: fix this to use MSSQL's version of limit/offsetB
-			$queryString = "
-				$baseSelect
-				$baseFrom
-				WHERE
-				(CONTAINS(\"ForumThread\".\"Title\", '$searchQuery') OR CONTAINS(\"Post\".\"Content\", '$searchQuery')";
-				
-			$limitString = false;
-		} else {
-			// MySQL
-			$queryString = "
-				$baseSelect,
-				MATCH (\"Post\".\"Content\") AGAINST ('$searchQuery') AS RelevancyScore
-				$baseFrom
-				WHERE
-					MATCH (\"ForumThread\".\"Title\", \"Post\".\"Content\") AGAINST ('$searchQuery' IN BOOLEAN MODE)
-					$SQL_authorClause
-					AND \"ForumPage\".\"ParentID\"='{$this->ID}'
-				ORDER BY $sort";
-			
-			$limitString = " LIMIT $limit, 10;";
-		}
-
-		// Find out how many posts that match with no limit
-		$allPosts = DB::query($queryString);
-		
-		// Get the 10 posts from the starting record
-		if($limitString) {
-			$query = DB::query("
-				$queryString
-				$limitString
-			");
-		}
-		else {
-			$query = $allPosts;
-		}
-		
-		$allPostsCount = $allPosts ? $allPosts->numRecords() : 0;
-		
-		$baseClass = new Post();
-		$postsSet = $baseClass->buildDataObjectSet($query);
-		
-		if($postsSet) {
-			$postsSet->setPageLimits($limit, 10, $allPostsCount);
-		}
-		
-		return $postsSet ? $postsSet: new DataObjectSet();
-	}
-
 	/**
 	 * Get the RSS feed
 	 *

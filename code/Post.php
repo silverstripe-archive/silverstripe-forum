@@ -23,7 +23,7 @@ class Post extends DataObject {
 		"Updated" => "SS_Datetime",
 		"RSSContent" => "HTMLText",
 		"RSSAuthor" => "Varchar",
-		"Content" => "Text"
+		"Content" => "HTMLText"
 	);
 
 	static $has_one = array(
