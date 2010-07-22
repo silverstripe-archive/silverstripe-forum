@@ -176,9 +176,9 @@ class Forum extends Page {
 		$fields->addFieldToTab("Root.Access", new TreeDropdownField("ForumViewersGroupID", "Group"));
 		$fields->addFieldToTab("Root.Access", new HeaderField(_t('Forum.ACCESSPOST','Who can post to the forum?'), 2));
 		$fields->addFieldToTab("Root.Access", new OptionsetField("ForumPosters", "", array(
-		  	"Anyone" => _t('Forum.READANYONE'),
-		  	"LoggedInUsers" => _t('Forum.READLOGGEDIN'),
-		  	"OnlyTheseUsers" => _t('Forum.READLIST'),
+		  	"Anyone" => _t('Forum.READANYONE', 'Anyone'),
+		  	"LoggedInUsers" => _t('Forum.READLOGGEDIN', 'Logged-in users'),
+		  	"OnlyTheseUsers" => _t('Forum.READLIST', 'Only these people (choose from list)'),
 			"NoOne" => _t('Forum.READNOONE', 'Nobody. Make Forum Read Only')
 		)));
 		$fields->addFieldToTab("Root.Access", new TreeDropdownField("ForumPostersGroup", "Group"));
