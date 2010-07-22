@@ -181,7 +181,7 @@ class Forum extends Page {
 		  	"OnlyTheseUsers" => _t('Forum.READLIST', 'Only these people (choose from list)'),
 			"NoOne" => _t('Forum.READNOONE', 'Nobody. Make Forum Read Only')
 		)));
-		$fields->addFieldToTab("Root.Access", new TreeDropdownField("ForumPostersGroup", "Group"));
+		$fields->addFieldToTab("Root.Access", new TreeDropdownField("ForumPostersGroupID", "Group"));
 
 		$fields->addFieldToTab("Root.Access", new OptionsetField("CanAttachFiles", _t('Forum.ACCESSATTACH','Can users attach files?'), array(
 			"1" => _t('Forum.YES','Yes'),
