@@ -3,7 +3,7 @@ ForumViewersGroupHide = function() {
 }
 
 ForumPostersGroupHide = function() {
-	$('ForumPostersGroup').style.display = "none";
+	$('ForumPostersGroupID').style.display = "none";
 }
 
 Behaviour.register({
@@ -27,12 +27,12 @@ Behaviour.register({
 	
 	'#Form_EditForm_ForumPosters_OnlyTheseUsers': {
 		onclick: function() {
-			$('ForumPostersGroup').style.display = "block";
+			$('ForumPostersGroupID').style.display = "block";
 		},
 		initialize: function() {
 			if($('Form_EditForm_ForumPosters_OnlyTheseUsers')) {
-				if($('Form_EditForm_ForumPosters_OnlyTheseUsers').checked) $('ForumPostersGroup').style.display = "block";
-				else $('ForumPostersGroup').style.display = "none";
+				if($('Form_EditForm_ForumPosters_OnlyTheseUsers').checked) $('ForumPostersGroupID').style.display = "block";
+				else $('ForumPostersGroupID').style.display = "none";
 			}
 		}
 	},
