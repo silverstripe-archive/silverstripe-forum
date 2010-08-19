@@ -220,8 +220,8 @@ class ForumMemberProfile extends Page_Controller {
 		$form->saveInto($member);
 				
 		// check password fields are the same before saving
-		if($data['Password'] == $data['ConfirmPassword']) {
-			$member->Password = $data['Password'];
+		if($data['Password']['_Password'] == $data['Password']['_ConfirmPassword']) {
+			$member->Password = $data['Password']['_Password'];
 		} else {
 			$form->addErrorMessage("Password",
 				_t('ForumMemberProfile.PASSNOTMATCH','Both passwords need to match. Please try again.'),
@@ -465,7 +465,10 @@ class ForumMemberProfile extends Page_Controller {
 	 * @return Form Returns the edit profile form.
 	 */
 	function EditProfileForm() {
-		$member = $this->Member();
+
+	    $member = $this->Member();
+
+        if(isset($member)){
 		$show_openid = (isset($member->IdentityURL) && !empty($member->IdentityURL));
 
 		$fields = $member->getForumFields($show_openid);
@@ -485,7 +488,8 @@ class ForumMemberProfile extends Page_Controller {
 			return $form;
 		} else {
 			return null;
-		}
+		    }
+        }
 	}
 
 
