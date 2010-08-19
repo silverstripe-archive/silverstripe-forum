@@ -151,7 +151,7 @@ class ForumMemberProfile extends Page_Controller {
 			new FieldSet(new FormAction("doregister", "Register")),
 			($use_openid)
 				? new RequiredFields("Nickname", "Email")
-				: new RequiredFields("Nickname", "Email", "Password", "ConfirmPassword")
+				: new RequiredFields("Nickname", "Email", "Password")
 		);
 
 		$member = new Member();
