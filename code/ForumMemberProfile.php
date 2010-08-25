@@ -151,7 +151,7 @@ class ForumMemberProfile extends Page_Controller {
 			new FieldSet(new FormAction("doregister", "Register")),
 			($use_openid)
 				? new RequiredFields("Nickname", "Email")
-				: new RequiredFields("Nickname", "Email", "Password")
+				: new RequiredFields("Nickname", "Email", "Password", "ConfirmPassword")
 		);
 
 		$member = new Member();
@@ -220,8 +220,8 @@ class ForumMemberProfile extends Page_Controller {
 		$form->saveInto($member);
 				
 		// check password fields are the same before saving
-		if($data['Password']['_Password'] == $data['Password']['_ConfirmPassword']) {
-			$member->Password = $data['Password']['_Password'];
+		if($data['Password'] == $data['ConfirmPassword']) {
+                 $member->Password = $data['Password']; 
 		} else {
 			$form->addErrorMessage("Password",
 				_t('ForumMemberProfile.PASSNOTMATCH','Both passwords need to match. Please try again.'),
