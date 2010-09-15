@@ -213,9 +213,11 @@ class Forum extends Page {
 					_t('MODERATORS', 'Moderators for this forum'),
 					null,
 					'Forum',
-					'Nickname'
-				),
-				'Content'
+					'Email'
+					//need to use emails here because user nicknames are:
+					// (1) not unique
+					// (2) can have spaces (default tag separator is a space)
+				)
 			);
 		} else {
 			$fields->addFieldToTab('Root.Content.Moderators', new LiteralField('ModeratorWarning', '<p>Please install the <a href="http://silverstripe.org/tag-field-module/" target="_blank">TagField module</a> to manage moderators for this forum.</p>'));
