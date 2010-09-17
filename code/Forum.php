@@ -632,7 +632,7 @@ class Forum_Controller extends Page_Controller {
 				foreach($attachmentList as $attachment) {
 					$attachments .= "<li class='attachment-$attachment->ID'>$attachment->Name [<a href='{$link}deleteattachment/$attachment->ID' rel='$attachment->ID' class='deleteAttachment'>". _t('Forum.REMOVE','remove') ."</a>]</li>";
 				}
-				$attachments .= "<ul></div>";
+				$attachments .= "</ul></div>";
 			
 				$fields->push(new LiteralField('CurrentAttachments', $attachments));
 			}
