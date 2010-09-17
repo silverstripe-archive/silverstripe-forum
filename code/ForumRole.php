@@ -166,8 +166,7 @@ class ForumRole extends DataObjectDecorator {
 			new CheckableOption('CityPublic', new TextField('City', _t('ForumRole.CITY', 'City')), true),
 			new CheckableOption("CountryPublic", new CountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true),
 			new CheckableOption("EmailPublic", new EmailField("Email", _t('ForumRole.EMAIL','Email'))),
-			new PasswordField("Password", _t('ForumRole.PASSWORD','Password')) ,
-			new PasswordField("ConfirmPassword", _t('ForumRole.CONFIRMPASS','Confirm Password')),
+			new ConfirmedPasswordField("Password", _t('ForumRole.PASSWORD','Password')),
 			new SimpleImageField('Avatar', $avatarText)
 		);
 

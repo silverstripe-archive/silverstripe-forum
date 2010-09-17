@@ -151,7 +151,7 @@ class ForumMemberProfile extends Page_Controller {
 			new FieldSet(new FormAction("doregister", "Register")),
 			($use_openid)
 				? new RequiredFields("Nickname", "Email")
-				: new RequiredFields("Nickname", "Email", "Password", "ConfirmPassword")
+				: new RequiredFields("Nickname", "Email", "Password")
 		);
 
 		$member = new Member();
@@ -218,20 +218,6 @@ class ForumMemberProfile extends Page_Controller {
 		// create the new member
 		$member = Object::create('Member');
 		$form->saveInto($member);
-				
-		// check password fields are the same before saving
-		if($data['Password'] == $data['ConfirmPassword']) {
-                 $member->Password = $data['Password']; 
-		} else {
-			$form->addErrorMessage("Password",
-				_t('ForumMemberProfile.PASSNOTMATCH','Both passwords need to match. Please try again.'),
-				"bad");
-
-			// Load errors into session and post back
-			Session::set("FormInfo.Form_RegistrationForm.data", $data);
-			return Director::redirectBack();
-		}
-
   		
 		$member->write();
 		$member->login();
@@ -285,9 +271,9 @@ class ForumMemberProfile extends Page_Controller {
 		$openid = trim($data['OpenIDURL']);
 		Session::set("FormInfo.Form_RegistrationWithOpenIDForm.data", $data);
 
-    if(strlen($openid) == 0) {
+		if(strlen($openid) == 0) {
 			if(!is_null($form)) {
-  			$form->addErrorMessage("Blurb",
+			$form->addErrorMessage("Blurb",
 					"Please enter your OpenID or your i-name.",
 					"bad");
 			}
@@ -329,12 +315,11 @@ class ForumMemberProfile extends Page_Controller {
 
 
 		// Add the fields for which we wish to get the profile data
-    $sreg_request = Auth_OpenID_SRegRequest::build(null,
-      array('nickname', 'fullname', 'email', 'country'));
+		$sreg_request = Auth_OpenID_SRegRequest::build(null, array('nickname', 'fullname', 'email', 'country'));
 
-    if($sreg_request) {
+		if($sreg_request) {
 			$auth_request->addExtension($sreg_request);
-    }
+		}
 
 
 		if($auth_request->shouldSendRedirect()) {
@@ -465,18 +450,18 @@ class ForumMemberProfile extends Page_Controller {
 	 * @return Form Returns the edit profile form.
 	 */
 	function EditProfileForm() {
-
 	    $member = $this->Member();
 
-        if(isset($member)){
-		$show_openid = (isset($member->IdentityURL) && !empty($member->IdentityURL));
-
+		if(isset($member)){
+			$show_openid = (isset($member->IdentityURL) && !empty($member->IdentityURL));
+		}
+		
 		$fields = $member->getForumFields($show_openid);
+		
 		if(singleton('Post')->DisplaySignatures()) {
 			$fields->push(new TextareaField('Signature', 'Forum Signature'));
 		}
-		$fields->push(new HiddenField("ID"));
-
+		
 		$form = new Form($this, 'EditProfileForm', $fields,
 			new FieldSet(new FormAction("dosave", _t('ForumMemberProfile.SAVECHANGES','Save changes'))),
 			new RequiredFields("Nickname")
@@ -486,10 +471,9 @@ class ForumMemberProfile extends Page_Controller {
 			$member->Password = '';
 			$form->loadDataFrom($member);
 			return $form;
-		} else {
-			return null;
-		    }
-        }
+		} 
+		
+		return null;
 	}
 
 
@@ -500,13 +484,14 @@ class ForumMemberProfile extends Page_Controller {
 	 * @param $form
 	 */
 	function dosave($data, $form) {
-		$member = DataObject::get_by_id('Member', $data['ID']);
+		$member = Member::currentUser();
 		$SQL_email = Convert::raw2sql($data['Email']);
 		$forumGroup = DataObject::get_one('Group', "Code = 'forum-members'");
 		
 		// An existing member may have the requested email that doesn't belong to the
 		// person who is editing their profile - if so, throw an error
 		$existingMember = DataObject::get_one('Member', "Email = '$SQL_email'");
+		
 		if($existingMember) {
 			if($existingMember->ID != $member->ID) {
   				$form->addErrorMessage('Blurb',
@@ -521,22 +506,6 @@ class ForumMemberProfile extends Page_Controller {
   				return;
 			}
 		}
-		
-		if($member->canEdit()) {
-			if(!empty($data['Password']) && !empty($data['ConfirmPassword'])) {
-				if($data['Password'] == $data['ConfirmPassword']) {
-					$member->Password = $data['Password'];
-				} else {
-					$form->addErrorMessage("Blurb",
-						_t('ForumMemberProfile.PASSNOTMATCH'),
-						"bad");
-					Director::redirectBack();
-				}
-			} else {
-				$form->dataFieldByName("Password")->setValue($member->Password);
-			}
-		}
-
 
 		$nicknameCheck = DataObject::get_one(
 			"Member",
@@ -557,7 +526,7 @@ class ForumMemberProfile extends Page_Controller {
 
 		$form->saveInto($member);
 		$member->write();
-		
+
 		if(!$member->inGroup($forumGroup)) {
 			$forumGroup->Members()->add($member);
 		}
