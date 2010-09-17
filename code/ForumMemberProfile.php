@@ -136,8 +136,7 @@ class ForumMemberProfile extends Page_Controller {
   				Director::redirectBack();
   				return;
   			}
-  		} elseif($this->getForumHolder()->OpenIDAvailable() && ($member = DataObject::get_one("Member",
-					"\"IdentityURL\" = '". Convert::raw2sql($data['IdentityURL']) ."'"))) {
+  		} elseif($this->getForumHolder()->OpenIDAvailable() && isset($data['IdentityURL']) && ($member = DataObject::get_one("Member", "\"IdentityURL\" = '". Convert::raw2sql($data['IdentityURL']) ."'"))) {
   						
 				if($member) {
   					$form->addErrorMessage("Blurb",
@@ -165,20 +164,6 @@ class ForumMemberProfile extends Page_Controller {
 		// create the new member
 		$member = Object::create('Member');
 		$form->saveInto($member);
-				
-		// check password fields are the same before saving
-		if($data['Password'] == $data['ConfirmPassword']) {
-			$member->Password = $data['Password'];
-		} else {
-			$form->addErrorMessage("Password",
-				_t('ForumMemberProfile.PASSNOTMATCH','Both passwords need to match. Please try again.'),
-				"bad");
-
-			// Load errors into session and post back
-			Session::set("FormInfo.Form_RegistrationForm.data", $data);
-			return Director::redirectBack();
-		}
-
   		
 		$member->write();
 		$member->login();
@@ -465,22 +450,6 @@ class ForumMemberProfile extends Page_Controller {
   				return;
 			}
 		}
-		
-		if($member->canEdit()) {
-			if(!empty($data['Password']) && !empty($data['ConfirmPassword'])) {
-				if($data['Password'] == $data['ConfirmPassword']) {
-					$member->Password = $data['Password'];
-				} else {
-					$form->addErrorMessage("Blurb",
-						_t('ForumMemberProfile.PASSNOTMATCH'),
-						"bad");
-					Director::redirectBack();
-				}
-			} else {
-				$form->dataFieldByName("Password")->setValue($member->Password);
-			}
-		}
-
 
 		$nicknameCheck = DataObject::get_one(
 			"Member",
