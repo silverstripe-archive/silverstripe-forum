@@ -242,8 +242,9 @@ class Post extends DataObject {
 		")->value();
 
 		$start = ($count >= Forum::$posts_per_page) ? floor($count / Forum::$posts_per_page) * Forum::$posts_per_page : 0;
+		$pos = ($start == 0 ? '' : "?start=$start") . ($count == 0 ? '' : "#post{$this->ID}");
 		
-		return ($action == "show") ? $link . '?start='. $start .'#post' . $this->ID : $link;
+		return ($action == "show") ? $link . $pos : $link;
 	}
 }
 
