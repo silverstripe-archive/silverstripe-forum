@@ -57,6 +57,7 @@ class ForumSphinxSearch implements ForumSearchProvider {
 	}
 	
 	public function load() {
+		DataObject::add_extension('ForumThread', 'SphinxSearchable');
 		DataObject::add_extension('Post', 'SphinxSearchable');
 	}
 }
