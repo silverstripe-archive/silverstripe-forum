@@ -33,11 +33,11 @@ class PostTest extends FunctionalTest {
 		Forum::$posts_per_page = 8;
 		
 		// test for show link on first page
-		$this->assertContains($post->Thread()->URLSegment .'/show/'.$post->ThreadID.'?start=0#post'.$post->ID , $post->ShowLink());
+		$this->assertContains($post->Thread()->URLSegment .'/show/'.$post->ThreadID, $post->ShowLink());
 		
 		// test for link that should be last post on the first page
 		$eighthPost = $this->objFromFixture('Post', 'Post9');
-		$this->assertContains($eighthPost->Thread()->URLSegment .'/show/'.$eighthPost->ThreadID.'?start=0#post'.$eighthPost->ID , $eighthPost->ShowLink());
+		$this->assertContains($eighthPost->Thread()->URLSegment .'/show/'.$eighthPost->ThreadID.'#post'.$eighthPost->ID , $eighthPost->ShowLink());
 		
 		// test for a show link on a subpage
 		$lastPost = $this->objFromFixture('Post', 'Post10');
