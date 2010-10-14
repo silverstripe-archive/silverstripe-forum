@@ -723,7 +723,7 @@ class Forum_Controller extends Page_Controller {
 		
 		if(!$post || !$post->canEdit()) {
 			$post = new Post();
-			$post->AuthorID = $member->ID;
+			$post->AuthorID = ($member) ? $member->ID : 0;
 			$post->ThreadID = $thread->ID;
 		}
 		
@@ -945,7 +945,7 @@ class Forum_Controller extends Page_Controller {
 	function deletepost() {
 		if(isset($this->urlParams['ID'])) {
 			if($post = DataObject::get_by_id('Post', (int) $this->urlParams['ID'])) {
-				if($post->canEdit()) {
+				if($post->canDelete()) {
 					// delete the whole thread if this is the first one
 					if($post->isFirstPost()) {
 						$thread = DataObject::get_by_id("ForumThread", $post->ThreadID);

@@ -163,7 +163,7 @@ class Post extends DataObject {
 	function DeleteLink() {
  		$id = ($this->isFirstPost()) ? " id=\"firstPost\" " : " ";
 
-		if($this->canEdit()) {
+		if($this->canDelete()) {
 			$url = $this->Link('deletepost');
 			
 			return "<a".$id."class=\"deletelink\" rel=\"$this->ID\" href=\"{$url}/{$this->ID}\">" . _t('Post.DELETE','Delete') ."</a>";
