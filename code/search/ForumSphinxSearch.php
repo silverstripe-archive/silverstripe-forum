@@ -45,7 +45,7 @@ class ForumSphinxSearch implements ForumSearchProvider {
 		
 		$cachekey = $query.':'.$offset;
 		if (!isset($this->search_cache[$cachekey])) {
-			$this->search_cache[$cachekey] = SphinxSearch::search(array('Forum', 'Post', 'ForumThread'), $query, array(
+			$this->search_cache[$cachekey] = SphinxSearch::search(array('Forum', 'Post', 'ForumThread', 'Member'), $query, array(
 				'start'			=> $offset,
 				'pagesize'		=> $limit,
 				'sortmode'		=> $mode,
