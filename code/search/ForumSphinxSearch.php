@@ -45,7 +45,18 @@ class ForumSphinxSearch implements ForumSearchProvider {
 		
 		$cachekey = $query.':'.$offset;
 		if (!isset($this->search_cache[$cachekey])) {
-			$this->search_cache[$cachekey] = SphinxSearch::search(array('Forum', 'Post', 'ForumThread', 'Member'), $query, array(
+			// Determine the classes to search. This always include
+			// ForumThread and Post, since we decorated them. It also
+			// includes Forum and Member if they are decorated, as
+			// appropriate.
+			$classes = array('ForumThread', 'Post');
+			foreach (array('Forum', 'Member') as $c) {
+				if (Object::has_extension($c, 'SphinxSearchable')) $classes[] = $c;
+			}
+
+echo "<!-- classes to search are " .print_r($classes, true) . " -->";
+
+			$this->search_cache[$cachekey] = SphinxSearch::search($classes, $query, array(
 				'start'			=> $offset,
 				'pagesize'		=> $limit,
 				'sortmode'		=> $mode,
