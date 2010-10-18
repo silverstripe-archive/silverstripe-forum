@@ -54,8 +54,6 @@ class ForumSphinxSearch implements ForumSearchProvider {
 				if (Object::has_extension($c, 'SphinxSearchable')) $classes[] = $c;
 			}
 
-echo "<!-- classes to search are " .print_r($classes, true) . " -->";
-
 			$this->search_cache[$cachekey] = SphinxSearch::search($classes, $query, array(
 				'start'			=> $offset,
 				'pagesize'		=> $limit,
