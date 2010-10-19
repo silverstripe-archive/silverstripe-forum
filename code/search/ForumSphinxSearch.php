@@ -53,7 +53,7 @@ class ForumSphinxSearch implements ForumSearchProvider {
 
 				// Downgrade the title weighting, which will give more
 				// emphasis to age.
-				$fieldWeights = array("Title" => 2, "Content" => 1);
+				$fieldWeights = array("Title" => 1, "Content" => 1);
 
 				break;
 		}
