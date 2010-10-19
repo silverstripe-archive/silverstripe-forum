@@ -65,7 +65,21 @@ class Post extends DataObject {
 			}
 		}	
 	}
-	
+
+	function onAfterWrite() {
+		parent::onAfterWrite();
+
+		// Tell the thread this is the most recently added or edited.
+		if ($this->ThreadID) $this->Thread()->updateLastPost($this);
+	}
+
+	function onAfterDelete() {
+		parent::onAfterDelete();
+
+		// Force thread to recalculate it's most recent.
+		if ($this->ThreadID) $this->Thread()->updateLastPost();
+	}
+
 	/**
 	 * Return whether we can edit this post. Only the user, moderator
 	 * or admin can edit post

@@ -14,11 +14,14 @@ class ForumThread extends DataObject {
 		"NumViews" => "Int",
 		"IsSticky" => "Boolean",
 		"IsReadOnly" => "Boolean",
-		"IsGlobalSticky" => "Boolean"	
+		"IsGlobalSticky" => "Boolean"
 	);
 	
 	static $has_one = array(
-		'Forum' => 'Forum'
+		'Forum' => 'Forum',
+
+		// Reference to the most recently added or editing Post.
+		'LastPost' => 'Post'
 	);
 	
 	static $has_many = array(
@@ -82,7 +85,8 @@ class ForumThread extends DataObject {
 	 * @return Post
 	 */
 	function getLatestPost() {
-		return DataObject::get_one('Post', "\"ThreadID\" = '$this->ID'", true, "\"ID\" DESC");
+		if ($post = $this->LastPost()) return $post;
+		return $this->updateLastPost();
 	}
 	
 	/**
@@ -152,6 +156,24 @@ class ForumThread extends DataObject {
 				// attachment deletion is handled by the {@link Post::onBeforeDelete}
 				$post->delete();
 			}
+		}
+	}
+
+	/**
+	 * Update LastPost to the most recent.
+	 * @param $post Post		If supplied, this is assumed to be the
+	 * 							most recently added or editing Post. If
+	 * 							null, we automatically determine the most
+	 * 							recent by grabbing the one with the highest
+	 * 							ID. This is required in the case of deletion:
+	 * 							If the most recent Post is deleted, we need
+	 * 							to determine the next most recent.
+	 */
+	function updateLastPost($post = null) {
+		if (!$post) $post = DataObject::get_one('Post', "\"ThreadID\" = '$this->ID'", true, "\"ID\" DESC");
+		if ($post && $post->ID != $this->LastPostID) {
+			$this->LastPostID = $post->ID;
+			$this->write();
 		}
 	}
 }
