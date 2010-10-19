@@ -28,7 +28,11 @@ class ForumSphinxSearch implements ForumSearchProvider {
 	 * @return DataObjectSet
 	 */
 	public function getResults($forumHolderID, $query, $order, $offset = 0, $limit = 10) {
-		
+
+		// Default weights put title ahead of content, which effectively
+		// puts threads ahead of posts.
+		$fieldWeights = array("Title" => 5, "Content" => 1);
+
 		// Work out what sorting method
 		switch($order) {
 			case 'date':
@@ -46,6 +50,11 @@ class ForumSphinxSearch implements ForumSearchProvider {
 				// which will push up more recent content.
 				$mode = 'eval';
 				$sortarg = "@relevance + _ageband";
+
+				// Downgrade the title weighting, which will give more
+				// emphasis to age.
+				$fieldWeights = array("Title" => 2, "Content" => 1);
+
 				break;
 		}
 		
@@ -65,7 +74,7 @@ class ForumSphinxSearch implements ForumSearchProvider {
 				'pagesize'		=> $limit,
 				'sortmode'		=> $mode,
 				'sortarg'		=> $sortarg,
-				'field_weights'	=> array("Title" => 5, "Content" => 1)
+				'field_weights'	=> $fieldWeights
 			));
 		}
 		
