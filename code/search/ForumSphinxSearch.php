@@ -89,7 +89,7 @@ class ForumSphinxSearch implements ForumSearchProvider {
 		// to 10 so it's sorted like it's recent.
 		DataObject::add_extension('ForumThread', 'SphinxSearchable');
 		Object::set_static("ForumThread", "sphinx", array(
-			"extra_fields" => array("_ageband" => "(select if(datediff(now(),Created)<30,10,if(datediff(now(),Created)<90,9,if(datediff(now(),Created)<180,8,if(datediff(now(),Created)<365,7,6)))) from Post where Post.ID=ForumThread.LastPostID)")
+			"extra_fields" => array("_ageband" => "if(datediff(now(),LastEdited)<30,10,if(datediff(now(),LastEdited)<90,9,if(datediff(now(),LastEdited)<180,8,if(datediff(now(),LastEdited)<365,7,6))))")
 		));
 		DataObject::add_extension('Post', 'SphinxSearchable');
 		Object::set_static("Post", "sphinx", array(
