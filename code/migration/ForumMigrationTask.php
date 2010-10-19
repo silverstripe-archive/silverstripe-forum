@@ -146,7 +146,12 @@ class ForumMigrationTask extends BuildTask {
 		DB::dontRequireField("Forum", 'ForumPostersGroup');
 		
 		echo "Renamed old data columns in Post and removed Post_Subscription table <br />";
-		
+
+		DB::query("update ForumThread set LastPostID=(select max(ID) from Post where Post.ThreadID=ForumThread.ID) where Post.ThreadID=ForumThread.ID) > 0");
+		DB::query("update ForumThread set LastEdited=(select max(Created) from Post where Post.ThreadID=ForumThread.ID) where (select count(*) from Post where Post.ThreadID=ForumThread.ID) > 0");
+
+		echo "Set ForumThread last post and update LastEdited to the most recent post <br />";
+
 		echo "Finished<br />";
 	}
 
