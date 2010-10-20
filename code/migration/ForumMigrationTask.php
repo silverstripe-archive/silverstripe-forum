@@ -27,8 +27,12 @@ class ForumMigrationTask extends BuildTask {
 
 		// go through all the posts with a parent ID = 0 and create the new thread objects
 		$oldThreads = DB::query("SELECT * FROM \"Post\" WHERE \"ParentID\" = '0'");
-		
+
 		if($oldThreads) {
+			
+			$toCreateTotal = $oldThreads->numRecords();
+			echo "Creating ". $toCreateTotal ." new Forum Threads \n";
+			
 			$holder = DataObject::get_one("ForumHolder");
 			if(!$holder) return user_error('No Forum Holder Found', E_USER_ERROR);
 			
@@ -54,6 +58,7 @@ class ForumMigrationTask extends BuildTask {
 					$hasError = true;
 					$thread->Title = "Question";
 				}
+					
 				$thread->NumViews = (isset($oldThread['NumViews'])) ? $oldThread['NumViews'] : 0;
 				$thread->IsSticky = (isset($oldThread['IsSticky'])) ? $oldThread['IsSticky'] : false;
 				$thread->IsReadOnly = (isset($oldThread['IsReadOnly'])) ? $oldThread['IsReadOnly'] : false;
@@ -71,17 +76,13 @@ class ForumMigrationTask extends BuildTask {
 				$thread->write();
 				echo "Converted Thread: $thread->ID - $thread->Title. \n";	
 				
-				// find all children of the old post and redirect them to here
-				$children = DataObject::get('Post', "\"TopicID\" = '". $oldThread['ID'] ."'");
-				
-				if($children) {
-					foreach($children as $child) {
-						$child->ThreadID = $thread->ID;
-						$child->ForumID = $thread->ForumID;
-						$child->write();
-					}
-				}
-				
+				// update all the children
+				DB::query("
+					UPDATE \"Post\" 
+					SET \"ThreadID\" = '$thread->ID', \"ForumID\" = '$thread->ForumID'
+					WHERE \"TopicID\" = '". $oldThread['ID'] ."'
+				");
+			
 				if(!$hasError) {
 					$totalThreadsSuccessfulCount++;
 				}
@@ -147,8 +148,16 @@ class ForumMigrationTask extends BuildTask {
 		
 		echo "Renamed old data columns in Post and removed Post_Subscription table <br />";
 
-		DB::query("update ForumThread set LastPostID=(select max(ID) from Post where Post.ThreadID=ForumThread.ID) where Post.ThreadID=ForumThread.ID) > 0");
-		DB::query("update ForumThread set LastEdited=(select max(Created) from Post where Post.ThreadID=ForumThread.ID) where (select count(*) from Post where Post.ThreadID=ForumThread.ID) > 0");
+		DB::query("
+			UPDATE \"ForumThread\" 
+			SET \"LastPostID\" = (SELECT MAX(\"ID\") FROM \"Post\" WHERE \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\") 
+		");
+		
+		DB::query("
+			UPDATE \"ForumThread\" 
+			SET \"LastEdited\" = (SELECT MAX(\"Created\") FROM \"Post\" WHERE \"Post\".\"ThreadID\"= \"ForumThread\".\"ID\") 
+			WHERE (SELECT COUNT(*) FROM \"Post\" WHERE \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\") > 0
+		");
 
 		echo "Set ForumThread last post and update LastEdited to the most recent post <br />";
 
