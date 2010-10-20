@@ -175,6 +175,7 @@ class ForumThread extends DataObject {
 			$this->LastPostID = $post->ID;
 			$this->write();
 		}
+		return $post;
 	}
 }
 
