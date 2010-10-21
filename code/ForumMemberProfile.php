@@ -95,6 +95,11 @@ class ForumMemberProfile extends Page_Controller {
 			(isset($_POST['IdentityURL']) && !empty($_POST['IdentityURL']));
 
 		$fields = singleton('Member')->getForumFields($use_openid, true);
+
+		// If a BackURL is provided, make it hidden so the post-registration
+		// can direct to it.
+		if (isset($_REQUEST['BackURL'])) $fields->push(new HiddenField('BackURL', 'BackURL', $_REQUEST['BackURL']));
+
 		$validator = singleton('Member')->getForumValidator(!$use_openid);
 		$form = new Form($this, 'RegistrationForm', $fields,
 			new FieldSet(new FormAction("doregister", _t('ForumMemberProfile.REGISTER','Register'))),
@@ -170,7 +175,7 @@ class ForumMemberProfile extends Page_Controller {
 
 		$forumGroup->Members()->add($member);
 
-		if (isset($_GET['BackURL'])) return Director::redirect($_GET['BackURL']);
+		if (isset($data['BackURL']) && $data['BackURL']) return Director::redirect($data['BackURL']);
 
 		return array("Form" => DataObject::get_one("ForumHolder")->ProfileAdd);
 	}
