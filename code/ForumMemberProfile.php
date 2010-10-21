@@ -170,6 +170,8 @@ class ForumMemberProfile extends Page_Controller {
 
 		$forumGroup->Members()->add($member);
 
+		if (isset($_GET['BackURL'])) return Director::redirect($_GET['BackURL']);
+
 		return array("Form" => DataObject::get_one("ForumHolder")->ProfileAdd);
 	}
 
