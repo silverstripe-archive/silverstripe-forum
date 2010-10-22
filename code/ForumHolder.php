@@ -475,7 +475,7 @@ class ForumHolder_Controller extends Page_Controller {
 				$members->parseQueryLimit($query);
 			break;
 			default:
-				$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID'", "\"Member\".\"Created\" DESC", "LEFT JOIN \"Group_Members ON Member.ID = Group_Members\".\"MemberID\"", "{$SQL_start},100");
+				$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID'", "\"Member\".\"Created\" DESC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", "{$SQL_start},100");
 			break;
 		}
 		
@@ -692,8 +692,7 @@ class ForumHolder_Controller extends Page_Controller {
 		
 		
 		
-		//Get all the forums with global sticky threads, and then get the most recent post for each of these
-		
+		//Get all the forums with global sticky threads, and then get the most recent post for each of these		
 		$threads=DataObject::get(
 			'ForumThread',
 			"\"ForumThread\".\"IsGlobalSticky\"=1 AND \"ForumPage\".\"ParentID\"={$this->ID}",
