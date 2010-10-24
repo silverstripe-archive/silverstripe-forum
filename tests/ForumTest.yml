@@ -113,15 +113,15 @@ Forum:
 	loggedInOnly:
 		Title: Limited to Logged In Posting and Viewing
 		ParentID: =>ForumHolder.fhPermissions
-		ForumViewers: LoggedInUsers
+		CanViewType: LoggedInUsers
 		ForumPosters: LoggedInUsers
         
 	limitedToGroup:
 		Title: Limited to a Specific Group
 		ParentID: =>ForumHolder.fhPermissions
-		ForumViewers: OnlyTheseUsers
+		CanViewType: OnlyTheseUsers
 		ForumPosters: OnlyTheseUsers
-		ForumViewersGroup: =>Group.special
+		ViewerGroups: =>Group.special
 		ForumPostersGroup: =>Group.special
         
 	noPostingForum:

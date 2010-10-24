@@ -17,7 +17,6 @@ class Forum extends Page {
 
 	static $db = array(
 		"Abstract" => "Text",
-		"ForumViewers" => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers', 'Anyone')",
 		"ForumPosters" => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers, NoOne', 'LoggedInUsers')",
 		"CanAttachFiles" => "Boolean",
 	);
@@ -25,7 +24,6 @@ class Forum extends Page {
 	static $has_one = array(
 		"Moderator" => "Member",
 		"Category" => "ForumCategory",
-		"ForumViewersGroup" => "Group",
 		"ForumPostersGroup" => "Group",
 	);
 	
@@ -34,7 +32,6 @@ class Forum extends Page {
 	);
 
 	static $defaults = array(
-		"ForumViewers" => "Anyone",
 		"ForumPosters" => "LoggedInUsers"
 	);
 
@@ -51,17 +48,7 @@ class Forum extends Page {
 	 * @return bool
 	 */
 	function canView() {
-		if($this->ForumViewers == "Anyone" || $this->isAdmin()) return true;
-		
-		$member = Member::currentUser();
-		
-		if($member) {
-			if($this->ForumViewers == "LoggedInUsers" || ($this->ForumViewers == "OnlyTheseUsers" && $member->inGroup($this->ForumViewersGroupID))) {
-				return true;
-			}
-		}
-		
-		return false;
+		return (parent::canView() || $this->isAdmin());
 	}
 	
 	/**
@@ -165,15 +152,6 @@ class Forum extends Page {
 
 	  	$fields = parent::getCMSFields();
 	
-		$fields->addFieldToTab("Root.Access", new HeaderField(_t('Forum.ACCESSREAD','Who can read the forum?'), 2));
-		$fields->addFieldToTab("Root.Access",
-			new OptionsetField("ForumViewers", "", array(
-				"Anyone" => _t('Forum.READANYONE','Anyone'),
-				"LoggedInUsers" => _t('Forum.READLOGGEDIN','Logged-in users'),
-				"OnlyTheseUsers" => _t('Forum.READLIST','Only these people (choose from list)'))
-			)
-		);
-		$fields->addFieldToTab("Root.Access", new TreeDropdownField("ForumViewersGroupID", "Group"));
 		$fields->addFieldToTab("Root.Access", new HeaderField(_t('Forum.ACCESSPOST','Who can post to the forum?'), 2));
 		$fields->addFieldToTab("Root.Access", new OptionsetField("ForumPosters", "", array(
 		  	"Anyone" => _t('Forum.READANYONE', 'Anyone'),
@@ -432,7 +410,7 @@ class Forum_Controller extends Page_Controller {
 	function init() {
 		parent::init();
 		if(Director::redirected_to()) return;
-		
+
  	  	if(!$this->canView()) {
  		  	$messageSet = array(
 				'default' => _t('Forum.LOGINDEFAULT','Enter your email address and password to view this forum.'),

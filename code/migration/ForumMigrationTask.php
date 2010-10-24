@@ -122,10 +122,14 @@ class ForumMigrationTask extends BuildTask {
 		// Update the permissions on the forums. The Posters, Viewers have changed from a int field
 		// to an actual modelled relationship
 		$forums = DataObject::get('Forum');
+		
 		if($forums) {
 			foreach($forums as $forum) {
 				$forum->ForumPostersGroupID = DB::query("SELECT \"ForumPostersGroup\" FROM \"Forum\" WHERE \"ID\" = '$forum->ID'")->value();
-				$forum->ForumViewersGroupID = DB::query("SELECT \"ForumViewersGroup\" FROM \"Forum\" WHERE \"ID\" = '$forum->ID'")->value();
+				
+				if($viewingGroup = DB::query("SELECT \"ForumViewersGroup\" FROM \"Forum\" WHERE \"ID\" = '$forum->ID'")->value()) {
+					$forum->ViewerGroups()->add(DataObject::get_by_id('Group', $viewingGroup));
+				}
 				
 				$forum->write();
 			}
@@ -144,8 +148,9 @@ class ForumMigrationTask extends BuildTask {
 		DB::dontRequireTable('Post_Subscription');
 		
 		DB::dontRequireField('Forum', 'ForumViewersGroup');
+		DB::dontRequireField('Forum', 'ForumViewersGroupID');
 		DB::dontRequireField("Forum", 'ForumPostersGroup');
-		
+
 		echo "Renamed old data columns in Post and removed Post_Subscription table <br />";
 
 		$this->attachLastPostIDs();

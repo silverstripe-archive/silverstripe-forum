@@ -18,7 +18,7 @@ class ForumHolderTest extends FunctionalTest {
 		$fh_controller = new ForumHolder_Controller($fh);
 		
 		// one forum which is viewable.
-		$this->assertTrue($fh_controller->Forums()->Count() == 1, "fh has 1 forum");
+		$this->assertEquals('1', $fh_controller->Forums()->Count(), "Forum holder has 1 forum");
 
 		// Test ForumHolder::Categories() on 'fh', from which we expect 2 categories
 		$this->assertTrue($fh_controller->Categories()->Count() == 2, "fh has two categories");
