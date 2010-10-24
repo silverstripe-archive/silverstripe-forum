@@ -177,12 +177,12 @@ class Post extends DataObject {
 	 * @return String
 	 */
 	function DeleteLink() {
- 		$id = ($this->isFirstPost()) ? " id=\"firstPost\" " : " ";
-
 		if($this->canDelete()) {
 			$url = $this->Link('deletepost');
 			
-			return "<a".$id."class=\"deletelink\" rel=\"$this->ID\" href=\"{$url}/{$this->ID}\">" . _t('Post.DELETE','Delete') ."</a>";
+			$firstPost = ($this->isFirstPost()) ? 'firstPost' : '';
+			
+			return "<a class=\"deletelink $firstPost\" href=\"{$url}/{$this->ID}\">" . _t('Post.DELETE','Delete') ."</a>";
 		}
 		
 		return false;
@@ -222,7 +222,9 @@ class Post extends DataObject {
 		 	if($member->ID != $this->AuthorID) {
 				$link = $this->Forum()->Link('markasspam') .'/'. $this->ID;
 				
-				return "<a href=\"$link\" class='markAsSpamLink' rel=\"$this->ID\">". _t('Post.MARKASSPAM', 'Mark as Spam') ."</a>";
+				$firstPost = ($this->isFirstPost()) ? 'firstPost' : '';
+				
+				return "<a href=\"$link\" class=\"markAsSpamLink $firstPost\" rel=\"$this->ID\">". _t('Post.MARKASSPAM', 'Mark as Spam') ."</a>";
 			}
 		}
 	}

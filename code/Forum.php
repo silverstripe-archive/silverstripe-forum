@@ -505,8 +505,6 @@ class Forum_Controller extends Page_Controller {
 	 * and removes their user account from the site
 	 *
 	 * Must be logged in and have the correct permissions to do marking
-	 *
-	 * @return bool
 	 */
 	function markasspam() {
 		if($this->isAdmin() && isset($this->urlParams['ID'])) {
@@ -546,12 +544,10 @@ class Forum_Controller extends Page_Controller {
 				else {
 					$post->delete();
 				}
-				
-				return true;
 			}
 		}
-		
-		return false;
+
+		return (Director::is_ajax()) ? true : $this->redirect($this->Link());
 	}
 
 	/**
@@ -932,7 +928,7 @@ class Forum_Controller extends Page_Controller {
 	 */
 	function editpost() {
 		return array(
-			'Subtitle' => _t('Forum.EDITPOST','Edit a post')
+			'Subtitle' => _t('Forum.EDITPOST','Edit post')
 		);
 	}
 
@@ -958,7 +954,8 @@ class Forum_Controller extends Page_Controller {
 		if(isset($this->urlParams['ID'])) {
 			if($post = DataObject::get_by_id('Post', (int) $this->urlParams['ID'])) {
 				if($post->canDelete()) {
-					// delete the whole thread if this is the first one
+					// delete the whole thread if this is the first one. The delete action
+					// on thread takes care of the posts.
 					if($post->isFirstPost()) {
 						$thread = DataObject::get_by_id("ForumThread", $post->ThreadID);
 						$thread->delete();
@@ -967,13 +964,11 @@ class Forum_Controller extends Page_Controller {
 						// delete the post
 						$post->delete();
 					}
-				
-					return true;
 				}
 			}
 	  	}
-	
-		return false;
+		
+		return (Director::is_ajax()) ? true : $this->redirect($this->Link());
 	}
 	
 	/**
@@ -984,6 +979,7 @@ class Forum_Controller extends Page_Controller {
 	function ForumAdminMsg() {
 		$message = Session::get('ForumAdminMsg');
 		Session::clear('ForumAdminMsg');
+		
 		return $message;
 	}
 	
@@ -1004,10 +1000,8 @@ class Forum_Controller extends Page_Controller {
 			new HiddenField("ID", "Thread")
 		);
 		
-		$forums = DataObject::get("Forum");
-	
-		if($forums) {
-			$fields->push(new DropdownField("ForumID", "Change Thread Forum", $forums->toDropDownMap('ID', 'Title', 'Select New Category:')), '', null, 'Select New Location:');
+		if($forums = DataObject::get("Forum")) {
+			$fields->push(new DropdownField("ForumID", _t('Forum.CHANGETHREADFORUM',"Change Thread Forum"), $forums->toDropDownMap('ID', 'Title', 'Select New Category:')), '', null, 'Select New Location:');
 		}
 	
 		$actions = new FieldSet(
@@ -1032,7 +1026,6 @@ class Forum_Controller extends Page_Controller {
 	 * passed an old topic id (post id in URL) and a new topic id
 	 */
 	function doAdminFormFeatures($data, $form) {
-		
 		if(isset($data['ID'])) {
 			$thread = DataObject::get_by_id('ForumThread', $data['ID']);
 
@@ -1041,6 +1034,7 @@ class Forum_Controller extends Page_Controller {
 				$thread->write();
 			}
 		}
-		return Director::redirect($this->Link());
+		
+		return $this->redirect($this->Link());
 	}
 }

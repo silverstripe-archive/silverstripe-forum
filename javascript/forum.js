@@ -2,7 +2,7 @@
  * Javascript features for the SilverStripe forum module. These have been 
  * ported over from the old Prototype system
  * 
- * @package Forum
+ * @package forum
  */
 
 (function($) {
@@ -56,16 +56,29 @@
 		 */
 	
 		$('.postModifiers a.deletelink').click(function(){
-			if($(this).attr('id')== 'firstPost') {
+			var link = $(this);
+			var first = $(this).hasClass('firstPost');
+			
+			if(first) {
 				if(!confirm("Are you sure you wish to delete this thread?\nNote: This will delete ALL posts in this thread.")) return false;
 			} else {
 				if(!confirm("Are you sure you wish to delete this post?")) return false;
 			}
-			var id = $(this).attr("rel");
+
 			$.post($(this).attr("href"), function(data) {
-				if(data == 1) {
-					// was successful
-					$("ul#Posts li#post"+id).fadeOut();
+				if(first) {
+					// if this is the first post then we have removed the entire thread and therefore
+					// need to redirect the user to the parent page. To get to the parent page we convert
+					// something similar to general-discussion/show/1 to general-discussion/
+					var url = window.location.href;
+					
+					var pos = url.lastIndexOf('/show');
+					
+					if(pos > 0) window.location = url.substring(0, pos);
+				}
+				else {
+					// deleting a single post. 
+					link.parents(".singlePost").fadeOut();
 				}
 			});
 
@@ -77,11 +90,25 @@
 		 * It needs to warn the user that the post will be deleted
 		 */
 		$('.postModifiers a.markAsSpamLink').click(function(){
+			var link = $(this);
+			var first = $(this).hasClass('firstPost');
+			
 			if(!confirm("Are you sure you wish to mark this post and user as spam? This will remove all posts and the users account")) return false;
-		
-			var id = $(this).attr("rel");
+			
 			$.post($(this).attr("href"), function(data) {
-				setTimeout("location.reload(true);", 0);
+				if(first) {
+					// if this is the first post then we have removed the entire thread and therefore
+					// need to redirect the user to the parent page. To get to the parent page we convert
+					// something similar to general-discussion/show/1 to general-discussion/
+					var url = window.location.href;
+					
+					var pos = url.lastIndexOf('/show');
+					
+					if(pos > 0) window.location = url.substring(0, pos);
+				}
+				else {
+					window.location.reload(true);
+				}
 			});
 		
 			return false;
