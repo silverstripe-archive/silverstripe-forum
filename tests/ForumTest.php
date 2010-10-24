@@ -129,8 +129,7 @@ class ForumTest extends FunctionalTest {
 	function testTopics() {
 		$forumWithPosts = $this->objFromFixture("Forum", "general");
 		
-		$this->assertEquals($forumWithPosts->getTopics()->Count(), '2');
-		$this->assertEquals($forumWithPosts->getTopics()->First()->Title, 'Test Thread');
+		$this->assertEquals($forumWithPosts->getTopics()->Count(), '3');
 		
 		$forumWithoutPosts = $this->objFromFixture("Forum", "forum1cat2");
 		
@@ -150,7 +149,7 @@ class ForumTest extends FunctionalTest {
 	function testGetNumTopics() {
 		$forumWithPosts = $this->objFromFixture("Forum", "general");
 		
-		$this->assertEquals($forumWithPosts->getNumTopics(), 5);
+		$this->assertEquals($forumWithPosts->getNumTopics(), 6);
 		
 		$forumWithoutPosts = $this->objFromFixture("Forum", "forum1cat2");
 
@@ -160,11 +159,42 @@ class ForumTest extends FunctionalTest {
 	function testGetTotalAuthors() {
 		$forumWithPosts = $this->objFromFixture("Forum", "general");
 		
-		$this->assertEquals($forumWithPosts->getNumAuthors(), 2);
+		$this->assertEquals($forumWithPosts->getNumAuthors(), 4);
 		
 		$forumWithoutPosts = $this->objFromFixture("Forum", "forum1cat2");
 
 		$this->assertEquals($forumWithoutPosts->getNumAuthors(), 0);
 	}
 
+	function testMarkAsSpamLink() {
+		$this->logInWithPermission("ADMIN");
+	
+		$spampost = $this->objFromFixture('Post', 'SpamSecondPost');
+		
+		$forum = $spampost->Forum();
+		$author = $spampost->Author();
+
+		$link = $forum->AbsoluteLink("markasspam") .'/'. $spampost->ID;
+		
+		$c = new Forum_Controller($forum);
+		$response = $c->handleRequest(new SS_HTTPRequest('GET', 'markasspam/'. $spampost->ID));
+		
+		// removes the post
+		$this->assertFalse(DataObject::get_by_id('Post', $spampost->ID));
+		
+		// removes the member
+		$this->assertFalse(DataObject::get_by_id('Member', $author->ID));
+		
+		// does not effect the thread
+		$thread = DataObject::get_by_id('ForumThread', $spampost->Thread()->ID);
+		$this->assertEquals('1', $thread->getNumPosts());
+		
+		// mark the first post in that now as spam
+		$spamfirst = $this->objFromFixture('Post', 'SpamFirstPost');
+
+		$response = $c->handleRequest(new SS_HTTPRequest('GET', 'markasspam/'. $spamfirst->ID));
+
+		// removes the thread
+		$this->assertFalse(DataObject::get_by_id('ForumThread', $spamfirst->Thread()->ID));
+	}
 }

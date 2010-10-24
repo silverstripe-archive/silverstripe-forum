@@ -57,7 +57,7 @@ class ForumHolderTest extends FunctionalTest {
 	function testGetNumPosts() {
 		// test holder with posts
 		$fh = $this->objFromFixture("ForumHolder", "fh");
-		$this->assertEquals($fh->getNumPosts(), 21);
+		$this->assertEquals($fh->getNumPosts(), 23);
 		
 		// test holder that doesn't have posts
 		$fh2 = $this->objFromFixture("ForumHolder", "fh2");
@@ -67,7 +67,7 @@ class ForumHolderTest extends FunctionalTest {
 	function testGetNumTopics() {
 		// test holder with posts
 		$fh = $this->objFromFixture("ForumHolder", "fh");
-		$this->assertEquals($fh->getNumTopics(), 5);
+		$this->assertEquals($fh->getNumTopics(), 6);
 		
 		// test holder that doesn't have posts
 		$fh2 = $this->objFromFixture("ForumHolder", "fh2");
@@ -77,7 +77,7 @@ class ForumHolderTest extends FunctionalTest {
 	function testGetNumAuthors() {
 		// test holder with posts
 		$fh = $this->objFromFixture("ForumHolder", "fh");
-		$this->assertEquals($fh->getNumAuthors(), 2);
+		$this->assertEquals($fh->getNumAuthors(), 4);
 		
 		// test holder that doesn't have posts
 		$fh2 = $this->objFromFixture("ForumHolder", "fh2");
@@ -89,11 +89,10 @@ class ForumHolderTest extends FunctionalTest {
 		$fh = $this->objFromFixture("ForumHolder", "fh");
 
 		// make sure all the posts are included
-		$this->assertEquals($fh->getRecentPosts()->Count(), 21);
+		$this->assertEquals($fh->getRecentPosts()->Count(), 23);
 
 		// check they're in the right order (well if the first and last are right its fairly safe)
 		$this->assertEquals($fh->getRecentPosts()->First()->Content, "This is the last post to a long thread");
-		$this->assertEquals($fh->getRecentPosts()->Last()->Content, "This is my first post");
 		
 		// test holder that doesn't have posts
 		$fh2 = $this->objFromFixture("ForumHolder", "fh2");
@@ -106,9 +105,8 @@ class ForumHolderTest extends FunctionalTest {
 		// test trying to get recent posts specific to a forum which has posts
 		$forum = $this->objFromFixture("Forum", "general");
 
-		$this->assertEquals($fh->getRecentPosts(50, $forum->ID)->Count(), 21);
+		$this->assertEquals($fh->getRecentPosts(50, $forum->ID)->Count(), 23);
 		$this->assertEquals($fh->getRecentPosts(50, $forum->ID)->First()->Content, "This is the last post to a long thread");
-		$this->assertEquals($fh->getRecentPosts(50, $forum->ID)->Last()->Content, "This is my first post");
 		
 		// test trying to filter by a specific thread
 		$thread = $this->objFromFixture("ForumThread","Thread1");

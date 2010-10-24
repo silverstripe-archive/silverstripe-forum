@@ -83,6 +83,7 @@ class ForumHolder extends Page {
 			new TextField("ForbiddenWords", "Forbidden words (comma separated)"),
 			new LiteralField("FWLabel","These words will be replaced by an asterisk")
 		));
+		
 		return $fields;
 	}
 	

@@ -238,9 +238,10 @@ class Forum extends Page {
 	 */
 	function isAdmin() {
 		if(!Member::currentUserID()) return false;
+		
 		$member = Member::currentUser();
 		
-		$isModerator = $member->isModeratingForum($this);
+		$isModerator = ($member) ? $member->isModeratingForum($this) : false;
 
 		return (Permission::check('ADMIN') || $isModerator) ? true : false;
 	}
@@ -455,8 +456,8 @@ class Forum_Controller extends Page_Controller {
 
 		Requirements::themedCSS('Forum');
 
-		RSSFeed::linkToFeed($this->Parent->Link("rss/$this->ID"), sprintf(_t('Forum.RSSFORUM',"Posts to the '%s' forum"),$this->Title)); 
-	 	RSSFeed::linkToFeed($this->Parent->Link("rss"), _t('Forum.RSSFORUMS','Posts to all forums'));
+		RSSFeed::linkToFeed($this->Parent()->Link("rss/$this->ID"), sprintf(_t('Forum.RSSFORUM',"Posts to the '%s' forum"),$this->Title)); 
+	 	RSSFeed::linkToFeed($this->Parent()->Link("rss"), _t('Forum.RSSFORUMS','Posts to all forums'));
 	 	
 	 	// Icky hack to set this page ShowInCategories so we can determine if we need to show in category mode or not.
 	 	$holderPage = $this->Parent;
@@ -522,24 +523,53 @@ class Forum_Controller extends Page_Controller {
 	}
 	
 	/**
-	 * Mark a post as spam. Requires the use of the {@link spamprotection}
-	 * module. Called via ajax / url form the post view.
-	 * 
-	 * Must be logged in and have the correct permissions to do mark
+	 * Mark a post as spam. Deletes any posts or threads created by that user
+	 * and removes their user account from the site
+	 *
+	 * Must be logged in and have the correct permissions to do marking
+	 *
 	 * @return bool
 	 */
 	function markasspam() {
-		if(class_exists('SpamProtectorManager')) {
-			if($this->isAdmin()) {
-				$post = DataObject::get_by_id('Post', $this->urlParams['Action']);
-				
-		    	// Delete the post in question
-	      		if($post) {
+		if($this->isAdmin() && isset($this->urlParams['ID'])) {
+			$post = DataObject::get_by_id('Post', $this->urlParams['ID']);
+			
+			if($post) {	
+				// send spam feedback if needed
+				if(class_exists('SpamProtectorManager')) {
 					SpamProtectorManager::send_feedback($post, 'spam');
-					
-					$post->delete();
-					return true;
 				}
+				
+				// some posts do not have authors
+				if($author = $post->Author()) {
+					$SQL_id = Convert::raw2sql($author->ID);
+					
+					// delete all threads and posts from that user
+					$posts = DataObject::get('Post', "\"AuthorID\" = '$SQL_id'");
+					
+					if($posts) {
+						foreach($posts as $post) {
+							if($post->isFirstPost()) {
+								
+								// post was the start of a thread, Delete the whole thing
+								$post->Thread()->delete();
+							}
+							else {
+								if($post->ID) {
+									$post->delete();
+								}
+							}
+						}
+					}
+					
+					// delete the authors account
+					$author->delete();
+				}
+				else {
+					$post->delete();
+				}
+				
+				return true;
 			}
 		}
 		

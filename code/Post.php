@@ -1,9 +1,7 @@
 <?php
 
 /**
- * Forum Post Object. Contains a single post by the user. A thread is generated with multiple posts
- * 
- * @todo Implement Moderation.
+ * Forum Post Object. Contains a single post by the user. A thread is generated with multiple posts.
  *
  * @package forum
  */
@@ -66,6 +64,10 @@ class Post extends DataObject {
 		}	
 	}
 
+	/**
+	 * After saving this post, update the {@link ForumThread} with information
+	 * that this is now the most recent post
+	 */
 	function onAfterWrite() {
 		parent::onAfterWrite();
 
@@ -148,7 +150,7 @@ class Post extends DataObject {
 	 * @return bool
 	 */
 	function isFirstPost() {
-		return (DB::query("SELECT count(\"ID\") FROM \"Post\" WHERE \"ThreadID\" = '$this->ThreadID' AND \"ID\" < '$this->ID'")->value() > 0) ? false : true;
+		return (DB::query("SELECT COUNT(\"ID\") FROM \"Post\" WHERE \"ThreadID\" = '$this->ThreadID' AND \"ID\" < '$this->ID'")->value() > 0) ? false : true;
 	}
 	
 	/**
@@ -195,7 +197,7 @@ class Post extends DataObject {
 	function ReplyLink() {
 		$url = $this->Link('reply');
 
-		return "<a href=\"$url\">" . _t('Post.REPLYLINK','Post Reply') . "</a>";
+		return "<a href=\"$url\" class=\"replyLink\">" . _t('Post.REPLYLINK','Post Reply') . "</a>";
 	}
 		
 	/**
@@ -205,9 +207,9 @@ class Post extends DataObject {
 	 */
 	function ShowLink() {
 		$url = $this->Link('show');
-		return "<a href=\"$url\">" . _t('Post.SHOWLINK','Show Thread') . "</a>";
+		
+		return "<a href=\"$url\" class=\"showLink\">" . _t('Post.SHOWLINK','Show Thread') . "</a>";
 	}
-	
 	
 	/**
 	 * Return a link to mark this post as spam.
@@ -216,16 +218,24 @@ class Post extends DataObject {
 	 * @return String
 	 */
 	function MarkAsSpamLink() {
-		if(class_exists('SpamProtectorManager') && $member = Member::currentUser()) {
-		 	if($member->ID != $this->AuthorID)
-				return "<a href=\"{$this->Forum()->Link('markasspam')}{$this->ID}\" class='markAsSpamLink' rel=\"$this->ID\">". _t('Post.MARKASSPAM', 'Mark as Spam') ."</a>";
+		if($this->canEdit() && $member = Member::currentUser()) {
+		 	if($member->ID != $this->AuthorID) {
+				$link = $this->Forum()->Link('markasspam') .'/'. $this->ID;
+				
+				return "<a href=\"$link\" class='markAsSpamLink' rel=\"$this->ID\">". _t('Post.MARKASSPAM', 'Mark as Spam') ."</a>";
+			}
 		}
 	}
 
+	/**
+	 * Return the parsed content and the information for the 
+	 * RSS feed
+	 */
 	function getRSSContent() {
 		$parser = new BBCodeParser($this->Content);
 		$html = $parser->parse();
 		if($this->Thread()) $html .= '<br><br>' . sprintf(_t('Post.POSTEDTO',"Posted to: %s"),$this->Thread()->Title);
+		
 		$html .= " ". $this->ShowLink() . " | " .$this->ReplyLink();
 
 		return $html;
@@ -234,6 +244,7 @@ class Post extends DataObject {
 	
 	function getRSSAuthor() {
 		$author = $this->Author();
+		
 		return $author->Nickname;
 	}
 	
