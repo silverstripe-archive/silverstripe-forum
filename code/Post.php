@@ -162,7 +162,7 @@ class Post extends DataObject {
 		if($this->canEdit()) {
 			$url = $this->Link('editpost');
 			
-			return "<a href=\"{$url}/{$this->ID}\">" . _t('Post.EDIT','Edit') . "</a>";
+			return "<a href=\"{$url}/{$this->ID}\" class=\"editPostLink\">" . _t('Post.EDIT','Edit') . "</a>";
 		}
 		
 		return false;
