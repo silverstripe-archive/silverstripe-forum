@@ -823,10 +823,11 @@ class Forum_Controller extends Page_Controller {
 	}
 
 	/**
-	 * Show will get the selected thread to the user. Also increments
-	 * the forums view count.
+	 * Show will get the selected thread to the user. Also increments the forums view count.
+	 * 
+	 * If the thread does not exist it will pass the user to the 404 error page
 	 *
-	 * @return Array
+	 * @return array|SS_HTTPResponse_Exception
 	 */
  	function show() {
 		$title = Convert::raw2xml($this->Title);
@@ -835,14 +836,17 @@ class Forum_Controller extends Page_Controller {
 			$thread->incNumViews();
 			
 			$posts = sprintf(_t('Forum.POSTTOTOPIC',"Posts to the '%s' topic"),$title);
-			RSSFeed::linkToFeed($this->Link("rss") . '/' . $this->urlParams['ID'], $posts);
+			
+			RSSFeed::linkToFeed($this->Link("rss") . '/' . (int) $this->urlParams['ID'], $posts);
 				
 			$title = Convert::raw2xml($thread->Title) . ' &raquo; ' . $title;
+			
+			return array(
+				'Title' => DBField::create('HTMLText',$title)
+			);
 		}
-	
-		return array(
-			'Title' => DBField::create('HTMLText',$title)
-		);
+		
+		return $this->httpError(404);
 	}
 
 	/**
@@ -863,7 +867,7 @@ class Forum_Controller extends Page_Controller {
 	 * @return string Returns the forum title
 	 */
 	function getHolderSubtitle() {
-		return $this->Title;
+		return $this->dbObject('Title');
 	}
 
 	/**
