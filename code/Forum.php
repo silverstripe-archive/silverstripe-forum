@@ -449,7 +449,7 @@ class Forum_Controller extends Page_Controller {
  			$member->write();
  		}
 		
-		Requirements::javascript("forum/javascript/jquery.js"); 
+		Requirements::javascript(THIRDPARTY_DIR . "/jquery/jquery.js"); 
 		Requirements::javascript("forum/javascript/forum.js");
 		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
 
