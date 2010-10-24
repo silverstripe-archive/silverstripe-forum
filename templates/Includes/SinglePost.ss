@@ -49,7 +49,7 @@
 		$Content.Parse(BBCodeParser)
 	</div>
 	
-	<% if DisplaySignatures %>
+	<% if Thread.DisplaySignatures %>
 		<% control Author %>
 			<% if Signature %>
 				<div class="signature">
