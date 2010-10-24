@@ -12,12 +12,12 @@ $lang['en_US']['ComplexTableField']['CLOSEPOPUP'] = 'Close Popup';
 $lang['en_US']['ComplexTableField']['SUCCESSADD'] = 'Added %s %s %s';
 $lang['en_US']['Forum']['ACCESSATTACH'] = 'Can users attach files?';
 $lang['en_US']['Forum']['ACCESSPOST'] = 'Who can post to the forum?';
-$lang['en_US']['Forum']['ACCESSREAD'] = 'Who can read the forum?';
 $lang['en_US']['Forum']['ATTACH'] = 'Attach file';
 $lang['en_US']['Forum']['BBCODEHINT'] = 'View Formatting Help';
+$lang['en_US']['Forum']['CHANGETHREADFORUM'] = 'Change Thread Forum';
 $lang['en_US']['Forum']['CURRENTATTACHMENTS'] = 'Current Attachments';
 $lang['en_US']['Forum']['DEFAULTCATEGORY'] = 'General';
-$lang['en_US']['Forum']['EDITPOST'] = 'Edit a post';
+$lang['en_US']['Forum']['EDITPOST'] = 'Edit post';
 $lang['en_US']['Forum']['FORUMCREATED'] = 'Forum page created';
 $lang['en_US']['Forum']['FORUMHOLDERCREATED'] = 'ForumHolder page created';
 $lang['en_US']['Forum']['FORUMMONTHLYPOSTS'] = 'Forum Posts by Month';
@@ -106,6 +106,7 @@ $lang['en_US']['ForumHolder']['PLURALNAME'] = array(
 	'Pural name of the object, used in dropdowns and to generally identify a collection of this object in the interface'
 );
 $lang['en_US']['ForumHolder']['POPULARTHREADS'] = 'Most popular forum threads';
+$lang['en_US']['ForumHolder']['POSTSTOALLFORUMS'] = 'Posts to all forums';
 $lang['en_US']['ForumHolder']['SEARCHEDFOR'] = 'You searched for \'%s\'.';
 $lang['en_US']['ForumHolder']['SEARCHRESULTS'] = 'Search results';
 $lang['en_US']['ForumHolder']['SINGULARNAME'] = array(
@@ -179,7 +180,6 @@ $lang['en_US']['ForumMemberProfile']['FORUMUSERPROFILE'] = 'Forum User Profile';
 $lang['en_US']['ForumMemberProfile']['FORUMUSERREGISTER'] = 'Forum Registration';
 $lang['en_US']['ForumMemberProfile']['NICKNAMEEXISTS'] = 'Sorry, that nickname already exists. Please choose another.';
 $lang['en_US']['ForumMemberProfile']['OPENIDEXISTS'] = 'Sorry, that OpenID is already registered. Please choose another or register without OpenID.';
-$lang['en_US']['ForumMemberProfile']['PASSNOTMATCH'] = 'Both passwords need to match. Please try again.';
 $lang['en_US']['ForumMemberProfile']['REGISTER'] = 'Register';
 $lang['en_US']['ForumMemberProfile']['REGISTEROPENID'] = 'Register with OpenID';
 $lang['en_US']['ForumMemberProfile']['SAVECHANGES'] = 'Save changes';
@@ -219,7 +219,6 @@ $lang['en_US']['ForumRole']['CANGRAVATAR'] = 'If you use Gravatars then leave th
 $lang['en_US']['ForumRole']['CITY'] = 'City';
 $lang['en_US']['ForumRole']['COMMEMBER'] = 'Community Member';
 $lang['en_US']['ForumRole']['COMPANY'] = 'Company';
-$lang['en_US']['ForumRole']['CONFIRMPASS'] = 'Confirm Password';
 $lang['en_US']['ForumRole']['COUNTRY'] = 'Country';
 $lang['en_US']['ForumRole']['EMAIL'] = 'Email';
 $lang['en_US']['ForumRole']['FIRSTNAME'] = 'First name';
@@ -247,6 +246,10 @@ $lang['en_US']['ForumThread']['SINGULARNAME'] = array(
 	50,
 	'Singular name of the object, used in dropdowns and to generally identify a single object in the interface'
 );
+$lang['en_US']['ForumThreadSubscribe.ss']['CLICKSUBSCRIBE'] = 'Click here to subscribe to this topic';
+$lang['en_US']['ForumThreadSubscribe.ss']['CLICKUNSUBSCRIBE'] = 'Click here to Unsubscribe to this topic';
+$lang['en_US']['ForumThreadSubscribe.ss']['SUBSCRIBE'] = 'Subscribe';
+$lang['en_US']['ForumThreadSubscribe.ss']['UNSUBSCRIBE'] = 'Unsubscribe';
 $lang['en_US']['ForumThread_Subscription']['PLURALNAME'] = array(
 	'Forum Thread Subscriptions',
 	50,
@@ -263,8 +266,6 @@ $lang['en_US']['Forum_show.ss']['AUTHOR'] = 'Author';
 $lang['en_US']['Forum_show.ss']['CLICKGOTOEND'] = 'Click here to go the end of this post';
 $lang['en_US']['Forum_show.ss']['CLICKGOTOTOP'] = 'Click here to go the top of this post';
 $lang['en_US']['Forum_show.ss']['CLICKREPLY'] = 'Click to Reply';
-$lang['en_US']['Forum_show.ss']['CLICKSUBSCRIBE'] = 'Click here to subscribe to this topic';
-$lang['en_US']['Forum_show.ss']['CLICKUNSUBSCRIBE'] = 'Click here to Unsubscribe to this topic';
 $lang['en_US']['Forum_show.ss']['GOTOEND'] = 'Go to End';
 $lang['en_US']['Forum_show.ss']['GOTOTOP'] = 'Go to Top';
 $lang['en_US']['Forum_show.ss']['NEXTLINK'] = 'Next';
@@ -273,9 +274,7 @@ $lang['en_US']['Forum_show.ss']['PAGE'] = 'Page:';
 $lang['en_US']['Forum_show.ss']['PREVLINK'] = 'Prev';
 $lang['en_US']['Forum_show.ss']['PREVTITLE'] = 'View the previous page';
 $lang['en_US']['Forum_show.ss']['REPLY'] = 'Reply';
-$lang['en_US']['Forum_show.ss']['SUBSCRIBE'] = 'Subscribe';
 $lang['en_US']['Forum_show.ss']['TOPIC'] = 'Topic:';
-$lang['en_US']['Forum_show.ss']['UNSUBSCRIBE'] = 'Unsubscribe';
 $lang['en_US']['Forum_show.ss']['VIEWS'] = 'Views';
 $lang['en_US']['Forum_starttopic.ss']['AVAILABLEBB'] = 'Available BB Code tags';
 $lang['en_US']['Post']['DELETE'] = 'Delete';
@@ -313,6 +312,8 @@ $lang['en_US']['SinglePost.ss']['ATTACHED'] = 'Attached Files';
 $lang['en_US']['SinglePost.ss']['CLICKREPLY'] = 'Click to Reply';
 $lang['en_US']['SinglePost.ss']['GOTOPROFILE'] = 'Go to this User\'s Profile';
 $lang['en_US']['SinglePost.ss']['LASTEDITED'] = 'Last edited:';
+$lang['en_US']['SinglePost.ss']['POST'] = 'Post';
+$lang['en_US']['SinglePost.ss']['POSTS'] = 'Posts';
 $lang['en_US']['SinglePost.ss']['REPLY'] = 'Reply';
 $lang['en_US']['TopicListing.ss']['BY'] = 'by';
 $lang['en_US']['TopicListing.ss']['CLICKTOUSER'] = 'Click here to view';
