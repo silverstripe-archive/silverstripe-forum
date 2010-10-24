@@ -148,6 +148,14 @@ class ForumMigrationTask extends BuildTask {
 		
 		echo "Renamed old data columns in Post and removed Post_Subscription table <br />";
 
+		$this->attachLastPostIDs();
+		
+		echo "Set ForumThread last post and update LastEdited to the most recent post <br />";
+
+		echo "Finished<br />";
+	}
+	
+	function attachLastPostIDs() {		
 		DB::query("
 			UPDATE \"ForumThread\" 
 			SET \"LastPostID\" = (SELECT MAX(\"ID\") FROM \"Post\" WHERE \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\") 
@@ -158,10 +166,6 @@ class ForumMigrationTask extends BuildTask {
 			SET \"LastEdited\" = (SELECT MAX(\"Created\") FROM \"Post\" WHERE \"Post\".\"ThreadID\"= \"ForumThread\".\"ID\") 
 			WHERE (SELECT COUNT(*) FROM \"Post\" WHERE \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\") > 0
 		");
-
-		echo "Set ForumThread last post and update LastEdited to the most recent post <br />";
-
-		echo "Finished<br />";
 	}
 
 }

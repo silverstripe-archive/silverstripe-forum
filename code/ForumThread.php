@@ -19,8 +19,6 @@ class ForumThread extends DataObject {
 	
 	static $has_one = array(
 		'Forum' => 'Forum',
-
-		// Reference to the most recently added or editing Post.
 		'LastPost' => 'Post'
 	);
 	
@@ -38,6 +36,24 @@ class ForumThread extends DataObject {
 	static $indexes = array(
 		"SearchFields" => array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Title'),
 	);
+	
+	/**
+	 * When rebuilding the database we need to ensure that all the threads have been assigned
+	 * a last post and when people upgrade to this version running the rebuild should fix the data
+	 * rather than the entire migrate script
+	 *
+	 * @return void
+	 */
+	function requireDefaultRecords() {
+		if(DB::query("SELECT COUNT(*) FROM \"ForumThread\" WHERE \"LastPostID\" = 0")->value() > 0) {
+			
+			$migrate = new ForumMigrationTask();
+			$migrate->attachLastPostIDs();
+		}
+		
+		parent::requireDefaultRecords();
+	}
+	
 	
 	/**
 	 * Check to see if the user can perform editing tasks on this thread. This should
@@ -85,7 +101,8 @@ class ForumThread extends DataObject {
 	 * @return Post
 	 */
 	function getLatestPost() {
-		if ($post = $this->LastPost()) return $post;
+		if($post = $this->LastPost()) return $post;
+		
 		return $this->updateLastPost();
 	}
 	
@@ -111,20 +128,23 @@ class ForumThread extends DataObject {
 	/**
 	 * Check if they have visited this thread before. If they haven't increment 
 	 * the NumViews value by 1 and set visited to true.
+	 *
+	 * @return void
 	 */
 	function incNumViews() {
 		if(Session::get('ForumViewed-' . $this->ID)) return false;
 
 		Session::set('ForumViewed-' . $this->ID, 'true');
+		
 		$this->NumViews++;
 		$SQL_numViews = Convert::raw2sql($this->NumViews);
+		
 		DB::query("UPDATE \"ForumThread\" SET \"NumViews\" = '$SQL_numViews' WHERE \"ID\" = $this->ID");
 	}
 	
 	/**
 	 * Link to this forum thread
 	 *
-	 * @todo Use Title as the URL rather then ID
 	 * @return String
 	 */
 	function Link($action = "show", $showID = true) {
@@ -171,10 +191,12 @@ class ForumThread extends DataObject {
 	 */
 	function updateLastPost($post = null) {
 		if (!$post) $post = DataObject::get_one('Post', "\"ThreadID\" = '$this->ID'", true, "\"ID\" DESC");
+		
 		if ($post && $post->ID != $this->LastPostID) {
 			$this->LastPostID = $post->ID;
 			$this->write();
 		}
+		
 		return $post;
 	}
 }
@@ -202,6 +224,7 @@ class ForumThread_Subscription extends DataObject {
 	 *
 	 * @param int $threadID The ID of the thread to check
 	 * @param int $memberID The ID of the currently logged in member (Defaults to Member::currentUserID())
+	 *
 	 * @return bool true if they are subscribed, false if they're not
 	 */
 	static function already_subscribed($threadID, $memberID = null) {
