@@ -122,7 +122,7 @@ Forum:
 		CanViewType: OnlyTheseUsers
 		ForumPosters: OnlyTheseUsers
 		ViewerGroups: =>Group.special
-		ForumPostersGroup: =>Group.special
+		PosterGroups: =>Group.special
         
 	noPostingForum:
 		Title: This Forum is Readonly
