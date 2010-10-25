@@ -23,12 +23,12 @@ class Forum extends Page {
 
 	static $has_one = array(
 		"Moderator" => "Member",
-		"Category" => "ForumCategory",
-		"ForumPostersGroup" => "Group",
+		"Category" => "ForumCategory"
 	);
 	
 	static $many_many = array(
-		'Moderators' => 'Member'
+		'Moderators' => 'Member',
+		'PosterGroups' => 'Group'
 	);
 
 	static $defaults = array(
@@ -66,14 +66,18 @@ class Forum extends Page {
 	 *
 	 * @return bool
 	 */
-	function canPost() {	
+	function canPost() {
 		if($this->ForumPosters == "Anyone" || $this->isAdmin()) return true;
 		
-		$member = Member::currentUser();
+		if($this->ForumPosters == "NoOne") return false;
+		
+		if($member = Member::currentUser()) {
+			if($this->ForumPosters == "LoggedInUsers") return true;
 
-		if($member) {
-			if($this->ForumPosters == "LoggedInUsers" || ($this->ForumPosters == "OnlyTheseUsers" && $member->inGroup($this->ForumPostersGroupID))) {
-				return true;
+			if($groups = $this->PosterGroups()) {
+				foreach($groups as $group) {
+					if($member->inGroup($group)) return true;
+				}
 			}
 		}
 		
@@ -139,6 +143,16 @@ class Forum extends Page {
 
 			DB::alteration_message(_t('Forum.FORUMCREATED','Forum page created'),"created");
 		}
+		
+		// update the forumpostersgroupID
+		if($this->ForumPostersGroupID > 0) {
+			$this->PosterGroups()->add(DataObject::get_by_id('Group', $this->ForumPostersGroupID));
+			
+			$this->ForumPostersGroupID == 0;
+			$this->write();
+			
+			DB::alteration_message(_t('Forum.FORUMPOSTERSGROUPMIGRATED','Forum posters group migrated'),"created");
+		}
 	}
 
 	/**
@@ -159,7 +173,8 @@ class Forum extends Page {
 		  	"OnlyTheseUsers" => _t('Forum.READLIST', 'Only these people (choose from list)'),
 			"NoOne" => _t('Forum.READNOONE', 'Nobody. Make Forum Read Only')
 		)));
-		$fields->addFieldToTab("Root.Access", new TreeDropdownField("ForumPostersGroupID", "Group"));
+		
+		$fields->addFieldToTab("Root.Access", new TreeMultiselectField("PosterGroups", _t('Forum.GROUPS',"Groups")));
 
 		$fields->addFieldToTab("Root.Access", new OptionsetField("CanAttachFiles", _t('Forum.ACCESSATTACH','Can users attach files?'), array(
 			"1" => _t('Forum.YES','Yes'),

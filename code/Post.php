@@ -47,6 +47,8 @@ class Post extends DataObject {
 					$post->write();
 				}
 			}
+			
+			DB::alteration_message(_t('Forum.POSTSFORUMIDUPDATED','Forum posts forum ID added'),"created");
 		}
 	}
 	
