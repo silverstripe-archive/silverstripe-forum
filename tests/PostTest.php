@@ -1,4 +1,4 @@
-l<?php
+<?php
 
 class PostTest extends FunctionalTest {
 	
