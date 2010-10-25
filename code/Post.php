@@ -291,10 +291,9 @@ class Post extends DataObject {
 		
 		$count = 0;
 		$posts = DataObject::get("Post", "TopicID = '$this->TopicID' AND Status = 'Moderated' AND ID < $this->ID");
-		if($posts) {
-			if($posts->Count() < 9) $count = 0;
-			else $count = floor($posts->Count()/8)*8;
-		}
+		
+		if($posts) $count = floor($posts->Count()/Forum::$posts_per_page) * Forum::$posts_per_page;
+		
 		return $baseLink . $action ."/" . $this->TopicID  . '?start='.$count.'#post' . $this->ID;
 	}
 	
