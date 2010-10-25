@@ -1,4 +1,4 @@
-<?php
+l<?php
 
 class PostTest extends FunctionalTest {
 	
@@ -89,8 +89,8 @@ class PostTest extends FunctionalTest {
 		
 		$this->assertContains($post->Thread()->URLSegment .'/deletepost/'. $post->ID, $post->DeleteLink());
 		
-		// because this is the first post test for the ID which is used in javascript
-		$this->assertContains("id=\"firstPost\"", $post->DeleteLink());
+		// because this is the first post test for the class which is used in javascript
+		$this->assertContains("class=\"deleteLink firstPost\"", $post->DeleteLink());
 		$member->logOut();
 		
 		// log in as another member who is not in a position to delete this post
@@ -109,7 +109,7 @@ class PostTest extends FunctionalTest {
 		// test that a 2nd post doesn't have the first post ID hook
 		$memberOthersPost = $this->objFromFixture('Post', 'Post2');
 		
-		$this->assertFalse(strstr($memberOthersPost->DeleteLink(), "id=\"firstPost\""));
+		$this->assertFalse(strstr($memberOthersPost->DeleteLink(), "firstPost"));
 	}
 	
 	function testGetUpdated() {

@@ -184,7 +184,7 @@ class Post extends DataObject {
 			
 			$firstPost = ($this->isFirstPost()) ? 'firstPost' : '';
 			
-			return "<a class=\"deletelink $firstPost\" href=\"{$url}/{$this->ID}\">" . _t('Post.DELETE','Delete') ."</a>";
+			return "<a class=\"deleteLink $firstPost\" href=\"{$url}/{$this->ID}\">" . _t('Post.DELETE','Delete') ."</a>";
 		}
 		
 		return false;
