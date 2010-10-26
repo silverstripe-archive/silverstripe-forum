@@ -41,6 +41,15 @@ class Forum extends Page {
 	 * @var int
 	 */
 	static $posts_per_page = 8;
+	
+	/**
+	 * When migrating from older versions of the forum it used post ID as the url token
+	 * as of forum 1.0 we now use ThreadID. If you want to enable 301 redirects from post to thread ID
+	 * set this to true
+	 *
+	 * @var bool
+	 */
+	static $redirect_post_urls_to_thread = false;
 
 	/**
 	 * Can this user view the thread.
@@ -863,6 +872,15 @@ class Forum_Controller extends Page_Controller {
 			return array(
 				'Title' => DBField::create('HTMLText',$title)
 			);
+		}
+		else {
+			// if redirecting post ids to thread id is enabled then we need
+			// to check to see if this matches a post and if it does redirect
+			if(Forum::$redirect_post_urls_to_thread && isset($this->urlParams['ID'])) {
+				if($post = DataObject::get_by_id('Post', $this->urlParams['ID'])) {
+					return $this->redirect($post->Link(), 301);
+				}
+			}
 		}
 		
 		return $this->httpError(404);
