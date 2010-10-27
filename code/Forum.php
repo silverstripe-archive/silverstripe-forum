@@ -458,7 +458,7 @@ class Forum_Controller extends Page_Controller {
 
 		Requirements::themedCSS('Forum');
 
-		RSSFeed::linkToFeed($this->Parent()->Link("rss/$this->ID"), sprintf(_t('Forum.RSSFORUM',"Posts to the '%s' forum"),$this->Title)); 
+		RSSFeed::linkToFeed($this->Parent()->Link("rss/forum/$this->ID"), sprintf(_t('Forum.RSSFORUM',"Posts to the '%s' forum"),$this->Title)); 
 	 	RSSFeed::linkToFeed($this->Parent()->Link("rss"), _t('Forum.RSSFORUMS','Posts to all forums'));
 	 	
 	 	// Icky hack to set this page ShowInCategories so we can determine if we need to show in category mode or not.
@@ -862,10 +862,10 @@ class Forum_Controller extends Page_Controller {
 		
 		if($thread = $this->getForumThread()) {
 			$thread->incNumViews();
+
+			$posts = sprintf(_t('Forum.POSTTOTOPIC',"Posts to the %s topic"), $thread->Title);
 			
-			$posts = sprintf(_t('Forum.POSTTOTOPIC',"Posts to the '%s' topic"),$title);
-			
-			RSSFeed::linkToFeed($this->Link("rss") . '/' . (int) $this->urlParams['ID'], $posts);
+			RSSFeed::linkToFeed($this->Link("rss") . '/thread/' . (int) $this->urlParams['ID'], $posts);
 				
 			$title = Convert::raw2xml($thread->Title) . ' &raquo; ' . $title;
 			

@@ -611,8 +611,27 @@ class ForumHolder_Controller extends Page_Controller {
 	function rss() {
 		HTTP::set_cache_age(3600); // cache for one hour
 		
-		$threadID = (isset($_GET['ThreadID'])) ? $_GET['ThreadID'] : null;
-		$forumID = (isset($_GET['ForumID'])) ? $_GET['ForumID']	 : null;
+		$threadID = null;
+		$forumID = null;
+		
+		// optionally allow filtering of the forum posts by the url in the format
+		// rss/thread/$ID or rss/forum/$ID
+		if(isset($this->urlParams['ID']) && ($action = $this->urlParams['ID'])) {
+			if(isset($this->urlParams['OtherID']) && ($id = $this->urlParams['OtherID'])) {
+				switch($action) {
+					case 'forum': 
+						$forumID = (int) $id;
+						break;
+					case 'thread':
+						$threadID = (int) $id;
+				}
+			}
+			else {
+				// fallback is that it is the ID of a forum like it was in
+				// previous versions
+				$forumID = (int) $action;
+			}
+		}
 		
 		$data = array('last_created' => null, 'last_id' => null);
 
