@@ -464,6 +464,14 @@ class Forum_Controller extends Page_Controller {
 	 	// Icky hack to set this page ShowInCategories so we can determine if we need to show in category mode or not.
 	 	$holderPage = $this->Parent;
 		if($holderPage) $this->ShowInCategories = $holderPage->ShowInCategories;
+		
+		// Set the back url
+		if(isset($_SERVER['REQUEST_URI'])) {
+			Session::set('BackURL', $_SERVER['REQUEST_URI']);
+		}
+		else {
+			Session::set('BackURL', $this->Link());
+		}
 	}
 
 	/**

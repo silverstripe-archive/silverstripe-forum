@@ -439,6 +439,14 @@ class ForumHolder_Controller extends Page_Controller {
 		RSSFeed::linkToFeed($this->Link("rss"), _t('ForumHolder.POSTSTOALLFORUMS', "Posts to all forums"));
 		
 		parent::init();
+		
+		// Set the back url
+		if(isset($_SERVER['REQUEST_URI'])) {
+			Session::set('BackURL', $_SERVER['REQUEST_URI']);
+		}
+		else {
+			Session::set('BackURL', $this->Link());
+		}
 	}
 	
 	/** 
