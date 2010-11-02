@@ -28,6 +28,7 @@ class ForumSphinxSearch implements ForumSearchProvider {
 	 * @return DataObjectSet
 	 */
 	public function getResults($forumHolderID, $query, $order, $offset = 0, $limit = 10) {
+		$query = $this->cleanQuery($query);
 
 		// Default weights put title ahead of content, which effectively
 		// puts threads ahead of posts.
@@ -80,7 +81,23 @@ class ForumSphinxSearch implements ForumSearchProvider {
 		
 		return $this->search_cache[$cachekey]->Matches;
 	}
-	
+
+	// Clean up the query text with some combinatiosn that are known to
+	// cause problems for sphinx, including:
+	// - term starts with $
+	// - presence of /, ^, @, !, (, )
+	// we just remove the chars when we see these
+	public function cleanQuery($query) {
+		$query = trim($query);
+		if (!$query) return $query;
+		if ($query[0] == "$") $query = substr($query, 1);
+		$query = str_replace(
+			array("/", "^", "@", "!", "(", ")", "~"),
+			array("",  "",  "",  "",  "",  "",  ""),
+			$query);
+		return $query;
+	}
+
 	public function load() {
 		// Add the SphinxSearchable extension to ForumThread and Post,
 		// with an extra computed column that gives an age band. The
