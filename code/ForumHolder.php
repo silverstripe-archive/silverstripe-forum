@@ -297,7 +297,14 @@ class ForumHolder extends Page {
 		$stage = (Controller::curr()->getRequest()) ? Controller::curr()->getRequest()->getVar('stage') : false;
 		if (!$stage) $stage = Versioned::get_live_stage();
 		
-		return (SapphireTest::is_running_test() || $stage == "Stage") ? "SiteTree" : "SiteTree_Live";
+		if(
+			(class_exists('SapphireTest', false) && SapphireTest::is_running_test())
+			|| $stage == "Stage"
+		) {
+			return "SiteTree";
+		} else {
+			return "SiteTree_Live";
+		}
 	}
 	
 	
