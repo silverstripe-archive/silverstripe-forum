@@ -479,7 +479,7 @@ class Forum_Controller extends Page_Controller {
 	 * A convenience function which provides nice URLs for an rss feed on this forum.
 	 */
 	function rss() {
-		$this->redirect($this->Parent()->Link("rss/forum/$this->ID"));
+		$this->redirect($this->Parent()->Link("rss/forum/$this->ID"), 301);
 	}
 
 	/**
