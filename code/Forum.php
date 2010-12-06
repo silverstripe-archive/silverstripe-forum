@@ -427,7 +427,8 @@ class Forum_Controller extends Page_Controller {
 		'show',
 		'starttopic',
 		'subscribe',
-		'unsubscribe'
+		'unsubscribe',
+		'rss'
 	);
 	
 	
@@ -472,6 +473,13 @@ class Forum_Controller extends Page_Controller {
 		else {
 			Session::set('BackURL', $this->Link());
 		}
+	}
+
+	/**
+	 * A convenience function which provides nice URLs for an rss feed on this forum.
+	 */
+	function rss() {
+		$this->redirect($this->Parent()->Link("rss/forum/$this->ID"));
 	}
 
 	/**
