@@ -1,5 +1,4 @@
 <div id="ForumContent" class="typography">
-	<% include ForumLogin %>
 	<div class="clear"><!-- --></div>
 	<div class="forumFeatures">
 		<div class="featureRight">
@@ -53,7 +52,7 @@
 			
 			$ForumHolder.HolderAbstract
 			
-			<p id="ForumBreadCrumbs">$Breadcrumbs</p>
+			<!-- <p id="ForumBreadCrumbs">$Breadcrumbs</p> -->
 			
 			<% if Moderators %><p>Moderators: <% control Moderators %><a href="$Link">$Nickname</a><% if Last %><% else %>, <% end_if %><% end_control %></p><% end_if %>
 		</div>	
