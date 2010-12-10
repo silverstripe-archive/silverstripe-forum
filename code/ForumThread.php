@@ -101,8 +101,9 @@ class ForumThread extends DataObject {
 	 * @return Post
 	 */
 	function getLatestPost() {
-		if($post = $this->LastPost()) return $post;
-		
+		$post = $this->LastPost();
+		if($post && $post->ID > 0) return $post;    //need to check for null post object both with ID of zero
+
 		return $this->updateLastPost();
 	}
 	
