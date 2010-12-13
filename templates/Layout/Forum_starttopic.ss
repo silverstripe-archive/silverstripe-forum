@@ -17,3 +17,6 @@
 	</div>
 </div>
 <% include ForumFooter %>
+
+</div> <!-- CLOSE #ForumContent in forum header -->
+</div> <!-- CLOSE #Forum in forum header -->
