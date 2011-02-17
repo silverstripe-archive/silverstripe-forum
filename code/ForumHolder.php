@@ -610,7 +610,7 @@ class ForumHolder_Controller extends Page_Controller {
 		return array(
 			"Subtitle"		=> DBField::create('Text', _t('ForumHolder.SEARCHRESULTS','Search results')),
 			"Abstract"		=> DBField::create('HTMLText', $abstract),
-			"Query"			=> DBField::create('Text', $keywords),
+			"Query"			=> DBField::create('Text', $_REQUEST['Search']),
 			"Order"			=> DBField::create('Text', ($order) ? $order : "relevance"),
 			"RSSLink"		=> DBField::create('HTMLText', $rssLink),
 			"SearchResults"	=> $results
