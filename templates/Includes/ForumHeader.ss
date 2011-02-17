@@ -39,7 +39,7 @@
 						<fieldset>
 							<legend><% _t('SEARCHBUTTON','Search') %></legend>
 					
-							<input class="text" type="text" name="Search" />
+							<input class="text" type="text" name="Search" value="$Query.ATT" />
 							<input class="submit" type="submit" value="<% _t('SEARCHBUTTON','Search') %>"/>
 						</fieldset>
 					</form>
