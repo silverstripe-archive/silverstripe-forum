@@ -254,22 +254,28 @@ class ForumHolder extends Page {
 	 */
 	function Forums() {
 	 	$categories = DataObject::get("ForumCategory", "\"ForumHolderID\"={$this->ID}");	
-
+		if(isset($_REQUEST['Category'])){
+			$categoryText = Convert::raw2xml($_REQUEST['Category']);
+		}
 		if($categories && $this->ShowInCategories) {
 			foreach($categories as $category) {
-				$category->CategoryForums = new DataObjectSet();
-				
-				$forums = DataObject::get("Forum", "\"CategoryID\" = '$category->ID' AND \"ParentID\" = '$this->ID'");
-				
-				if($forums) {
-					foreach($forums as $forum) {
-						if($forum->canView()) {
-							$category->CategoryForums->push($forum);
+				if(!isset($_REQUEST['Category']) || $category->Title==$categoryText){
+					$category->CategoryForums = new DataObjectSet();
+					
+					$forums = DataObject::get("Forum", "\"CategoryID\" = '$category->ID' AND \"ParentID\" = '$this->ID'");
+					
+					if($forums) {
+						foreach($forums as $forum) {
+							if($forum->canView()) {
+								$category->CategoryForums->push($forum);
+							}
 						}
 					}
+					
+					if($category->CategoryForums->Count() < 1) $categories->remove($category);
+				}else{
+					$categories->remove($category);
 				}
-				
-				if($category->CategoryForums->Count() < 1) $categories->remove($category);
 			}
 			
 			return $categories;
