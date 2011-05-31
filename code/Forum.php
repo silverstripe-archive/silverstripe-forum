@@ -1063,8 +1063,7 @@ class Forum_Controller extends Page_Controller {
 		// well and needs to return a valid form object
 		if($id) {
 			$thread = DataObject::get_by_id('ForumThread', $id);
-			
-			if($thread && $thread->canEdit()) $form->loadDataFrom($thread);
+			$form->loadDataFrom($thread);
 		}
 
 		return $form;
