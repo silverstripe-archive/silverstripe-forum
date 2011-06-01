@@ -65,6 +65,8 @@ ForumHolder:
 	fhPermissions:
 		Title: Forum For Testing Threads with Permissions
 		ShowInCategories: true
+		CanViewType: NoOne
+		CanPostType: NoOne
 ForumCategory:
 	fh1cat1:
 		Title: cat1
@@ -87,6 +89,8 @@ Forum:
 		Title: General Discussion
 		ParentID: =>ForumHolder.fh
 		CategoryID: =>ForumCategory.fh1cat1
+		CanViewType: Anyone
+		CanPostType: Anyone
 		CanAttachFiles: true
 		Moderators: =>Member.moderator
         
@@ -114,20 +118,31 @@ Forum:
 		Title: Limited to Logged In Posting and Viewing
 		ParentID: =>ForumHolder.fhPermissions
 		CanViewType: LoggedInUsers
-		ForumPosters: LoggedInUsers
+		CanPostType: LoggedInUsers
+		Moderators: =>Member.moderator
         
 	limitedToGroup:
 		Title: Limited to a Specific Group
 		ParentID: =>ForumHolder.fhPermissions
 		CanViewType: OnlyTheseUsers
-		ForumPosters: OnlyTheseUsers
+		CanPostType: OnlyTheseUsers
 		ViewerGroups: =>Group.special
 		PosterGroups: =>Group.special
+		Moderators: =>Member.moderator
         
 	noPostingForum:
 		Title: This Forum is Readonly
 		ParentID: =>ForumHolder.fhPermissions
-		ForumPosters: NoOne
+		CanViewType: Anyone
+		CanPostType: NoOne
+		Moderators: =>Member.moderator
+
+	inheritedForum:
+		Title: This Forum is Readonly
+		ParentID: =>ForumHolder.fhPermissions
+		CanViewType: Inherit
+		CanPostType: Inherit
+		Moderators: =>Member.moderator
     
 ForumThread:
 	Thread1:
@@ -158,6 +173,10 @@ ForumThread:
 	ThreadWhichIsInReadonlyForum:
 		Title: Thread is set to a readonly forum but you can edit this because its not readonly
 		Forum: =>Forum.noPostingForum
+
+	ThreadWhichIsInInheritedForum:
+		Title: The thread is in a forum that inherits NoOne permission for viewing and posting
+		Forum: =>Forum.inheritedForum
 		
 	ThreadCreatedBySpammer:
 		Title: Thread Created By Spammer
@@ -304,9 +323,16 @@ Post:
 		Thread: =>ForumThread.Thread1
 		Author: =>Member.test2
 		Forum: =>Forum.general
+
+	ReadonlyThreadPost:
+		Content: ReadonlyThreadPost
+		Thread: =>ForumThread.ReadonlyThread
+		Author: =>Member.test1
+		Forum: =>Forum.general
             
 	Post18:
 		Content: This is the last post to a long thread
 		Thread: =>ForumThread.Thread1
 		Author: =>Member.test2
 		Forum: =>Forum.general
+

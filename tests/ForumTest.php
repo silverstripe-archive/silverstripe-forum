@@ -8,88 +8,146 @@ class ForumTest extends FunctionalTest {
 	static $fixture_file = "forum/tests/ForumTest.yml";
 	
 	function testCanView() {
-		// test viewing not logged in on each of the forums
+		// test viewing not logged in
 		if($member = Member::currentUser()) $member->logOut();
 		
 		$public = $this->objFromFixture('Forum', 'general');
 		$private = $this->objFromFixture('Forum', 'loggedInOnly');
 		$limited = $this->objFromFixture('Forum', 'limitedToGroup');
+		$noposting = $this->objFromFixture('Forum', 'noPostingForum');
+		$inherited = $this->objFromFixture('Forum', 'inheritedForum');
 		
 		$this->assertTrue($public->canView());
 		$this->assertFalse($private->canView());
 		$this->assertFalse($limited->canView());
+		$this->assertTrue($noposting->canView());
+		$this->assertFalse($inherited->canView());
 		
-		// try logging in a member, then we should be able to view both
+		// try logging in a member
 		$member = $this->objFromFixture('Member', 'test1');
 		$member->logIn();
 		
 		$this->assertTrue($public->canView());
 		$this->assertTrue($private->canView());
 		$this->assertFalse($limited->canView());
+		$this->assertTrue($noposting->canView());
+		$this->assertFalse($inherited->canView());
 		
-		// login as someone who can view the limited forum
+		// login as a person with access to restricted forum
 		$member = $this->objFromFixture('Member', 'test2');
 		$member->logIn();
 		
 		$this->assertTrue($public->canView());
 		$this->assertTrue($private->canView());
 		$this->assertTrue($limited->canView());
-	}
-	
-	function testCanEdit() {
-		if($member = Member::currentUser()) $member->logOut();
-		
-		$forum = $this->objFromFixture('Forum', 'general');
-		
-		$this->assertFalse($forum->canEdit());
-		
-		$member = $this->objFromFixture('Member', 'test1');
-		$member->logIn();
-		
-		$this->assertFalse($forum->canEdit());
+		$this->assertTrue($noposting->canView());
+		$this->assertFalse($inherited->canView());
 
-		$member->logOut();
-
+		// Moderator should be able to view his own forums
 		$member = $this->objFromFixture('Member', 'moderator');
 		$member->logIn();
 
-		$this->assertTrue($forum->canEdit());
+		$this->assertTrue($public->canView());
+		$this->assertTrue($private->canView());
+		$this->assertTrue($limited->canView());
+		$this->assertTrue($noposting->canView());
+		$this->assertTrue($inherited->canView());
 	}
-	
+
 	function testCanPost() {
-		// test post not logged in on each of the forums
+		// test viewing not logged in
 		if($member = Member::currentUser()) $member->logOut();
 		
 		$public = $this->objFromFixture('Forum', 'general');
 		$private = $this->objFromFixture('Forum', 'loggedInOnly');
 		$limited = $this->objFromFixture('Forum', 'limitedToGroup');
-		$noPost = $this->objFromFixture('Forum', 'noPostingForum');
+		$noposting = $this->objFromFixture('Forum', 'noPostingForum');
+		$inherited = $this->objFromFixture('Forum', 'inheritedForum');
 		
-		$this->assertFalse($public->canPost());
+		$this->assertTrue($public->canPost());
 		$this->assertFalse($private->canPost());
 		$this->assertFalse($limited->canPost());
-		$this->assertFalse($noPost->canPost());
+		$this->assertFalse($noposting->canPost());
+		$this->assertFalse($inherited->canPost());
 		
-		// try logging in a member, then we should be able to view both
+		// try logging in a member
 		$member = $this->objFromFixture('Member', 'test1');
 		$member->logIn();
 		
 		$this->assertTrue($public->canPost());
 		$this->assertTrue($private->canPost());
 		$this->assertFalse($limited->canPost());
-		$this->assertFalse($noPost->canPost());
+		$this->assertFalse($noposting->canPost());
+		$this->assertFalse($inherited->canPost());
 		
-		// login as someone who can view the limited forum
-		$member->logOut();
+		// login as a person with access to restricted forum
 		$member = $this->objFromFixture('Member', 'test2');
 		$member->logIn();
 		
 		$this->assertTrue($public->canPost());
 		$this->assertTrue($private->canPost());
 		$this->assertTrue($limited->canPost());
-		$this->assertFalse($noPost->canPost());
+		$this->assertFalse($noposting->canPost());
+		$this->assertFalse($inherited->canPost());
+
+		// Moderator should be able to view his own forums
+		$member = $this->objFromFixture('Member', 'moderator');
+		$member->logIn();
+
+		$this->assertTrue($public->canPost());
+		$this->assertTrue($private->canPost());
+		$this->assertFalse($limited->canPost());
+		$this->assertFalse($noposting->canPost());
+		$this->assertFalse($inherited->canPost());
 	}
-	
+
+	function testCanModerate() {
+		// test viewing not logged in
+		if($member = Member::currentUser()) $member->logOut();
+		
+		$public = $this->objFromFixture('Forum', 'general');
+		$private = $this->objFromFixture('Forum', 'loggedInOnly');
+		$limited = $this->objFromFixture('Forum', 'limitedToGroup');
+		$noposting = $this->objFromFixture('Forum', 'noPostingForum');
+		$inherited = $this->objFromFixture('Forum', 'inheritedForum');
+		
+		$this->assertFalse($public->canModerate());
+		$this->assertFalse($private->canModerate());
+		$this->assertFalse($limited->canModerate());
+		$this->assertFalse($noposting->canModerate());
+		$this->assertFalse($inherited->canModerate());
+		
+		// try logging in a member
+		$member = $this->objFromFixture('Member', 'test1');
+		$member->logIn();
+		
+		$this->assertFalse($public->canModerate());
+		$this->assertFalse($private->canModerate());
+		$this->assertFalse($limited->canModerate());
+		$this->assertFalse($noposting->canModerate());
+		$this->assertFalse($inherited->canModerate());
+		
+		// login as a person with access to restricted forum
+		$member = $this->objFromFixture('Member', 'test2');
+		$member->logIn();
+		
+		$this->assertFalse($public->canModerate());
+		$this->assertFalse($private->canModerate());
+		$this->assertFalse($limited->canModerate());
+		$this->assertFalse($noposting->canModerate());
+		$this->assertFalse($inherited->canModerate());
+
+		// Moderator should be able to view his own forums
+		$member = $this->objFromFixture('Member', 'moderator');
+		$member->logIn();
+
+		$this->assertTrue($public->canModerate());
+		$this->assertTrue($private->canModerate());
+		$this->assertTrue($limited->canModerate());
+		$this->assertTrue($noposting->canModerate());
+		$this->assertTrue($inherited->canModerate());
+	}
+
 	function testCanAttach() {
 		$canAttach = $this->objFromFixture('Forum', 'general');
 		$this->assertTrue($canAttach->canAttach());
@@ -129,7 +187,7 @@ class ForumTest extends FunctionalTest {
 	function testTopics() {
 		$forumWithPosts = $this->objFromFixture("Forum", "general");
 		
-		$this->assertEquals($forumWithPosts->getTopics()->Count(), '3');
+		$this->assertEquals($forumWithPosts->getTopics()->Count(), '4');
 		
 		$forumWithoutPosts = $this->objFromFixture("Forum", "forum1cat2");
 		

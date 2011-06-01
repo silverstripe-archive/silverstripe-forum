@@ -18,7 +18,7 @@
 
 <div class="posterContent">
 	<div class="quickReply">
-		<% if Thread.canCreate %>
+		<% if Thread.canPost %>
 			<p><a href="$Top.ReplyLink" title="<% _t('CLICKREPLY', 'Click to Reply') %>"><% _t('REPLY', 'Reply') %></a></p>
 		<% end_if %>
 	</div>

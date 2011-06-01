@@ -54,35 +54,47 @@ class ForumThread extends DataObject {
 		parent::requireDefaultRecords();
 	}
 	
-	
 	/**
-	 * Check to see if the user can perform editing tasks on this thread. This should
-	 * be moderators and admins. For editing posts canCreate() is what referred to since
-	 * currently we don't have that fine grain permissions.
-	 *
-	 * @return bool
+	 * Check if the user can create new threads and add responses
 	 */
-	function canEdit() {
-		return (!$this->IsReadOnly && $this->Forum()->canEdit()) ? true : false;
+	function canPost() {
+		return ($this->Forum()->canPost() && !$this->IsReadOnly);
 	}
 	
 	/**
-	 * Check if the user can view this thread. Check if they can view the forum since
-	 * the permissions on the forum are forum based, not thread based.
-	 *
-	 * @return bool
+	 * Check if user can moderate this thread
+	 */
+	function canModerate() {
+		return $this->Forum()->canModerate();
+	}
+	
+	/**
+	 * Check if user can view the thread
 	 */
 	function canView() {
 		return $this->Forum()->canView();
 	}
-	
+
 	/**
-	 * Check to see if the user can create new posts in this thread rather than new threads
-	 *
-	 * @return bool
+	 * Hook up into moderation.
+	 */
+	function canEdit() {
+		$this->canModerate();
+	}
+
+	/**
+	 * Hook up into moderation - users cannot delete their own posts/threads because 
+	 * we will loose history this way.
+	 */
+	function canDelete() {
+		$this->canModerate();
+	}
+
+	/**
+	 * Hook up into canPost check
 	 */
 	function canCreate() {
-		return (!$this->IsReadOnly && $this->Forum()->canPost()) ? true : false;
+		$this->canPost();
 	}
 	
 	/** 
