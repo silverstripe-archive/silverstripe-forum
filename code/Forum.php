@@ -331,6 +331,7 @@ class Forum extends Page {
 
 		if($global) {
 			$global->merge($standard);
+			$global->removeDuplicates();
 			$global->sort('PostList.Created');
 			
 			return $global;
