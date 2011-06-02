@@ -340,12 +340,12 @@ class Forum extends Page {
 				"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\""
 			);
 
-			if($global && $global->count()) {
+			if($standard && $standard->count() && $global && $global->count) {
 				$standard->merge($global);
 				$standard->removeDuplicates();
 			}
 		}
-		$standard->sort('PostList.Created');
+		if($standard && $standard->count())$standard->sort('PostList.Created');
 		return $standard;
 	}
 }
