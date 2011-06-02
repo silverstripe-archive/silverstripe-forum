@@ -714,6 +714,7 @@ class Forum_Controller extends Page_Controller {
 			$thread = new ForumThread();
 			$thread->ForumID = $this->ID;
 			if($title) $thread->Title = $title;
+			$starting_thread = true;
 		}
 		
 		// from now on the user has the correct permissions. save the current thread settings
@@ -781,7 +782,41 @@ class Forum_Controller extends Page_Controller {
 		// Send any notifications that need to be sent
 		ForumThread_Subscription::notify($post);
 		
+		// Send any notifications to moderators of the forum
+		if(isset($starting_thread) && $starting_thread) $this->notifyModerators($post, $thread, true);
+		else $this->notifyModerators($post, $thread);
+		
 		return $this->redirect($post->Link());
+	}
+	
+	function notifyModerators($post, $thread, $starting_thread = false) {
+		$moderators = $this->Moderators();
+		if($moderators && $moderators->count()) {
+			foreach($moderators as $moderator){
+				if($moderator->Email){
+					$email = new Email();
+					$email->setFrom(Email::getAdminEmail());
+					$email->setTo($moderator->Email);
+					
+					if($starting_thread){
+						$email->setSubject('New thread started: "' . $thread->Title . '" in forum "'. $this->Title.'"');
+					}else{
+						$email->setSubject('New post: "' . $post->Title . '" for thread "'. $thread->Title. '" in forum "'.$this->Title.'"');
+					}
+					
+					$body = "<p>Hi ".$moderator->FirstName."</p><p>";
+					if($starting_thread){
+						$body .= "New thread \"". $thread->Title."\" is started.";
+					}else{
+						$body .= "New post \"". $post->Title. "\" is added.";
+					}
+					$body .= "</p><p>Content:<br />".$post->Content."</p><p><a href=\"".$post->Link()."\">Please moderate it if necessary</a></p>";
+					$body .= "<p>NOTE: You receive this notification as you are one of the moderators of this forum.</p>";
+					$email->setBody($body);
+					$email->send();
+				}
+			}
+		}
 	}
 	
 	/** 
