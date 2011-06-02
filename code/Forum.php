@@ -115,6 +115,16 @@ class Forum extends Page {
 	}
 
 	/**
+	 * Check if we can and should show forums in categories
+	 */
+	function getShowInCategories() {
+		$holder = $this->getForumHolder();
+		if ($holder) {
+			return $holder->getShowInCategories();
+		}
+	}
+
+	/**
 	 * Returns a FieldSet with which to create the CMS editing form
 	 *
 	 * @return FieldSet The fields to be displayed in the CMS.
@@ -395,10 +405,6 @@ class Forum_Controller extends Page_Controller {
 		RSSFeed::linkToFeed($this->Parent()->Link("rss/forum/$this->ID"), sprintf(_t('Forum.RSSFORUM',"Posts to the '%s' forum"),$this->Title)); 
 	 	RSSFeed::linkToFeed($this->Parent()->Link("rss"), _t('Forum.RSSFORUMS','Posts to all forums'));
 	 	
-	 	// Icky hack to set this page ShowInCategories so we can determine if we need to show in category mode or not.
-	 	$holderPage = $this->Parent;
-		if($holderPage) $this->ShowInCategories = $holderPage->ShowInCategories;
-		
 		// Set the back url
 		if(isset($_SERVER['REQUEST_URI'])) {
 			Session::set('BackURL', $_SERVER['REQUEST_URI']);

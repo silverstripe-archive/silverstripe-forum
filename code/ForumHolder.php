@@ -272,6 +272,12 @@ class ForumHolder extends Page {
 		return DataObject::get("Member", "", "ID DESC", "", $limit);
 	}
 
+	function getShowInCategories() {
+	 	$categories = DataObject::get("ForumCategory", "\"ForumHolderID\"={$this->ID}");	
+		$showInCategories = $this->getField('ShowInCategories');
+		return $categories && $showInCategories;
+	}
+
 	/**
 	 * Get the forums. Actually its a bit more complex than that
 	 * we need to group by the Forum Categories.
@@ -279,11 +285,11 @@ class ForumHolder extends Page {
 	 * @return DataObjectSet
 	 */
 	function Forums() {
-	 	$categories = DataObject::get("ForumCategory", "\"ForumHolderID\"={$this->ID}");	
 		if(isset($_REQUEST['Category'])){
 			$categoryText = Convert::raw2xml($_REQUEST['Category']);
 		}
-		if($categories && $this->ShowInCategories) {
+		if($this->getShowInCategories()) {
+	 		$categories = DataObject::get("ForumCategory", "\"ForumHolderID\"={$this->ID}");	
 			foreach($categories as $category) {
 				if(!isset($_REQUEST['Category']) || $category->Title==$categoryText){
 					$category->CategoryForums = new DataObjectSet();
