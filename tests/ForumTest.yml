@@ -65,7 +65,7 @@ ForumHolder:
 	fhPermissions:
 		Title: Forum For Testing Threads with Permissions
 		ShowInCategories: true
-		CanViewType: NoOne
+		CanViewType: OnlyTheseUsers
 		CanPostType: NoOne
 ForumCategory:
 	fh1cat1:
