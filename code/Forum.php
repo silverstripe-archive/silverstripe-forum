@@ -1076,6 +1076,7 @@ class Forum_Controller extends Page_Controller {
 				}
 				$form->saveInto($thread);
 				$thread->write();
+				return Director::redirect($thread->Link());
 			}
 		}
 		

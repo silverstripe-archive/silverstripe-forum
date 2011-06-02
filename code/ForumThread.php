@@ -161,7 +161,7 @@ class ForumThread extends DataObject {
 	 * @return String
 	 */
 	function Link($action = "show", $showID = true) {
-		$baseLink = $this->Forum()->Link();
+		$baseLink = DataObject::get_by_id("Forum", $this->ForumID)->Link();
 		$extra = ($showID) ? '/'.$this->ID : '';
 		
 		return ($action) ? $baseLink . $action . $extra : $baseLink;
@@ -190,6 +190,19 @@ class ForumThread extends DataObject {
 				$post->delete();
 			}
 		}
+	}
+	
+	function onAfterWrite() {
+		if($this->isChanged('ForumID', 2)){
+			$posts = $this->Posts();
+			if($posts && $posts->count()) {
+				foreach($posts as $post) {
+					$post->ForumID=$this->ForumID;
+					$post->write();
+				}
+			}
+		}
+		parent::onAfterWrite();
 	}
 
 	/**
