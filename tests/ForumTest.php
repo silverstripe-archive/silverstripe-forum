@@ -100,6 +100,29 @@ class ForumTest extends FunctionalTest {
 		$this->assertFalse($noposting->canPost());
 		$this->assertFalse($inherited->canPost());
 	}
+	
+	function testSuspended() {
+		$private = $this->objFromFixture('Forum', 'loggedInOnly');
+		$limited = $this->objFromFixture('Forum', 'limitedToGroup');
+		$inheritedForum_loggedInOnly = $this->objFromFixture('Forum', 'inheritedForum_loggedInOnly');
+		SS_Datetime::set_mock_now('2011-10-10 12:00:00');	
+			
+		// try logging in a member suspendedexpired
+		$suspendedexpired = $this->objFromFixture('Member', 'suspendedexpired');
+		$this->assertFalse($suspendedexpired->IsSuspended());
+		$suspendedexpired->logIn();
+		$this->assertTrue($private->canPost());
+		$this->assertTrue($limited->canPost());
+		$this->assertTrue($inheritedForum_loggedInOnly->canPost());
+		
+		// try logging in a member suspended
+		$suspended = $this->objFromFixture('Member', 'suspended');
+		$this->assertTrue($suspended->IsSuspended());
+		$suspended->logIn();
+		$this->assertFalse($private->canPost());
+		$this->assertFalse($limited->canPost());
+		$this->assertFalse($inheritedForum_loggedInOnly->canPost());
+	}
 
 	function testCanModerate() {
 		// test viewing not logged in
@@ -174,14 +197,20 @@ class ForumTest extends FunctionalTest {
 	
 	function testGetStickyTopics() {
 		$forumWithSticky = $this->objFromFixture("Forum", "general");
-		
-		$this->assertEquals($forumWithSticky->getStickyTopics()->Count(), '2');
-		$this->assertEquals($forumWithSticky->getStickyTopics()->First()->Title, 'Sticky Thread');
+		$stickies = $forumWithSticky->getStickyTopics();
+		$this->assertEquals($stickies->Count(), '2');
+		$this->assertEquals($stickies->First()->Title, 'Global Sticky Thread');
+
+		$stickies = $forumWithSticky->getStickyTopics($include_global = false);
+		$this->assertEquals($stickies->Count(), '1');
+		$this->assertEquals($stickies->First()->Title, 'Sticky Thread');
 		
 		$forumWithGlobalOnly = $this->objFromFixture("Forum", "forum1cat2");
-		
-		$this->assertEquals($forumWithGlobalOnly->getStickyTopics()->Count(), '1');
-		$this->assertEquals($forumWithGlobalOnly->getStickyTopics()->First()->Title, 'Global Sticky Thread');
+		$stickies = $forumWithGlobalOnly->getStickyTopics();
+		$this->assertEquals($stickies->Count(), '1');
+		$this->assertEquals($stickies->First()->Title, 'Global Sticky Thread');
+		$stickies = $forumWithGlobalOnly->getStickyTopics($include_global = false);
+		$this->assertEquals($stickies->Count(), '0');
 	}
 	
 	function testTopics() {

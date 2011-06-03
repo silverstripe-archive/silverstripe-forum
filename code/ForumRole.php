@@ -82,7 +82,7 @@ class ForumRole extends DataObjectDecorator {
 				'Nickname' => true,
 			),
 			'field_labels' => array(
-				'SuspendedUntil' => "Be suspended until ...",
+				'SuspendedUntil' => "Suspend this member from writing on forums until the specified date",
 			),
 		);
 		
@@ -235,7 +235,8 @@ class ForumRole extends DataObjectDecorator {
 	}
 	
 	function IsSuspended(){
-		if($this->owner->SuspendedUntil) return SS_Datetime::now()->Format('Y-m-d') < $this->owner->SuspendedUntil; 
+		if($this->owner->SuspendedUntil) return SS_Datetime::now()->Format('Y-m-d') < $this->owner->SuspendedUntil;
+		else return false; 
 	}
 
 

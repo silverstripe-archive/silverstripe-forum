@@ -45,11 +45,16 @@ Member:
 		ForumRank: l33t
 	spammer:
 		Nickname: Spam
-		Email: spam@test.org
-		
+		Email: spam@test.org		
 	spammer2:
 		Nickname: Spam2
 		Email: spam2@test.org
+	suspendedexpired:
+	    SuspendedUntil: 2011-10-09
+	    Groups: =>Group.special
+	suspended:
+        SuspendedUntil: 2011-10-11
+        Groups: =>Group.special
 		
 ForumHolder:
 	fh:
@@ -67,6 +72,11 @@ ForumHolder:
 		ShowInCategories: true
 		CanViewType: OnlyTheseUsers
 		CanPostType: NoOne
+	loggedInUserOnly:
+	    Title: Forum holder in which forums are logged-in-user-only
+	    CanViewType: LoggedInUsers
+		CanPostType: LoggedInUsers
+		
 ForumCategory:
 	fh1cat1:
 		Title: cat1
@@ -143,7 +153,13 @@ Forum:
 		CanViewType: Inherit
 		CanPostType: Inherit
 		Moderators: =>Member.moderator
-    
+		
+	inheritedForum_loggedInOnly:
+	    Title: This Forum is logged-in-user-only-inherited
+	    ParentID: =>ForumHolder.loggedInUserOnly
+	    CanViewType: Inherit
+	    CanPostType: Inherit
+	      
 ForumThread:
 	Thread1:
 		Title: Test Thread
