@@ -342,7 +342,7 @@ class Forum extends Page {
 				"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\""
 			);
 
-			if($standard && $standard->count() && $global && $global->count) {
+			if($standard && $standard->count() && $global && $global->count()) {
 				$standard->merge($global);
 				$standard->removeDuplicates();
 			}
