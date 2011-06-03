@@ -76,6 +76,8 @@ class Forum extends Page {
 		if($this->CanPostType == "NoOne") return false;
 		
 		if($member = Member::currentUser()) {
+			if($member->IsSuspended()) return false;
+			
 			if($this->CanPostType == "LoggedInUsers") return true;
 
 			if($groups = $this->PosterGroups()) {
