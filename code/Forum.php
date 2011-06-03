@@ -333,6 +333,10 @@ class Forum extends Page {
 			"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\""
 		);
 		
+		if(!$standard || !$standard->count()){
+			$standard = new DataObjectSet();
+		}
+		
 		if($include_global) {
 			// We have to join posts through their forums to their holders, and then restrict the holders to just the parent of this forum.
 			$global = DataObject::get(
@@ -341,13 +345,17 @@ class Forum extends Page {
 				"MAX(\"PostList\".\"Created\") DESC",
 				"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\""
 			);
-
-			if($standard && $standard->count() && $global && $global->count()) {
-				$standard->merge($global);
-				$standard->removeDuplicates();
+			
+			if(!$global || !$global->count()){
+				$global = new DataObjectSet();
 			}
+			
+			$standard->merge($global);
+			$standard->removeDuplicates();
 		}
-		if($standard && $standard->count())$standard->sort('PostList.Created');
+
+		
+		if($standard->count()) $standard->sort('PostList.Created');
 		return $standard;
 	}
 }
