@@ -15,6 +15,12 @@ class Forum extends Page {
 
 	static $icon = "forum/images/treeicons/user";
 
+	/**
+	 * Enable this to automatically notify moderators when a message is posted
+	 * or edited on his forums.
+	 */
+	static $notify_moderators = false;
+
 	static $db = array(
 		"Abstract" => "Text",
 		"CanPostType" => "Enum('Inherit, Anyone, LoggedInUsers, OnlyTheseUsers, NoOne', 'LoggedInUsers')",
@@ -800,12 +806,17 @@ class Forum_Controller extends Page_Controller {
 		ForumThread_Subscription::notify($post);
 		
 		// Send any notifications to moderators of the forum
-		if(isset($starting_thread) && $starting_thread) $this->notifyModerators($post, $thread, true);
-		else $this->notifyModerators($post, $thread);
+		if (Forum::$notify_moderators) {
+			if(isset($starting_thread) && $starting_thread) $this->notifyModerators($post, $thread, true);
+			else $this->notifyModerators($post, $thread);
+		}
 		
 		return $this->redirect($post->Link());
 	}
 	
+	/**
+	 * Send email to moderators notifying them the thread has been created or post added/edited.
+	 */
 	function notifyModerators($post, $thread, $starting_thread = false) {
 		$moderators = $this->Moderators();
 		if($moderators && $moderators->count()) {
@@ -814,22 +825,20 @@ class Forum_Controller extends Page_Controller {
 					$email = new Email();
 					$email->setFrom(Email::getAdminEmail());
 					$email->setTo($moderator->Email);
-					
 					if($starting_thread){
-						$email->setSubject('New thread started: "' . $thread->Title . '" in forum "'. $this->Title.'"');
+						$email->setSubject('New thread "' . $thread->Title . '" in forum ['. $this->Title.']');
 					}else{
-						$email->setSubject('New post: "' . $post->Title . '" for thread "'. $thread->Title. '" in forum "'.$this->Title.'"');
+						$email->setSubject('New post "' . $post->Title. '" in forum ['.$this->Title.']');
 					}
+					$email->setTemplate('ForumMember_NotifyModerator');
+					$email->populateTemplate(new ArrayData(array(
+						'NewThread' => $starting_thread,
+						'Moderator' => $moderator,
+						'Author' => $post->Author(),
+						'Forum' => $this,
+						'Post' => $post
+					)));
 					
-					$body = "<p>Hi ".$moderator->FirstName."</p><p>";
-					if($starting_thread){
-						$body .= "New thread \"". $thread->Title."\" is started.";
-					}else{
-						$body .= "New post \"". $post->Title. "\" is added.";
-					}
-					$body .= "</p><p>Content:<br />".$post->Content."</p><p><a href=\"".$post->Link()."\">Please moderate it if necessary</a></p>";
-					$body .= "<p>NOTE: You receive this notification as you are one of the moderators of this forum.</p>";
-					$email->setBody($body);
 					$email->send();
 				}
 			}

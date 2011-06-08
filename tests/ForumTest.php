@@ -6,6 +6,7 @@
 class ForumTest extends FunctionalTest {
 	
 	static $fixture_file = "forum/tests/ForumTest.yml";
+	static $use_draft_site = true;
 	
 	function testCanView() {
 		// test viewing not logged in
@@ -283,5 +284,59 @@ class ForumTest extends FunctionalTest {
 
 		// removes the thread
 		$this->assertFalse(DataObject::get_by_id('ForumThread', $spamfirst->Thread()->ID));
+	}
+
+	function testNotifyModerators() {
+		Form::disable_all_security_tokens();
+		$notifyModerators = Forum::$notify_moderators;
+		Forum::$notify_moderators = true;
+
+		$forum = $this->objFromFixture('Forum', 'general');
+		$controller = new Forum_Controller($forum);
+		$user = $this->objFromFixture('Member', 'test1');
+		$this->session()->inst_set('loggedInAs', $user->ID);
+
+		// New thread
+		$this->post(
+			$forum->RelativeLink('PostMessageForm'),
+			array(
+				'Title' => 'New thread',
+				'Content' => 'Meticulously crafted content',
+				'action_doPostMessageForm' => 1
+			)
+		);
+		$this->assertEmailSent('test3@example.com', Email::getAdminEmail(), "New thread \"New thread\" in forum [General Discussion]");
+		$this->clearEmails();
+
+		// New response
+		$thread = DataObject::get_one('ForumThread', "\"ForumThread\".\"Title\"='New thread'");
+		$this->post(
+			$forum->RelativeLink('PostMessageForm'),
+			array(
+				'Title' => 'Re: New thread',
+				'Content' => 'Rough response',
+				'ThreadID' => $thread->ID,
+				'action_doPostMessageForm' => 1
+			)
+		);
+		$this->assertEmailSent('test3@example.com', Email::getAdminEmail(), "New post \"Re: New thread\" in forum [General Discussion]");
+		$this->clearEmails();
+
+		// Edit
+		$post = $thread->Posts()->Last();
+		$this->post(
+			$forum->RelativeLink('PostMessageForm'),
+			array(
+				'Title' => 'Re: New thread',
+				'Content' => 'Pleasant response',
+				'ThreadID' => $thread->ID,
+				'ID' => $post->ID,
+				'action_doPostMessageForm' => 1
+			)
+		);
+		$this->assertEmailSent('test3@example.com', Email::getAdminEmail(), "New post \"Re: New thread\" in forum [General Discussion]");
+		$this->clearEmails();
+
+		Forum::$notify_moderators = $notifyModerators;
 	}
 }
