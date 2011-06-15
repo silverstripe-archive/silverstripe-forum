@@ -23,7 +23,7 @@ class Forum extends Page {
 
 	static $db = array(
 		"Abstract" => "Text",
-		"CanPostType" => "Enum('Inherit, Anyone, LoggedInUsers, OnlyTheseUsers, NoOne', 'LoggedInUsers')",
+		"CanPostType" => "Enum('Inherit, Anyone, LoggedInUsers, OnlyTheseUsers, NoOne', 'Inherit')",
 		"CanAttachFiles" => "Boolean",
 	);
 
