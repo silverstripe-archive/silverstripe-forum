@@ -313,29 +313,29 @@ class Forum extends Page {
 	 * Return the Sticky Threads
 	 * @return DataObjectSet
 	 */
-	function getStickyTopics() {
+	function getStickyTopics($include_global = true) {
 		$standard = DataObject::get(
 			"ForumThread", 
 			"\"ForumThread\".\"ForumID\" = $this->ID AND \"ForumThread\".\"IsSticky\" = 1", 
 			"MAX(\"PostList\".\"Created\") DESC",
 			"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\""
 		);
+		
+		if($include_global) {
+			// We have to join posts through their forums to their holders, and then restrict the holders to just the parent of this forum.
+			$global = DataObject::get(
+				"ForumThread", 
+				"\"ForumThread\".\"IsGlobalSticky\" = 1", 
+				"MAX(\"PostList\".\"Created\") DESC",
+				"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\""
+			);
 
-		// We have to join posts through their forums to their holders, and then restrict the holders to just the parent of this forum.
-		$global = DataObject::get(
-			"ForumThread", 
-			"\"ForumThread\".\"IsGlobalSticky\" = 1", 
-			"MAX(\"PostList\".\"Created\") DESC",
-			"INNER JOIN \"Post\" AS \"PostList\" ON \"PostList\".\"ThreadID\" = \"ForumThread\".\"ID\""
-		);
-
-		if($global) {
-			$global->merge($standard);
-			$global->removeDuplicates();
-			$global->sort('PostList.Created');
-			
-			return $global;
+			if($global && $global->count()) {
+				$standard->merge($global);
+				$standard->removeDuplicates();
+			}
 		}
+		$standard->sort('PostList.Created');
 		return $standard;
 	}
 }
