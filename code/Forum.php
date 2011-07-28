@@ -122,6 +122,19 @@ class Forum extends Page {
 		return $this->CanAttachFiles ? true : false;
 	}
 
+	function requireTable() {
+		// Migrate permission columns
+		if(DB::getConn()->hasTable('Forum')) {
+			$fields = DB::getConn()->fieldList('Forum');
+			if(in_array('ForumPosters', array_keys($fields)) && !in_array('CanPostType', array_keys($fields))) {
+				DB::getConn()->renameField('Forum', 'ForumPosters', 'CanPostType');
+				DB::alteration_message('Migrated forum permissions from "ForumPosters" to "CanPostType"', "created");
+			}	
+		}
+
+		parent::requireTable();
+	}
+
 	/**
 	 * Add default records to database
 	 *
