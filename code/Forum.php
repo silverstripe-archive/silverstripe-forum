@@ -123,6 +123,55 @@ class Forum extends Page {
 	}
 
 	/**
+	 * Add default records to database
+	 *
+	 * This function is called whenever the database is built, after the
+	 * database tables have all been created.
+ 	 */
+	public function requireDefaultRecords() {
+		parent::requireDefaultRecords();
+
+		$code = "ACCESS_FORUM";
+		if(!$forumGroup = DataObject::get_one("Group", "\"Group\".\"Code\" = 'forum-members'")) {
+			$group = new Group();
+			$group->Code = 'forum-members';
+			$group->Title = "Forum Members";
+			$group->write();
+
+			Permission::grant( $group->ID, $code );
+			DB::alteration_message(_t('Forum.GROUPCREATED','Forum Members group created'),"created"); 
+		} else if(DB::query("SELECT * FROM \"Permission\" WHERE \"GroupID\" = '$forumGroup->ID' AND \"Code\" LIKE '$code'")->numRecords() == 0 ) {
+			Permission::grant($forumGroup->ID, $code);
+		}
+		if(!$category = DataObject::get_one("ForumCategory")) {
+			$category = new ForumCategory();
+			$category->Title = _t('Forum.DEFAULTCATEGORY', 'General');
+			$category->write();
+		}
+		if(!DataObject::get_one("ForumHolder")) {
+			$forumholder = new ForumHolder();
+			$forumholder->Title = "Forums";
+			$forumholder->URLSegment = "forums";
+			$forumholder->Content = "<p>"._t('Forum.WELCOMEFORUMHOLDER','Welcome to SilverStripe Forum Module! This is the default ForumHolder page. You can now add forums.')."</p>";
+			$forumholder->Status = "Published";
+			$forumholder->write();
+			$forumholder->publish("Stage", "Live");
+			DB::alteration_message(_t('Forum.FORUMHOLDERCREATED','ForumHolder page created'),"created");
+			$forum = new Forum();
+			$forum->Title = _t('Forum.TITLE','General Discussion');
+			$forum->URLSegment = "general-discussion";
+			$forum->ParentID = $forumholder->ID;
+			$forum->Content = "<p>"._t('Forum.WELCOMEFORUM','Welcome to SilverStripe Forum Module! This is the default Forum page. You can now add topics.')."</p>";
+			$forum->Status = "Published";
+			$forum->CategoryID = $category->ID;
+			$forum->write();
+			$forum->publish("Stage", "Live");
+
+			DB::alteration_message(_t('Forum.FORUMCREATED','Forum page created'),"created");
+		}
+ 	}
+
+	/**
 	 * Check if we can and should show forums in categories
 	 */
 	function getShowInCategories() {
