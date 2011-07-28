@@ -194,6 +194,16 @@ class ForumRole extends DataObjectDecorator {
 				'IdentityURL'
 			);
 		}
+
+		if($this->owner->IsSuspended()) {
+			$fieldset->insertAfter(
+				new LiteralField(
+					'SuspensionNote', 
+					'<p class="message warning suspensionWarning">' . _t('ForumRole.SUSPENSIONNOTE', 'Your account has been suspended') . '</p>'
+				),
+				'Blurb'
+			);
+		}
 		
 		$this->owner->extend('updateForumFields', $fieldset);
 
@@ -235,8 +245,11 @@ class ForumRole extends DataObjectDecorator {
 	}
 	
 	function IsSuspended(){
-		if($this->owner->SuspendedUntil) return SS_Datetime::now()->Format('Y-m-d') < $this->owner->SuspendedUntil;
-		else return false; 
+		if($this->owner->SuspendedUntil) {
+			return strtotime(SS_Datetime::now()->Format('Y-m-d')) < strtotime($this->owner->SuspendedUntil);
+		} else {
+			return false; 
+		}
 	}
 
 

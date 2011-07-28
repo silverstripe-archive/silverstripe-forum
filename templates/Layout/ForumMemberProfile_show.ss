@@ -1,7 +1,8 @@
 <% include ForumHeader %>
-	<% control Member %>
+	<% control Member %>		
 		<div id="UserProfile">
 			<h2><% if Nickname %>$Nickname<% else %>Anon<% end_if %>&#39;s <% _t('PROFILE','Profile') %></h2>
+			<% if isSuspended %><p class="message warning suspensionWarning"><% _t('ForumRole.SUSPENSIONNOTE') %></p><% end_if %>
 			<div id="ForumProfileNickname"><label class="left"><% _t('NICKNAME','Nickname') %>:</label> <p class="readonly"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></p></div>
 			<% if FirstNamePublic %>
 			<div id="ForumProfileFirstname"><label class="left"><% _t('FIRSTNAME','First Name') %>:</label> <p class="readonly">$FirstName</p></div>

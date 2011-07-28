@@ -4,6 +4,30 @@ class ForumMemberProfileTest extends FunctionalTest {
 	
 	static $fixture_file = "forum/tests/ForumTest.yml";
 	static $use_draft_site = true;
+
+	function testMemberProfileSuspensionNote() {
+		SS_Datetime::set_mock_now('2011-10-10');
+
+		$normalMember = $this->objFromFixture('Member', 'test1');
+		$this->loginAs($normalMember);
+		$response = $this->get('ForumMemberProfile/edit/' . $normalMember->ID);
+		$this->assertNotContains(
+			_t('ForumRole.SUSPENSIONNOTE'),
+			$response->getBody(),
+			'Normal profiles don\'t show suspension note'
+		);
+
+		$suspendedMember = $this->objFromFixture('Member', 'suspended');
+		$this->loginAs($suspendedMember);
+		$response = $this->get('ForumMemberProfile/edit/' . $suspendedMember->ID);
+		$this->assertContains(
+			_t('ForumRole.SUSPENSIONNOTE'),
+			$response->getBody(),
+			'Suspended profiles show suspension note'
+		);
+
+		SS_Datetime::clear_mock_now();
+	}
 	
 	function testMemberProfileDisplays() {
 		/* Get the profile of a secretive member */

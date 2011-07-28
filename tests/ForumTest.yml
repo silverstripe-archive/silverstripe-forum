@@ -53,8 +53,9 @@ Member:
 	    SuspendedUntil: 2011-10-09
 	    Groups: =>Group.special
 	suspended:
-        SuspendedUntil: 2011-10-11
-        Groups: =>Group.special
+	   
+	    SuspendedUntil: 2011-10-11
+	    Groups: =>Group.special
 		
 ForumHolder:
 	fh:

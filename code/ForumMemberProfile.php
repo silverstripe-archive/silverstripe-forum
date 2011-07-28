@@ -407,8 +407,8 @@ class ForumMemberProfile extends Page_Controller {
 		$member = $this->Member();
 		$show_openid = (isset($member->IdentityURL) && !empty($member->IdentityURL));
 
-		$fields = singleton('Member')->getForumFields($show_openid);
-		$validator = singleton('Member')->getForumValidator(false);
+		$fields = $member ? $member->getForumFields($show_openid) : singleton('Member')->getForumFields($show_openid);
+		$validator = $member ? $member->getForumValidator(false) : singleton('Member')->getForumValidator(false);
 		if($holder = DataObject::get_one('ForumHolder', "\"DisplaySignatures\" = '1'")) {
 			$fields->push(new TextareaField('Signature', 'Forum Signature'));
 		}
@@ -519,7 +519,6 @@ class ForumMemberProfile extends Page_Controller {
 	 */
  	function Member() {
  		$member = null;
- 		
 		if(is_numeric($this->urlParams['ID'])) {
 			$member = DataObject::get_by_id('Member', $this->urlParams['ID']);
 		} else {
