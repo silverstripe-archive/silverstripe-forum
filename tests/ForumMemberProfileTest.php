@@ -4,6 +4,42 @@ class ForumMemberProfileTest extends FunctionalTest {
 	
 	static $fixture_file = "forum/tests/ForumTest.yml";
 	static $use_draft_site = true;
+	
+	function testRegistrationWithHoneyPot() {
+		$origHoneypot = ForumHolder::$use_honyepot_on_register;
+		$origSpamprotection = ForumHolder::$use_spamprotection_on_register;
+		
+		ForumHolder::$use_spamprotection_on_register = false;
+		
+		ForumHolder::$use_honyepot_on_register = false;
+		$response = $this->get('ForumMemberProfile/register');
+		$this->assertNotContains('RegistrationForm_username', $response->getBody(), 'Honeypot is disabled by default');
+		
+		ForumHolder::$use_honyepot_on_register = true;
+		$response = $this->get('ForumMemberProfile/register');
+		$this->assertContains('RegistrationForm_username', $response->getBody(), 'Honeypot can be enabled');
+		
+		// TODO Will fail if Member is decorated with further *required* fields,
+		// through updateForumFields() or updateForumValidator()
+		$baseData = array(
+			'Password' => 'test',
+			'ConfirmedPassword' => 'test',
+			"Nickname" => 'test', 
+			"Email" => 'test@test.com', 
+		);
+		
+		$invalidData = array_merge($baseData, array('action_doregister' => 1, 'username' => 'spamtastic'));
+		$response = $this->post('ForumMemberProfile/RegistrationForm', $invalidData);
+		$this->assertEquals(403, $response->getStatusCode());
+		
+		$validData = array_merge($baseData, array('action_doregister' => 1));
+		$response = $this->post('ForumMemberProfile/RegistrationForm', $validData);
+		// Weak check (registration might still fail), but good enough to know if the honeypot is working
+		$this->assertEquals(200, $response->getStatusCode());
+		
+		ForumHolder::$use_honyepot_on_register = $origHoneypot;
+		ForumHolder::$use_spamprotection_on_register = $origSpamprotection;
+	}
 
 	function testMemberProfileSuspensionNote() {
 		SS_Datetime::set_mock_now('2011-10-10');

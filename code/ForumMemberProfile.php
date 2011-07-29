@@ -105,6 +105,24 @@ class ForumMemberProfile extends Page_Controller {
 			new FieldSet(new FormAction("doregister", _t('ForumMemberProfile.REGISTER','Register'))),
 			$validator
 		);
+		
+		// Guard against automated spam registrations by optionally adding a field
+		// that is supposed to stay blank (and is hidden from most humans).
+		// The label and field name are intentionally common ("username"),
+		// as most spam bots won't resist filling it out. The actual username field
+		// on the forum is called "Nickname".
+		if(ForumHolder::$use_honyepot_on_register) {
+			$form->Fields()->push(
+				new LiteralField(
+					'HoneyPot', 
+					'<div style="position: absolute; left: -9999px;">' .
+					// We're super paranoid and don't mention "ignore" or "blank" in the label either
+					'<label for="RegistrationForm_username">' . _t('ForumMemberProfile.LeaveBlank', 'Don\'t enter anything here'). '</label>' .
+					'<input type="text" name="username" id="RegistrationForm_username" value="" />' .
+					'</div>'
+				)
+			);
+		}
 
 		$member = new Member();
 
@@ -128,6 +146,11 @@ class ForumMemberProfile extends Page_Controller {
 	 * @param Form $form The used form
 	 */
 	function doregister($data, $form) {
+		// Check if the honeypot has been filled out
+		if(ForumHolder::$use_honyepot_on_register) {
+			if(@$data['username']) return $this->httpError(403);
+		}
+
 		$forumGroup = DataObject::get_one('Group', "\"Code\" = 'forum-members'");
 		
 		if($member = DataObject::get_one("Member", "\"Email\" = '". Convert::raw2sql($data['Email']) . "'")) {

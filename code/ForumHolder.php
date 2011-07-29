@@ -62,6 +62,14 @@ class ForumHolder extends Page {
 	 * @var bool
 	 */
 	public static $use_spamprotection_on_posts = false;
+
+	/**
+	 * Add a hidden field to the form which should remain empty
+	 * If its filled out, we can assume that a spam bot is auto-filling fields.
+	 * 
+	 * @var bool
+	 */
+	public static $use_honyepot_on_register = false;
 	
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
