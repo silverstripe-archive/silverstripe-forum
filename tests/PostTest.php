@@ -5,48 +5,48 @@ class PostTest extends FunctionalTest {
 	static $fixture_file = "forum/tests/ForumTest.yml";
 
 	function testPermissions() {
-		$member = $this->objFromFixture('Member', 'test1');
-		$this->session()->inst_set('loggedInAs', $member->ID);
-
+		$member1 = $this->objFromFixture('Member', 'test1');
+		$member2 = $this->objFromFixture('Member', 'test2');
+		$moderator = $this->objFromFixture('Member', 'moderator');
+		$admin = $this->objFromFixture('Member', 'admin');
+		
+		$postMember2 = $this->objFromFixture('Post', 'Post18');  
+		
 		// read only thread post
-		$readonly = $this->objFromFixture('Post', 'ReadonlyThreadPost');
-		$this->assertFalse($readonly->canEdit()); // Even though it's user's own
-		$this->assertTrue($readonly->canView());
-		$this->assertFalse($readonly->canCreate());
-		$this->assertFalse($readonly->canDelete());
+		$member1->logIn();
+		$postReadonly = $this->objFromFixture('Post', 'ReadonlyThreadPost');
+		$this->assertFalse($postReadonly->canEdit()); // Even though it's user's own
+		$this->assertTrue($postReadonly->canView());
+		$this->assertFalse($postReadonly->canCreate());
+		$this->assertFalse($postReadonly->canDelete());
 		
 		// normal thread. They can post to these
-		$post = $this->objFromFixture('Post', 'Post18');
-		$this->assertFalse($post->canEdit()); // Not user's post
-		$this->assertTrue($post->canView());
-		$this->assertTrue($post->canCreate());
-		$this->assertFalse($post->canDelete());
+		$member1->logIn();
+		$this->assertFalse($postMember2->canEdit()); // Not user's post
+		$this->assertTrue($postMember2->canView());
+		$this->assertTrue($postMember2->canCreate());
+		$this->assertFalse($postMember2->canDelete());
 		
-		$member = $this->objFromFixture('Member', 'test2');
-		$this->session()->inst_set('loggedInAs', $member->ID);
+		// Check the user has full rights on his own post
+		$member2->logIn();
+		$this->assertTrue($postMember2->canEdit()); // User's post
+		$this->assertTrue($postMember2->canView());
+		$this->assertTrue($postMember2->canCreate());
+		$this->assertTrue($postMember2->canDelete());
 
-		// Check the user can edit his own post (but not delete)
-		$this->assertTrue($post->canEdit()); // User's post
-		$this->assertTrue($post->canView());
-		$this->assertTrue($post->canCreate());
-		$this->assertFalse($post->canDelete());
+		// Moderator can delete posts, even if he doesn't own them
+		$moderator->logIn();
+		$this->assertFalse($postMember2->canEdit());
+		$this->assertTrue($postMember2->canView());
+		$this->assertTrue($postMember2->canCreate());
+		$this->assertTrue($postMember2->canDelete());
 
-		// Moderator can delete posts
-		$member = $this->objFromFixture('Member', 'moderator');
-		$member->logIn();
-
-		$this->assertFalse($post->canEdit());
-		$this->assertTrue($post->canView());
-		$this->assertTrue($post->canCreate());
-		$this->assertTrue($post->canDelete());
-
-		// Admins should have full rights, even if they're not moderators
-		$admin = $this->objFromFixture('Member', 'admin');
+		// Admins should have full rights, even if they're not moderators or own the post
 		$admin->logIn();
-		$this->assertTrue($post->canEdit());
-		$this->assertTrue($post->canView());
-		$this->assertTrue($post->canCreate());
-		$this->assertTrue($post->canDelete());
+		$this->assertTrue($postMember2->canEdit());
+		$this->assertTrue($postMember2->canView());
+		$this->assertTrue($postMember2->canCreate());
+		$this->assertTrue($postMember2->canDelete());
 	}
 	
 	function testGetTitle() {

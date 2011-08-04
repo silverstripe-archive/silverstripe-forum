@@ -107,10 +107,15 @@ class Post extends DataObject {
 	}
 	
 	/**
-	 * Check if user can delete this post - only moderators are allowed to delete.
+	 * Follow edit permissions for this, but additionally allow moderation even
+	 * if the thread is marked as readonly.
 	 */
 	function canDelete() {
-		return $this->Thread()->canModerate();
+		if($this->canEdit()) {
+			return true;
+		} else {
+			return $this->Thread()->canModerate();
+		}
 	}
 	
 	/**
