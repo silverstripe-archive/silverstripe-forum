@@ -148,7 +148,13 @@ class ForumMemberProfile extends Page_Controller {
 	function doregister($data, $form) {
 		// Check if the honeypot has been filled out
 		if(ForumHolder::$use_honyepot_on_register) {
-			if(@$data['username']) return $this->httpError(403);
+			if(@$data['username']) {
+				SS_Log::log(sprintf(
+					'Forum honeypot triggered (data: %s)',
+					http_build_query($data)
+				), SS_Log::NOTICE);
+				return $this->httpError(403);
+			}
 		}
 
 		$forumGroup = DataObject::get_one('Group', "\"Code\" = 'forum-members'");
