@@ -69,7 +69,7 @@ class ForumHolder extends Page {
 	 * 
 	 * @var bool
 	 */
-	public static $use_honyepot_on_register = false;
+	public static $use_honeypot_on_register = false;
 	
 	function getCMSFields() {
 		$fields = parent::getCMSFields();

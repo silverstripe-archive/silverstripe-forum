@@ -111,7 +111,7 @@ class ForumMemberProfile extends Page_Controller {
 		// The label and field name are intentionally common ("username"),
 		// as most spam bots won't resist filling it out. The actual username field
 		// on the forum is called "Nickname".
-		if(ForumHolder::$use_honyepot_on_register) {
+		if(ForumHolder::$use_honeypot_on_register) {
 			$form->Fields()->push(
 				new LiteralField(
 					'HoneyPot', 
@@ -147,7 +147,7 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function doregister($data, $form) {
 		// Check if the honeypot has been filled out
-		if(ForumHolder::$use_honyepot_on_register) {
+		if(ForumHolder::$use_honeypot_on_register) {
 			if(@$data['username']) {
 				SS_Log::log(sprintf(
 					'Forum honeypot triggered (data: %s)',

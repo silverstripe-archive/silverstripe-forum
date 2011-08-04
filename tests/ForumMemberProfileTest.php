@@ -6,16 +6,16 @@ class ForumMemberProfileTest extends FunctionalTest {
 	static $use_draft_site = true;
 	
 	function testRegistrationWithHoneyPot() {
-		$origHoneypot = ForumHolder::$use_honyepot_on_register;
+		$origHoneypot = ForumHolder::$use_honeypot_on_register;
 		$origSpamprotection = ForumHolder::$use_spamprotection_on_register;
 		
 		ForumHolder::$use_spamprotection_on_register = false;
 		
-		ForumHolder::$use_honyepot_on_register = false;
+		ForumHolder::$use_honeypot_on_register = false;
 		$response = $this->get('ForumMemberProfile/register');
 		$this->assertNotContains('RegistrationForm_username', $response->getBody(), 'Honeypot is disabled by default');
 		
-		ForumHolder::$use_honyepot_on_register = true;
+		ForumHolder::$use_honeypot_on_register = true;
 		$response = $this->get('ForumMemberProfile/register');
 		$this->assertContains('RegistrationForm_username', $response->getBody(), 'Honeypot can be enabled');
 		
@@ -37,7 +37,7 @@ class ForumMemberProfileTest extends FunctionalTest {
 		// Weak check (registration might still fail), but good enough to know if the honeypot is working
 		$this->assertEquals(200, $response->getStatusCode());
 		
-		ForumHolder::$use_honyepot_on_register = $origHoneypot;
+		ForumHolder::$use_honeypot_on_register = $origHoneypot;
 		ForumHolder::$use_spamprotection_on_register = $origSpamprotection;
 	}
 
