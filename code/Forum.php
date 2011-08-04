@@ -566,41 +566,41 @@ class Forum_Controller extends Page_Controller {
 	 */
 	function markasspam() {
 		$currentUser = Member::currentUser();
+		if(!isset($this->urlParams['ID'])) return $this->httpError(400);
+		if(!$this->canModerate()) return $this->httpError(403);
 
-		if($this->canModerate() && isset($this->urlParams['ID'])) {
-			$post = DataObject::get_by_id('Post', $this->urlParams['ID']);
-			
-			if($post) {	
-				// send spam feedback if needed
-				if(class_exists('SpamProtectorManager')) {
-					SpamProtectorManager::send_feedback($post, 'spam');
-				}
-				
-				// post was the start of a thread, Delete the whole thing
-				if($post->isFirstPost()) $post->Thread()->delete();
-
-				// Delete the current post
-				$post->delete();
-				SS_Log::log(sprintf(
-					'Suspended post #%d as spam, by moderator "%s"', 
-					$post->ID,
-					$currentUser->Email
-				), SS_Log::NOTICE);
-
-				// Suspend the member (rather than deleting him), 
-				// which gives him or a moderator the chance to revoke a decision. 
-				if($author = $post->Author()) {
-					$author->SuspendedUntil = strtotime('+99 years', SS_Datetime::now()->Format('U'));
-					$author->write();
-				}
-
-				SS_Log::log(sprintf(
-					'Suspended member "%s" (#%d) for spam activity, by moderator ', 
-					$author->Email,
-					$author->ID,
-					$currentUser->Email
-				), SS_Log::NOTICE);
+		$post = DataObject::get_by_id('Post', $this->urlParams['ID']);
+		
+		if($post) {	
+			// send spam feedback if needed
+			if(class_exists('SpamProtectorManager')) {
+				SpamProtectorManager::send_feedback($post, 'spam');
 			}
+			
+			// post was the start of a thread, Delete the whole thing
+			if($post->isFirstPost()) $post->Thread()->delete();
+
+			// Delete the current post
+			$post->delete();
+			SS_Log::log(sprintf(
+				'Suspended post #%d as spam, by moderator "%s"', 
+				$post->ID,
+				$currentUser->Email
+			), SS_Log::NOTICE);
+
+			// Suspend the member (rather than deleting him), 
+			// which gives him or a moderator the chance to revoke a decision. 
+			if($author = $post->Author()) {
+				$author->SuspendedUntil = strtotime('+99 years', SS_Datetime::now()->Format('U'));
+				$author->write();
+			}
+
+			SS_Log::log(sprintf(
+				'Suspended member "%s" (#%d) for spam activity, by moderator ', 
+				$author->Email,
+				$author->ID,
+				$currentUser->Email
+			), SS_Log::NOTICE);
 		}
 
 		return (Director::is_ajax()) ? true : $this->redirect($this->Link());

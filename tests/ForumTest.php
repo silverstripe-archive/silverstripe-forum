@@ -263,8 +263,14 @@ class ForumTest extends FunctionalTest {
 		$author = $spampost->Author();
 		$moderator = $this->objFromFixture('Member', 'moderator'); // moderator for "general" forum
 		
+		// without a logged-in moderator
 		$this->assertNull($spampost->MarkAsSpamLink(), 'Link not present by default');
 
+		$c = new Forum_Controller($forum);
+		$response = $c->handleRequest(new SS_HTTPRequest('GET', 'markasspam/'. $spampost->ID));
+		$this->assertEquals(403, $response->getStatusCode());
+
+		// with logged-in moderator
 		$moderator->logIn();
 		$this->assertNotNull($spampost->MarkAsSpamLink(), 'Link present for moderators on this forum');
 
@@ -274,6 +280,7 @@ class ForumTest extends FunctionalTest {
 		
 		$c = new Forum_Controller($forum);
 		$response = $c->handleRequest(new SS_HTTPRequest('GET', 'markasspam/'. $spampost->ID));
+		$this->assertFalse($response->isError());
 		
 		// removes the post
 		$this->assertFalse(DataObject::get_by_id('Post', $spampost->ID));
