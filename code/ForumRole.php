@@ -172,9 +172,14 @@ class ForumRole extends DataObjectDecorator {
 			new CheckableOption("CountryPublic", new CountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true),
 			new CheckableOption("EmailPublic", new EmailField("Email", _t('ForumRole.EMAIL','Email'))),
 			new ConfirmedPasswordField("Password", _t('ForumRole.PASSWORD','Password')),
-			new SimpleImageField("Avatar", _t('ForumRole.AVATAR','Upload avatar ') .' '. $gravatarText),
-			new ReadonlyField("ForumRank", _t('ForumRole.RATING','User rating'))
+			new SimpleImageField("Avatar", _t('ForumRole.AVATAR','Upload avatar ') .' '. $gravatarText)
 		);
+		// Don't show 'forum rank' at registration
+		if(!$addmode) {
+			$personalDetailsFields->push(
+				new ReadonlyField("ForumRank", _t('ForumRole.RATING','User rating'))
+			);
+		}
 		$personalDetailsFields->setID('PersonalDetailsFields');
 		
 		$fieldset = new FieldSet(
