@@ -217,7 +217,8 @@ class Post extends DataObject {
 	 * @return String
 	 */
 	function MarkAsSpamLink() {
-		if($this->canEdit() && $member = Member::currentUser()) {
+		if($this->Thread()->canModerate()) {
+			$member = Member::currentUser();
 		 	if($member->ID != $this->AuthorID) {
 				$link = $this->Forum()->Link('markasspam') .'/'. $this->ID;
 				

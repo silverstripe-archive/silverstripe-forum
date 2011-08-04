@@ -254,13 +254,19 @@ class ForumTest extends FunctionalTest {
 		$this->assertEquals($forumWithoutPosts->getNumAuthors(), 0);
 	}
 
+	/**
+	 * Note: See {@link testCanModerate()} for detailed permission tests.
+	 */
 	function testMarkAsSpamLink() {
-		$this->logInWithPermission("ADMIN");
-	
 		$spampost = $this->objFromFixture('Post', 'SpamSecondPost');
-		
 		$forum = $spampost->Forum();
 		$author = $spampost->Author();
+		$moderator = $this->objFromFixture('Member', 'moderator'); // moderator for "general" forum
+		
+		$this->assertNull($spampost->MarkAsSpamLink(), 'Link not present by default');
+
+		$moderator->logIn();
+		$this->assertNotNull($spampost->MarkAsSpamLink(), 'Link present for moderators on this forum');
 
 		$this->assertNull($author->SuspendedUntil);
 
