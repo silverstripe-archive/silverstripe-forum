@@ -93,7 +93,7 @@
 			var link = $(this);
 			var first = $(this).hasClass('firstPost');
 			
-			if(!confirm("Are you sure you wish to mark this post and user as spam? This will remove all posts and the users account")) return false;
+			if(!confirm("Are you sure you wish to mark this post as spam? This will remove the post, and suspend the user account")) return false;
 			
 			$.post($(this).attr("href"), function(data) {
 				if(first) {

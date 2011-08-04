@@ -196,10 +196,15 @@ class ForumRole extends DataObjectDecorator {
 		}
 
 		if($this->owner->IsSuspended()) {
+			$suspensionMsg = _t('ForumRole.SUSPENSIONNOTE', 'Your account has been suspended.');
+			if(Email::getAdminEmail()) $suspensionMsg .= ' ' . sprintf(
+				_t('ForumRole.SUSPENSIONEMAILNOTE', 'Please contact %s to resolve this issue'),
+				Email::getAdminEmail()
+			);
 			$fieldset->insertAfter(
 				new LiteralField(
 					'SuspensionNote', 
-					'<p class="message warning suspensionWarning">' . _t('ForumRole.SUSPENSIONNOTE', 'Your account has been suspended') . '</p>'
+					'<p class="message warning suspensionWarning">' . $suspensionMsg . '</p>'
 				),
 				'Blurb'
 			);
