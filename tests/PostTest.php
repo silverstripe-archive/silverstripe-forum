@@ -39,6 +39,14 @@ class PostTest extends FunctionalTest {
 		$this->assertTrue($post->canView());
 		$this->assertTrue($post->canCreate());
 		$this->assertTrue($post->canDelete());
+
+		// Admins should have full rights, even if they're not moderators
+		$admin = $this->objFromFixture('Member', 'admin');
+		$admin->logIn();
+		$this->assertTrue($post->canEdit());
+		$this->assertTrue($post->canView());
+		$this->assertTrue($post->canCreate());
+		$this->assertTrue($post->canDelete());
 	}
 	
 	function testGetTitle() {
