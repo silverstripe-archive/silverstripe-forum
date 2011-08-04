@@ -577,15 +577,20 @@ class Forum_Controller extends Page_Controller {
 				SpamProtectorManager::send_feedback($post, 'spam');
 			}
 			
+			$postID = $post->ID;
+
 			// post was the start of a thread, Delete the whole thing
 			if($post->isFirstPost()) $post->Thread()->delete();
 
 			// Delete the current post
 			$post->delete();
+
+			// Log deletion event
 			SS_Log::log(sprintf(
-				'Suspended post #%d as spam, by moderator "%s"', 
-				$post->ID,
-				$currentUser->Email
+				'Marked post #%d as spam, by moderator %s (#%d)', 
+				$postID,
+				$currentUser->Email,
+				$currentUser->ID
 			), SS_Log::NOTICE);
 
 			// Suspend the member (rather than deleting him), 
@@ -596,10 +601,11 @@ class Forum_Controller extends Page_Controller {
 			}
 
 			SS_Log::log(sprintf(
-				'Suspended member "%s" (#%d) for spam activity, by moderator ', 
+				'Suspended member %s (#%d) for spam activity, by moderator %s (#%d)', 
 				$author->Email,
 				$author->ID,
-				$currentUser->Email
+				$currentUser->Email,
+				$currentUser->ID
 			), SS_Log::NOTICE);
 		}
 
