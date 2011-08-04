@@ -679,7 +679,13 @@ class Forum_Controller extends Page_Controller {
 		$fields = new FieldSet(
 			($post && $post->isFirstPost() || !$thread) ? new TextField("Title", _t('Forum.FORUMTHREADTITLE', 'Title')) : new ReadonlyField('Title',  _t('Forum.FORUMTHREADTITLE', 'Title'), 'Re:'. $thread->Title),
 			new TextareaField("Content", _t('Forum.FORUMREPLYCONTENT', 'Content')),
-			new LiteralField("BBCodeHelper", "<div class=\"BBCodeHint\">[ <a href=\"#BBTagsHolder\" id=\"BBCodeHint\">" . _t('Forum.BBCODEHINT','View Formatting Help') . "</a> ]</div>"),
+			new LiteralField(
+				"BBCodeHelper", 
+				"<div class=\"BBCodeHint\">[ <a href=\"#BBTagsHolder\" id=\"BBCodeHint\">" . 
+				_t('Forum.BBCODEHINT','View Formatting Help') . 
+				"</a> ]</div>" .
+				$this->renderWith('Forum_BBCodeHint')
+			),
 			new CheckboxField("TopicSubscription", 
 				_t('Forum.SUBSCRIBETOPIC','Subscribe to this topic (Receive email notifications when a new reply is added)'), 
 				($thread) ? $thread->getHasSubscribed() : false)
