@@ -262,6 +262,8 @@ class ForumTest extends FunctionalTest {
 		$forum = $spampost->Forum();
 		$author = $spampost->Author();
 
+		$this->assertNull($author->SuspendedUntil);
+
 		$link = $forum->AbsoluteLink("markasspam") .'/'. $spampost->ID;
 		
 		$c = new Forum_Controller($forum);
@@ -270,8 +272,9 @@ class ForumTest extends FunctionalTest {
 		// removes the post
 		$this->assertFalse(DataObject::get_by_id('Post', $spampost->ID));
 		
-		// removes the member
-		$this->assertFalse(DataObject::get_by_id('Member', $author->ID));
+		// suspends the member
+		$author = DataObject::get_by_id('Member', $author->ID);
+		$this->assertNotNull($author->SuspendedUntil);
 		
 		// does not effect the thread
 		$thread = DataObject::get_by_id('ForumThread', $spampost->Thread()->ID);

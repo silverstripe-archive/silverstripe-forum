@@ -565,6 +565,8 @@ class Forum_Controller extends Page_Controller {
 	 * Must be logged in and have the correct permissions to do marking
 	 */
 	function markasspam() {
+		$currentUser = Member::currentUser();
+
 		if($this->canModerate() && isset($this->urlParams['ID'])) {
 			$post = DataObject::get_by_id('Post', $this->urlParams['ID']);
 			
@@ -574,34 +576,30 @@ class Forum_Controller extends Page_Controller {
 					SpamProtectorManager::send_feedback($post, 'spam');
 				}
 				
-				// some posts do not have authors
+				// post was the start of a thread, Delete the whole thing
+				if($post->isFirstPost()) $post->Thread()->delete();
+
+				// Delete the current post
+				$post->delete();
+				SS_Log::log(sprintf(
+					'Suspended post #%d as spam, by moderator "%s"', 
+					$post->ID,
+					$currentUser->Email
+				), SS_Log::NOTICE);
+
+				// Suspend the member (rather than deleting him), 
+				// which gives him or a moderator the chance to revoke a decision. 
 				if($author = $post->Author()) {
-					$SQL_id = Convert::raw2sql($author->ID);
-					
-					// delete all threads and posts from that user
-					$posts = DataObject::get('Post', "\"AuthorID\" = '$SQL_id'");
-					
-					if($posts) {
-						foreach($posts as $post) {
-							if($post->isFirstPost()) {
-								
-								// post was the start of a thread, Delete the whole thing
-								$post->Thread()->delete();
-							}
-							else {
-								if($post->ID) {
-									$post->delete();
-								}
-							}
-						}
-					}
-					
-					// delete the authors account
-					$author->delete();
+					$author->SuspendedUntil = strtotime('+99 years', SS_Datetime::now()->Format('U'));
+					$author->write();
 				}
-				else {
-					$post->delete();
-				}
+
+				SS_Log::log(sprintf(
+					'Suspended member "%s" (#%d) for spam activity, by moderator ', 
+					$author->Email,
+					$author->ID,
+					$currentUser->Email
+				), SS_Log::NOTICE);
 			}
 		}
 
