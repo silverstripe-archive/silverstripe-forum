@@ -665,7 +665,7 @@ class Forum_Controller extends Page_Controller {
 		}
 
 		// Replying to existing thread
-		if (!$addMode && !$post && !$thread->canPost()) {
+		if (!$addMode && !$post && $thread && !$thread->canPost()) {
  			Security::permissionFailure($this, $messageSet);
 			return false;			
 		}
