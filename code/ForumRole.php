@@ -196,15 +196,10 @@ class ForumRole extends DataObjectDecorator {
 		}
 
 		if($this->owner->IsSuspended()) {
-			$suspensionMsg = _t('ForumRole.SUSPENSIONNOTE', 'Your account has been suspended.');
-			if(Email::getAdminEmail()) $suspensionMsg .= ' ' . sprintf(
-				_t('ForumRole.SUSPENSIONEMAILNOTE', 'Please contact %s to resolve this issue'),
-				Email::getAdminEmail()
-			);
 			$fieldset->insertAfter(
 				new LiteralField(
 					'SuspensionNote', 
-					'<p class="message warning suspensionWarning">' . $suspensionMsg . '</p>'
+					'<p class="message warning suspensionWarning">' . $this->ForumSuspensionMessage() . '</p>'
 				),
 				'Blurb'
 			);
@@ -313,6 +308,24 @@ class ForumRole extends DataObjectDecorator {
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Conditionally includes admin email address (hence we can't simply generate this 
+	 * message in templates). We don't need to spam protect the email address as 
+	 * the note only shows to logged-in users.
+	 * 
+	 * @return String
+	 */
+	function ForumSuspensionMessage() {
+		$msg = _t('ForumRole.SUSPENSIONNOTE', 'This forum account has been suspended.');
+		if(Email::getAdminEmail()) {
+			$msg .= ' ' . sprintf(
+				_t('ForumRole.SUSPENSIONEMAILNOTE', 'Please contact %s to resolve this issue.'),
+				Email::getAdminEmail()
+			);
+		}
+		return $msg;
 	}
 }
 

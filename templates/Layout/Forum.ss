@@ -5,6 +5,12 @@
 	<% if ForumAdminMsg %>
 		<p id="ForumAdminMsg">$ForumAdminMsg</p>
 	<% end_if %>
+
+	<% if CurrentMember.isSuspended %>
+		<p class="message warning suspensionWarning">
+			$CurrentMember.ForumSuspensionMessage
+		</p>
+	<% end_if %>
 	
 	<% if ForumPosters = NoOne %>
 		<p class="message error"><% _t('READONLYFORUM', 'This Forum is read only. You cannot post replies or start new threads') %></p>
