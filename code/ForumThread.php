@@ -79,7 +79,7 @@ class ForumThread extends DataObject {
 	 * Hook up into moderation.
 	 */
 	function canEdit() {
-		$this->canModerate();
+		return $this->canModerate();
 	}
 
 	/**
@@ -87,14 +87,14 @@ class ForumThread extends DataObject {
 	 * we will loose history this way.
 	 */
 	function canDelete() {
-		$this->canModerate();
+		return $this->canModerate();
 	}
 
 	/**
 	 * Hook up into canPost check
 	 */
 	function canCreate() {
-		$this->canPost();
+		return $this->canPost();
 	}
 	
 	/** 
