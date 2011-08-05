@@ -87,8 +87,9 @@ class Post extends DataObject {
 	/**
 	 * Check if user can see the post
 	 */
-	function canView() {
-		return $this->Thread()->canView();
+	function canView($member = null) {
+		if(!$member) $member = Member::currentUser();
+		return $this->Thread()->canView($member);
 	}
 
 	/**
@@ -100,7 +101,7 @@ class Post extends DataObject {
 			if(Permission::checkMember($member, 'ADMIN')) return true;
 
 			// Otherwise check for thread permissions and ownership
-			if($this->Thread()->canPost() && $member->ID==$this->AuthorID) return true;
+			if($this->Thread()->canPost($member) && $member->ID == $this->AuthorID) return true;
 		} 
 
 		return false;
@@ -110,19 +111,21 @@ class Post extends DataObject {
 	 * Follow edit permissions for this, but additionally allow moderation even
 	 * if the thread is marked as readonly.
 	 */
-	function canDelete() {
-		if($this->canEdit()) {
+	function canDelete($member = null) {
+		if(!$member) $member = Member::currentUser();
+		if($this->canEdit($member)) {
 			return true;
 		} else {
-			return $this->Thread()->canModerate();
+			return $this->Thread()->canModerate($member);
 		}
 	}
 	
 	/**
 	 * Check if user can add new posts - hook up into canPost.
 	 */
-	function canCreate() {
-		return $this->Thread()->canPost();
+	function canCreate($member = null) {
+		if(!$member) $member = Member::currentUser();
+		return $this->Thread()->canPost($member);
 	}
 	
 	/**
@@ -300,8 +303,9 @@ class Post_Attachment extends File {
 	 *
 	 * @return bool
 	 */
-	function canDelete() {
-		return ($this->Post()) ? $this->Post()->canDelete() : true;
+	function canDelete($member = null) {
+		if(!$member) $member = Member::currentUser();
+		return ($this->Post()) ? $this->Post()->canDelete($member) : true;
 	}
 	
 	/**
@@ -309,8 +313,9 @@ class Post_Attachment extends File {
 	 *
 	 * @return bool
 	 */
-	function canEdit() {
-		return ($this->Post()) ? $this->Post()->canEdit() : true;
+	function canEdit($member = null) {
+		if(!$member) $member = Member::currentUser();
+		return ($this->Post()) ? $this->Post()->canEdit($member) : true;
 	}
 
 	/**

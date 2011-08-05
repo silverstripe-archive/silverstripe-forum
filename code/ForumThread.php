@@ -57,44 +57,50 @@ class ForumThread extends DataObject {
 	/**
 	 * Check if the user can create new threads and add responses
 	 */
-	function canPost() {
-		return ($this->Forum()->canPost() && !$this->IsReadOnly);
+	function canPost($member = null) {
+		if(!$member) $member = Member::currentUser();
+		return ($this->Forum()->canPost($member) && !$this->IsReadOnly);
 	}
 	
 	/**
 	 * Check if user can moderate this thread
 	 */
-	function canModerate() {
-		return $this->Forum()->canModerate();
+	function canModerate($member = null) {
+		if(!$member) $member = Member::currentUser();
+		return $this->Forum()->canModerate($member);
 	}
 	
 	/**
 	 * Check if user can view the thread
 	 */
-	function canView() {
-		return $this->Forum()->canView();
+	function canView($member = null) {
+		if(!$member) $member = Member::currentUser();
+		return $this->Forum()->canView($member);
 	}
 
 	/**
 	 * Hook up into moderation.
 	 */
-	function canEdit() {
-		return $this->canModerate();
+	function canEdit($member = null) {
+		if(!$member) $member = Member::currentUser();
+		return $this->canModerate($member);
 	}
 
 	/**
 	 * Hook up into moderation - users cannot delete their own posts/threads because 
 	 * we will loose history this way.
 	 */
-	function canDelete() {
-		return $this->canModerate();
+	function canDelete($member = null) {
+		if(!$member) $member = Member::currentUser();
+		return $this->canModerate($member);
 	}
 
 	/**
 	 * Hook up into canPost check
 	 */
-	function canCreate() {
-		return $this->canPost();
+	function canCreate($member = null) {
+		if(!$member) $member = Member::currentUser();
+		return $this->canPost($member);
 	}
 	
 	/** 

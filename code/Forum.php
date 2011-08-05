@@ -60,24 +60,27 @@ class Forum extends Page {
 	/**
 	 * Check if the user can view the forum.
 	 */
-	function canView() {
-		return (parent::canView() || $this->canModerate());
+	function canView($member = null) {
+		if(!$member) $member = Member::currentUser();
+		return (parent::canView($member) || $this->canModerate($member));
 	}
 	
 	/**
 	 * Check if the user can post to the forum and edit his own posts.
 	 */
-	function canPost() {
+	function canPost($member = null) {
+		if(!$member) $member = Member::currentUser();
+
 		if($this->CanPostType == "Inherit") {
 			$holder = $this->getForumHolder();
 			if ($holder) {
-				return $holder->canPost();
+				return $holder->canPost($member);
 			}
 
 			return false;
 		}
 
-		if($this->CanPostType == "Anyone" || $this->canEdit()) return true;
+		if($this->CanPostType == "Anyone" || $this->canEdit($member)) return true;
 		
 		if($this->CanPostType == "NoOne") return false;
 		
@@ -99,13 +102,14 @@ class Forum extends Page {
 	/**
 	 * Check if user has access to moderator panel and can delete posts and threads.
 	 */
-	function canModerate() {
-		if(!Member::currentUserID()) return false;
-		
-		$member = Member::currentUser();
+	function canModerate($member = null) {
+		if(!$member) $member = Member::currentUser();
+
+		if(!$member) return false;
 		
 		// Admins
-		if ($this->canEdit()) return true; 
+		if ($this->canEdit($member)) return true; 
+
 		// Moderators
 		if ($member->isModeratingForum($this)) return true;
 
@@ -118,7 +122,7 @@ class Forum extends Page {
 	 * @return bool Set to TRUE if the user is allowed to, to FALSE if they're
 	 *              not
 	 */
-	function canAttach() {
+	function canAttach($member = null) {
 		return $this->CanAttachFiles ? true : false;
 	}
 
