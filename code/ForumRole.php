@@ -263,10 +263,12 @@ class ForumRole extends DataObjectDecorator {
 	 *
 	 * @return true if this member can be edited, false otherwise
 	 */
-	function canEdit() {
+	function canEdit($member = null) {
+		if(!$member) $member = Member::currentUser();
+		
 		if($this->owner->ID == Member::currentUserID()) return true;
 
-		if($member = Member::currentUser()) return $member->can('AdminCMS');
+		if($member) return $member->can('AdminCMS');
 
 		return false;
 	}

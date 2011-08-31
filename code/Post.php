@@ -95,8 +95,10 @@ class Post extends DataObject {
 	/**
 	 * Check if user can edit the post (only if it's his own, or he's an admin user)
 	 */
-	function canEdit() {
-		if($member = Member::currentUser()) {
+	function canEdit($member = null) {
+		if(!$member) $member = Member::currentUser();
+		
+		if($member) {
 			// Admins can always edit, regardless of thread/post ownership
 			if(Permission::checkMember($member, 'ADMIN')) return true;
 
