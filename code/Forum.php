@@ -79,10 +79,10 @@ class Forum extends Page {
 
 			return false;
 		}
-
-		if($this->CanPostType == "Anyone" || $this->canEdit($member)) return true;
 		
 		if($this->CanPostType == "NoOne") return false;
+
+		if($this->CanPostType == "Anyone" || $this->canEdit($member)) return true;
 		
 		if($member = Member::currentUser()) {
 			if($member->IsSuspended()) return false;

@@ -104,9 +104,9 @@ class ForumHolder extends Page {
 	}
 
 	function canPost() {
-		if($this->CanPostType == "Anyone" || $this->canEdit()) return true;
-		
 		if($this->CanPostType == "NoOne") return false;
+		
+		if($this->CanPostType == "Anyone" || $this->canEdit()) return true;
 		
 		if($member = Member::currentUser()) {
 			if($member->IsSuspended()) return false;
