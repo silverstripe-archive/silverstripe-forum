@@ -15,7 +15,7 @@
 			
 			<% control Threads %>
 				<tr class="$EvenOdd">
-					<td>$Children.Count</td>
+					<td>$Posts.Count</td>
 					<td>$NumViews</td>
 					<td><a href="$Link">$Title</a></td>
 					<td>$Created.Nice</td>

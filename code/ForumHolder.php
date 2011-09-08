@@ -557,7 +557,7 @@ class ForumHolder_Controller extends Page_Controller {
 	}
 	
 	/**
-	 * Show the 20 most popular threads.
+	 * Show the 20 most popular threads across all {@link Forum} children.
 	 * 
 	 * Two configuration options are available:
 	 * 1. "posts" - most popular threads by posts
@@ -569,28 +569,24 @@ class ForumHolder_Controller extends Page_Controller {
 	 */
 	function popularthreads() {
 		$start = isset($_GET['start']) ? (int) $_GET['start'] : 0;
+		$limit = 20;
 		$method = isset($_GET['by']) ? $_GET['by'] : null;
 		if(!$method) $method = 'posts';
 		
 		if($method == 'posts') {
-			$threadRecords = DB::query("
-				SELECT \"Post\".*, (SELECT COUNT(*) FROM \"Post\" AS \"P\" WHERE \"Post\".\"ID\" = P.\"TopicID\") AS \"PostCount\"
-				FROM \"Post\" JOIN \"SiteTree_Live\" \"ForumPage\" ON \"Post\".\"ForumID\" = \"ForumPage\".\"ID\"
-				WHERE \"TopicID\" = \"Post\".\"ID\" AND \"ForumPage\".\"ParentID\"='{$this->ID}'
-				ORDER BY \"PostCount\" DESC
-				LIMIT $start,20
-			");
-			
-			$allThreadsCount = DB::query("
-				SELECT COUNT(*) AS \"theCount\"
-				FROM \"Post\" JOIN \"" . ForumHolder::baseForumTable() . "\" \"ForumPage\" ON \"Post\".\"ForumID\"=\"ForumPage\".\"ID\"
-				WHERE \"TopicID\" = \"Post\".\"ID\" AND \"ForumPage\".\"ParentID\"='{$this->ID}'")->value();
-				
-			$threads = singleton('Post')->buildDataObjectSet($threadRecords);
-			if($threads) $threads->setPageLimits($start, '20', $allThreadsCount);
+			$threadsQuery = singleton('ForumThread')->buildSQL(
+				'"SiteTree"."ParentID" = ' . $this->ID,
+				'"PostCount" DESC',
+				"$start,$limit",
+				'LEFT JOIN "Post" ON "Post"."ThreadID" = "ForumThread"."ID" LEFT JOIN "SiteTree" ON "SiteTree"."ID" = "ForumThread"."ForumID"'
+			);
+			$threadsQuery->select[] = 'COUNT("Post"."ID") AS "PostCount"';
+			$threadsQuery->groupby[] = '"ForumThread"."ID"';
+			$threads = singleton('ForumThread')->buildDataObjectSet($threadsQuery->execute());
+			if($threads) $threads->setPageLimits($start, $limit, $threadsQuery->unlimitedRowCount());
 			
 		} elseif($method == 'views') {
-			$threads = DataObject::get('ForumThread', '', '"NumViews" DESC', '', "$start,20");
+			$threads = DataObject::get('ForumThread', '', '"NumViews" DESC', '', "$start,$limit");
 		}
 		
 		return array(
