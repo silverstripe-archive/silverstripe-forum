@@ -49,6 +49,13 @@ class ForumMemberProfile extends Page_Controller {
 		parent::init();
  	}
 
+	function show($request) {
+		$member = $this->Member();
+		if(!$member) return $this->httpError(404);
+		
+		return $this->renderWith(array('Page', 'ForumMemberProfile_show'));
+	}
+
  	/**
  	 * Get the latest 10 posts by this member
  	 */
