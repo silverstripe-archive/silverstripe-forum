@@ -53,7 +53,7 @@ class ForumMemberProfile extends Page_Controller {
 		$member = $this->Member();
 		if(!$member) return $this->httpError(404);
 		
-		return $this->renderWith(array('Page', 'ForumMemberProfile_show'));
+		return $this->renderWith(array('ForumMemberProfile_show', 'Page'));
 	}
 
  	/**
