@@ -505,7 +505,7 @@ class ForumMemberProfile extends Page_Controller {
 
 		if($nicknameCheck) {
 			$form->addErrorMessage("Blurb",
-				_t('ForumMemberProfile.NICKNAMEEXISTS'),
+				_t('ForumMemberProfile.NICKNAMEEXISTS','Sorry, that nickname already exists. Please choose another.'),
 				"bad");
 			Director::redirectBack();
 			return;
