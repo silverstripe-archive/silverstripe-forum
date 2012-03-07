@@ -211,6 +211,8 @@ class ForumMemberProfile extends Page_Controller {
 
 		$forumGroup->Members()->add($member);
 
+		$member->extend('onForumRegister', $this->request);
+
 		if (isset($data['BackURL']) && $data['BackURL']) return Director::redirect($data['BackURL']);
 
 		return array("Form" => DataObject::get_one("ForumHolder")->ProfileAdd);
