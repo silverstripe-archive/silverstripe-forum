@@ -985,7 +985,7 @@ class Forum_Controller extends Page_Controller {
 		else {
 			// if redirecting post ids to thread id is enabled then we need
 			// to check to see if this matches a post and if it does redirect
-			if(Forum::$redirect_post_urls_to_thread && isset($this->urlParams['ID'])) {
+			if(Forum::$redirect_post_urls_to_thread && isset($this->urlParams['ID']) && is_numeric($this->urlParams['ID'])) {
 				if($post = DataObject::get_by_id('Post', $this->urlParams['ID'])) {
 					return $this->redirect($post->Link(), 301);
 				}
