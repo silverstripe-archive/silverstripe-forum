@@ -46,7 +46,7 @@
 		/** 
 		 * MultiFile Uploader called on Reply and Edit Forms
 		 */
-		$('#Form_PostMessageForm_Attachment').MultiFile(); 
+		$('#Form_PostMessageForm_Attachment').MultiFile({ namePattern: '$name-$i' }); 
 	
 		/**
 		 * Delete post Link.

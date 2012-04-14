@@ -832,16 +832,14 @@ class Forum_Controller extends Page_Controller {
 
 		// Upload and Save all files attached to the field
 		// Attachment will always be blank, If they had an image it will be at least in Attachment-0
-		if(!empty($data['Attachment'])) {
-
+		if(!empty($data['Attachment-0']) && !empty($data['Attachment-0']['tmp_name'])) {
 			$id = 0;
 			// 
 			// @todo this only supports ajax uploads. Needs to change the key (to simply Attachment).
 			//
 			while(isset($data['Attachment-' . $id])) {
-				$image = $data['Attachment-' . $id];
-				
-				if($image) {
+				$image = $data['Attachment-' . $id];		
+				if($image && !empty($image['tmp_name'])) {
 					// check to see if a file of same exists
 					$title = Convert::raw2sql($image['name']);
 					$file = DataObject::get_one("Post_Attachment", "\"Title\" = '$title' AND \"PostID\" = '$post->ID'");
