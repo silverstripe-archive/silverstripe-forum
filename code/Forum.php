@@ -817,6 +817,44 @@ class Forum_Controller extends Page_Controller {
 			$starting_thread = true;
 		}
 		
+		// Upload and Save all files attached to the field
+		// Attachment will always be blank, If they had an image it will be at least in Attachment-0
+		$attachments = new DataObjectSet();
+		
+		if(!empty($data['Attachment-0']) && !empty($data['Attachment-0']['tmp_name'])) {
+			$id = 0;
+			// 
+			// @todo this only supports ajax uploads. Needs to change the key (to simply Attachment).
+			//
+			while(isset($data['Attachment-' . $id])) {
+				$image = $data['Attachment-' . $id];
+					
+				if($image && !empty($image['tmp_name'])) {
+					$file = new Post_Attachment();
+					$file->OwnerID = Member::currentUserID();
+						
+					try {
+						$upload = new Upload();
+						$upload->loadIntoFile($image, $file);
+						
+						$file->write();
+						$attachments->push($file);
+					}
+					catch(ValidationException $e) {
+						$message = _t('Forum.UPLOADVALIDATIONFAIL', 'Unallowed file uploaded. Please only upload files of the following: ');
+						$message .= implode(', ', File::$allowed_extensions);
+						$form->addErrorMessage('Attachment', $message, 'bad');
+						
+						Session::set("FormInfo.Form_PostMessageForm.data", $data);
+						
+						return $this->redirectBack();
+					}
+				}
+				
+				$id++;
+			}	
+		}
+
 		// from now on the user has the correct permissions. save the current thread settings
 		$thread->write();
 		
@@ -829,36 +867,15 @@ class Forum_Controller extends Page_Controller {
 		$post->ForumID = $thread->ForumID;
 		$post->Content = $content;
 		$post->write();
-
-		// Upload and Save all files attached to the field
-		// Attachment will always be blank, If they had an image it will be at least in Attachment-0
-		if(!empty($data['Attachment-0']) && !empty($data['Attachment-0']['tmp_name'])) {
-			$id = 0;
-			// 
-			// @todo this only supports ajax uploads. Needs to change the key (to simply Attachment).
-			//
-			while(isset($data['Attachment-' . $id])) {
-				$image = $data['Attachment-' . $id];		
-				if($image && !empty($image['tmp_name'])) {
-					// check to see if a file of same exists
-					$title = Convert::raw2sql($image['name']);
-					$file = DataObject::get_one("Post_Attachment", "\"Title\" = '$title' AND \"PostID\" = '$post->ID'");
-					if(!$file) {
-						$file = new Post_Attachment();
-						$file->PostID = $post->ID;
-						$file->OwnerID = Member::currentUserID();
-						
-						$upload = new Upload();
-						$upload->loadIntoFile($image, $file);
-						
-						$file->write();
-					}
-				}
-				
-				$id++;
+		
+		
+		if($attachments) {
+			foreach($attachments as $attachment) {
+				$attachment->PostID = $post->ID;
+				$attachment->write();
 			}
-			
 		}
+		
 
 		// Add a topic subscription entry if required
 		if(isset($data['TopicSubscription'])) {
@@ -1054,7 +1071,7 @@ class Forum_Controller extends Page_Controller {
 	
 		if($file && $file->canDelete()) {
 			$file->delete();
-			
+		
 			return (!Director::is_ajax()) ? Director::redirectBack() : true;
 		}
 		
