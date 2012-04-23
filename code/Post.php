@@ -299,6 +299,10 @@ class Post_Attachment extends File {
 	static $has_one = array(
 		"Post" => "Post"
 	);
+	
+	static $defaults = array(
+		'ShowInSearch' => 0
+	);
 
 	/**
 	 * Can a user delete this attachment
