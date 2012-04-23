@@ -18,7 +18,7 @@
 	<td class="even lastPost">
 		<% if LatestPost %>
 			<% control LatestPost %>
-				<a class="topicTitle" href="$Link"><% control Thread %>$Title.LimitCharacters(20)<% end_control %></a>
+				<a class="topicTitle" href="$Link"><% control Thread %>$EscapedTitle.LimitCharacters(30)<% end_control %></a>
 				<% control Author %>
 					<p class="userInfo">by <% if Link %><a href="$Link"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a><% else %><span>Anon</span><% end_if %></p>
 				<% end_control %>

@@ -248,13 +248,7 @@ class Post extends DataObject {
 	 * RSS feed
 	 */
 	function getRSSContent() {
-		$parser = new BBCodeParser($this->Content);
-		$html = $parser->parse();
-		if($this->Thread()) $html .= '<br><br>' . sprintf(_t('Post.POSTEDTO',"Posted to: %s"),$this->Thread()->Title);
-		
-		$html .= " ". $this->ShowLink() . " | " .$this->ReplyLink();
-
-		return $html;
+		return $this->renderWith('Includes/Post_rss');
 	}
 
 	

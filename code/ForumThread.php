@@ -231,6 +231,13 @@ class ForumThread extends DataObject {
 		
 		return $post;
 	}
+	
+	/**
+	 * @return Text
+	 */
+	function getEscapedTitle() {
+		return DBField::create('Text', $this->dbObject('Title')->XML());
+	}
 }
 
 
