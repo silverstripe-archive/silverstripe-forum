@@ -138,22 +138,23 @@ class ForumHolderTest extends FunctionalTest {
 		$fh = $this->objFromFixture("ForumHolder", "fh");
 
 		// test last visit. we can assume that these tests have been reloaded in the past 24 hours 
-		$this->assertTrue($fh->getNewPostsAvailable(date('Y-m-d H:i:s', mktime(0, 0, 0, date('m'), date('d')-1, date('Y')))));
+		$data = array();
+		$this->assertTrue(ForumHolder::new_posts_available($fh->ID, $data, date('Y-m-d H:i:s', mktime(0, 0, 0, date('m'), date('d')-1, date('Y')))));
 		
 		// set the last post ID (test the first post - so there should be a post, last post (false))
 		$lastPostID = array_pop($this->allFixtureIDs('Post'));
 		
-		$this->assertTrue($fh->getNewPostsAvailable(null, 1));
-		$this->assertFalse($fh->getNewPostsAvailable(null, $lastPostID));
+		$this->assertTrue(ForumHolder::new_posts_available($fh->ID, $data,null, 1));
+		$this->assertFalse(ForumHolder::new_posts_available($fh->ID, $data, null, $lastPostID));
 		
 		// limit to a specific forum
 		$forum = $this->objFromFixture("Forum", "general");
-		$this->assertTrue($fh->getNewPostsAvailable(null, null, $forum->ID));
-		$this->assertFalse($fh->getNewPostsAvailable(null, $lastPostID, $forum->ID));
+		$this->assertTrue(ForumHolder::new_posts_available($fh->ID, $data, null, null, $forum->ID));
+		$this->assertFalse(ForumHolder::new_posts_available($fh->ID, $data, null, $lastPostID, $forum->ID));
 		
 		// limit to a specific thread
 		$thread = $this->objFromFixture("ForumThread", "Thread1");
-		$this->assertTrue($fh->getNewPostsAvailable(null, null, null, $thread->ID));
-		$this->assertFalse($fh->getNewPostsAvailable(null, $lastPostID, null, $thread->ID));
+		$this->assertTrue(ForumHolder::new_posts_available($fh->ID, $data, null, null, null, $thread->ID));
+		$this->assertFalse(ForumHolder::new_posts_available($fh->ID, $data, null, $lastPostID, null, $thread->ID));
 	}
 }
