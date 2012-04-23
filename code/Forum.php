@@ -29,7 +29,8 @@ class Forum extends Page {
 
 	static $has_one = array(
 		"Moderator" => "Member",
-		"Category" => "ForumCategory"
+		"Category" => "ForumCategory",
+		'UploadsFolder' => 'Folder'
 	);
 	
 	static $many_many = array(
@@ -217,14 +218,16 @@ class Forum extends Page {
 		  	"OnlyTheseUsers" => _t('Forum.READLIST', 'Only these people (choose from list)'),
 			"NoOne" => _t('Forum.READNOONE', 'Nobody. Make Forum Read Only')
 		)));
+
+		$fields->addFieldsToTab("Root.Access", array( 
+			new TreeMultiselectField("PosterGroups", _t('Forum.GROUPS',"Groups")),
+			new OptionsetField("CanAttachFiles", _t('Forum.ACCESSATTACH','Can users attach files?'), array(
+				"1" => _t('Forum.YES','Yes'),
+				"0" => _t('Forum.NO','No')
+			)),
+			new TreeDropdownField('UploadsFolderID', _t('Forum.UPLOADSFOLDER', 'Uploads folder'), 'Folder')
+		));
 		
-		$fields->addFieldToTab("Root.Access", new TreeMultiselectField("PosterGroups", _t('Forum.GROUPS',"Groups")));
-
-		$fields->addFieldToTab("Root.Access", new OptionsetField("CanAttachFiles", _t('Forum.ACCESSATTACH','Can users attach files?'), array(
-			"1" => _t('Forum.YES','Yes'),
-			"0" => _t('Forum.NO','No')
-		)));
-
 		$fields->addFieldToTab("Root.Category",
 			new HasOneCTFWithDefaults(
 				$this,
@@ -835,7 +838,15 @@ class Forum_Controller extends Page_Controller {
 						
 					try {
 						$upload = new Upload();
-						$upload->loadIntoFile($image, $file);
+						
+						if($uploads = $this->UploadsFolder()) {
+							$folder = $uploads->Name;
+						}
+						else {
+							$folder = false;
+						}
+
+						$upload->loadIntoFile($image, $file, $folder);
 						
 						$file->write();
 						$attachments->push($file);
@@ -1192,6 +1203,7 @@ class Forum_Controller extends Page_Controller {
 					Security::permissionFailure($this);
 					return;
 				}
+				
 				$form->saveInto($thread);
 				$thread->write();
 				return Director::redirect($thread->Link());
