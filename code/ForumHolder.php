@@ -418,22 +418,22 @@ class ForumHolder extends Page {
 	/**
 	 * Are new posts available?
 	 *
+	 * @param int $id
+	 * @param array $data Optional: If an array is passed, the timestamp of
+	 *                    the last created post and it's ID will be stored in
+	 *                    it (keys: 'last_id', 'last_created')
 	 * @param int $lastVisit Unix timestamp of the last visit (GMT)
 	 * @param int $lastPostID ID of the last read post
 	 * @param int $thread ID of the relevant topic (set to NULL for all
 	 *                     topics)
-	 * @param array $data Optional: If an array is passed, the timestamp of
-	 *                    the last created post and it's ID will be stored in
-	 *                    it (keys: 'last_id', 'last_created')
 	 * @return bool Returns TRUE if there are new posts available, otherwise
 	 *              FALSE.
 	 */
-	public function getNewPostsAvailable($lastVisit = null, $lastPostID = null, $forumID = null, $threadID = null, array &$data = null) {
-	
+	public static function new_posts_available($id, &$data = array(), $lastVisit = null, $lastPostID = null, $forumID = null, $threadID = null) {
 		$filter = array();
 		
 		// last post viewed
-		$filter[] = "\"ForumPage\".\"ParentID\" = {$this->ID}";  
+		$filter[] = "\"ForumPage\".\"ParentID\" = '". Convert::raw2sql($id) ."'";  
 		if($lastPostID) $filter[] = "\"Post\".\"ID\" > '". Convert::raw2sql($lastPostID) ."'";
 		if($lastVisit) $filter[] = "\"Post\".\"Created\" > '". Convert::raw2sql($lastVisit) ."'"; 
 		if($forumID) $filter[] = "\"ForumThread\".\"ForumID\" = '". Convert::raw2sql($forumID) ."'";
@@ -699,7 +699,7 @@ class ForumHolder_Controller extends Page_Controller {
 
 		if(!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && !isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
 			// just to get the version data..
-			$this->getNewPostsAvailable(null, null, $forumID, $threadID, &$data);
+			$available = ForumHolder::new_posts_available($this->ID, $data, null, null, $forumID, $threadID);
 			
 			// No information provided by the client, just return the last posts
 			$rss = new RSSFeed(
@@ -731,7 +731,7 @@ class ForumHolder_Controller extends Page_Controller {
 			if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && is_numeric($_SERVER['HTTP_IF_NONE_MATCH'])) {
 				$etag = (int)$_SERVER['HTTP_IF_NONE_MATCH'];
 			}
-			if($this->getNewPostsAvailable($since, $etag, $forumID, $threadID, $data)) {
+			if($available = ForumHolder::new_posts_available($this->ID, $data, $since, $etag, $forumID, $threadID)) {
 				HTTP::register_modification_timestamp($data['last_created']);
 				$rss = new RSSFeed(
 					$this->getRecentPosts(50, $forumID, $threadID, $etag),
