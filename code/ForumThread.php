@@ -33,9 +33,11 @@ class ForumThread extends DataObject {
 		'IsGlobalSticky' => false
 	);
 	
+	/*
 	static $indexes = array(
 		"SearchFields" => array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Title'),
 	);
+	*/
 	
 	/**
 	 * When rebuilding the database we need to ensure that all the threads have been assigned
@@ -236,7 +238,8 @@ class ForumThread extends DataObject {
 	 * @return Text
 	 */
 	function getEscapedTitle() {
-		return DBField::create('Text', $this->dbObject('Title')->XML());
+		//return DBField::create('Text', $this->dbObject('Title')->XML());
+		return DBField::create_field('Text', $this->dbObject('Title')->XML());
 	}
 }
 

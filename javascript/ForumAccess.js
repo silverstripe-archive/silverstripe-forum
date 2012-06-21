@@ -1,26 +1,25 @@
-PosterGroupsHide = function() {
-	$('PosterGroups').style.display = "none";
-}
+(function($){
 
-Behaviour.register({
-	'#Form_EditForm_ForumPosters_OnlyTheseUsers': {
-		onclick: function() {
-			$('PosterGroups').style.display = "block";
-		},
-		initialize: function() {
-			if($('Form_EditForm_ForumPosters_OnlyTheseUsers')) {
-				if($('Form_EditForm_ForumPosters_OnlyTheseUsers').checked) $('PosterGroups').style.display = "block";
-				else $('PosterGroups').style.display = "none";
-			}
+	/* Show or hide PosterGroups based on initial value */
+	$('.ForumCanPostTypeSelector').entwine({
+		onadd: function(){
+			var state = this.find('[name=CanPostType]:checked').val();
+			$('#PosterGroups').css({display: state == "OnlyTheseUsers" ? "block" : "none"});
+			this._super();
 		}
-	},
-	'#Form_EditForm_ForumPosters_Anyone': {
-		onclick: PosterGroupsHide
-	},
-	'#Form_EditForm_ForumPosters_LoggedInUsers': {
-		onclick: PosterGroupsHide
-	},
-	'#Form_EditForm_ForumPosters_NoOne': {
-		onclick: PosterGroupsHide
-	}
-});
+	});
+
+	/* Any value of the PostTypeSelector hides the PosterGroups element */
+	$('.ForumCanPostTypeSelector input[type=radio]').entwine({
+		onclick: function(){
+			$('#PosterGroups').css({display: 'none'});
+		}
+	});
+
+	/* Except OnlyTheseUsers which shows it */
+		$('.ForumCanPostTypeSelector input[type=radio][value=OnlyTheseUsers]').entwine({
+		onclick: function(){
+			$('#PosterGroups').css({display: 'block'});
+		}
+	});
+})(jQuery);

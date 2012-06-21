@@ -22,9 +22,11 @@ class ForumMemberProfileTest extends FunctionalTest {
 		// TODO Will fail if Member is decorated with further *required* fields,
 		// through updateForumFields() or updateForumValidator()
 		$baseData = array(
-			'Password' => 'test',
-			'ConfirmedPassword' => 'test',
-			"Nickname" => 'test', 
+			'Password' => array(
+				'_Password' => 'text',
+				'_ConfirmPassword' => 'text'
+			),
+			"Nickname" => 'test',
 			"Email" => 'test@test.com', 
 		);
 		
@@ -47,6 +49,7 @@ class ForumMemberProfileTest extends FunctionalTest {
 		$normalMember = $this->objFromFixture('Member', 'test1');
 		$this->loginAs($normalMember);
 		$response = $this->get('ForumMemberProfile/edit/' . $normalMember->ID);
+
 		$this->assertNotContains(
 			_t('ForumRole.SUSPENSIONNOTE'),
 			$response->getBody(),

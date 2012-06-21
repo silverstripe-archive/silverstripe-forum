@@ -26,9 +26,9 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 		
 		
 		// Search for authors
-		$SQL_queryParts = Convert::raw2sql(split(' +', trim($query)));
+		$SQL_queryParts = Convert::raw2sql(preg_split('/ +/', trim($query)));
 		foreach($SQL_queryParts as $SQL_queryPart ) { 
-			$SQL_clauses[] = "\"FirstName\" LIKE '%$SQL_queryPart%' OR \"Surname\" LIKE '%$SQL_queryPart' OR \"Nickname\" LIKE '%$SQL_queryPart'";
+			$SQL_clauses[] = "FirstName LIKE '%$SQL_queryPart%' OR Surname LIKE '%$SQL_queryPart' OR Nickname LIKE '%$SQL_queryPart'";
 		}
 
 		$potentialAuthors = DataObject::get('Member', implode(" OR ", $SQL_clauses), '"ID" ASC');
@@ -40,26 +40,30 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 				$SQL_potentialAuthorIDs[] = $potentialAuthor->ID;
 			}
 			$SQL_authorList = implode(", ", $SQL_potentialAuthorIDs);
-			$SQL_authorClause = "OR \"Post\".\"AuthorID\" IN ($SQL_authorList)";
+			$SQL_authorClause = "OR Post.AuthorID IN ($SQL_authorList)";
 		}
 		
 		// Work out what sorting method
 		switch($order) {
 			case 'date':
-				$sort = "\"Post\".\"Created\" DESC";
+				$sort = "Post.Created DESC";
 				break;
 			case 'title':
-				$sort = "\"ForumThread\".\"Title\" ASC";
+				$sort = "ForumThread.Title ASC";
 				break;
 			default:
-				$sort = "\"RelevancyScore\" DESC";
+				$sort = "RelevancyScore DESC";
 				break;
 		}
-
+		/*
 		$baseSelect = "SELECT \"Post\".\"ID\", \"Post\".\"Created\", \"Post\".\"LastEdited\", \"Post\".\"ClassName\", \"ForumThread\".\"Title\", \"Post\".\"Content\", \"Post\".\"ThreadID\", \"Post\".\"AuthorID\", \"ForumThread\".\"ForumID\"";
 		$baseFrom = "FROM \"Post\"
 			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
 			JOIN \"" . ForumHolder::baseForumTable() . "\" \"ForumPage\" ON \"ForumThread\".\"ForumID\"=\"ForumPage\".\"ID\"";
+		*/
+
+		$baseSelect = "SELECT Post.ID, Post.Created, Post.LastEdited, Post.ClassName, ForumThread.Title, Post.Content, Post.ThreadID, Post.AuthorID, ForumThread.ForumID";
+		$baseFrom = "FROM Post JOIN ForumThread ON Post.ThreadID = ForumThread.ID JOIN {ForumHolder::baseForumTable()} ForumPage ON ForumThread.ForumID=ForumPage.ID";
 		
 		$SQL_query = Convert::raw2sql(trim($query));
 		// each database engine does its own thing 
@@ -93,7 +97,7 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 					WHERE
 						MATCH (\"ForumThread\".\"Title\", \"Post\".\"Content\") AGAINST ('$SQL_query' IN BOOLEAN MODE)
 						$SQL_authorClause
-						AND \"ForumPage\".\"ParentID\"='{$forumHolderID}'
+						AND ForumPage.ParentID='{$forumHolderID}'
 					ORDER BY $sort";
 
 				$limitString = " LIMIT $offset, $limit;";

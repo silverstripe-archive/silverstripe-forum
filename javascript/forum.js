@@ -11,6 +11,12 @@
 		 * Handle the OpenID information Box.
 		 * It will open / hide the little popup
 		 */
+
+		
+		// default to hiding the BBTags
+		if($("#BBTagsHolder")) {
+			$("#BBTagsHolder").hide().removeClass("showing");
+		}
 	
 		$("#ShowOpenIDdesc").click(function() {
 			if($("#OpenIDDescription").hasClass("showing")) {

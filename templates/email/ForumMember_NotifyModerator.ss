@@ -11,11 +11,11 @@
 	<p>
 		<strong>$Post.Title</strong><br/>
 		<% if Author %> <% _t('BY', "by") %> <em>$Author.Nickname</em><% end_if %>
-		<% _t('DATEON', "on") %> $Post.LastEdited.Nice.
+		<% _t('DATEON', "on") %> {$Post.LastEdited.Nice}.
 	</p>
 	<% control Post %>
 		<p>$Content.Parse(BBCodeParser)</p>
-	<% end_if %>
+	<% end_control %>
 </blockquote>
 
 <h3>Actions</h3>

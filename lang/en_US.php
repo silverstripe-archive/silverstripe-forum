@@ -17,6 +17,7 @@ $lang['en_US']['Forum']['BBCODEHINT'] = 'View Formatting Help';
 $lang['en_US']['Forum']['CHANGETHREADFORUM'] = 'Change Thread Forum';
 $lang['en_US']['Forum']['CURRENTATTACHMENTS'] = 'Current Attachments';
 $lang['en_US']['Forum']['EDITPOST'] = 'Edit post';
+$lang['en_US']['Forum']['FORUMCATEGORY'] = 'Forum Category';
 $lang['en_US']['Forum']['FORUMMONTHLYPOSTS'] = 'Forum Posts by Month';
 $lang['en_US']['Forum']['FORUMREPLYCONTENT'] = 'Content';
 $lang['en_US']['Forum']['FORUMSIGNUPS'] = 'Forum Signups by Month';

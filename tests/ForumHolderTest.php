@@ -142,7 +142,8 @@ class ForumHolderTest extends FunctionalTest {
 		$this->assertTrue(ForumHolder::new_posts_available($fh->ID, $data, date('Y-m-d H:i:s', mktime(0, 0, 0, date('m'), date('d')-1, date('Y')))));
 		
 		// set the last post ID (test the first post - so there should be a post, last post (false))
-		$lastPostID = array_pop($this->allFixtureIDs('Post'));
+		$fixtureIDs = $this->allFixtureIDs('Post');
+		$lastPostID = end($fixtureIDs);
 		
 		$this->assertTrue(ForumHolder::new_posts_available($fh->ID, $data,null, 1));
 		$this->assertFalse(ForumHolder::new_posts_available($fh->ID, $data, null, $lastPostID));

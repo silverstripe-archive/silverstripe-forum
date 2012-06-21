@@ -7,7 +7,7 @@
  *
  * @package forum
  */
-class ForumRole extends DataObjectDecorator {
+class ForumRole extends DataExtension {
 
 	/**
 	 * Edit the given query object to support queries for this extension
@@ -40,55 +40,49 @@ class ForumRole extends DataObjectDecorator {
 		}
 	}
 
-	/**
-	 * Define extra database fields
-	 *
-	 * Return an map where the keys are db, has_one, etc, and the values are
-	 * additional fields/relations to be defined
-	 */
-	function extraStatics() {
-		$fields = array(
-			'db' => array(
-				'ForumRank' => 'Varchar',
-				'Occupation' => 'Varchar',
-				'Company' => 'Varchar',
-				'City' => 'Varchar',
-				'Country' => 'Varchar',
-				'Nickname' => 'Varchar',
-				'FirstNamePublic' => 'Boolean',
-				'SurnamePublic' => 'Boolean',
-				'OccupationPublic' => 'Boolean',
-				'CompanyPublic' => 'Boolean',
-				'CityPublic' => 'Boolean',
-				'CountryPublic' => 'Boolean',
-				'EmailPublic' => 'Boolean',
-				'LastViewed' => 'SS_Datetime',
-				'Signature' => 'Text',
-				'SuspendedUntil' => 'Date'
-			),
-			'has_one' => array(
-				'Avatar' => 'Image'
-			),
-			'belongs_many_many' => array(
-				'ModeratedForums' => 'Forum'
-			),
-			'defaults' => array(
-				'ForumRank' => _t('ForumRole.COMMEMBER','Community Member') 
-			),
-			'searchable_fields' => array(
-				'Nickname' => true
-			),
-			'indexes' => array(
-				'Nickname' => true,
-			),
-			'field_labels' => array(
-				'SuspendedUntil' => "Suspend this member from writing on forums until the specified date",
-			),
-		);
-		
-		return $fields;
-	}
-	
+	static $db =  array(
+		'ForumRank' => 'Varchar',
+		'Occupation' => 'Varchar',
+		'Company' => 'Varchar',
+		'City' => 'Varchar',
+		'Country' => 'Varchar',
+		'Nickname' => 'Varchar',
+		'FirstNamePublic' => 'Boolean',
+		'SurnamePublic' => 'Boolean',
+		'OccupationPublic' => 'Boolean',
+		'CompanyPublic' => 'Boolean',
+		'CityPublic' => 'Boolean',
+		'CountryPublic' => 'Boolean',
+		'EmailPublic' => 'Boolean',
+		'LastViewed' => 'SS_Datetime',
+		'Signature' => 'Text',
+		'SuspendedUntil' => 'Date'
+	);
+
+	static $has_one = array(
+		'Avatar' => 'Image'
+	);
+
+	static $belongs_many_many = array(
+		'ModeratedForums' => 'Forum'
+	);
+
+	static $defaults = array(
+		'ForumRank' => 'Community Member'
+	);
+
+	static $searchable_fields = array(
+		'Nickname' => true
+	);
+
+	static $indexes = array(
+		'Nickname' => true
+	);
+
+	static $field_labels = array(
+		'SuspendedUntil' => "Suspend this member from writing on forums until the specified date"
+	);
+
 	function ForumRank() {
 		$moderatedForums = $this->owner->ModeratedForums();
 		if($moderatedForums && $moderatedForums->Count() > 0) return _t('MODERATOR','Forum Moderator');
@@ -120,7 +114,9 @@ class ForumRole extends DataObjectDecorator {
 	 * Run the Country code through a converter to get the proper Country Name
 	 */
 	function FullCountry() {
-		return (isset($this->owner->Country) && !is_null($this->owner->Country)) ? Geoip::countryCode2name($this->owner->Country) : "";
+		$locale = new Zend_Locale();
+		$locale->setLocale($this->owner->Country);
+		return $locale->getRegion();
 	}
 	function NumPosts() {
 		if(is_numeric($this->owner->ID)) {
@@ -152,11 +148,14 @@ class ForumRole extends DataObjectDecorator {
 	 *
 	 * @param bool $showIdentityURL Should a field for an OpenID or an i-name
 	 *                              be shown (always read-only)?
-	 * @return FieldSet Returns a FieldSet containing all needed fields for
+	 * @return FieldList Returns a FieldList containing all needed fields for
 	 *                  the registration of new users
 	 */
 	function getForumFields($showIdentityURL = false, $addmode = false) {
 		$gravatarText = (DataObject::get_one("ForumHolder", "\"AllowGravatars\" = 1")) ? '<small>'. _t('ForumRole.CANGRAVATAR', 'If you use Gravatars then leave this blank') .'</small>' : "";
+
+		$avatarField = new UploadField("Avatar", _t('ForumRole.AVATAR','Avatar Image') .' '. $gravatarText);
+		$avatarField->allowedExtensions = array('jpg', 'gif', 'png');
 
 		$personalDetailsFields = new CompositeField(
 			new HeaderField("PersonalDetails", _t('ForumRole.PERSONAL','Personal Details')),
@@ -169,10 +168,11 @@ class ForumRole extends DataObjectDecorator {
 			new CheckableOption("OccupationPublic", new TextField("Occupation", _t('ForumRole.OCCUPATION','Occupation')), true),
 			new CheckableOption('CompanyPublic', new TextField('Company', _t('ForumRole.COMPANY', 'Company')), true),
 			new CheckableOption('CityPublic', new TextField('City', _t('ForumRole.CITY', 'City')), true),
-			new CheckableOption("CountryPublic", new CountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true),
+			new CheckableOption("CountryPublic", new ForumCountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true),
 			new CheckableOption("EmailPublic", new EmailField("Email", _t('ForumRole.EMAIL','Email'))),
 			new ConfirmedPasswordField("Password", _t('ForumRole.PASSWORD','Password')),
-			new SimpleImageField("Avatar", _t('ForumRole.AVATAR','Upload avatar ') .' '. $gravatarText)
+			//new SimpleImageField("Avatar", _t('ForumRole.AVATAR','Upload avatar ') .' '. $gravatarText)
+			$avatarField
 		);
 		// Don't show 'forum rank' at registration
 		if(!$addmode) {
@@ -182,7 +182,7 @@ class ForumRole extends DataObjectDecorator {
 		}
 		$personalDetailsFields->setID('PersonalDetailsFields');
 		
-		$fieldset = new FieldSet(
+		$fieldset = new FieldList(
 			$personalDetailsFields
 		);
 
@@ -233,10 +233,10 @@ class ForumRole extends DataObjectDecorator {
 		return $validator;
 	}
 
-	function updateCMSFields(FieldSet &$fields) {
+	function updateCMSFields(FieldList $fields) {
 		$allForums = DataObject::get('Forum');
 		$fields->removeByName('ModeratedForums');
-		$fields->addFieldToTab('Root.ModeratedForums', new CheckboxSetField('ModeratedForums', _t('ForumRole.MODERATEDFORUMS', 'Moderated forums'), ($allForums ? $allForums->map('ID', 'Title') : array())));
+		$fields->addFieldToTab('Root.ModeratedForums', new CheckboxSetField('ModeratedForums', _t('ForumRole.MODERATEDFORUMS', 'Moderated forums'), ($allForums->exists() ? $allForums->map('ID', 'Title') : array())));
 		$suspend = $fields->dataFieldByName('SuspendedUntil');
 		$suspend->setConfig('showcalendar', true);
 		if(Permission::checkMember($this->owner->ID, "ACCESS_FORUM")) {

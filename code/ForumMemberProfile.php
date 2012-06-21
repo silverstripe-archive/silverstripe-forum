@@ -30,7 +30,7 @@ class ForumMemberProfile extends Page_Controller {
 		$forumHolder = $this->getForumHolder();
 		$member = $this->Member();
 		
-		$parts[] = "<a href=\"{$forumHolder->Link()}\">{$forumHolder->Title}</a>";
+		$parts[] = '<a href="' . $forumHolder->Link() . '">' . $forumHolder->Title . '</a>';
 		$nonPageParts[] = _t('ForumMemberProfile.USERPROFILE', 'User Profile');
 		
 		return implode(" &raquo; ", array_reverse(array_merge($nonPageParts, $parts)));
@@ -40,11 +40,12 @@ class ForumMemberProfile extends Page_Controller {
 	 * Initialise the controller
 	 */
 	function init() {
-		Requirements::themedCSS('Forum');
+		Requirements::themedCSS('forum','forum','all');
 		$member = $this->Member() ? $this->Member() : null;
 		$nicknameText = ($member) ? ($member->Nickname . '\'s ') : '';
 		
-		$this->Title = DBField::create('HTMLText',Convert::raw2xml($nicknameText) . _t('ForumMemberProfile.USERPROFILE', 'User Profile'));
+		//$this->Title = DBField::create('HTMLText',Convert::raw2xml($nicknameText) . _t('ForumMemberProfile.USERPROFILE', 'User Profile'));
+		$this->Title = DBField::create_field('HTMLText', Convert::raw2xml($nicknameText) . _t('ForumMemberProfile.USERPROFILE', 'User Profile'));
 		
 		parent::init();
  	}
@@ -60,19 +61,12 @@ class ForumMemberProfile extends Page_Controller {
  	 * Get the latest 10 posts by this member
  	 */
  	function LatestPosts() {
- 		$memberID = $this->urlParams['ID'];
-		$SQL_memberID = (int) $memberID;
-
-		$posts = DataObject::get("Post", "\"AuthorID\" = '$SQL_memberID'", "\"Created\" DESC", "", "0,10");
-		if($posts) {
-			foreach($posts as $post) {
-				if(!$post->canView()) {
-					$posts->remove($post);
-				}
-			}
-		}
-
-		return $posts;   
+		return Post::get()
+			->filter('AuthorID', (int)$this->urlParams['ID'])
+			->limit(0,10)
+			->filterByCallback(function($post){
+				return $post->canView();
+			});
  	}
 
 
@@ -109,7 +103,7 @@ class ForumMemberProfile extends Page_Controller {
 
 		$validator = singleton('Member')->getForumValidator(!$use_openid);
 		$form = new Form($this, 'RegistrationForm', $fields,
-			new FieldSet(new FormAction("doregister", _t('ForumMemberProfile.REGISTER','Register'))),
+			new FieldList(new FormAction("doregister", _t('ForumMemberProfile.REGISTER','Register'))),
 			$validator
 		);
 		
@@ -164,9 +158,9 @@ class ForumMemberProfile extends Page_Controller {
 			}
 		}
 
-		$forumGroup = DataObject::get_one('Group', "\"Code\" = 'forum-members'");
-		
-		if($member = DataObject::get_one("Member", "\"Email\" = '". Convert::raw2sql($data['Email']) . "'")) {
+		$forumGroup = Group::get()->filter('Code', 'forum-members')->first();
+
+		if($member = Member::get()->filter('Email', $data['Email'])->first()) {
   			if($member) {
   				$form->addErrorMessage("Blurb",
 					_t('ForumMemberProfile.EMAILEXISTS','Sorry, that email address already exists. Please choose another.'),
@@ -174,34 +168,30 @@ class ForumMemberProfile extends Page_Controller {
 				
   				// Load errors into session and post back
 				Session::set("FormInfo.Form_RegistrationForm.data", $data);
-  				Director::redirectBack();
-  				return;
+				return $this->redirectBack();
   			}
-  		} elseif($this->getForumHolder()->OpenIDAvailable() && isset($data['IdentityURL']) && ($member = DataObject::get_one("Member", "\"IdentityURL\" = '". Convert::raw2sql($data['IdentityURL']) ."'"))) {
-  						
-				if($member) {
-  					$form->addErrorMessage("Blurb",
-						_t('ForumMemberProfile.OPENIDEXISTS','Sorry, that OpenID is already registered. Please choose another or register without OpenID.'),
-						"bad");
+  		} 
+  		elseif(
+  			   $this->getForumHolder()->OpenIDAvailable()
+  			   && isset($data['IdentityURL'])
+  			   && ($member = Member::get()->filter('IdentityURL', $data['IdentityURL'])->first())
+  		) {
+			$errorMessage = _t('ForumMemberProfile.OPENIDEXISTS','Sorry, that OpenID is already registered. Please choose another or register without OpenID.');
+			$form->addErrorMessage("Blurb", $errorMessage, "bad");
 
-					// Load errors into session and post back
-					Session::set("FormInfo.Form_RegistrationForm.data", $data);
-					Director::redirectBack();
-  					return;
-			}
-  		} elseif($member = DataObject::get_one("Member",
-				"\"Nickname\" = '". Convert::raw2sql($data['Nickname']) . "'")) {
-  					if($member) {
-  						$form->addErrorMessage("Blurb",
-							_t('ForumMemberProfile.NICKNAMEEXISTS','Sorry, that nickname already exists. Please choose another.'),
-							"bad");
-
-						// Load errors into session and post back
-						Session::set("FormInfo.Form_RegistrationForm.data", $data);
-						Director::redirectBack();
-					return;
-					}
+			// Load errors into session and post back
+			Session::set("FormInfo.Form_RegistrationForm.data", $data);
+			return $this->redirectBack();
 		}
+		elseif($member = Member::get()->filter('Nickname', $data['Nickname'])->first()) {
+			$errorMessage = _t('ForumMemberProfile.NICKNAMEEXISTS','Sorry, that nickname already exists. Please choose another.');
+			$form->addErrorMessage("Blurb",	$errorMessage, "bad");
+
+			// Load errors into session and post back
+			Session::set("FormInfo.Form_RegistrationForm.data", $data);
+			return $this->redirectBack();
+		}
+
 		// create the new member
 		$member = Object::create('Member');
 		$form->saveInto($member);
@@ -213,9 +203,9 @@ class ForumMemberProfile extends Page_Controller {
 
 		$member->extend('onForumRegister', $this->request);
 
-		if (isset($data['BackURL']) && $data['BackURL']) return Director::redirect($data['BackURL']);
+		if (isset($data['BackURL']) && $data['BackURL']) return $this->redirect($data['BackURL']);
 
-		return array("Form" => DataObject::get_one("ForumHolder")->ProfileAdd);
+		return array("Form" => ForumHolder::get()->first()->ProfileAdd);
 	}
 
 
@@ -246,8 +236,8 @@ class ForumMemberProfile extends Page_Controller {
 	 */
 	function RegistrationWithOpenIDForm() {
 		$form = new Form($this, 'RegistrationWithOpenIDForm',
-      new FieldSet(new TextField("OpenIDURL", "OpenID URL", "", null)),
-			new FieldSet(new FormAction("doregisterwithopenid", _t('ForumMemberProfile.REGISTER','Register'))),
+      	new FieldList(new TextField("OpenIDURL", "OpenID URL", "", null)),
+			new FieldList(new FormAction("doregisterwithopenid", _t('ForumMemberProfile.REGISTER','Register'))),
 			new RequiredFields("OpenIDURL")
 		);
 
@@ -262,14 +252,13 @@ class ForumMemberProfile extends Page_Controller {
 		$openid = trim($data['OpenIDURL']);
 		Session::set("FormInfo.Form_RegistrationWithOpenIDForm.data", $data);
 
-    if(strlen($openid) == 0) {
+    	if(strlen($openid) == 0) {
 			if(!is_null($form)) {
   			$form->addErrorMessage("Blurb",
 					"Please enter your OpenID or your i-name.",
 					"bad");
 			}
-			Director::redirectBack();
-			return;
+			return $this->redirectBack();
 		}
 
 
@@ -288,30 +277,27 @@ class ForumMemberProfile extends Page_Controller {
 					"Please try again.",
 					"bad");
 			}
-			Director::redirectBack();
-			return;
+			return $this->redirectBack();
 		}
 
 		$SQL_identity = Convert::raw2sql($auth_request->endpoint->claimed_id);
-		if($member = DataObject::get_one("Member",
-				"\"Member\".\"IdentityURL\" = '$SQL_identity'")) {
+		if($member = Member::get()->filter('IdentityURL', $SQL_identity)->first()) {
 			if(!is_null($form)) {
   			$form->addErrorMessage("Blurb",
 					"That OpenID or i-name is already registered. Use another one.",
 					"bad");
 			}
-			Director::redirectBack();
-			return;
+			return $this->redirectBack();
 		}
 
 
 		// Add the fields for which we wish to get the profile data
-    $sreg_request = Auth_OpenID_SRegRequest::build(null,
-      array('nickname', 'fullname', 'email', 'country'));
+    	$sreg_request = Auth_OpenID_SRegRequest::build(null,
+      	array('nickname', 'fullname', 'email', 'country'));
 
-    if($sreg_request) {
+    	if($sreg_request) {
 			$auth_request->addExtension($sreg_request);
-    }
+    	}
 
 
 		if($auth_request->shouldSendRedirect()) {
@@ -322,7 +308,7 @@ class ForumMemberProfile extends Page_Controller {
 				displayError("Could not redirect to server: " .
 										 $redirect_url->message);
 			} else {
-				Director::redirect($redirect_url);
+				return $this->redirect($redirect_url);
 			}
 
 		} else {
@@ -395,8 +381,7 @@ class ForumMemberProfile extends Page_Controller {
 				$data['Email'] = $sreg['email'];
 
 			Session::set("FormInfo.Form_RegistrationForm.data", $data);
-			Director::redirect($this->Link('register'));
-			return;
+			return $this->redirect($this->Link('register'));
 		}
 
 
@@ -412,8 +397,7 @@ class ForumMemberProfile extends Page_Controller {
 		$this->RegistrationWithOpenIDForm()->addErrorMessage("Blurb",
 			$error_message, 'bad');
 
-		Director::redirect($this->Link('registerwithopenid'));
-
+		return $this->redirect($this->Link('registerwithopenid'));
 	}
 
 
@@ -452,7 +436,7 @@ class ForumMemberProfile extends Page_Controller {
 		}
 
 		$form = new Form($this, 'EditProfileForm', $fields,
-			new FieldSet(new FormAction("dosave", _t('ForumMemberProfile.SAVECHANGES','Save changes'))),
+			new FieldList(new FormAction("dosave", _t('ForumMemberProfile.SAVECHANGES','Save changes'))),
 			$validator
 		);
 
@@ -491,8 +475,7 @@ class ForumMemberProfile extends Page_Controller {
 					'bad'
 				);
 				
-  				Director::redirectBack();
-  				return;
+  				return $this->redirectBack();
 			}
 		}
 
@@ -509,8 +492,7 @@ class ForumMemberProfile extends Page_Controller {
 			$form->addErrorMessage("Blurb",
 				_t('ForumMemberProfile.NICKNAMEEXISTS','Sorry, that nickname already exists. Please choose another.'),
 				"bad");
-			Director::redirectBack();
-			return;
+			return $this->redirectBack();
 		}
 
 		$form->saveInto($member);
@@ -520,7 +502,7 @@ class ForumMemberProfile extends Page_Controller {
 			$forumGroup->Members()->add($member);
 		}
 		
-		Director::redirect('thanks');
+		return $this->redirect('thanks');
 	}
 
 

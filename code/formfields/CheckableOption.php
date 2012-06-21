@@ -10,7 +10,7 @@ class CheckableOption extends CompositeField {
 				
 		$this->childField = $childField;
 		
-		$children = new FieldSet(
+		$children = new FieldList(
 			$this->childField,
 			$this->checkbox
 		);
@@ -18,9 +18,9 @@ class CheckableOption extends CompositeField {
 		parent::__construct($children);
 	}
 	
-	function FieldHolder() {
-		return FormField::FieldHolder();
-	}
+	function FieldHolder($properties = array()) {
+		return FormField::FieldHolder($properties);
+	}		
 	
 	function Message() {
 		return $this->childField->Message();
@@ -34,7 +34,7 @@ class CheckableOption extends CompositeField {
 		return $this->childField->Title();
 	}
 	
-	function Field() {
+	function Field($properties = array()) {
 		return $this->childField->Field() . ' ' . $this->checkbox->Field();
 	}
 }

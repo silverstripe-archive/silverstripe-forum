@@ -1,4 +1,5 @@
 <% include ForumHeader %>
+
 	<% if SearchResults %>
 		<div id="forum_search" class="forumHolderFeatures">
 			<table class="topicList">
@@ -70,11 +71,12 @@
 				</tr>
 			</table>
 		</div>
-		<% else %>
-			<div class="forumHolderFeatures">
-				<table id="TopicList">
-					<tr><td><% _t('NORESULTS','There are no results for those word(s)') %></td></tr>
-				</table>
-			</div>
-		<% end_if %>
+	<% else %>
+		<div class="forumHolderFeatures">
+			<table id="TopicList">
+				<tr><td><% _t('NORESULTS','There are no results for those word(s)') %></td></tr>
+			</table>
+		</div>
+	<% end_if %>
+
 <% include ForumFooter %>

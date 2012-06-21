@@ -16,7 +16,7 @@ class ForumReport_MemberSignups extends SS_Report {
 	function title() {
 		return _t('Forum.FORUMSIGNUPS',"Forum Signups by Month");
 	}
-	function records() {
+	function records($params = array()) {
 		$members = DB::query("
 			SELECT DATE_FORMAT(\"Created\", '%Y %M') AS \"Month\", COUNT(\"Created\") AS \"NumberJoined\"
 			FROM \"Member\"
@@ -53,7 +53,7 @@ class ForumReport_MonthlyPosts extends SS_Report {
 		return _t('Forum.FORUMMONTHLYPOSTS',"Forum Posts by Month");
 	}
 	
-	function records() {
+	function records($params = array()) {
 		$members = DB::query("
 			SELECT DATE_FORMAT(\"Created\", '%Y %M') AS \"Month\", COUNT(\"Created\") AS \"PostsTotal\"
 			FROM \"Post\"

@@ -35,7 +35,7 @@ class ForumCategory extends DataObject {
 	 * Get the fields for the category edit/ add
 	 * in the complex table field popup window. 
 	 * 
-	 * @return FieldSet
+	 * @return FieldList
 	 */
 	function getCMSFields_forPopup() {
 		
@@ -44,7 +44,7 @@ class ForumCategory extends DataObject {
 		for($i = 1; $i<100; $i++) {
 			$values[$i] = $i;
 		}
-		return new FieldSet(
+		return new FieldList(
 			new TextField('Title'),
 			new DropdownField('StackableOrder', 'Select the Ordering (99 top of the page, 1 bottom)', $values)
 		);

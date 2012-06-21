@@ -13,9 +13,11 @@ class Post extends DataObject {
 		"Status" => "Enum('Awaiting, Moderated, Rejected, Archived', 'Moderated')",
 	);
 	
+	/*
 	static $indexes = array(
 		"SearchFields" => array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Content'),
 	);
+	*/
 
 	static $casting = array(
 		"Updated" => "SS_Datetime",
@@ -38,9 +40,9 @@ class Post extends DataObject {
 	 * Update all the posts to have a forum ID of their thread ID. 
 	 */
 	function requireDefaultRecords() {
-		$posts = DataObject::get('Post', "\"ForumID\" = 0 AND \"ThreadID\" > 0");
-		
-		if($posts) {
+		$posts = Post::get()->filter(array('ForumID' => 0, 'ThreadID:GreaterThan' => 0));
+
+		if($posts->exists()) {
 			foreach($posts as $post) {
 				if($post->ThreadID) {
 					$post->ForumID = $post->Thread()->ForumID;
@@ -48,7 +50,7 @@ class Post extends DataObject {
 				}
 			}
 			
-			DB::alteration_message(_t('Forum.POSTSFORUMIDUPDATED','Forum posts forum ID added'),"created");
+			DB::alteration_message(_t('Forum.POSTSFORUMIDUPDATED', 'Forum posts forum ID added'), 'created');
 		}
 	}
 	
@@ -146,7 +148,7 @@ class Post extends DataObject {
 	 * @return String
 	 */
 	function getTitle() {
-		return ($this->isFirstPost()) ? $this->Thread()->Title : sprintf(_t('Post.RESPONSE',"Re: %s",PR_HIGH,'Post Subject Prefix'),$this->Thread()->Title);
+		return ($this->isFirstPost()) ? $this->Thread()->Title : sprintf(_t('Post.RESPONSE',"Re: %s",'Post Subject Prefix'),$this->Thread()->Title);
 	}
 
 	/**
@@ -163,7 +165,7 @@ class Post extends DataObject {
 	 * @return bool
 	 */
 	function isFirstPost() {
-		return (DB::query("SELECT COUNT(\"ID\") FROM \"Post\" WHERE \"ThreadID\" = '$this->ThreadID' AND \"ID\" < '$this->ID'")->value() > 0) ? false : true;
+		return (DB::query('SELECT COUNT("ID") FROM "Post" WHERE "ThreadID" = ' . $this->ThreadID . ' AND "ID" < ' . $this->ID)->value() > 0) ? false : true;
 	}
 	
 	/**
@@ -173,16 +175,16 @@ class Post extends DataObject {
 	 */
 	function EditLink() {	
 		if($this->canEdit()) {
-			$url = $this->Link('editpost');
-			
-			return "<a href=\"{$url}/{$this->ID}\" class=\"editPostLink\">" . _t('Post.EDIT','Edit') . "</a>";
+			$url = Controller::join_links($this->Link('editpost'), $this->ID);
+
+			return '<a href="' . $url . '" class="editPostLink">' . _t('Post.EDIT','Edit') . '</a>';
 		}
 		
 		return false;
 	}
 
 	/**
-	 * Return a link delete this post.
+	 * Return a link to delete this post.
 	 * 
 	 * If the member is an admin of this forum, (ADMIN permissions
 	 * or a moderator) then they can delete the post.
@@ -191,11 +193,10 @@ class Post extends DataObject {
 	 */
 	function DeleteLink() {
 		if($this->canDelete()) {
-			$url = $this->Link('deletepost');
-			
-			$firstPost = ($this->isFirstPost()) ? 'firstPost' : '';
-			
-			return "<a class=\"deleteLink $firstPost\" href=\"{$url}/{$this->ID}\">" . _t('Post.DELETE','Delete') ."</a>";
+			$url = $this->Link('deletepost') . '/' . $this->ID;
+			$firstPost = ($this->isFirstPost()) ? ' firstPost' : '';
+
+			return '<a class="deleteLink' . $firstPost . '" href="' . $url . '">' . _t('Post.DELETE','Delete') . '</a>';
 		}
 		
 		return false;
@@ -210,7 +211,7 @@ class Post extends DataObject {
 	function ReplyLink() {
 		$url = $this->Link('reply');
 
-		return "<a href=\"$url\" class=\"replyLink\">" . _t('Post.REPLYLINK','Post Reply') . "</a>";
+		return '<a href="' . $url . '" class="replyLink">' . _t('Post.REPLYLINK','Post Reply') . '</a>';
 	}
 		
 	/**
@@ -221,7 +222,7 @@ class Post extends DataObject {
 	function ShowLink() {
 		$url = $this->Link('show');
 		
-		return "<a href=\"$url\" class=\"showLink\">" . _t('Post.SHOWLINK','Show Thread') . "</a>";
+		return '<a href="' . $url . '" class="showLink">' . _t('Post.SHOWLINK','Show Thread') . "</a>";
 	}
 	
 	/**
@@ -234,11 +235,10 @@ class Post extends DataObject {
 		if($this->Thread()->canModerate()) {
 			$member = Member::currentUser();
 		 	if($member->ID != $this->AuthorID) {
-				$link = $this->Forum()->Link('markasspam') .'/'. $this->ID;
+				$link = $this->Forum()->Link('markasspam') . '/' . $this->ID;
+				$firstPost = ($this->isFirstPost()) ? ' firstPost' : '';
 				
-				$firstPost = ($this->isFirstPost()) ? 'firstPost' : '';
-				
-				return "<a href=\"$link\" class=\"markAsSpamLink $firstPost\" rel=\"$this->ID\">". _t('Post.MARKASSPAM', 'Mark as Spam') ."</a>";
+				return '<a href="' . $link .'" class="markAsSpamLink' . $firstPost . '" rel="' . $this->ID . '">'. _t('Post.MARKASSPAM', 'Mark as Spam') . '</a>';
 			}
 		}
 	}
@@ -269,7 +269,8 @@ class Post extends DataObject {
 		$includeThreadID = ($action == "show" || $action == "reply") ? true : false;
 		$link = $this->Thread()->Link($action, $includeThreadID);
 
-		// calculate what page results the post is on count is the position of the post in the thread
+		// calculate what page results the post is on
+		// the count is the position of the post in the thread
 		$count = DB::query("
 			SELECT COUNT(\"ID\") 
 			FROM \"Post\" 
@@ -332,6 +333,6 @@ class Post_Attachment extends File {
 			}
 		}
 		
-		return Director::redirectBack();
+		return $this->redirectBack();
 	}
 }
