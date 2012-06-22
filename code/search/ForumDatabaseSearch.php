@@ -12,7 +12,7 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 	 * Get the results from the database
 	 *
 	 * @param Int $forumHolderID ForumHolderID to limit it too
-	 * @param String $query
+	 * @param String $query need to make real escape for data safe
 	 * @param String $order
 	 * @param Int Offset
 	 * @param Int Limit
@@ -20,9 +20,13 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 	 * @return DataObjectSet
 	 */
 	public function getResults($forumHolderID, $query, $order, $offset = 0, $limit = 10) {
+		// we need to do escape for the $query string to avoid sql injection
+		// since $query string has been used more than once below in searching out potential authors and posts in different ways,
+		// we'd better make the escaping just before its defferent variations putting into a query.
+		
 		
 		// Search for authors
-		$SQL_queryParts = split(' +', trim($query));
+		$SQL_queryParts = Convert::raw2sql(split(' +', trim($query)));
 		foreach($SQL_queryParts as $SQL_queryPart ) { 
 			$SQL_clauses[] = "\"FirstName\" LIKE '%$SQL_queryPart%' OR \"Surname\" LIKE '%$SQL_queryPart' OR \"Nickname\" LIKE '%$SQL_queryPart'";
 		}
@@ -57,13 +61,14 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
 			JOIN \"" . ForumHolder::baseForumTable() . "\" \"ForumPage\" ON \"ForumThread\".\"ForumID\"=\"ForumPage\".\"ID\"";
 		
+		$SQL_query = Convert::raw2sql(trim($query));
 		// each database engine does its own thing 
 		switch(DB::getConn()->getDatabaseServer()) {
 			case 'postgresql':
 				$queryString = "
 					$baseSelect
 					$baseFrom	
-					, to_tsquery('english', '$query') AS q";
+					, to_tsquery('english', '$SQL_query') AS q";
 			
 				$limitString = "LIMIT $limit OFFSET $offset;";
 				break;
@@ -73,7 +78,7 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 					$baseSelect
 					$baseFrom
 					WHERE
-						(CONTAINS(\"ForumThread\".\"Title\", '$query') OR CONTAINS(\"Post\".\"Content\", '$query')
+						(CONTAINS(\"ForumThread\".\"Title\", '$SQL_query') OR CONTAINS(\"Post\".\"Content\", '$SQL_query')
 						AND \"ForumPage\".\"ParentID\"='{$forumHolderID}'";
 						
 				// @todo fix this to use MSSQL's version of limit/offsetB
@@ -83,10 +88,10 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 			default:
 				$queryString = "
 					$baseSelect,
-					MATCH (\"Post\".\"Content\") AGAINST ('$query') AS RelevancyScore
+					MATCH (\"Post\".\"Content\") AGAINST ('$SQL_query') AS RelevancyScore
 					$baseFrom
 					WHERE
-						MATCH (\"ForumThread\".\"Title\", \"Post\".\"Content\") AGAINST ('$query' IN BOOLEAN MODE)
+						MATCH (\"ForumThread\".\"Title\", \"Post\".\"Content\") AGAINST ('$SQL_query' IN BOOLEAN MODE)
 						$SQL_authorClause
 						AND \"ForumPage\".\"ParentID\"='{$forumHolderID}'
 					ORDER BY $sort";
