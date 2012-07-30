@@ -1,0 +1,296 @@
+en:
+  ComplexTableField:
+    CLOSEPOPUP: 'Close Popup'
+    SUCCESSADD: 'Added %s %s %s'
+  ErrorPage:
+    DESCRIPTION: 'Custom content for different error cases (e.g. "Page not found")'
+  Forum:
+    ACCESSATTACH: 'Can users attach files?'
+    ACCESSPOST: 'Who can post to the forum?'
+    ATTACH: 'Attach file'
+    BBCODEHINT: 'View Formatting Help'
+    CHANGETHREADFORUM: 'Change Thread Forum'
+    CURRENTATTACHMENTS: 'Current Attachments'
+    DEFAULTCATEGORY: General
+    DESCRIPTION: 'Generic content page'
+    EDITPOST: 'Edit post'
+    FORUMCATEGORY: 'Forum Category'
+    FORUMCREATED: 'Forum page created'
+    FORUMHOLDERCREATED: 'ForumHolder page created'
+    FORUMMONTHLYPOSTS: 'Forum Posts by Month'
+    FORUMREPLYCONTENT: Content
+    FORUMSIGNUPS: 'Forum Signups by Month'
+    FORUMTHREADTITLE: ''
+    GROUPCREATED: 'Forum Members group created'
+    GROUPS: Groups
+    ISGLOBALSTICKY: 'Is this a Global Sticky (shown on all forums)'
+    ISREADONLYTHREAD: 'Is this a Read only Thread?'
+    ISSTICKYTHREAD: 'Is this a Sticky Thread?'
+    LOGINAGAIN: 'You have been logged out of the forums. If you would like to log in again, enter a username and password below.'
+    LOGINALREADY: 'I&rsquo;m sorry, but you can&rsquo;t access this forum until you&rsquo;ve logged in. If you want to log in as someone else, do so below'
+    LOGINDEFAULT: 'Enter your email address and password to view this forum.'
+    LOGINTOPOST: 'You''ll need to login before you can post to that forum. Please do so below.'
+    LOGINTOPOSTAGAIN: 'You have been logged out of the forums.  If you would like to log in again to post, enter a username and password below.'
+    LOGINTOPOSTLOGGEDIN: 'I''m sorry, but you can''t post to this forum until you''ve logged in.If you want to log in as someone else, do so below. If you''re logged in and you still can''t post, you don''t have the correct permissions to post.'
+    NEWTOPIC: 'Start a new topic'
+    NO: No
+    NOPOSTPERMISSION: 'I''m sorry, but you do not have permission to this edit this profile.'
+    PLURALNAME: Forums
+    POSTSFORUMIDUPDATED: 'Forum posts forum ID added'
+    POSTTOTOPIC: 'Posts to the %s topic'
+    READANYONE: Anyone
+    READLIST: 'Only these people (choose from list)'
+    READLOGGEDIN: 'Logged-in users'
+    READNOONE: 'Nobody. Make Forum Read Only'
+    REMOVE: remove
+    REPLYFORMPOST: Post
+    RSSFORUM: 'Posts to the ''%s'' forum'
+    RSSFORUMS: 'Posts to all forums'
+    SAVE: Save
+    SINGULARNAME: Forum
+    SUBSCRIBETOPIC: 'Subscribe to this topic (Receive email notifications when a new reply is added)'
+    TITLE: 'General Discussion'
+    UPLOADSFOLDER: 'Uploads folder'
+    UPLOADVALIDATIONFAIL: 'Unallowed file uploaded. Please only upload files of the following: '
+    WELCOMEFORUM: 'Welcome to SilverStripe Forum Module! This is the default Forum page. You can now add topics.'
+    WELCOMEFORUMHOLDER: 'Welcome to SilverStripe Forum Module! This is the default ForumHolder page. You can now add forums.'
+    YES: Yes
+  Forum.ss:
+    ANNOUNCEMENTS: Announcements
+    GOTOTHISTOPIC: 'Go to the %s topic'
+    LASTPOST: 'Last Post'
+    NEWTOPIC: 'Click here to start a new topic'
+    NEWTOPICIMAGE: 'Start new topic'
+    NEWTOPICTEXT: 'click here to start a new topic'
+    NEXTLNK: 'Next Page'
+    NOTOPICS: 'There are no topics in this forum, '
+    POSTS: Posts
+    PREVLNK: 'Previous Page'
+    READONLYFORUM: 'This Forum is read only. You cannot post replies or start new threads'
+    THREADS: Threads
+    TOPIC: Topic
+  ForumAdmin_right.ss:
+    EDITPAGE: 'Edit Page'
+    WELCOME: 'Welcome to %s! Please choose click on one of the entries on the left pane.'
+  ForumFooter.ss:
+    CURRENTLYON: 'Currently Online:'
+    ISONLINE: ' is online'
+    LATESTMEMBER: 'Welcome to our latest member:'
+    NOONLINE: 'There is nobody online.'
+  ForumHeader.ss:
+    BY: by
+    IN: in
+    JUMPTO: 'Jump to:'
+    MEMBERS: members
+    POSTS: Posts
+    SEARCHBUTTON: L
+    SELECT: Select
+    TOPICS: Topics
+  ForumHolder:
+    DESCRIPTION: 'Generic content page'
+    MEMBERLIST: 'Forum member List'
+    PLURALNAME: 'Forum Holders'
+    POPULARTHREADS: 'Most popular forum threads'
+    POSTSTOALLFORUMS: 'Posts to all forums'
+    SEARCHEDFOR: 'You searched for ''%s''.'
+    SEARCHRESULTS: 'Search results'
+    SINGULARNAME: 'Forum Holder'
+  ForumHolder.ss:
+    ANNOUNCEMENTS: Announcements
+    FORUM: Forum
+    FORUMS: Forums
+    LASTPOST: 'Last Post'
+    POSTS: Posts
+    THREADS: Threads
+  ForumHolder_memberlist.ss:
+    COUNTRY: Country
+    FORUMPOSTS: 'Forum Posts'
+    JOINED: Joined
+    MEMBERNAME: 'Member Name'
+    NEXT: Next
+    ORDERBYCOUNTRY: 'Order by Country'
+    ORDERBYJOINED: 'Order by Joined'
+    ORDERBYNAME: 'Order by Name'
+    ORDERBYPOSTS: 'Order by Posts'
+    PREV: Prev
+  ForumHolder_popularthreads.ss:
+    DATECREATED: 'Date created'
+    NEXT: Next
+    NUMVIEWS: 'Number of views'
+    POSTCOUNT: 'Post count'
+    POSTS: Posts
+    PREV: Prev
+    SORTTHREADSBY: 'Sort threads by:'
+    TITLE: Title
+    VIEWS: Views
+  ForumHolder_search.ss:
+    DATE: Date
+    Next: Next
+    ORDER: 'Order:'
+    ORDERBYDATE: 'Order by Date. Newest First'
+    ORDERBYRELEVANCE: 'Order by Relevance. Most relevant first'
+    ORDERBYTITLE: 'Order by Title'
+    PAGE: Page
+    PREV: Prev
+    RELEVANCE: Relevance
+    RSSFEED: 'RSS Feed'
+    THREAD: Thread
+    TITLE: Title
+  ForumLogin.ss:
+    ANONYMOUS: Anonymous
+    LOGGEDINAS: 'You''re logged in as'
+    LOGIN: Login
+    LOGINEXPLICATION: 'Click here to login'
+    LOGOUT: 'Log Out'
+    LOGOUTEXPLICATION: 'Click here to log out'
+    LOSTPASS: 'Forgot password'
+    LOSTPASSEXPLICATION: 'Click here to retrieve your password'
+    OPENID: 'register with OpenID'
+    OPENIDDESC1: 'OpenID is an Internet-wide identity system that allows you to sign in to many websites with a single account.'
+    OPENIDDESC3: 'For more information visit the <a href="http://openid.net">official OpenID site.'
+    OPENIDEXPLICATION: 'Click here to register with OpenID'
+    PROFILE: Profile
+    PROFILEEXPLICATION: 'Click here to edit your profile'
+    REGEXPLICATION: 'Click here to register'
+    REGISTER: Register
+    WHATOPENID: 'What is OpenID?'
+    WHATOPENIDUPPER: 'What is OpenID?'
+  ForumMemberProfile:
+    AUTHENTICATIONFAILED: 'The OpenID/i-name authentication failed.'
+    CANCELLEDVERIFICATION: 'The verification was cancelled. Please try again.'
+    EMAILEXISTS: 'Sorry, that email address already exists. Please choose another.'
+    ENTEROPENID: 'Please enter your OpenID to continue the registration'
+    FORUMREGTITLE: 'Forum Registration'
+    FORUMUSERPROFILE: 'Forum User Profile'
+    FORUMUSERREGISTER: 'Forum Registration'
+    LeaveBlank: 'Don''t enter anything here'
+    NICKNAMEEXISTS: 'Sorry, that nickname already exists. Please choose another.'
+    OPENIDEXISTS: 'Sorry, that OpenID is already registered. Please choose another or register without OpenID.'
+    REGISTER: Register
+    REGISTEROPENID: 'Register with OpenID'
+    SAVECHANGES: 'Save changes'
+    UNEXPECTEDERROR: 'An unexpected error occured. Please try again or register without OpenID'
+    USERPROFILE: 'User profile'
+    WRONGPERMISSION: 'You don''t have the permission to edit that member.'
+  ForumMemberProfile_register.ss:
+    LOGOUT: Logout
+    PLEASELOGOUT: 'Please logout before you register'
+  ForumMemberProfile_show.ss:
+    AVATAR: Avatar
+    CITY: City
+    COMPANY: Company
+    COUNTRY: Country
+    EMAIL: Email
+    FIRSTNAME: 'First Name'
+    FORUMRANK: 'Forum ranking'
+    LASTPOST: 'Last post: %s '
+    LATESTPOSTS: 'Latest Posts'
+    NICKNAME: Nickname
+    NORANK: 'No ranking'
+    OCCUPATION: Occupation
+    POSTNO: 'Number of posts'
+    PROFILE: Profile
+    SURNAME: Surname
+    USERSAVATAR: '&#39;s avatar'
+  ForumMember_ForgotNicknameEmail.ss:
+    HI: 'Hi,'
+    MESSAGE: 'Here''s your user name for <a href="home/">%s</a>.'
+    USERNAME: 'Username:'
+  ForumMember_NotifyModerator.ss:
+    BY: by
+    DATEON: on
+    HI: 'Hi %s,'
+    MODERATORMODERATE: 'Moderate the thread'
+    MODERATORNEWPOSTMESSAGE: 'A forum post has been added or edited'
+    MODERATORNEWTHREADMESSAGE: 'New forum thread has been started'
+    MODERATORNOTE: 'NOTE: This is an automated email sent to all moderators of this forum.'
+    MODERATORSIGNOFF: 'Yours truly,\nThe Forum Robot.'
+  ForumMember_TopicNotification.ss:
+    BY: by
+    HI: 'Hi %s,'
+    NEWPOSTMESSAGE: 'A new post has been added to a topic you''ve subscribed to'
+    REPLYLINK: 'View the topic'
+    UNSUBSCRIBETEXT: 'Unsubscribe from the topic'
+  ForumRole:
+    ADMIN: Administrator
+    ANONYMOUS: 'Anonymous user'
+    AVATAR: 'Avatar Image'
+    CANGRAVATAR: 'If you use Gravatars then leave this blank'
+    CITY: City
+    COMPANY: Company
+    COUNTRY: Country
+    EMAIL: Email
+    FIRSTNAME: 'First name'
+    FORUMRANK: 'User rating'
+    MOD: Moderator
+    MODERATEDFORUMS: 'Moderated forums'
+    NICKNAME: Nickname
+    OCCUPATION: Occupation
+    OPENIDINAME: OpenID/i-name
+    PASSOPTMESSAGE: 'Since you provided an OpenID respectively an i-name the password is optional. If you enter one, you will be able to log in also with your e-mail address.'
+    PASSWORD: Password
+    PERSONAL: 'Personal Details'
+    RATING: 'User rating'
+    SURNAME: Surname
+    SUSPENSIONEMAILNOTE: 'Please contact %s to resolve this issue.'
+    SUSPENSIONNOTE: 'This forum account has been suspended.'
+    TICK: 'Tick the fields to show in public profile'
+    TRANSFERSUCCEEDED: 'The data transfer has succeeded. However, to complete it, you must delete the ForumMember table. To do this, execute the query \"DROP TABLE ''ForumMember''\".'
+    UPLOADAVATAR: 'Upload avatar'
+  ForumThreadSubscribe.ss:
+    CLICKSUBSCRIBE: 'Click here to subscribe to this topic'
+    CLICKUNSUBSCRIBE: 'Click here to Unsubscribe to this topic'
+    SUBSCRIBE: Subscribe
+    UNSUBSCRIBE: Unsubscribe
+  Forum_BBCodeHint.ss:
+    AVAILABLEBB: 'Available BB Code tags'
+  Forum_show.ss:
+    AUTHOR: Author
+    CLICKGOTOEND: 'Click here to go the end of this post'
+    CLICKGOTOTOP: 'Click here to go the top of this post'
+    CLICKREPLY: 'Click to Reply'
+    GOTOEND: 'Go to End'
+    GOTOTOP: 'Go to Top'
+    NEXTLINK: Next
+    NEXTTITLE: 'View the next page'
+    PAGE: 'Page:'
+    PREVLINK: Prev
+    PREVTITLE: 'View the previous page'
+    REPLY: Reply
+    TOPIC: 'Topic:'
+    VIEWS: Views
+  Page:
+    DESCRIPTION: 'Generic content page'
+  Post:
+    DELETE: Delete
+    EDIT: Edit
+    MARKASSPAM: 'Mark as Spam'
+    REPLYLINK: 'Post Reply'
+    RESPONSE: 'Re: %s'
+    SHOWLINK: 'Show Thread'
+  Post_rss.ss:
+    POSTEDTO: 'Posted to:'
+  RedirectorPage:
+    DESCRIPTION: 'Redirects to a different internal page'
+  SinglePost.ss:
+    ATTACHED: 'Attached Files'
+    GOTOPROFILE: 'Go to this User&rsquo;s Profile'
+    LASTEDITED: 'Last edited:'
+    POST: Post
+    POSTS: Posts
+  SiteTree:
+    DESCRIPTION: 'Generic content page'
+  TopicListing.ss:
+    BY: by
+    CLICKTOUSER: 'Click here to view'
+    GOTOFIRSTUNREAD: 'Go to the first unread post in the %s topic.'
+    ON: on
+  VirtualPage:
+    DESCRIPTION: 'Displays the content of another page'
+  forum:
+    LOGINTOUNSUBSCRIBE: 'To unsubscribe from that thread, please log in first.'
+    MEMBERLIST: 'Member List'
+    MODERATOR: 'Forum Moderator'
+    MODERATORS: 'Moderators for this forum'
+    MOSTPOPULARTHREADS: 'Most popular threads'
+    SEARCHBREADCRUMB: Search
