@@ -154,8 +154,8 @@ class ForumRole extends DataExtension {
 	function getForumFields($showIdentityURL = false, $addmode = false) {
 		$gravatarText = (DataObject::get_one("ForumHolder", "\"AllowGravatars\" = 1")) ? '<small>'. _t('ForumRole.CANGRAVATAR', 'If you use Gravatars then leave this blank') .'</small>' : "";
 
-		$avatarField = new UploadField("Avatar", _t('ForumRole.AVATAR','Avatar Image') .' '. $gravatarText);
-		$avatarField->allowedExtensions = array('jpg', 'gif', 'png');
+		$avatarField = new UploadField('Avatar', _t('ForumRole.AVATAR','Avatar Image') .' '. $gravatarText);
+		$avatarField->getValidator()->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'));
 
 		$personalDetailsFields = new CompositeField(
 			new HeaderField("PersonalDetails", _t('ForumRole.PERSONAL','Personal Details')),
@@ -240,7 +240,10 @@ class ForumRole extends DataExtension {
 		$suspend = $fields->dataFieldByName('SuspendedUntil');
 		$suspend->setConfig('showcalendar', true);
 		if(Permission::checkMember($this->owner->ID, "ACCESS_FORUM")) {
-			$fields->addFieldToTab('Root.Forum',new ImageField("Avatar", _t('ForumRole.UPLOADAVATAR', "Upload avatar")));
+			$avatarField = new UploadField('Avatar', _t('ForumRole.UPLOADAVATAR', 'Upload avatar'));
+			$avatarField->getValidator()->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'));
+
+			$fields->addFieldToTab('Root.Forum', $avatarField);
 			$fields->addFieldToTab('Root.Forum',new DropdownField("ForumRank", _t('ForumRole.FORUMRANK', "User rating"), array(
 				"Community Member" => _t('ForumRole.COMMEMBER'),
 				"Administrator" => _t('ForumRole.ADMIN','Administrator'),
