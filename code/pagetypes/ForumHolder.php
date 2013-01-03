@@ -672,11 +672,11 @@ class ForumHolder_Controller extends Page_Controller {
 		RSSFeed::linkToFeed($rssLink, _t('ForumHolder.SEARCHRESULTS','Search results'));
 		
 		return array(
-			"Subtitle"		=> DBField::create('Text', _t('ForumHolder.SEARCHRESULTS','Search results')),
-			"Abstract"		=> DBField::create('HTMLText', $abstract),
-			"Query"			=> DBField::create('Text', $_REQUEST['Search']),
-			"Order"			=> DBField::create('Text', ($order) ? $order : "relevance"),
-			"RSSLink"		=> DBField::create('HTMLText', $rssLink),
+			"Subtitle"		=> DBField::create_field('Text', _t('ForumHolder.SEARCHRESULTS','Search results')),
+			"Abstract"		=> DBField::create_field('HTMLText', $abstract),
+			"Query"			=> DBField::create_field('Text', $_REQUEST['Search']),
+			"Order"			=> DBField::create_field('Text', ($order) ? $order : "relevance"),
+			"RSSLink"		=> DBField::create_field('HTMLText', $rssLink),
 			"SearchResults"	=> $results
 		);
 	}

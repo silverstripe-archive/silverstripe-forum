@@ -1,6 +1,11 @@
 <% include ForumHeader %>
 
 	<% if SearchResults %>
+		<!--<ul>
+    		<% loop PaginatedPages %>
+        		<li><a href="$Link">$Title</a></li>
+    		<% end_loop %>
+		</ul>-->
 		<div id="forum_search" class="forumHolderFeatures">
 			<table class="topicList">
 				<tr class="rowOne category">

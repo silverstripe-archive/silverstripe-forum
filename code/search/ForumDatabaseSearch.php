@@ -24,7 +24,7 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 		// since $query string has been used more than once below in searching out potential authors and posts in different ways,
 		// we'd better make the escaping just before its defferent variations putting into a query.
 		
-		
+		/*
 		// Search for authors
 		$SQL_queryParts = Convert::raw2sql(preg_split('/ +/', trim($query)));
 		foreach($SQL_queryParts as $SQL_queryPart ) { 
@@ -34,7 +34,7 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 		$potentialAuthors = DataObject::get('Member', implode(" OR ", $SQL_clauses), '"ID" ASC');
 		$SQL_authorClause = '';
 		$SQL_potentialAuthorIDs = array();
-		
+
 		if($potentialAuthors) {
 			foreach($potentialAuthors as $potentialAuthor) {
 				$SQL_potentialAuthorIDs[] = $potentialAuthor->ID;
@@ -42,7 +42,7 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 			$SQL_authorList = implode(", ", $SQL_potentialAuthorIDs);
 			$SQL_authorClause = "OR Post.AuthorID IN ($SQL_authorList)";
 		}
-		
+
 		// Work out what sorting method
 		switch($order) {
 			case 'date':
@@ -55,16 +55,16 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 				$sort = "RelevancyScore DESC";
 				break;
 		}
-		/*
-		$baseSelect = "SELECT \"Post\".\"ID\", \"Post\".\"Created\", \"Post\".\"LastEdited\", \"Post\".\"ClassName\", \"ForumThread\".\"Title\", \"Post\".\"Content\", \"Post\".\"ThreadID\", \"Post\".\"AuthorID\", \"ForumThread\".\"ForumID\"";
-		$baseFrom = "FROM \"Post\"
-			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
-			JOIN \"" . ForumHolder::baseForumTable() . "\" \"ForumPage\" ON \"ForumThread\".\"ForumID\"=\"ForumPage\".\"ID\"";
-		*/
+		
+		//$baseSelect = "SELECT \"Post\".\"ID\", \"Post\".\"Created\", \"Post\".\"LastEdited\", \"Post\".\"ClassName\", \"ForumThread\".\"Title\", \"Post\".\"Content\", \"Post\".\"ThreadID\", \"Post\".\"AuthorID\", \"ForumThread\".\"ForumID\"";
+		//$baseFrom = "FROM \"Post\"
+		//	JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
+		//	JOIN \"" . ForumHolder::baseForumTable() . "\" \"ForumPage\" ON \"ForumThread\".\"ForumID\"=\"ForumPage\".\"ID\"";
+		
 
 		$baseSelect = "SELECT Post.ID, Post.Created, Post.LastEdited, Post.ClassName, ForumThread.Title, Post.Content, Post.ThreadID, Post.AuthorID, ForumThread.ForumID";
 		$baseFrom = "FROM Post JOIN ForumThread ON Post.ThreadID = ForumThread.ID JOIN {ForumHolder::baseForumTable()} ForumPage ON ForumThread.ForumID=ForumPage.ID";
-		
+
 		$SQL_query = Convert::raw2sql(trim($query));
 		// each database engine does its own thing 
 		switch(DB::getConn()->getDatabaseServer()) {
@@ -73,10 +73,10 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 					$baseSelect
 					$baseFrom	
 					, to_tsquery('english', '$SQL_query') AS q";
-			
+
 				$limitString = "LIMIT $limit OFFSET $offset;";
 				break;
-				
+
 			case 'mssql':
 				$queryString = "
 					$baseSelect
@@ -84,11 +84,11 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 					WHERE
 						(CONTAINS(\"ForumThread\".\"Title\", '$SQL_query') OR CONTAINS(\"Post\".\"Content\", '$SQL_query')
 						AND \"ForumPage\".\"ParentID\"='{$forumHolderID}'";
-						
+
 				// @todo fix this to use MSSQL's version of limit/offsetB
 				$limitString = false;
 				break;
-				
+
 			default:
 				$queryString = "
 					$baseSelect,
@@ -105,7 +105,7 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 
 		// Find out how many posts that match with no limit
 		$allPosts = DB::query($queryString);
-		
+
 		// Get the 10 posts from the starting record
 		if($limitString) {
 			$query = DB::query("
@@ -116,17 +116,43 @@ class ForumDatabaseSearch implements ForumSearchProvider {
 		else {
 			$query = $allPosts;
 		}
-		
+
 		$allPostsCount = $allPosts ? $allPosts->numRecords() : 0;
-		
+
 		$baseClass = new Post();
 		$postsSet = $baseClass->buildDataObjectSet($query);
-		
+
 		if($postsSet) {
 			$postsSet->setPageLimits($offset, $limit, $allPostsCount);
 		}
-		
+
 		return $postsSet ? $postsSet: new DataObjectSet();
+		*/
+
+		$SQL_query = Convert::raw2sql(trim($query));
+
+		$postsSet = Post::get();
+
+		$queryString = "MATCH (Content) AGAINST ('$SQL_query')";
+
+		$postsSet->where($queryString);
+
+		// Work out what sorting method
+		switch($order) {
+			case 'date':
+				$postsSet->sort('Created', 'DESC');
+				//$sort = "Post.Created DESC";
+				break;
+			/*case 'title':
+				$sort = "ForumThread.Title ASC";
+				break;*/
+			default:
+				// $sort = "RelevancyScore DESC";
+				break;
+		}
+
+		
+		return $postsSet ? $postsSet: new ArrayList();
 	}
 	
 	/**

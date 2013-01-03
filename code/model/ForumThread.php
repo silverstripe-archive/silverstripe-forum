@@ -33,6 +33,12 @@ class ForumThread extends DataObject {
 		'IsGlobalSticky' => false
 	);
 	
+	
+	/*static $indexes = array(
+		"SearchFields" => array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Title'),
+	);*/
+	
+	
 	/**
 	 * Check if the user can create new threads and add responses
 	 */
