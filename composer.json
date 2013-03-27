@@ -1,0 +1,16 @@
+{
+	"name": "silverstripe/forum",
+	"description": "Forum module for SilverStripe.",
+	"type": "silverstripe-module",
+	"keywords": ["silverstripe", "forum"],
+	"authors": [{
+		"name": "Sean Harvey",
+		"email": "sean@silverstripe.com"
+	}, {
+		"name": "Will Rossiter",
+		"email": "will@fullscreen.io"
+	}],
+	"require": {
+		"silverstripe/framework": "~2.4"
+	}
+}
