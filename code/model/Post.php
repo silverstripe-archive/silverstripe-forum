@@ -1,44 +1,36 @@
 <?php
 
 /**
- * Forum Post Object. Contains a single post by the user. A thread is generated with multiple posts.
+ * Forum Post Object. Contains a single post by the user. A thread is generated 
+ * with multiple posts.
  *
  * @package forum
  */
 
 class Post extends DataObject {
 	
-	static $db = array(
+	private static $db = array(
 		"Content" => "Text",
 		"Status" => "Enum('Awaiting, Moderated, Rejected, Archived', 'Moderated')",
 	);
-	
-	/*
-	static $indexes = array(
-		"SearchFields" => array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Content'),
-	);
-	*/
 
-	static $casting = array(
+	private static $casting = array(
 		"Updated" => "SS_Datetime",
 		"RSSContent" => "HTMLText",
 		"RSSAuthor" => "Varchar",
 		"Content" => "HTMLText"
 	);
 
-	static $has_one = array(
+	private static $has_one = array(
 		"Author" => "Member",
 		"Thread" => "ForumThread",
 		"Forum" => "Forum" // denormalized data but used for read speed
 	);
 
-	static $has_many = array(
+	private static $has_many = array(
 		"Attachments" => "Post_Attachment"
 	);
 
-	/**
-	 * Update all the posts to have a forum ID of their thread ID. 
-	 */
 	function requireDefaultRecords() {
 		$posts = Post::get()->filter(array('ForumID' => 0, 'ThreadID:GreaterThan' => 0));
 

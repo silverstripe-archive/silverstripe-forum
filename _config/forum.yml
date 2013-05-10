@@ -1,0 +1,11 @@
+---
+Name: forum
+---
+Member:
+  extensions:
+    ForumRole:
+      ForumRole
+Member_Validator:
+  extensions:
+    ForumRole_Validator:
+      ForumRole_Validator

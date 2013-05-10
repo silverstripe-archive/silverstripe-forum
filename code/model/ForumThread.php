@@ -1,15 +1,15 @@
 <?php
 
 /**
- * A representation of a forum thread. A forum thread is 1 topic on the forum which
- * has multiple posts underneath it.
+ * A representation of a forum thread. A forum thread is 1 topic on the forum 
+ * which has multiple posts underneath it.
  *
  * @package forum
  */
 
 class ForumThread extends DataObject {
 	
-	static $db = array(
+	private static $db = array(
 		"Title" => "Varchar(255)",
 		"NumViews" => "Int",
 		"IsSticky" => "Boolean",
@@ -17,27 +17,21 @@ class ForumThread extends DataObject {
 		"IsGlobalSticky" => "Boolean"
 	);
 	
-	static $has_one = array(
+	private static $has_one = array(
 		'Forum' => 'Forum',
 		'LastPost' => 'Post'
 	);
 	
-	static $has_many = array(
+	private static $has_many = array(
 		'Posts' => 'Post'
 	);
 	
-	static $defaults = array(
+	private static $defaults = array(
 		'NumViews' => 0,
 		'IsSticky' => false,
 		'IsReadOnly' => false,
 		'IsGlobalSticky' => false
 	);
-	
-	/*
-	static $indexes = array(
-		"SearchFields" => array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Title'),
-	);
-	*/
 	
 	/**
 	 * When rebuilding the database we need to ensure that all the threads have been assigned

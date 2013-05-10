@@ -10,7 +10,7 @@
 
 class ForumHolder extends Page {
 
-	static $db = array(
+	private static $db = array(
 		"HolderSubtitle" => "Varchar(200)",
 		"ProfileSubtitle" => "Varchar(200)",
 		"ForumSubtitle" => "Varchar(200)",
@@ -26,15 +26,15 @@ class ForumHolder extends Page {
 		"CanPostType" => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers, NoOne', 'LoggedInUsers')",
 	);
 	
-	static $has_one = array();
+	private static $has_one = array();
 
-	static $has_many = array(
+	private static $has_many = array(
 		"Categories" => "ForumCategory"
 	);
 
-	static $allowed_children = array('Forum');
+	private static $allowed_children = array('Forum');
 	
-	static $defaults = array(
+	private static $defaults = array(
 		"HolderSubtitle" => "Welcome to our forum!",
 		"ProfileSubtitle" => "Edit Your Profile",
 		"ForumSubtitle" => "Start a new topic",

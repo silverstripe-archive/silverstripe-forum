@@ -11,9 +11,9 @@
 
 class Forum extends Page {
 
-	static $allowed_children = 'none';
+	private static $allowed_children = 'none';
 
-	static $icon = "forum/images/treeicons/user";
+	private static $icon = "forum/images/treeicons/user";
 
 	/**
 	 * Enable this to automatically notify moderators when a message is posted
@@ -21,24 +21,24 @@ class Forum extends Page {
 	 */
 	static $notify_moderators = false;
 
-	static $db = array(
+	private static $db = array(
 		"Abstract" => "Text",
 		"CanPostType" => "Enum('Inherit, Anyone, LoggedInUsers, OnlyTheseUsers, NoOne', 'Inherit')",
 		"CanAttachFiles" => "Boolean",
 	);
 
-	static $has_one = array(
+	private static $has_one = array(
 		"Moderator" => "Member",
 		"Category" => "ForumCategory",
 		'UploadsFolder' => 'Folder'
 	);
 	
-	static $many_many = array(
+	private static $many_many = array(
 		'Moderators' => 'Member',
 		'PosterGroups' => 'Group'
 	);
 
-	static $defaults = array(
+	private static $defaults = array(
 		"ForumPosters" => "LoggedInUsers"
 	);
 
@@ -466,7 +466,7 @@ class Forum extends Page {
  */
 class Forum_Controller extends Page_Controller {
 
-	static $allowed_actions = array(
+	private static $allowed_actions = array(
 		'AdminFormFeatures',
 		'deleteattachment',
 		'deletepost',

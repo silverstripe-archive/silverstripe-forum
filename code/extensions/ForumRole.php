@@ -40,7 +40,7 @@ class ForumRole extends DataExtension {
 		}
 	}
 
-	static $db =  array(
+	private static $db =  array(
 		'ForumRank' => 'Varchar',
 		'Occupation' => 'Varchar',
 		'Company' => 'Varchar',
@@ -59,27 +59,27 @@ class ForumRole extends DataExtension {
 		'SuspendedUntil' => 'Date'
 	);
 
-	static $has_one = array(
+	private static $has_one = array(
 		'Avatar' => 'Image'
 	);
 
-	static $belongs_many_many = array(
+	private static $belongs_many_many = array(
 		'ModeratedForums' => 'Forum'
 	);
 
-	static $defaults = array(
+	private static $defaults = array(
 		'ForumRank' => 'Community Member'
 	);
 
-	static $searchable_fields = array(
+	private static $searchable_fields = array(
 		'Nickname' => true
 	);
 
-	static $indexes = array(
+	private static $indexes = array(
 		'Nickname' => true
 	);
 
-	static $field_labels = array(
+	private static $field_labels = array(
 		'SuspendedUntil' => "Suspend this member from writing on forums until the specified date"
 	);
 
