@@ -246,11 +246,11 @@ class ForumThread extends DataObject {
  */
 class ForumThread_Subscription extends DataObject {
 	
-	static $db = array(
+	private static $db = array(
 		"LastSent" => "SS_Datetime"
 	);
 
-	static $has_one = array(
+	private static $has_one = array(
 		"Thread" => "ForumThread",
 		"Member" => "Member"
 	);

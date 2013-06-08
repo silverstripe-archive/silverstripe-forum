@@ -283,11 +283,11 @@ class Post extends DataObject {
  */
 class Post_Attachment extends File {
 	
-	static $has_one = array(
+	private static $has_one = array(
 		"Post" => "Post"
 	);
 	
-	static $defaults = array(
+	private static $defaults = array(
 		'ShowInSearch' => 0
 	);
 
