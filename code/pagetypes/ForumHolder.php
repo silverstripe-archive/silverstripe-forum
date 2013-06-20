@@ -476,6 +476,13 @@ class ForumHolder extends Page {
 
 class ForumHolder_Controller extends Page_Controller {
 
+	private static $allowed_actions = array(
+		'popularthreads',
+		'login',
+		'logout',
+		'search',
+		'rss',
+	);
 
 	public function init() {
 		parent::init();
