@@ -2,15 +2,15 @@
 	<div class="forumHolderFeatures">
 		
 		<div id="SortThreadsBy">
-			<p><% _t('SORTTHREADSBY', 'Sort threads by:') %> <a<% if Method = posts %> class="current"<% end_if %> href="{$Link}popularthreads?by=posts"><% _t('POSTCOUNT', 'Post count') %></a> | <a<% if Method = views %> class="current"<% end_if %> href="{$Link}popularthreads?by=views"><% _t('NUMVIEWS', 'Number of views') %></a></p>
+			<p><% _t('ForumHolder_popularthreas_ss.SORTTHREADSBY', 'Sort threads by:') %> <a<% if Method = posts %> class="current"<% end_if %> href="{$Link}popularthreads?by=posts"><% _t('ForumHolder_popularthreas_ss.POSTCOUNT', 'Post count') %></a> | <a<% if Method = views %> class="current"<% end_if %> href="{$Link}popularthreads?by=views"><% _t('ForumHolder_popularthreas_ss.NUMVIEWS', 'Number of views') %></a></p>
 		</div>
 		
 		<table id="ThreadsList">
 			<tr class="head">
-				<th><% _t('POSTS', 'Posts') %></th>
-				<th><% _t('VIEWS', 'Views') %></th>
-				<th><% _t('TITLE', 'Title') %></th>
-				<th><% _t('DATECREATED', 'Date created') %></th>
+				<th><% _t('ForumHolder_popularthreas_ss.POSTS', 'Posts') %></th>
+				<th><% _t('ForumHolder_popularthreas_ss.VIEWS', 'Views') %></th>
+				<th><% _t('ForumHolder_popularthreas_ss.TITLE', 'Title') %></th>
+				<th><% _t('ForumHolder_popularthreas_ss.DATECREATED', 'Date created') %></th>
 			</tr>
 			
 			<% loop Threads %>
@@ -27,7 +27,7 @@
 			<div id="ThreadsPagination">
 				<p>
 					<% if Threads.NotFirstPage %>
-						<a class="prev" href="$Threads.PrevLink" title="View the previous page"><% _t('PREV', 'Prev') %></a>
+						<a class="prev" href="$Threads.PrevLink" title="View the previous page"><% _t('ForumHolder_popularthreas_ss.PREV', 'Prev') %></a>
 					<% end_if %>
 				
 					<span>
@@ -45,7 +45,7 @@
 					</span>
 				
 					<% if Threads.NotLastPage %>
-						<a class="next" href="$Threads.NextLink"><% _t('NEXT', 'Next') %></a>
+						<a class="next" href="$Threads.NextLink"><% _t('ForumHolder_popularthreas_ss.NEXT', 'Next') %></a>
 					<% end_if %>
 				</p>
 			</div>

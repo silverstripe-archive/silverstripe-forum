@@ -26,7 +26,7 @@ pt_BR:
     SINGULARNAME: "Fórum"
     SUBSCRIBETOPIC: "Inscrever-se neste tópico(Receba notificações via email quando este tópico for atualizado)"
     YES: "Sim"
-  Forum.ss:
+  Forum_ss:
     ANNOUNCEMENTS: "Anúncios"
     GOTOTHISTOPIC: "Ir para o tópico %s"
     LASTPOST: "Ultimo Post"
@@ -38,18 +38,18 @@ pt_BR:
     PREVLNK: "Página inicial"
     READONLYFORUM: "Este Fórum é apenas leitura. Você não pode escrever replica ou criar novas threads"
     TOPIC: "Tópico"
-  ForumAdmin_right.ss:
+  ForumAdmin_right_ss:
     EDITPAGE: "Editar Página"
     WELCOME: "Bem vindo ao %s! Por favor, selecione um dos itens do painel esquerdo."
   ForumCategory:
     PLURALNAME: "Categorias do fórum"
     SINGULARNAME: "Categoria do fórum"
-  ForumFooter.ss:
+  ForumFooter_ss:
     CURRENTLYON: "Logados:"
     ISONLINE: "esta online"
     LATESTMEMBER: "Bem vindo ao nosso ultimo usuário:"
     NOONLINE: "Não existe ninguém online."
-  ForumHeader.ss:
+  ForumHeader_ss:
     BY: "por"
     IN: "em"
     JUMPTO: "Ir para:"
@@ -63,16 +63,16 @@ pt_BR:
     SEARCHEDFOR: "Sua pesquisa por '%s'."
     SEARCHRESULTS: "Resultados da pesquisa"
     SINGULARNAME: "Repositório de Fórum"
-  ForumHolder.ss:
+  ForumHolder_ss:
     FORUM: "Fórum"
     FORUMS: "Fóruns"
     LASTPOST: "Ultimo Post"
     POSTS: "Posts"
     THREADS: "Threads"
-  ForumHolder_search.ss:
+  ForumHolder_search_ss:
     NORESULTS: "Não existe resultados para esta(s) palavra(s)"
     PAGE: "Página:"
-  ForumLogin.ss:
+  ForumLogin_ss:
     LOGGEDINAS: "Você esta logado como"
     LOGIN: "Login"
     LOGINEXPLICATION: "Clique aqui para logar"
@@ -107,7 +107,7 @@ pt_BR:
     UNEXPECTEDERROR: "Ocorreu um erro não identificado. Por favor, tente novamente ou registre-se sem utilizar o OpenID"
     USERPROFILE: "Perfil do usuário"
     WRONGPERMISSION: "Você não tem permissão para editar este usuário."
-  ForumMemberProfile_show.ss:
+  ForumMemberProfile_show_ss:
     AVATAR: "Avatar"
     COUNTRY: "Pais"
     EMAIL: "E-mail"
@@ -122,11 +122,11 @@ pt_BR:
     PROFILE: "Perfil"
     SURNAME: "Sobrenome"
     USERSAVATAR: "&#39;s avatar"
-  ForumMember_ForgotNicknameEmail.ss:
+  ForumMember_ForgotNicknameEmail_ss:
     HI: "Oi,"
     MESSAGE: "Aqui esta o seu login para <a href=\"home/\">%s</a>."
     USERNAME: "Login:"
-  ForumMember_TopicNotification.ss:
+  ForumMember_TopicNotification_ss:
     HI: "Oi %s,"
     NEWPOSTMESSAGE: "Um novo post foi incluível para o tópico que você esta inscrito."
     REPLYLINK: "Visualizar tópico"
@@ -150,11 +150,11 @@ pt_BR:
     RATING: "Avaliação do usuário"
     SURNAME: "Sobrenome"
     TRANSFERSUCCEEDED: "A transferência foi realizada com sucesso. Contudo, para completar, você precisa excluir a tabela ForumMember.  Para isto, execute o comando \"DROP TABLE 'ForumMember'\"."
-  Forum_editpost.ss:
+  Forum_editpost_ss:
     AVAILABLEBB: "Tags do BB disponíveis"
-  Forum_reply.ss:
+  Forum_reply_ss:
     AVAILABLEBB: "Tags BBCode válidas"
-  Forum_show.ss:
+  Forum_show_ss:
     AUTHOR: "Autor"
     CLICKGOTOEND: "Clique aqui para ir para o final da página"
     CLICKGOTOTOP: "Clique aqui para ir para o topo deste post"
@@ -169,7 +169,7 @@ pt_BR:
     REPLY: "Responder"
     TOPIC: "Tópico:"
     VIEWS: "visualizações"
-  Forum_starttopic.ss:
+  Forum_starttopic_ss:
     AVAILABLEBB: "Tags BBCode validas"
   Post:
     DELETE: "Excluir"
@@ -180,11 +180,11 @@ pt_BR:
     RESPONSE: "Re: %s"
     SHOWLINK: "mostrar Thread"
     SINGULARNAME: "Postagem"
-  SinglePost.ss:
+  SinglePost_ss:
     ATTACHED: "Arquivos Anexados"
     GOTOPROFILE: "Ir para página do usuário"
     LASTEDITED: "Ultimo editado:"
-  TopicListing.ss:
+  TopicListing_ss:
     BY: "por"
     CLICKTOUSER: "Clique aqui para visualizar"
     GOTOFIRSTUNREAD: "Ir para o primeiro post não lido do tópico %s"

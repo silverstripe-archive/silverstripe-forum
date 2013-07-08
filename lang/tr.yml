@@ -26,7 +26,7 @@ tr:
     SINGULARNAME: "Forum"
     SUBSCRIBETOPIC: "Bu konuya kayıt ol (bu konuya yanıt verildikçe e-posta adresinizden uyarı alırsınız)"
     YES: "Evet"
-  Forum.ss:
+  Forum_ss:
     ANNOUNCEMENTS: "Duyurular"
     GOTOTHISTOPIC: "%s konusunu aç"
     LASTPOST: "Son Gönderi"
@@ -38,18 +38,18 @@ tr:
     PREVLNK: "Önceki Sayfa"
     READONLYFORUM: "Bu forumu sadece okuyabilirsiniz. Yeni konular açamaz yada konulara cevaplar gönderemezsiniz."
     TOPIC: "Konu"
-  ForumAdmin_right.ss:
+  ForumAdmin_right_ss:
     EDITPAGE: "Sayafayı Düzenle"
     WELCOME: "Sayın %s, Hoşgeldiniz! Lütfen sol paneldeki girdilerden birini seçiniz."
   ForumCategory:
     PLURALNAME: "Forum Kategorileri"
     SINGULARNAME: "Forum Kategorisi"
-  ForumFooter.ss:
+  ForumFooter_ss:
     CURRENTLYON: "Şuanda Online"
     ISONLINE: "online"
     LATESTMEMBER: "Son üyemize hoşgeldin diyoruz:"
     NOONLINE: "Hiç kimse online değil"
-  ForumHeader.ss:
+  ForumHeader_ss:
     BY: "tarafından"
     IN: ":"
     JUMPTO: "Atla"
@@ -63,16 +63,16 @@ tr:
     SEARCHEDFOR: "Aradığınız: '%s'."
     SEARCHRESULTS: "Arama sonuçları"
     SINGULARNAME: "Forum Sahibi"
-  ForumHolder.ss:
+  ForumHolder_ss:
     FORUM: "Forum"
     FORUMS: "Forumlar"
     LASTPOST: "Son İleti"
     POSTS: "İletiler"
     THREADS: "Konular"
-  ForumHolder_search.ss:
+  ForumHolder_search_ss:
     NORESULTS: "Bu kelime(ler) için sonuç bulunamadı."
     PAGE: "Sayfa"
-  ForumLogin.ss:
+  ForumLogin_ss:
     LOGGEDINAS: "Giriş yapıldı:"
     LOGIN: "Giriş"
     LOGINEXPLICATION: "Giriş yapmak için buraya tıkla"
@@ -107,7 +107,7 @@ tr:
     UNEXPECTEDERROR: "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin ya da OpenID kullanmadan üye olun."
     USERPROFILE: "Kullanıcı profili"
     WRONGPERMISSION: "Bu üyeyi düzenleme izniniz bulunmuyor."
-  ForumMemberProfile_show.ss:
+  ForumMemberProfile_show_ss:
     AVATAR: "Avatar"
     COUNTRY: "Ülke"
     EMAIL: "E-posta"
@@ -122,11 +122,11 @@ tr:
     PROFILE: "Profil"
     SURNAME: "Soyad"
     USERSAVATAR: "için avatar"
-  ForumMember_ForgotNicknameEmail.ss:
+  ForumMember_ForgotNicknameEmail_ss:
     HI: "Merhaba,"
     MESSAGE: "<a href=\"home/\">%s</a> için kullanıcı adınız."
     USERNAME: "Kullanıcı adı:"
-  ForumMember_TopicNotification.ss:
+  ForumMember_TopicNotification_ss:
     HI: "Merhaba %s,"
     NEWPOSTMESSAGE: "Abone olduğunuz konuya yeni bir gönderi eklendi."
     REPLYLINK: "Konuyu Göster"
@@ -150,11 +150,11 @@ tr:
     RATING: "Popülarite"
     SURNAME: "Soyad"
     TRANSFERSUCCEEDED: "Veri transferi başarıyla gerçekleştirildi. İşlemi tamamlamak için ForumMember tablosunu silmelisiniz. Bunun için \"DROP TABLE 'ForumMember'\" sorgusunu çalıştırabilirsiniz."
-  Forum_editpost.ss:
+  Forum_editpost_ss:
     AVAILABLEBB: "Geçerli BB Kod Etiketleri"
-  Forum_reply.ss:
+  Forum_reply_ss:
     AVAILABLEBB: "Olanaklı BB Kod Etiketleri"
-  Forum_show.ss:
+  Forum_show_ss:
     AUTHOR: "Yazan"
     CLICKGOTOEND: "Gönderinin sonuna gitmek için tıklayınız"
     CLICKGOTOTOP: "Gönderinin başına gitmek için tıklayınız"
@@ -169,7 +169,7 @@ tr:
     REPLY: "Cevapla"
     TOPIC: "Konu:"
     VIEWS: "Görüntülemeler"
-  Forum_starttopic.ss:
+  Forum_starttopic_ss:
     AVAILABLEBB: "Mevcut BB Kod etiketleri"
   Post:
     DELETE: "sil"
@@ -180,11 +180,11 @@ tr:
     RESPONSE: "Cvp: %s"
     SHOWLINK: "Konuyu Göster"
     SINGULARNAME: "Gönderi"
-  SinglePost.ss:
+  SinglePost_ss:
     ATTACHED: "Eklenmiş Dosyalar"
     GOTOPROFILE: "Bu kullanıcı'nın profiline git"
     LASTEDITED: "En son düzenlenme"
-  TopicListing.ss:
+  TopicListing_ss:
     BY: ":"
     CLICKTOUSER: "Görüntülemek için tıklayınız"
     GOTOFIRSTUNREAD: "%s konusundaki okunmamış ilk gönderiyi göster"

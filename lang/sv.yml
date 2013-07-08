@@ -23,7 +23,7 @@ sv:
     SINGULARNAME: "Forum"
     SUBSCRIBETOPIC: "Prenumerera på inlägg i den här tråden. (Du kommer att få e-post när någon skriver ett inlägg.)"
     YES: "Ja"
-  Forum.ss:
+  Forum_ss:
     LASTPOST: "Senaste inlägget"
     NEWTOPIC: "Klicka här för att starta en ny tråd"
     NEWTOPICIMAGE: "Starta ny tråd"
@@ -33,18 +33,18 @@ sv:
     PREVLNK: "Föregånde sida"
     READONLYFORUM: "Det här forumet får bara läsas. Du kan inte skriva svar eller starta nya trådar"
     TOPIC: "Rubrik"
-  ForumAdmin_right.ss:
+  ForumAdmin_right_ss:
     EDITPAGE: "Redigera sida"
     WELCOME: "Välkommen till %s! Var god klicka på ett av inläggen i panelen till vänster."
   ForumCategory:
     PLURALNAME: "Forum-kategorier"
     SINGULARNAME: "Forum-kategori"
-  ForumFooter.ss:
+  ForumFooter_ss:
     CURRENTLYON: "Inloggadde just nu:"
     ISONLINE: "är inloggad"
     LATESTMEMBER: "Vi hälsar vår senaste medlem välkommen:"
     NOONLINE: "Ingen är inloggad nu."
-  ForumHeader.ss:
+  ForumHeader_ss:
     BY: "av"
     IN: "i"
     JUMPTO: "Hoppa till:"
@@ -58,16 +58,16 @@ sv:
     SEARCHEDFOR: "Du sökte efter '%s'."
     SEARCHRESULTS: "Sök resultat"
     SINGULARNAME: "Forum-hållare"
-  ForumHolder.ss:
+  ForumHolder_ss:
     FORUM: "Forum"
     FORUMS: "Forum"
     LASTPOST: "Senaste inlägget"
     POSTS: "Inlägg"
     THREADS: "Trådar"
-  ForumHolder_search.ss:
+  ForumHolder_search_ss:
     NORESULTS: "Hittade inget resultat för de ord(en)"
     PAGE: "Sida:"
-  ForumLogin.ss:
+  ForumLogin_ss:
     LOGGEDINAS: "Du är inloggad som"
     LOGIN: "Logga in"
     LOGINEXPLICATION: "Klicka här för att logga in"
@@ -93,7 +93,7 @@ sv:
     REGISTEROPENID: "Registrera med OpenID"
     SAVECHANGES: "Spara ändringar"
     USERPROFILE: "Användarprofil"
-  ForumMemberProfile_show.ss:
+  ForumMemberProfile_show_ss:
     AVATAR: "Avatar"
     COUNTRY: "Land"
     EMAIL: "E-post"
@@ -108,10 +108,10 @@ sv:
     PROFILE: "Profil"
     SURNAME: "Efternamn"
     USERSAVATAR: "&#39;s avatar"
-  ForumMember_ForgotNicknameEmail.ss:
+  ForumMember_ForgotNicknameEmail_ss:
     HI: "Hej,"
     USERNAME: "Användarnamn:"
-  ForumMember_TopicNotification.ss:
+  ForumMember_TopicNotification_ss:
     HI: "Hej %s,"
     REPLYLINK: "Visa rubriken"
     UNSUBSCRIBETEXT: "Av"
@@ -128,11 +128,11 @@ sv:
     OPENIDINAME: "OpenID/i-name"
     PASSWORD: "Lösenord"
     SURNAME: "Efternamn"
-  Forum_editpost.ss:
+  Forum_editpost_ss:
     AVAILABLEBB: "Tillgängliga BB Code-taggar"
-  Forum_reply.ss:
+  Forum_reply_ss:
     AVAILABLEBB: "Tillgängliga BB Code-taggar"
-  Forum_show.ss:
+  Forum_show_ss:
     AUTHOR: "Författare"
     CLICKGOTOEND: "Klicka här för att gå till slutet av det här inlägget"
     CLICKREPLY: "Klicka för att svara"
@@ -146,7 +146,7 @@ sv:
     REPLY: "Svara"
     TOPIC: "Tråd:"
     VIEWS: "Visningar"
-  Forum_starttopic.ss:
+  Forum_starttopic_ss:
     AVAILABLEBB: "Tillgängliga BB Code-taggar"
   Post:
     DELETE: "radera"
@@ -156,10 +156,10 @@ sv:
     RESPONSE: "Sv: %s"
     SHOWLINK: "Visa tråd"
     SINGULARNAME: "Inlägg"
-  SinglePost.ss:
+  SinglePost_ss:
     ATTACHED: "Bifogade filer"
     GOTOPROFILE: "Gå till den här användarens profil"
     LASTEDITED: "Senast redigerad:"
-  TopicListing.ss:
+  TopicListing_ss:
     BY: "av"
     CLICKTOUSER: "Klicka här för att visa"

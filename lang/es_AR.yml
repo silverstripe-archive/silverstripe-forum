@@ -26,7 +26,7 @@ es_AR:
     SINGULARNAME: "Foro"
     SUBSCRIBETOPIC: "Suscribe a este tema (Recibir notificaciones por email cuando una respuesta es agregada)"
     YES: "Sí"
-  Forum.ss:
+  Forum_ss:
     ANNOUNCEMENTS: "Anuncios"
     GOTOTHISTOPIC: "Ir al tema %s"
     LASTPOST: "Última Entrada"
@@ -38,18 +38,18 @@ es_AR:
     PREVLNK: "Página Previa"
     READONLYFORUM: "Este For es de sólo lectura. No puedes responder a los emnsajes o comenzar nuevos hilos."
     TOPIC: "Tema"
-  ForumAdmin_right.ss:
+  ForumAdmin_right_ss:
     EDITPAGE: "Editar Página"
     WELCOME: "¡Bienvenido a %s! Por favor elije hacer click en alguna de las entradas ubicadas en el panel izquierdo."
   ForumCategory:
     PLURALNAME: "Categorías de Foro"
     SINGULARNAME: "Categoría de Foro"
-  ForumFooter.ss:
+  ForumFooter_ss:
     CURRENTLYON: "Actualmente en Línea:"
     ISONLINE: "está en línea"
     LATESTMEMBER: "Bienvenido a nuestro último miembro:"
     NOONLINE: "No hay nadie en línea."
-  ForumHeader.ss:
+  ForumHeader_ss:
     BY: "por"
     IN: "en"
     JUMPTO: "Saltar a:"
@@ -63,16 +63,16 @@ es_AR:
     SEARCHEDFOR: "Tu has buscado por '%s'."
     SEARCHRESULTS: "Resultado de la búsqueda"
     SINGULARNAME: "Soporte de Foro"
-  ForumHolder.ss:
+  ForumHolder_ss:
     FORUM: "Foro"
     FORUMS: "Foros"
     LASTPOST: "Última Entrada"
     POSTS: "Entradas"
     THREADS: "Hilos"
-  ForumHolder_search.ss:
+  ForumHolder_search_ss:
     NORESULTS: "No hay ningún resultado para esa(s) palabra(s)"
     PAGE: "Página:"
-  ForumLogin.ss:
+  ForumLogin_ss:
     LOGGEDINAS: "Has ingresado como"
     LOGIN: "Acceso"
     LOGINEXPLICATION: "Haz click aquí para ingresar"
@@ -107,7 +107,7 @@ es_AR:
     UNEXPECTEDERROR: "Ha ocurrido un error inesperado. Por favor intenta nuevamente o registrate sin OpenID"
     USERPROFILE: "Perfil de usuario"
     WRONGPERMISSION: "Tu no tienes permisos como para editar ese miembro."
-  ForumMemberProfile_show.ss:
+  ForumMemberProfile_show_ss:
     AVATAR: "Avatar"
     COUNTRY: "País"
     EMAIL: "Email"
@@ -122,11 +122,11 @@ es_AR:
     PROFILE: "Perfil"
     SURNAME: "Apellido"
     USERSAVATAR: "su avatar"
-  ForumMember_ForgotNicknameEmail.ss:
+  ForumMember_ForgotNicknameEmail_ss:
     HI: "Hola,"
     MESSAGE: "Aquí tienes tu nombre de usuario para <a href=\"inicio/\">%s</a>."
     USERNAME: "Usuario:"
-  ForumMember_TopicNotification.ss:
+  ForumMember_TopicNotification_ss:
     HI: "Hola %s,"
     NEWPOSTMESSAGE: "Se ha agregado una nueva entrada en un tema al cual usted esta subscrito."
     REPLYLINK: "Ver el tema"
@@ -150,11 +150,11 @@ es_AR:
     RATING: "Rating de usuario"
     SURNAME: "Apellido"
     TRANSFERSUCCEEDED: "La transferencia de datos ha sido con éxito. Sin embargo, para completarla, debes eliminar la tabla de Miembros del Foro. Para hacer esto, ejecuta la consulta \"DROP TABLE 'ForumMember'\"."
-  Forum_editpost.ss:
+  Forum_editpost_ss:
     AVAILABLEBB: "Etiquetas disponibles de Código BB"
-  Forum_reply.ss:
+  Forum_reply_ss:
     AVAILABLEBB: "Etiquetas disponibles de Código BB"
-  Forum_show.ss:
+  Forum_show_ss:
     AUTHOR: "Autor"
     CLICKGOTOEND: "Hacer click aquí para ir al fin de esta entrada"
     CLICKGOTOTOP: "Hacer click aquí para ir al tope de esta entrada"
@@ -169,7 +169,7 @@ es_AR:
     REPLY: "Responder"
     TOPIC: "Tema:"
     VIEWS: "Vistas"
-  Forum_starttopic.ss:
+  Forum_starttopic_ss:
     AVAILABLEBB: "Etiquetas Disponibles de Código BB"
   Post:
     DELETE: "eliminar"
@@ -180,11 +180,11 @@ es_AR:
     RESPONSE: "Re: %s"
     SHOWLINK: "Mostra Hilo"
     SINGULARNAME: "Entrada"
-  SinglePost.ss:
+  SinglePost_ss:
     ATTACHED: "Archivos Adjuntos"
     GOTOPROFILE: "Ir al Perfil de este Usuario"
     LASTEDITED: "Último editado:"
-  TopicListing.ss:
+  TopicListing_ss:
     BY: "por"
     CLICKTOUSER: "Hacer click aquí para ver"
     GOTOFIRSTUNREAD: "Ir hasta la primera entrada sin leer en el tema %s."

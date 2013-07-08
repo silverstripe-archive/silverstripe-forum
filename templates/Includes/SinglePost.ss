@@ -1,16 +1,16 @@
 <div id="post{$ID}" class="forum-post">
 	<div class="user-info">
 		<% with Author %>
-			<a class="author-link" href="$Link" title="<% _t('GOTOPROFILE','Go to this User&rsquo;s Profile') %>">$Nickname</a><br />
+			<a class="author-link" href="$Link" title="<% _t('SinglePost_ss.GOTOPROFILE','Go to this User&rsquo;s Profile') %>">$Nickname</a><br />
 		
 			<img class="avatar" src="$FormattedAvatar" alt="Avatar" /><br />
 			<% if ForumRank %><span class="forum-rank">$ForumRank</span><br /><% end_if %>
 			<% if NumPosts %>
 				<span class="post-count">$NumPosts 
 				<% if NumPosts = 1 %>
-					<% _t('POST', 'Post') %>
+					<% _t('SinglePost_ss.POST', 'Post') %>
 				<% else %>
-					<% _t('POSTS', 'Posts') %>
+					<% _t('SinglePost_ss.POSTS', 'Posts') %>
 				<% end_if %>
 				</span>
 			<% end_if %>
@@ -27,7 +27,7 @@
 		<h4><a href="$Link">$Title <img src="forum/images/right.png" alt="Link to this post" title="Link to this post" /></a></h4>
 		<p class="post-date">$Created.Long at $Created.Time
 		<% if Updated %>
-			<strong><% _t('LASTEDITED','Last edited:') %> $Updated.Long <% _t('AT') %> $Updated.Time</strong>
+			<strong><% _t('SinglePost_ss.LASTEDITED','Last edited:') %> $Updated.Long <% _t('SinglePost_ss.AT') %> $Updated.Time</strong>
 		<% end_if %></p>
 		
 		<% if EditLink || DeleteLink %>
@@ -61,7 +61,7 @@
 
 		<% if Attachments %>
 			<div class="attachments">
-				<strong><% _t('ATTACHED','Attached Files') %></strong> 
+				<strong><% _t('SinglePost_ss.ATTACHED','Attached Files') %></strong> 
 				<ul class="post-attachments">
 				<% loop Attachments %>
 					<li>

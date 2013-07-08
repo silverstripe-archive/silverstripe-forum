@@ -43,7 +43,7 @@ cs:
     SINGULARNAME: "Fórum"
     SUBSCRIBETOPIC: "Přihlásit se k odběru tohoto tématu (Obdržíte oznámení emailem jakmile bude přidána nová odpověď)"
     YES: "Ano"
-  Forum.ss:
+  Forum_ss:
     ANNOUNCEMENTS: "Oznámení"
     GOTOTHISTOPIC: "Přrjít na téma %s"
     LASTPOST: "Poslední příspěvek"
@@ -57,18 +57,18 @@ cs:
     READONLYFORUM: "Tato diskuze je pouze pro čtení . Nemůžete přidávat příspěvky nebo zakládat nové témata"
     THREADS: "Témata"
     TOPIC: "Téma"
-  ForumAdmin_right.ss:
+  ForumAdmin_right_ss:
     EDITPAGE: "Změnit stranu"
     WELCOME: "Vítejte v %s! Prosím zvolte jednu z možností v levém panelu"
   ForumCategory:
     PLURALNAME: "Kategorie fóra"
     SINGULARNAME: "Kategorie fóra"
-  ForumFooter.ss:
+  ForumFooter_ss:
     CURRENTLYON: "Právě připojeni:"
     ISONLINE: "je připojen"
     LATESTMEMBER: "Přivítejte našeho nejnovějšího člena:"
     NOONLINE: "Nyní není nikdo připojen."
-  ForumHeader.ss:
+  ForumHeader_ss:
     BY: "zaslal"
     IN: "v"
     JUMPTO: "Skočit do:"
@@ -85,14 +85,14 @@ cs:
     SEARCHEDFOR: "Hledali jste '%s'."
     SEARCHRESULTS: "Výsledky vyhledávání"
     SINGULARNAME: "Forum Holder"
-  ForumHolder.ss:
+  ForumHolder_ss:
     ANNOUNCEMENTS: "Oznámení"
     FORUM: "Fórum"
     FORUMS: "Fóra"
     LASTPOST: "Poslední příspěvek"
     POSTS: "Příspěvků"
     THREADS: "Vlákna"
-  ForumHolder_memberlist.ss:
+  ForumHolder_memberlist_ss:
     COUNTRY: "Země"
     FORUMPOSTS: "Příspěvky diskuze"
     JOINED: "Přidal se"
@@ -103,7 +103,7 @@ cs:
     ORDERBYNAME: "Seřazeno podle Jména"
     ORDERBYPOSTS: "Seřazeno podle Přispěvku"
     PREV: "Předchozí"
-  ForumHolder_popularthreads.ss:
+  ForumHolder_popularthreads_ss:
     DATECREATED: "Vytvořeno"
     NEXT: "Další"
     NUMVIEWS: "Počet zobrazení"
@@ -113,7 +113,7 @@ cs:
     SORTTHREADSBY: "Seřadit příspěvky podle:"
     TITLE: "Název"
     VIEWS: "Počet pohledů"
-  ForumHolder_search.ss:
+  ForumHolder_search_ss:
     DATE: "Datum"
     NORESULTS: "Pro tento výraz zde nejsou žádné výsledky"
     Next: "Další"
@@ -127,7 +127,7 @@ cs:
     RSSFEED: "RSS Kanál"
     THREAD: "Vlákno"
     TITLE: "Název"
-  ForumLogin.ss:
+  ForumLogin_ss:
     ANONYMOUS: "Anonymous"
     LOGGEDINAS: "Jste přihlášen(a) jako"
     LOGIN: "Přihlášení"
@@ -163,10 +163,10 @@ cs:
     UNEXPECTEDERROR: "Nastala neočekávaná chyba. Prosíme, zkuste to znovu, nebo se registrujte bez OpenID"
     USERPROFILE: "Uživatelský profil"
     WRONGPERMISSION: "Nemáte práva pro editaci tohoto člena."
-  ForumMemberProfile_register.ss:
+  ForumMemberProfile_register_ss:
     LOGOUT: "Odhlásit"
     PLEASELOGOUT: "Prosím odhlašte se pred registrací"
-  ForumMemberProfile_show.ss:
+  ForumMemberProfile_show_ss:
     AVATAR: "Obrázek"
     CITY: "Město"
     COMPANY: "Společnost"
@@ -183,11 +183,11 @@ cs:
     PROFILE: "Profil"
     SURNAME: "Příjmení"
     USERSAVATAR: " Obrázek"
-  ForumMember_ForgotNicknameEmail.ss:
+  ForumMember_ForgotNicknameEmail_ss:
     HI: "Ahoj,"
     MESSAGE: "Zde je tvé uživatelské jméno pro <a href=\"home/\">%s</a>."
     USERNAME: "Uživatelské jméno:"
-  ForumMember_NotifyModerator.ss:
+  ForumMember_NotifyModerator_ss:
     BY: "by"
     DATEON: "on"
     HI: "Hi %s,"
@@ -196,7 +196,7 @@ cs:
     MODERATORNEWTHREADMESSAGE: "New forum thread has been started"
     MODERATORNOTE: "NOTE: This is an automated email sent to all moderators of this forum."
     MODERATORSIGNOFF: "Yours truly,\nThe Forum Robot."
-  ForumMember_TopicNotification.ss:
+  ForumMember_TopicNotification_ss:
     BY: "zaslal"
     HI: "Ahoj %s,"
     NEWPOSTMESSAGE: "Byl vložen nový příspěvek k tématu, který odebíráte"
@@ -234,7 +234,7 @@ cs:
     PLURALNAME: "Forum Threads"
     # 50
     SINGULARNAME: "Forum Thread"
-  ForumThreadSubscribe.ss:
+  ForumThreadSubscribe_ss:
     CLICKSUBSCRIBE: "Click here to subscribe to this topic"
     CLICKUNSUBSCRIBE: "Click here to Unsubscribe to this topic"
     SUBSCRIBE: "Subscribe"
@@ -244,11 +244,11 @@ cs:
     PLURALNAME: "Forum Thread Subscriptions"
     # 50
     SINGULARNAME: "Forum Thread Subscription"
-  Forum_editpost.ss:
+  Forum_editpost_ss:
     AVAILABLEBB: "Dostupné BB tagy"
-  Forum_reply.ss:
+  Forum_reply_ss:
     AVAILABLEBB: "Dostupné BB tagy"
-  Forum_show.ss:
+  Forum_show_ss:
     AUTHOR: "Autor"
     CLICKGOTOEND: "Klikněte zde pro přechod na konec tohoto příspěvku"
     CLICKGOTOTOP: "Klikněte zde pro přechod na začátek tohoto příspěvku"
@@ -263,7 +263,7 @@ cs:
     REPLY: "Odpověď"
     TOPIC: "Téma"
     VIEWS: "Zobrazení"
-  Forum_starttopic.ss:
+  Forum_starttopic_ss:
     AVAILABLEBB: "Dostupné BB tagy"
   Post:
     DELETE: "Odstranit"
@@ -278,7 +278,7 @@ cs:
   Post_Attachment:
     PLURALNAME: "Soubory"
     SINGULARNAME: "Soubor"
-  SinglePost.ss:
+  SinglePost_ss:
     ATTACHED: "Přiložené soubory"
     CLICKREPLY: "Klikni pro odpověď"
     GOTOPROFILE: "Přejít na tento uživatelský profil"
@@ -286,7 +286,7 @@ cs:
     POST: "Post"
     POSTS: "Posts"
     REPLY: "Odpověďet"
-  TopicListing.ss:
+  TopicListing_ss:
     BY: "napsal"
     CLICKTOUSER: "Pro zobrazení klikněte zde"
     GOTOFIRSTUNREAD: "Přejít na první nepřečtený článek k tématu %s."

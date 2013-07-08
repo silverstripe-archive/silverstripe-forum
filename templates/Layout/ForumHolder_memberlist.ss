@@ -3,10 +3,10 @@
 		
 		<table id="MembersList">
 			<tr class="head">
-				<th><a href="{$URLSegment}/memberlist/?order=name" title="<% _t('ORDERBYNAME', 'Order by Name') %>"><% _t('MEMBERNAME', 'Member Name') %>:</a></th>
-				<th><a href="{$URLSegment}/memberlist/?order=country" title="<% _t('ORDERBYCOUNTRY', 'Order by Country') %>"><% _t('COUNTRY', 'Country') %>:</a></th>
-				<th><a href="{$URLSegment}/memberlist/?order=posts" title="<% _t('ORDERBYPOSTS', 'Order by Posts') %>"><% _t('FORUMPOSTS', 'Forum Posts') %>:</a></th>
-				<th><a href="{$URLSegment}/memberlist/?order=joined" title="<% _t('ORDERBYJOINED', 'Order by Joined') %>"><% _t('JOINED', 'Joined') %>:</a></th>
+				<th><a href="{$URLSegment}/memberlist/?order=name" title="<% _t('ForumHolder_memberlist_ss.ORDERBYNAME', 'Order by Name') %>"><% _t('ForumHolder_memberlist_ss.MEMBERNAME', 'Member Name') %>:</a></th>
+				<th><a href="{$URLSegment}/memberlist/?order=country" title="<% _t('ForumHolder_memberlist_ss.ORDERBYCOUNTRY', 'Order by Country') %>"><% _t('ForumHolder_memberlist_ss.COUNTRY', 'Country') %>:</a></th>
+				<th><a href="{$URLSegment}/memberlist/?order=posts" title="<% _t('ForumHolder_memberlist_ss.ORDERBYPOSTS', 'Order by Posts') %>"><% _t('ForumHolder_memberlist_ss.FORUMPOSTS', 'Forum Posts') %>:</a></th>
+				<th><a href="{$URLSegment}/memberlist/?order=joined" title="<% _t('ForumHolder_memberlist_ss.ORDERBYJOINED', 'Order by Joined') %>"><% _t('ForumHolder_memberlist_ss.JOINED', 'Joined') %>:</a></th>
 			</tr>
 			
 			<% loop Members %>
@@ -23,7 +23,7 @@
 			<div id="ForumMembersPagination">
 				<p>
 					<% if Members.NotFirstPage %>
-						<a class="prev" href="$Members.PrevLink" title="View the previous page"><% _t('PREV', 'Prev') %></a>
+						<a class="prev" href="$Members.PrevLink" title="View the previous page"><% _t('ForumHolder_memberlist_ss.PREV', 'Prev') %></a>
 					<% end_if %>
 				
 					<span>
@@ -41,7 +41,7 @@
 					</span>
 				
 					<% if Members.NotLastPage %>
-						<a class="next" href="$Members.NextLink" title="View the next page"><% _t('NEXT', 'Next') %></a>
+						<a class="next" href="$Members.NextLink" title="View the next page"><% _t('ForumHolder_memberlist_ss.NEXT', 'Next') %></a>
 					<% end_if %>
 				</p>
 			</div>

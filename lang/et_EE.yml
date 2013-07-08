@@ -26,7 +26,7 @@ et_EE:
     SINGULARNAME: "Foorum"
     SUBSCRIBETOPIC: "Telli muudatuste teavitus (saadame teile emaili kui siia teemase tehakse uus postitus)"
     YES: "Jah"
-  Forum.ss:
+  Forum_ss:
     ANNOUNCEMENTS: "Teadaanded"
     GOTOTHISTOPIC: "Mine %s teema juurde"
     LASTPOST: "Viimane postitus"
@@ -38,18 +38,18 @@ et_EE:
     PREVLNK: "Eelmine lehekülg"
     READONLYFORUM: "See foorum on ainult lugemiseks. Sa ei saa siia postitada või vastat postitustele."
     TOPIC: "Teema"
-  ForumAdmin_right.ss:
+  ForumAdmin_right_ss:
     EDITPAGE: "Muuda lehte"
     WELCOME: "Tere tulemast %s! Palun vali sisu vaatamiseks valik vasakult menüüst"
   ForumCategory:
     PLURALNAME: "Forumi kategooriad"
     SINGULARNAME: "Forumi kategooria"
-  ForumFooter.ss:
+  ForumFooter_ss:
     CURRENTLYON: "Hetkel sisseloginud kasutajad:"
     ISONLINE: "on sisse logitud"
     LATESTMEMBER: "Tere tulemast viimati registreerunud kasutaja:"
     NOONLINE: "Keegi pole hetkel sisse loginud"
-  ForumHeader.ss:
+  ForumHeader_ss:
     BY: "-"
     IN: "-"
     JUMPTO: "Hüppa edasi:"
@@ -63,16 +63,16 @@ et_EE:
     SEARCHEDFOR: "Sa otsisid - '%s'."
     SEARCHRESULTS: "Otsingu tulemused"
     SINGULARNAME: "Foorumi omanik"
-  ForumHolder.ss:
+  ForumHolder_ss:
     FORUM: "Foorum"
     FORUMS: "Foorumid"
     LASTPOST: "Viimane postitus"
     POSTS: "Postitused"
     THREADS: "postitused"
-  ForumHolder_search.ss:
+  ForumHolder_search_ss:
     NORESULTS: "Ei leidnud vastet sellele otsingule"
     PAGE: "Lehekülg:"
-  ForumLogin.ss:
+  ForumLogin_ss:
     LOGGEDINAS: "Oled sisselogitud kui"
     LOGIN: "Logi sisse"
     LOGINEXPLICATION: "Vajuta siia et sisse logida"
@@ -107,7 +107,7 @@ et_EE:
     UNEXPECTEDERROR: "Ootamatu viga. Palun proovi uuesti või registreeri end ilma OpenID-ta"
     USERPROFILE: "Kasutaja profiil"
     WRONGPERMISSION: "Sulle ei ole piisavalt õigusi, et selle kasutaja anmeid muuta."
-  ForumMemberProfile_show.ss:
+  ForumMemberProfile_show_ss:
     AVATAR: "Avatar"
     COUNTRY: "Riik"
     EMAIL: "E-post"
@@ -122,11 +122,11 @@ et_EE:
     PROFILE: "Profiil"
     SURNAME: "Perekonnanimi"
     USERSAVATAR: "&#39;s Avatar"
-  ForumMember_ForgotNicknameEmail.ss:
+  ForumMember_ForgotNicknameEmail_ss:
     HI: "Tere, "
     MESSAGE: "Teie kasutajanimi <a href=\"home/\">%s</a> jaoks."
     USERNAME: "Kasutajanimi:"
-  ForumMember_TopicNotification.ss:
+  ForumMember_TopicNotification_ss:
     HI: "Tere %s,"
     NEWPOSTMESSAGE: "Uus postitus on lisatud teemale kuhu olete teavituse tellinud"
     REPLYLINK: "Vaata teemat"
@@ -150,11 +150,11 @@ et_EE:
     RATING: "Kasutaja tase"
     SURNAME: "Perekonnanimi"
     TRANSFERSUCCEEDED: "Andmeedastus on õnnestunud. Ent selleks, et täita seda, peate kustutada ForumMember tabelis. Selleks, teostada uuringut \"DROP TABLE 'ForumMember\"."
-  Forum_editpost.ss:
+  Forum_editpost_ss:
     AVAILABLEBB: "Saada olevad BB koodi vidinad"
-  Forum_reply.ss:
+  Forum_reply_ss:
     AVAILABLEBB: "Saada olevad BB koodi vidinad"
-  Forum_show.ss:
+  Forum_show_ss:
     AUTHOR: "Autor"
     CLICKGOTOEND: "Vajuta siia, et minna postituse lõppu"
     CLICKGOTOTOP: "Tagasi selle postituse ülemisse otsa"
@@ -169,7 +169,7 @@ et_EE:
     REPLY: "Vasta"
     TOPIC: "Teema:"
     VIEWS: "Vaatamisi"
-  Forum_starttopic.ss:
+  Forum_starttopic_ss:
     AVAILABLEBB: "Saadaolevad BB Koodi Vidinad"
   Post:
     DELETE: "Kustuta"
@@ -180,11 +180,11 @@ et_EE:
     RESPONSE: "Re: %s"
     SHOWLINK: "Näita juhtlõnga"
     SINGULARNAME: "Postitus"
-  SinglePost.ss:
+  SinglePost_ss:
     ATTACHED: "juurde lisatud falid"
     GOTOPROFILE: "Mine kasutaja profiililehele"
     LASTEDITED: "Viimati muudetud:"
-  TopicListing.ss:
+  TopicListing_ss:
     BY: "-"
     CLICKTOUSER: "Vaatamiseks vajuta siia"
     GOTOFIRSTUNREAD: "Mine esimese lugemata postituse juurde %s teemas"

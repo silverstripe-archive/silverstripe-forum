@@ -22,7 +22,7 @@ pl:
     RSSFORUMS: "Wiadomości na wszystkich forach"
     SUBSCRIBETOPIC: "Śledź ten wątek (system będzie wysyłał do Ciebie e-mail, gdy w wątku pojawi się nowa wiadomość)"
     YES: "Tak"
-  Forum.ss:
+  Forum_ss:
     LASTPOST: "Ostatni Post"
     NEWTOPIC: "Kliknij tutaj, aby rozpocząć nowy wątek."
     NEWTOPICIMAGE: "Nowy Temat"
@@ -32,14 +32,14 @@ pl:
     PREVLNK: "Poprzednia Strona"
     READONLYFORUM: "To jest forum tylko do odczytu. Nie możesz odpowiadać na wiadomości ani wysyłać nowych wątków."
     TOPIC: "Temat"
-  ForumAdmin_right.ss:
+  ForumAdmin_right_ss:
     EDITPAGE: "Edytuj Stronę"
-  ForumFooter.ss:
+  ForumFooter_ss:
     CURRENTLYON: "Aktualnie Online:"
     ISONLINE: "jest online"
     LATESTMEMBER: "Witamy najnowszego użytkownika:"
     NOONLINE: "Nie ma nikogo online."
-  ForumHeader.ss:
+  ForumHeader_ss:
     BY: "przez"
     IN: "w"
     JUMPTO: "Przejdź do:"
@@ -51,14 +51,14 @@ pl:
   ForumHolder:
     SEARCHEDFOR: "Szukałeś '%s'."
     SEARCHRESULTS: "Wyniki wyszukiwania"
-  ForumHolder.ss:
+  ForumHolder_ss:
     FORUM: "Forum"
     LASTPOST: "Ostatni Post"
     POSTS: "Posty"
     THREADS: "Wątki"
-  ForumHolder_search.ss:
+  ForumHolder_search_ss:
     PAGE: "Strona:"
-  ForumLogin.ss:
+  ForumLogin_ss:
     LOGGEDINAS: "Jesteś zalogowany jako"
     LOGIN: "Login"
     LOGINEXPLICATION: "Zaloguj się"
@@ -91,7 +91,7 @@ pl:
     UNEXPECTEDERROR: "Wystąpił niespodziewany błąd. Proszę spróbować ponownie, bądź zrezygnować z wykorzystania OpenID podczas rejestracji."
     USERPROFILE: "Profil Użytkownika"
     WRONGPERMISSION: "Nie masz wystarczających uprawnień, aby modyfikować dane tego użytkownika."
-  ForumMemberProfile_show.ss:
+  ForumMemberProfile_show_ss:
     AVATAR: "Avatar"
     COUNTRY: "Państwo"
     EMAIL: "Email"
@@ -106,11 +106,11 @@ pl:
     PROFILE: "Profil"
     SURNAME: "Nazwisko"
     USERSAVATAR: "&#39;s avatar"
-  ForumMember_ForgotNicknameEmail.ss:
+  ForumMember_ForgotNicknameEmail_ss:
     HI: "Witaj,"
     MESSAGE: "Oto Twoja nazwa użytkownika dla <a href=\"home/\">%s</a>."
     USERNAME: "Nazwa  użytkownika:"
-  ForumMember_TopicNotification.ss:
+  ForumMember_TopicNotification_ss:
     HI: "Witaj %s,"
     NEWPOSTMESSAGE: "Nowa wiadomość pojawiła się w śledzonym przez Ciebie wątku. Możesz <a href=\"%s\">zobaczyć tą wiadomość klikając tutaj.</a>"
   ForumRole:
@@ -130,11 +130,11 @@ pl:
     RATING: "Ranking użytkownika"
     SURNAME: "Nazwisko"
     TRANSFERSUCCEEDED: "Transfer danych zakończył się sukcesem. Musisz teraz skasować tabelę ForumMember. Aby to zrobić, wykonaj zapytanie SQL \"DROP TABLE 'ForumMembers'\"."
-  Forum_editpost.ss:
+  Forum_editpost_ss:
     AVAILABLEBB: "Dostępne tagi BB Code"
-  Forum_reply.ss:
+  Forum_reply_ss:
     AVAILABLEBB: "Dostępne tagi BB Code"
-  Forum_show.ss:
+  Forum_show_ss:
     AUTHOR: "Autor"
     CLICKREPLY: "Kliknij tutaj, aby odpowiedzieć"
     GOTOEND: "Przejdź do końca"
@@ -146,14 +146,14 @@ pl:
     REPLY: "Odpowiedz"
     TOPIC: "Temat:"
     VIEWS: "Wyświetlenia"
-  Forum_starttopic.ss:
+  Forum_starttopic_ss:
     AVAILABLEBB: "Dostępne tagi BBCode"
   Post:
     DELETE: "usuń"
     EDIT: "edytuj"
     POSTEDTO: "Wysłano do: %s"
     RESPONSE: "Re: %s"
-  SinglePost.ss:
+  SinglePost_ss:
     ATTACHED: "Dołączone Pliki:"
     GOTOPROFILE: "Przejdź do Profilu Użytkownika"
     LASTEDITED: "Ostatnio edytowane:"

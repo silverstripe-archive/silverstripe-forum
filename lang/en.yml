@@ -55,7 +55,7 @@ en:
     WELCOMEFORUM: 'Welcome to SilverStripe Forum Module! This is the default Forum page. You can now add topics.'
     WELCOMEFORUMHOLDER: 'Welcome to SilverStripe Forum Module! This is the default ForumHolder page. You can now add forums.'
     YES: Yes
-  Forum.ss:
+  Forum_ss:
     ANNOUNCEMENTS: Announcements
     GOTOTHISTOPIC: 'Go to the %s topic'
     LASTPOST: 'Last Post'
@@ -69,15 +69,15 @@ en:
     READONLYFORUM: 'This Forum is read only. You cannot post replies or start new threads'
     THREADS: Threads
     TOPIC: Topic
-  ForumAdmin_right.ss:
+  ForumAdmin_right_ss:
     EDITPAGE: 'Edit Page'
     WELCOME: 'Welcome to %s! Please choose click on one of the entries on the left pane.'
-  ForumFooter.ss:
+  ForumFooter_ss:
     CURRENTLYON: 'Currently Online:'
     ISONLINE: ' is online'
     LATESTMEMBER: 'Welcome to our latest member:'
     NOONLINE: 'There is nobody online.'
-  ForumHeader.ss:
+  ForumHeader_ss:
     BY: by
     IN: in
     JUMPTO: 'Jump to:'
@@ -95,14 +95,14 @@ en:
     SEARCHEDFOR: 'You searched for ''%s''.'
     SEARCHRESULTS: 'Search results'
     SINGULARNAME: 'Forum Holder'
-  ForumHolder.ss:
+  ForumHolder_ss:
     ANNOUNCEMENTS: Announcements
     FORUM: Forum
     FORUMS: Forums
     LASTPOST: 'Last Post'
     POSTS: Posts
     THREADS: Threads
-  ForumHolder_memberlist.ss:
+  ForumHolder_memberlist_ss:
     COUNTRY: Country
     FORUMPOSTS: 'Forum Posts'
     JOINED: Joined
@@ -113,7 +113,7 @@ en:
     ORDERBYNAME: 'Order by Name'
     ORDERBYPOSTS: 'Order by Posts'
     PREV: Prev
-  ForumHolder_popularthreads.ss:
+  ForumHolder_popularthreads_ss:
     DATECREATED: 'Date created'
     NEXT: Next
     NUMVIEWS: 'Number of views'
@@ -123,7 +123,7 @@ en:
     SORTTHREADSBY: 'Sort threads by:'
     TITLE: Title
     VIEWS: Views
-  ForumHolder_search.ss:
+  ForumHolder_search_ss:
     DATE: Date
     Next: Next
     ORDER: 'Order:'
@@ -136,7 +136,7 @@ en:
     RSSFEED: 'RSS Feed'
     THREAD: Thread
     TITLE: Title
-  ForumLogin.ss:
+  ForumLogin_ss:
     ANONYMOUS: Anonymous
     LOGGEDINAS: 'You''re logged in as'
     LOGIN: Login
@@ -172,10 +172,10 @@ en:
     UNEXPECTEDERROR: 'An unexpected error occured. Please try again or register without OpenID'
     USERPROFILE: 'User profile'
     WRONGPERMISSION: 'You don''t have the permission to edit that member.'
-  ForumMemberProfile_register.ss:
+  ForumMemberProfile_register_ss:
     LOGOUT: Logout
     PLEASELOGOUT: 'Please logout before you register'
-  ForumMemberProfile_show.ss:
+  ForumMemberProfile_show_ss:
     AVATAR: Avatar
     CITY: City
     COMPANY: Company
@@ -192,11 +192,11 @@ en:
     PROFILE: Profile
     SURNAME: Surname
     USERSAVATAR: '&#39;s avatar'
-  ForumMember_ForgotNicknameEmail.ss:
+  ForumMember_ForgotNicknameEmail_ss:
     HI: 'Hi,'
     MESSAGE: 'Here''s your user name for <a href="home/">%s</a>.'
     USERNAME: 'Username:'
-  ForumMember_NotifyModerator.ss:
+  ForumMember_NotifyModerator_ss:
     BY: by
     DATEON: on
     HI: 'Hi %s,'
@@ -205,7 +205,7 @@ en:
     MODERATORNEWTHREADMESSAGE: 'New forum thread has been started'
     MODERATORNOTE: 'NOTE: This is an automated email sent to all moderators of this forum.'
     MODERATORSIGNOFF: 'Yours truly,\nThe Forum Robot.'
-  ForumMember_TopicNotification.ss:
+  ForumMember_TopicNotification_ss:
     BY: by
     HI: 'Hi %s,'
     NEWPOSTMESSAGE: 'A new post has been added to a topic you''ve subscribed to'
@@ -237,14 +237,14 @@ en:
     TICK: 'Tick the fields to show in public profile'
     TRANSFERSUCCEEDED: 'The data transfer has succeeded. However, to complete it, you must delete the ForumMember table. To do this, execute the query \"DROP TABLE ''ForumMember''\".'
     UPLOADAVATAR: 'Upload avatar'
-  ForumThreadSubscribe.ss:
+  ForumThreadSubscribe_ss:
     CLICKSUBSCRIBE: 'Click here to subscribe to this topic'
     CLICKUNSUBSCRIBE: 'Click here to Unsubscribe to this topic'
     SUBSCRIBE: Subscribe
     UNSUBSCRIBE: Unsubscribe
-  Forum_BBCodeHint.ss:
+  Forum_BBCodeHint_ss:
     AVAILABLEBB: 'Available BB Code tags'
-  Forum_show.ss:
+  Forum_show_ss:
     AUTHOR: Author
     CLICKGOTOEND: 'Click here to go the end of this post'
     CLICKGOTOTOP: 'Click here to go the top of this post'
@@ -268,11 +268,11 @@ en:
     REPLYLINK: 'Post Reply'
     RESPONSE: 'Re: %s'
     SHOWLINK: 'Show Thread'
-  Post_rss.ss:
+  Post_rss_ss:
     POSTEDTO: 'Posted to:'
   RedirectorPage:
     DESCRIPTION: 'Redirects to a different internal page'
-  SinglePost.ss:
+  SinglePost_ss:
     ATTACHED: 'Attached Files'
     GOTOPROFILE: 'Go to this User&rsquo;s Profile'
     LASTEDITED: 'Last edited:'
@@ -280,7 +280,7 @@ en:
     POSTS: Posts
   SiteTree:
     DESCRIPTION: 'Generic content page'
-  TopicListing.ss:
+  TopicListing_ss:
     BY: by
     CLICKTOUSER: 'Click here to view'
     GOTOFIRSTUNREAD: 'Go to the first unread post in the %s topic.'

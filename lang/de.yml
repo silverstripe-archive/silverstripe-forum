@@ -26,7 +26,7 @@ de:
     SINGULARNAME: "Forum"
     SUBSCRIBETOPIC: "Dieses Thema abonnieren (eMail bei neuem Beitrag)"
     YES: "Ja"
-  Forum.ss:
+  Forum_ss:
     ANNOUNCEMENTS: "Ankündigungen"
     GOTOTHISTOPIC: "Gehe zum Thema %s"
     LASTPOST: "Letzter Beitrag "
@@ -38,18 +38,18 @@ de:
     PREVLNK: "Eine Seite zurück"
     READONLYFORUM: "Dieses Forum ist nur zum Lesen. Du kannst hier weder Antworten verfassen noch eine neue Diskussion anlegen."
     TOPIC: "Thema"
-  ForumAdmin_right.ss:
+  ForumAdmin_right_ss:
     EDITPAGE: "Seite bearbeiten"
     WELCOME: "Wilkommen bei %s! Bitte wählen Sie einen der Einträge aus der Linken Auswahl."
   ForumCategory:
     PLURALNAME: "Foren-Kategorien"
     SINGULARNAME: "Forumkategorie"
-  ForumFooter.ss:
+  ForumFooter_ss:
     CURRENTLYON: "Zurzeit online:"
     ISONLINE: "ist online"
     LATESTMEMBER: "Unser neuestes Mitglied:"
     NOONLINE: "Es ist niemand online."
-  ForumHeader.ss:
+  ForumHeader_ss:
     BY: "von"
     IN: "in"
     JUMPTO: "Zu Forum springen:"
@@ -63,16 +63,16 @@ de:
     SEARCHEDFOR: "Sie suchten nach '%s'."
     SEARCHRESULTS: "Suchergebnisse"
     SINGULARNAME: "Forum-Besitzer"
-  ForumHolder.ss:
+  ForumHolder_ss:
     FORUM: "Forum"
     FORUMS: "Foren"
     LASTPOST: "Letzter Beitrag"
     POSTS: "Beiträge"
     THREADS: "Diskussionen"
-  ForumHolder_search.ss:
+  ForumHolder_search_ss:
     NORESULTS: "Es gibt keine Ergebnisse zu diesem Wort / Wörtern"
     PAGE: "Seite:"
-  ForumLogin.ss:
+  ForumLogin_ss:
     LOGGEDINAS: "Angemeldet als "
     LOGIN: "Einloggen"
     LOGINEXPLICATION: "Klicke hier im Dich einzuloggen"
@@ -107,7 +107,7 @@ de:
     UNEXPECTEDERROR: "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut oder registrieren Sie sich ohne OpenID"
     USERPROFILE: "Benutzerprofil"
     WRONGPERMISSION: "Sie haben nicht die nötigen Berechtigungen um dieses Mitglied zu bearbeiten"
-  ForumMemberProfile_show.ss:
+  ForumMemberProfile_show_ss:
     AVATAR: "Avatar"
     COUNTRY: "Land"
     EMAIL: "Email"
@@ -122,11 +122,11 @@ de:
     PROFILE: "Profil"
     SURNAME: "Nachname"
     USERSAVATAR: "&#39;s Avatar"
-  ForumMember_ForgotNicknameEmail.ss:
+  ForumMember_ForgotNicknameEmail_ss:
     HI: "Hi,"
     MESSAGE: "Hier dein Nutzername für <a href=\"home/\">%s</a>"
     USERNAME: "Nutzername:"
-  ForumMember_TopicNotification.ss:
+  ForumMember_TopicNotification_ss:
     HI: "Hallo %s,"
     NEWPOSTMESSAGE: "Ein neuer Beitrag wurde zu einem ihrer abonierten Thema geschrieben."
     REPLYLINK: "Neue Themen ansehen"
@@ -150,11 +150,11 @@ de:
     RATING: "Benutzer-Bewertung"
     SURNAME: "Nachname"
     TRANSFERSUCCEEDED: "Die Datenübertragung war erfolgreich. Um diese abzuschliessen müssen Sie die Tabelle 'ForumMember' löschen. Dafür führen Sie bitte den Query \"DROP TABLE 'ForumMember'\" aus."
-  Forum_editpost.ss:
+  Forum_editpost_ss:
     AVAILABLEBB: "Verfügbare BB Code tags"
-  Forum_reply.ss:
+  Forum_reply_ss:
     AVAILABLEBB: "Verfügbare BB Code tags"
-  Forum_show.ss:
+  Forum_show_ss:
     AUTHOR: "Author"
     CLICKGOTOEND: "Klicke hier um zum ende des Beitrags zu gelangen"
     CLICKGOTOTOP: "Klicken Sie hier um zum Anfang dieses Beitrags zu springen"
@@ -169,7 +169,7 @@ de:
     REPLY: "Antworten"
     TOPIC: "Thema:"
     VIEWS: "Aufrufe"
-  Forum_starttopic.ss:
+  Forum_starttopic_ss:
     AVAILABLEBB: "Verfügbare BBCodes"
   Post:
     DELETE: "löschen"
@@ -180,11 +180,11 @@ de:
     RESPONSE: "Re: %s"
     SHOWLINK: "Zeige Thema"
     SINGULARNAME: "Beitrag"
-  SinglePost.ss:
+  SinglePost_ss:
     ATTACHED: "Anhänge"
     GOTOPROFILE: "Gehe zum Profil dieses Benutzers"
     LASTEDITED: "Zuletzt bearbeitet:"
-  TopicListing.ss:
+  TopicListing_ss:
     BY: "von"
     CLICKTOUSER: "Klicke hier zum Ansehen"
     GOTOFIRSTUNREAD: "Gehe zum ersten ungelesenem Beitrag des Themas %s"

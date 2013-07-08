@@ -26,7 +26,7 @@ ar:
     SINGULARNAME: "المنتدى"
     SUBSCRIBETOPIC: "شارك في هذا الموضوع ( تستقبل الرسائل البريدية لتنبيهك في حالة وجود ردود جديدة)"
     YES: "نعم"
-  Forum.ss:
+  Forum_ss:
     ANNOUNCEMENTS: "الإعلانات"
     GOTOTHISTOPIC: "اذهب إلى الموضوع %s"
     LASTPOST: "آخر موضوع"
@@ -38,18 +38,18 @@ ar:
     PREVLNK: "الصفحة السابقة"
     READONLYFORUM: "هذا المنتدى للقراءة فقط. لا تستطيع الرد أو كتابة موضوع جديد"
     TOPIC: "الموضوع"
-  ForumAdmin_right.ss:
+  ForumAdmin_right_ss:
     EDITPAGE: "تعديل الصفحة"
     WELCOME: "مرحباً بك في %s! فضلاً اختر أحد المدخلات من القائمة اليسرى"
   ForumCategory:
     PLURALNAME: "تصنيفات المنتدى"
     SINGULARNAME: "تصنيف المنتدى"
-  ForumFooter.ss:
+  ForumFooter_ss:
     CURRENTLYON: "المتواجدون حالياً:"
     ISONLINE: "متصل"
     LATESTMEMBER: "مرحباً بآخر الأعضاء"
     NOONLINE: "لايوجد متصل "
-  ForumHeader.ss:
+  ForumHeader_ss:
     BY: "بواسطة"
     IN: "في"
     JUMPTO: "الانتقال إلى :"
@@ -63,16 +63,16 @@ ar:
     SEARCHEDFOR: "قمت بالبحث عن '%s'"
     SEARCHRESULTS: "نتائج البحث"
     SINGULARNAME: "حاوية المنتدى"
-  ForumHolder.ss:
+  ForumHolder_ss:
     FORUM: "المنتدى"
     FORUMS: "المنتديات"
     LASTPOST: "آخر موضوع"
     POSTS: "المواضيع"
     THREADS: "الموضوعات Threads"
-  ForumHolder_search.ss:
+  ForumHolder_search_ss:
     NORESULTS: "لايوجد نتائج مطابقة لبحثك"
     PAGE: "الصفحة:"
-  ForumLogin.ss:
+  ForumLogin_ss:
     LOGGEDINAS: "أنت مسجل الدخول كـ"
     LOGIN: "الدخول"
     LOGINEXPLICATION: "اضغط هنا للدخول"
@@ -107,7 +107,7 @@ ar:
     UNEXPECTEDERROR: "حدث خطأ غير متوقع، فضلاً حاول مرة أخرى أو سجل بدون استخدام OpenID"
     USERPROFILE: "الملف الشخصي للعضو"
     WRONGPERMISSION: "لا تملك الصلاحية لتعديل بيانات هذا العضو"
-  ForumMemberProfile_show.ss:
+  ForumMemberProfile_show_ss:
     AVATAR: "الصورة الشخصية"
     COUNTRY: "الدولة"
     EMAIL: "البريد الإلكتروني"
@@ -122,11 +122,11 @@ ar:
     PROFILE: "الملف الشخصي"
     SURNAME: "اسم العائلة"
     USERSAVATAR: "الصورة الشخصية"
-  ForumMember_ForgotNicknameEmail.ss:
+  ForumMember_ForgotNicknameEmail_ss:
     HI: "أهلاً،"
     MESSAGE: "هنا الصفحة الرئيسية لاسم المستخدم<a href=\"home/\">%s</a>"
     USERNAME: "اسم المستخدم:"
-  ForumMember_TopicNotification.ss:
+  ForumMember_TopicNotification_ss:
     HI: "أهلاً %s,"
     NEWPOSTMESSAGE: "تم إضافة مشاركة جديدة إلى الموضوعالذي اشتركت فيه. تستطيع <a href=\"%s\"> مشاهدة المشاركة بالضغط هنا </a>"
     REPLYLINK: "مشاهدة الموضوع"
@@ -150,11 +150,11 @@ ar:
     RATING: "تقييم العضو"
     SURNAME: "اسم العائلة"
     TRANSFERSUCCEEDED: "The data transfer has succeeded. However, to complete it, you must delete the ForumMember table. To do this, execute the query \"DROP TABLE 'ForumMember'\"."
-  Forum_editpost.ss:
+  Forum_editpost_ss:
     AVAILABLEBB: "السماح بأكواد BB"
-  Forum_reply.ss:
+  Forum_reply_ss:
     AVAILABLEBB: "السماح بأكواد BB"
-  Forum_show.ss:
+  Forum_show_ss:
     AUTHOR: "الكاتب"
     CLICKGOTOEND: "اضغط هنا للذهاب إلى نهاية الموضوع"
     CLICKGOTOTOP: "اضغط هنا للذهاب إلى أعلى الموضوع"
@@ -169,7 +169,7 @@ ar:
     REPLY: "الرد"
     TOPIC: "الموضوع:"
     VIEWS: "المشاهدات"
-  Forum_starttopic.ss:
+  Forum_starttopic_ss:
     AVAILABLEBB: "السماح بأكواد BB"
   Post:
     DELETE: "حذف"
@@ -180,11 +180,11 @@ ar:
     RESPONSE: "إعادة إرسال:"
     SHOWLINK: "مشاهدة الموضوع"
     SINGULARNAME: "التدوينة"
-  SinglePost.ss:
+  SinglePost_ss:
     ATTACHED: "الملفات المرفقة"
     GOTOPROFILE: "إذهب إلى الملف الشخصي للعضو"
     LASTEDITED: "آخر تعديل:"
-  TopicListing.ss:
+  TopicListing_ss:
     BY: "بواسطة"
     CLICKTOUSER: "اضغط هنا للعرض"
     GOTOFIRSTUNREAD: "اذهب إلى أول تدوينة غير مقروءة في الموضوع %s"
