@@ -9,7 +9,7 @@
 
 ## Requirements
 
- * SilverStripe 3.0.1+
+ * SilverStripe 3.1.0+
  * tagfield for adding moderators (https://github.com/chillu/silverstripe-tagfield)
 
 ## Installation & Documentation
