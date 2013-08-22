@@ -34,7 +34,7 @@ en:
     LOGINTOPOSTLOGGEDIN: 'I''m sorry, but you can''t post to this forum until you''ve logged in.If you want to log in as someone else, do so below. If you''re logged in and you still can''t post, you don''t have the correct permissions to post.'
     NEWTOPIC: 'Start a new topic'
     NO: No
-    NOPOSTPERMISSION: 'I''m sorry, but you do not have permission to this edit this profile.'
+    NOPOSTPERMISSION: 'I''m sorry, but you do not have permission post to this forum.'
     PLURALNAME: Forums
     POSTSFORUMIDUPDATED: 'Forum posts forum ID added'
     POSTTOTOPIC: 'Posts to the %s topic'
@@ -268,6 +268,8 @@ en:
     REPLYLINK: 'Post Reply'
     RESPONSE: 'Re: %s'
     SHOWLINK: 'Show Thread'
+    PLURALNAME: Posts
+    SINGULARNAME: Post
   Post_rss_ss:
     POSTEDTO: 'Posted to:'
   RedirectorPage:
@@ -280,6 +282,8 @@ en:
     POSTS: Posts
   SiteTree:
     DESCRIPTION: 'Generic content page'
+    PLURALNAME: Pages
+    SINGULARNAME: Page
   TopicListing_ss:
     BY: by
     CLICKTOUSER: 'Click here to view'
@@ -294,3 +298,31 @@ en:
     MODERATORS: 'Moderators for this forum'
     MOSTPOPULARTHREADS: 'Most popular threads'
     SEARCHBREADCRUMB: Search
+  Forum.ss:
+    GOTOTHISTOPIC: 'Go to the %s topic'
+  ForumCategory:
+    PLURALNAME: 'Forum Categories'
+    SINGULARNAME: 'Forum Category'
+  ForumFooter.ss:
+    ISONLINE: ' is online'
+  ForumHolder_popularthreas_ss:
+    DATECREATED: 'Date created'
+    NEXT: Next
+    NUMVIEWS: 'Number of views'
+    POSTCOUNT: 'Post count'
+    POSTS: Posts
+    PREV: Prev
+    SORTTHREADSBY: 'Sort threads by:'
+    TITLE: Title
+    VIEWS: Views
+  ForumMember_TopicNotification.ss:
+    BY: by
+  ForumThread:
+    PLURALNAME: 'Forum Threads'
+    SINGULARNAME: 'Forum Thread'
+  ForumThread_Subscription:
+    PLURALNAME: 'Forum Thread Subscriptions'
+    SINGULARNAME: 'Forum Thread Subscription'
+  Post_Attachment:
+    PLURALNAME: Files
+    SINGULARNAME: File
