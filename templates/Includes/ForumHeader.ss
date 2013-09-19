@@ -9,7 +9,7 @@
 					<fieldset>
 						<label for="search-text"><% _t('ForumHeader_ss.SEARCHBUTTON','Search') %></label>
 						<input id="search-text" class="text active" type="text" name="Search" value="$Query.ATT" />
-						<input class="submit action" type="submit" value="<% _t('ForumHeader_ss.SEARCHBUTTON','L') %>"/>
+						<input class="submit action" type="submit" value="<% _t('ForumHeader_ss.SEARCHBUTTON','Search') %>"/>
 					</fieldset>	
 				</form>
 			</div>
