@@ -661,9 +661,12 @@ class Forum_Controller extends Page_Controller {
 	function PostMessageForm($addMode = false, $post = false) {
 		$thread = false;
 		
-		if($post) $thread = $post->Thread();
-		else if(isset($this->urlParams['ID'])) $thread = DataObject::get_by_id('ForumThread', $this->urlParams['ID']);	
-
+		if($post) {
+			$thread = $post->Thread();
+		} else if(isset($this->urlParams['ID']) && is_numeric($this->urlParams['ID'])) {
+			$thread = DataObject::get_by_id('ForumThread', $this->urlParams['ID']);
+		}
+		
 		// Check permissions
 		$messageSet = array(
 			'default' => _t('Forum.LOGINTOPOST','You\'ll need to login before you can post to that forum. Please do so below.'),
