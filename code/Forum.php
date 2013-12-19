@@ -736,6 +736,8 @@ class Forum_Controller extends Page_Controller {
 		
 		$form = new Form($this, "PostMessageForm", $fields, $actions, $required);
 
+		$this->extend('updatePostMessageForm', $form, $post);
+
 		if($post) $form->loadDataFrom($post);
 		
 		return $form;
