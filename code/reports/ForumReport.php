@@ -13,34 +13,73 @@
  * by month.
  */
 class ForumReport_MemberSignups extends SS_Report {
-	function title() {
+
+	public function title() {
 		return _t('Forum.FORUMSIGNUPS',"Forum Signups by Month");
 	}
-	function records($params = array()) {
+
+	public function columns() {
+
+		$fields = array(
+			'Month' => array(
+				'title' => 'Month'
+			),
+			'Signups' => array(
+				'title' => 'Signups'
+			)
+		);
+		return $fields;
+	}
+
+	public function sourceRecords($params, $sort, $limit) {
+
+		$returnSet = new ArrayList();
 		$members = DB::query("
-			SELECT DATE_FORMAT(\"Created\", '%Y %M') AS \"Month\", COUNT(\"Created\") AS \"NumberJoined\"
+			SELECT DATE_FORMAT(\"Created\", '%Y-%m \(%M\)') AS \"Month\", COUNT(\"Created\") AS \"NumberJoined\"
 			FROM \"Member\"
 			GROUP BY DATE_FORMAT(\"Created\", '%M %Y')
 			ORDER BY \"Created\" DESC
 		");
-		$output = array();
+
 		foreach($members->map() as $record => $value) {
-			$output[$record] = $value;
+			$do = new DataObject();
+			$do->Month = $record;
+			$do->Signups = $value;
+			$returnSet->push($do);
+			unset($do);
 		}
-		return $output;
-	
+		return $returnSet;
 	}
-	function fieldsToShow() {
+
+	/**
+	 * Update the report field export button so that correct columns are included.
+	 * 
+	 * @return GridField
+	 */
+	public function getReportField() {
+
+		$field = parent::getReportField();
+
+		$config = $field->getConfig();
+		$config->removeComponentsByType('GridFieldExportButton');
+		$config->addComponent(
+			new GridFieldExportButton(
+				'after',
+				array_combine(array_keys($this->columns()), array_keys($this->columns()))
+			)
+		);
+		$config->removeComponentsByType('GridFieldPrintButton');
+		$config->addComponent(
+			new GridFieldPrintButton(
+				'after',
+				array_combine(array_keys($this->columns()), array_keys($this->columns()))
+			)
+		);
+
+		$field->setConfig($config);
+		return $field;
 	}
-	function getHTML() {
-		$result = "<ul class=\"$this->class\">\n";
-		foreach($this->records() as $record => $value) {
-			$signups = ($value == 1) ? "Signup" : "Signups";
-			$result .= "<li>". $record . " - ". $value . ' '. $signups ."</li>";
-		}
-		$result .= "</ul>";
-		return $result;
-	}
+
 }
 
 /**
@@ -49,35 +88,70 @@ class ForumReport_MemberSignups extends SS_Report {
  * by month.
  */
 class ForumReport_MonthlyPosts extends SS_Report {
-	function title() {
+
+	public function title() {
 		return _t('Forum.FORUMMONTHLYPOSTS',"Forum Posts by Month");
 	}
-	
-	function records($params = array()) {
+
+	public function columns() {
+
+		$fields = array(
+			'Month' => array(
+				'title' => 'Month'
+			),
+			'Posts' => array(
+				'title' => 'Posts'
+			)
+		);
+		return $fields;
+	}
+
+	public function sourceRecords($params, $sort, $limit) {
+
+		$returnSet = new ArrayList();
 		$members = DB::query("
-			SELECT DATE_FORMAT(\"Created\", '%Y %M') AS \"Month\", COUNT(\"Created\") AS \"PostsTotal\"
+			SELECT DATE_FORMAT(\"Created\", '%Y-%m \(%M\)') AS \"Month\", COUNT(\"Created\") AS \"PostsTotal\"
 			FROM \"Post\"
 			GROUP BY DATE_FORMAT(\"Created\", '%M %Y')
 			ORDER BY \"Created\" DESC
 		");
-		$output = array();
 		foreach($members->map() as $record => $value) {
-			$output[$record] = $value;
+			$do = new DataObject();
+			$do->Month = $record;
+			$do->Posts = $value;
+			$returnSet->push($do);
+			unset($do);
 		}
-		return $output;
+		return $returnSet;
+	}
 
+	/**
+	 * Update the report field export button so that correct columns are included.
+	 * 
+	 * @return GridField
+	 */
+	public function getReportField() {
+
+		$field = parent::getReportField();
+
+		$config = $field->getConfig();
+		$config->removeComponentsByType('GridFieldExportButton');
+		$config->addComponent(
+			new GridFieldExportButton(
+				'after',
+				array_combine(array_keys($this->columns()), array_keys($this->columns()))
+			)
+		);
+		$config->removeComponentsByType('GridFieldPrintButton');
+		$config->addComponent(
+			new GridFieldPrintButton(
+				'after',
+				array_combine(array_keys($this->columns()), array_keys($this->columns()))
+			)
+		);
+
+		$field->setConfig($config);
+		return $field;
 	}
-	
-	function fieldsToShow() {
-	}
-	
-	function getHTML() {
-		$result = "<ul class=\"$this->class\">\n";
-		foreach($this->records() as $record => $value) {
-			$signups = ($value == 1) ? "Post" : "Posts";
-			$result .= "<li>". $record . " - ". $value . ' '. $signups ."</li>";
-		}
-		$result .= "</ul>";
-		return $result;
-	}
+
 }
