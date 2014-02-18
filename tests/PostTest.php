@@ -4,6 +4,10 @@ class PostTest extends FunctionalTest {
 	
 	static $fixture_file = "forum/tests/ForumTest.yml";
 
+	// fixes permission issues with these tests, we don't need to test versioning anyway.
+	// without this, SiteTree::canView() would always return false even though CanViewType == Anyone.
+	static $use_draft_site = true;
+
 	function testPermissions() {
 		$member1 = $this->objFromFixture('Member', 'test1');
 		$member2 = $this->objFromFixture('Member', 'test2');

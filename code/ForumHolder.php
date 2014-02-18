@@ -286,7 +286,7 @@ class ForumHolder extends Page {
 		$holder = $this;
 
 		if($this->getShowInCategories()) {
-	 		return ForumCategory::get()
+			return ForumCategory::get()
 				->filter('ForumHolderID', $this->ID)
 				->filterByCallback(function($category) use ($categoryText, $holder) {
 					// Don't include if we've specified a Category, and it doesn't match this one
@@ -391,14 +391,12 @@ class ForumHolder extends Page {
 			->leftJoin('ForumThread', 'Post.ThreadID = ForumThread.ID')
 			->leftJoin(ForumHolder::baseForumTable(), 'ForumPage.ID = ForumThread.ForumID', 'ForumPage')
 			->limit($limit)
-			->sort('Post.ID', 'DESC');
-		foreach ($filter as $value) {
-			$posts->where($value);
-		}
+			->sort('Post.ID', 'DESC')
+			->where($filter);
 		
 		$recentPosts = new ArrayList();
 		foreach ($posts as $post) {
-			$recentPosts->Push($post);
+			$recentPosts->push($post);
 		}
 		if ($recentPosts->count() > 0 ) {
 			return $recentPosts;

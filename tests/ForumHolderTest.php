@@ -6,7 +6,14 @@
 class ForumHolderTest extends FunctionalTest {
 	
 	static $fixture_file = "forum/tests/ForumTest.yml";
-	
+
+	public function setUp() {
+		parent::setUp();
+
+		// these assertions assume we're logged in with full permissions
+		$this->logInWithPermission('ADMIN');
+	}
+
 	/**
 	 * Tests around multiple forum holders, to ensure that given a forum holder, methods only retrieve
 	 * categories and forums relevant to that holder.
@@ -16,7 +23,7 @@ class ForumHolderTest extends FunctionalTest {
 	function testGetForums() {
 		$fh = $this->objFromFixture("ForumHolder", "fh");
 		$fh_controller = new ForumHolder_Controller($fh);
-		
+
 		// one forum which is viewable.
 		$this->assertEquals('1', $fh_controller->Forums()->Count(), "Forum holder has 1 forum");
 
