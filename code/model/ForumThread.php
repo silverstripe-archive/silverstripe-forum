@@ -297,10 +297,11 @@ class ForumThread_Subscription extends DataObject {
 
 				// Get the members details
 				$member = DataObject::get_one("Member", "\"Member\".\"ID\" = '$SQL_id'");
-				
+				$adminEmail = Config::inst()->get('Email', 'admin_email');
+
 				if($member) {
 					$email = new Email();
-					$email->setFrom(Email::getAdminEmail());
+					$email->setFrom($adminEmail);
 					$email->setTo($member->Email);
 					$email->setSubject('New reply for ' . $post->Title);
 					$email->setTemplate('ForumMember_TopicNotification');

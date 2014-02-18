@@ -298,8 +298,10 @@ class ForumRole extends DataExtension {
 	 */
 	function getFormattedAvatar() {
 		$default = "forum/images/forummember_holder.gif";
-		if(file_exists('themes/'. SSViewer::current_theme().'_forum/images/forummember_holder.gif')) {
-			$default = 'themes/'. SSViewer::current_theme().'_forum/images/forummember_holder.gif';
+		$currentTheme = Config::inst()->get('SSViewer', 'theme');
+
+		if(file_exists('themes/' . $currentTheme . '_forum/images/forummember_holder.gif')) {
+			$default = 'themes/' . $currentTheme . '_forum/images/forummember_holder.gif';
 		}
 		// if they have uploaded an image
 		if($this->owner->AvatarID) {
@@ -329,10 +331,12 @@ class ForumRole extends DataExtension {
 	 */
 	function ForumSuspensionMessage() {
 		$msg = _t('ForumRole.SUSPENSIONNOTE', 'This forum account has been suspended.');
-		if(Email::getAdminEmail()) {
+		$adminEmail = Config::inst()->get('Email', 'admin_email');
+
+		if($adminEmail) {
 			$msg .= ' ' . sprintf(
 				_t('ForumRole.SUSPENSIONEMAILNOTE', 'Please contact %s to resolve this issue.'),
-				Email::getAdminEmail()
+				$adminEmail
 			);
 		}
 		return $msg;

@@ -12,12 +12,12 @@ class ForumCountryDropdownField extends DropdownField {
 	/**
 	 * @var bool - Should we default the dropdown to the region determined from the user's locale?
 	 */
-	static $default_to_locale = true;
+	private static $default_to_locale = true;
 
 	/**
 	 * @var string - The region code to default to if default_to_locale is set to false, or we can't determine a region from a locale
 	 */
-	static $default_country = 'NZ';
+	private static $default_country = 'NZ';
 
 	/**
 	 * Get the locale of the Member, or if we're not logged in or don't have a locale, use the default one

@@ -957,8 +957,10 @@ class Forum_Controller extends Page_Controller {
 		if($moderators && $moderators->exists()) {
 			foreach($moderators as $moderator){
 				if($moderator->Email){
+					$adminEmail = Config::inst()->get('Email', 'admin_email');
+
 					$email = new Email();
-					$email->setFrom(Email::getAdminEmail());
+					$email->setFrom($adminEmail);
 					$email->setTo($moderator->Email);
 					if($starting_thread){
 						$email->setSubject('New thread "' . $thread->Title . '" in forum ['. $this->Title.']');

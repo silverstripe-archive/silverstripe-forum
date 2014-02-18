@@ -323,7 +323,10 @@ class ForumTest extends FunctionalTest {
 				'action_doPostMessageForm' => 1
 			)
 		);
-		$this->assertEmailSent('test3@example.com', Email::getAdminEmail(), "New thread \"New thread\" in forum [General Discussion]");
+
+		$adminEmail = Config::inst()->get('Email', 'admin_email');
+
+		$this->assertEmailSent('test3@example.com', $adminEmail, "New thread \"New thread\" in forum [General Discussion]");
 		$this->clearEmails();
 
 		// New response
@@ -337,7 +340,7 @@ class ForumTest extends FunctionalTest {
 				'action_doPostMessageForm' => 1
 			)
 		);
-		$this->assertEmailSent('test3@example.com', Email::getAdminEmail(), "New post \"Re: New thread\" in forum [General Discussion]");
+		$this->assertEmailSent('test3@example.com', $adminEmail, "New post \"Re: New thread\" in forum [General Discussion]");
 		$this->clearEmails();
 
 		// Edit
@@ -352,7 +355,7 @@ class ForumTest extends FunctionalTest {
 				'action_doPostMessageForm' => 1
 			)
 		);
-		$this->assertEmailSent('test3@example.com', Email::getAdminEmail(), "New post \"Re: New thread\" in forum [General Discussion]");
+		$this->assertEmailSent('test3@example.com', $adminEmail, "New post \"Re: New thread\" in forum [General Discussion]");
 		$this->clearEmails();
 
 		Forum::$notify_moderators = $notifyModerators;
