@@ -225,10 +225,10 @@ class ForumHolder extends Page {
 		}
 
 		return Member::get()
-			->leftJoin('Group_Members', 'Member.ID = Group_Members.MemberID')
+			->leftJoin('Group_Members', '"Member"."ID" = "Group_Members"."MemberID"')
 			->filter('GroupID', $groupIDs)
 			->filter("LastViewed:GreaterThan", DB::getConn()->datetimeIntervalClause('NOW', '-15 MINUTE'))
-			->sort('Member.FirstName, Member.Surname');
+			->sort('"Member"."FirstName", "Member"."Surname"');
 	}
 	
 	/**
@@ -257,9 +257,9 @@ class ForumHolder extends Page {
 		}
 		
 		$latestMembers = Member::get()
-			->leftJoin('Group_Members', 'Member.ID = Group_Members.MemberID')
+			->leftJoin('Group_Members', '"Member"."ID" = "Group_Members"."MemberID"')
 			->filter('GroupID', $groupIDs)
-			->sort('Member.ID DESC')
+			->sort('"Member"."ID" DESC')
 			->limit($limit);
 
 		return $latestMembers;
@@ -388,10 +388,10 @@ class ForumHolder extends Page {
 		$filter[] = "\"ForumPage\".\"ParentID\"='{$this->ID}'";
 
 		$posts = Post::get()
-			->leftJoin('ForumThread', 'Post.ThreadID = ForumThread.ID')
-			->leftJoin(ForumHolder::baseForumTable(), 'ForumPage.ID = ForumThread.ForumID', 'ForumPage')
+			->leftJoin('ForumThread', '"Post"."ThreadID" = "ForumThread"."ID"')
+			->leftJoin(ForumHolder::baseForumTable(), '"ForumPage"."ID" = "ForumThread"."ForumID"', 'ForumPage')
 			->limit($limit)
-			->sort('Post.ID', 'DESC')
+			->sort('"Post"."ID"', 'DESC')
 			->where($filter);
 		
 		$recentPosts = new ArrayList();
@@ -521,24 +521,24 @@ class ForumHolder_Controller extends Page_Controller {
 //				$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID'", "\"Member\".\"Created\" ASC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", "{$SQL_start},100");
 				$members = Member::get()
 						->filter('Member.GroupID', $forumGroupID)
-						->leftJoin('Group_Members', 'Member.ID = Group_Members.MemberID')
-						->sort('Member.Created ASC')
+						->leftJoin('Group_Members', '"Member"."ID" = "Group_Members"."MemberID"')
+						->sort('"Member"."Created" ASC')
 						->limit($SQL_start . ',100');
 			break;
 			case "name":
 //				$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID'", "\"Member\".\"Nickname\" ASC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", "{$SQL_start},100");
 				$members = Member::get()
 						->filter('Member.GroupID', $forumGroupID)
-						->leftJoin('Group_Members', 'Member.ID = Group_Members.MemberID')
-						->sort('Member.Nickname ASC')
+						->leftJoin('Group_Members', '"Member"."ID" = "Group_Members"."MemberID"')
+						->sort('"Member"."Nickname" ASC')
 						->limit($SQL_start . ',100');
 			break;
 			case "country":
 //				$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID' AND \"Member\".\"CountryPublic\" = TRUE", "\"Member\".\"Country\" ASC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", "{$SQL_start},100");
 				$members = Member::get()
 						->filter(array('Member.GroupID' => $forumGroupID, 'Member.CountryPublic' => TRUE))
-						->leftJoin('Group_Members', 'Member.ID = Group_Members.MemberID')
-						->sort('Member.Nickname ASC')
+						->leftJoin('Group_Members', '"Member"."ID" = "Group_Members"."MemberID"')
+						->sort('"Member"."Nickname" ASC')
 						->limit($SQL_start . ',100');
 			break;
 			case "posts": 
@@ -552,8 +552,8 @@ class ForumHolder_Controller extends Page_Controller {
 				//$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID'", "\"Member\".\"Created\" DESC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", "{$SQL_start},100");
 				$members = Member::get()
 						->filter('Member.GroupID', $forumGroupID)
-						->leftJoin('Group_Members', 'Member.ID = Group_Members.MemberID')
-						->sort('Member.Created DESC')
+						->leftJoin('Group_Members', '"Member"."ID" = "Group_Members"."MemberID"')
+						->sort('"Member"."Created" DESC')
 						->limit($SQL_start . ',100');
 			break;
 		}

@@ -355,7 +355,7 @@ class Forum extends Page {
 	 * @return Post
 	 */
 	function getLatestPost() {
-		return Post::get()->filter('ForumID', $this->ID)->sort('Post.ID DESC')->first();
+		return Post::get()->filter('ForumID', $this->ID)->sort('"Post"."ID" DESC')->first();
 	}
 
 	/**
@@ -406,8 +406,8 @@ class Forum extends Page {
 		$postQuery = $posts->dataQuery()->query();
 		$postQuery
 			->setSelect(array())
-			->selectField('MAX(Created)', 'PostCreatedMax')
-			->selectField('MAX(ID)', 'PostIDMax')
+			->selectField('MAX("Created")', 'PostCreatedMax')
+			->selectField('MAX("ID")', 'PostIDMax')
 			->selectField('ThreadID')
 			->setGroupBy('ThreadID');
 
@@ -447,7 +447,7 @@ class Forum extends Page {
 		$query
 			->addSelect('"PostMax"."PostMax"')
 			// TODO: Confirm this works in non-MySQL DBs
-			->addFrom('LEFT JOIN (SELECT MAX(Created) AS PostMax, ThreadID from Post group by ThreadID) AS PostMax ON (PostMax.ThreadID = ForumThread.ID)')
+			->addFrom('LEFT JOIN (SELECT MAX("Created") AS PostMax, "ThreadID" FROM "Post" GROUP BY "ThreadID") AS PostMax ON (PostMax."ThreadID" = "ForumThread"."ID")')
 		   ->addOrderBy('"PostMax"."PostMax" DESC');
 
 		// Build result as ArrayList

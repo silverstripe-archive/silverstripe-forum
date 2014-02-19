@@ -538,7 +538,7 @@ class ForumMemberProfile extends Page_Controller {
 	 *                     was not found
 	 */
  	function Member() {
- 		$member = null;
+		$member = null;
 		if(is_numeric($this->urlParams['ID'])) {
 			$member = DataObject::get_by_id('Member', $this->urlParams['ID']);
 		} else {
