@@ -408,8 +408,8 @@ class Forum extends Page {
 			->setSelect(array())
 			->selectField('MAX("Created")', 'PostCreatedMax')
 			->selectField('MAX("ID")', 'PostIDMax')
-			->selectField('ThreadID')
-			->setGroupBy('ThreadID');
+			->selectField('"ThreadID"')
+			->setGroupBy('"ThreadID"');
 
 		// Get a list of forum threads inside this forum that aren't sticky
 		$threads = DataList::create('ForumThread')->filter(array("ForumID"=>$this->ID, 'IsGlobalSticky'=>0, 'IsSticky'=>0));
