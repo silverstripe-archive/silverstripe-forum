@@ -419,7 +419,7 @@ class Forum extends Page {
 		$threadQuery = $threads->dataQuery()->query();
 		$threadQuery
 			->addSelect(array('"PostMax"."PostCreatedMax", "PostMax"."PostIDMax"'))
-			->addFrom('INNER JOIN ('.$postQuery->sql().') AS PostMax ON (PostMax.ThreadID = ForumThread.ID)')
+			->addFrom('INNER JOIN ('.$postQuery->sql().') AS "PostMax" ON ("PostMax"."ThreadID" = "ForumThread"."ID")')
 			->addOrderBy(array('"PostMax"."PostCreatedMax" DESC', '"PostMax"."PostIDMax" DESC'));
 
 		// Alter the forum threads list to use the new query
@@ -447,7 +447,7 @@ class Forum extends Page {
 		$query
 			->addSelect('"PostMax"."PostMax"')
 			// TODO: Confirm this works in non-MySQL DBs
-			->addFrom('LEFT JOIN (SELECT MAX("Created") AS PostMax, "ThreadID" FROM "Post" GROUP BY "ThreadID") AS PostMax ON (PostMax."ThreadID" = "ForumThread"."ID")')
+			->addFrom('LEFT JOIN (SELECT MAX("Created") AS "PostMax", "ThreadID" FROM "Post" GROUP BY "ThreadID") AS "PostMax" ON ("PostMax"."ThreadID" = "ForumThread"."ID")')
 		   ->addOrderBy('"PostMax"."PostMax" DESC');
 
 		// Build result as ArrayList

@@ -551,7 +551,7 @@ class ForumMemberProfile extends Page_Controller {
 	 */
  	function Member() {
 		$member = null;
-		if(is_numeric($this->urlParams['ID'])) {
+		if(!empty($this->urlParams['ID']) && is_numeric($this->urlParams['ID'])) {
 			$member = DataObject::get_by_id('Member', $this->urlParams['ID']);
 		} else {
 			$member = Member::currentUser();
