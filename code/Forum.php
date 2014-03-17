@@ -549,7 +549,12 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @return bool
 	 */
-	function subscribe() {
+	function subscribe(SS_HTTPRequest $request) {
+		// Check CSRF
+		if (!SecurityToken::inst()->checkRequest($request)) {
+			return $this->httpError(400);
+		}
+
 		if(Member::currentUser() && !ForumThread_Subscription::already_subscribed($this->urlParams['ID'])) {
 			$obj = new ForumThread_Subscription();
 			$obj->ThreadID = (int) $this->urlParams['ID'];
@@ -570,7 +575,7 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @return bool
 	 */
-	function unsubscribe() {
+	function unsubscribe(SS_HTTPRequest $request) {
 		$member = Member::currentUser();
 		
 		if(!$member) Security::permissionFailure($this, _t('LOGINTOUNSUBSCRIBE', 'To unsubscribe from that thread, please log in first.'));
@@ -594,10 +599,16 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * Must be logged in and have the correct permissions to do marking
 	 */
-	function markasspam() {
+	function markasspam(SS_HTTPRequest $request) {
 		$currentUser = Member::currentUser();
 		if(!isset($this->urlParams['ID'])) return $this->httpError(400);
 		if(!$this->canModerate()) return $this->httpError(403);
+
+		// Check CSRF token
+		if (!SecurityToken::inst()->checkRequest($request)) {
+			return $this->httpError(400);
+		}
+
 
 		$post = Post::get()->byID($this->urlParams['ID']);
 		if($post) {
@@ -747,11 +758,16 @@ class Forum_Controller extends Page_Controller {
 			if($attachmentList->exists()) {
 				$attachments = "<div id=\"CurrentAttachments\"><h4>". _t('Forum.CURRENTATTACHMENTS', 'Current Attachments') ."</h4><ul>";
 				$link = $this->Link();
-				
+				// An instance of the security token
+				$token = SecurityToken::inst();
+
 				foreach($attachmentList as $attachment) {
-					$attachments .= "<li class='attachment-$attachment->ID'>$attachment->Name [<a href='{$link}deleteattachment/$attachment->ID' rel='$attachment->ID' class='deleteAttachment'>"
-							. _t('Forum.REMOVE','remove') 
-							. "</a>]</li>";
+					// Generate a link properly, since it requires a security token
+					$attachmentLink = Controller::join_links($link, 'deleteattachment', $attachment->ID);
+					$attachmentLink = $token->addToUrl($attachmentLink);
+
+					$attachments .= "<li class='attachment-$attachment->ID'>$attachment->Name [<a href='{$attachmentLink}' rel='$attachment->ID' class='deleteAttachment'>"
+							. _t('Forum.REMOVE','remove') . "</a>]</li>";
 				}
 				$attachments .= "</ul></div>";
 			
@@ -1108,8 +1124,12 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @return boolean
 	 */
-	function deleteattachment() {
-		
+	function deleteattachment(SS_HTTPRequest $request) {
+		// Check CSRF token
+		if (!SecurityToken::inst()->checkRequest($request)) {
+			return $this->httpError(400);
+		}
+
 		// check we were passed an id and member is logged in
 		if(!isset($this->urlParams['ID'])) return false;
 		
@@ -1153,7 +1173,12 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @return bool
 	 */
-	function deletepost() {
+	function deletepost(SS_HTTPRequest $request) {
+		// Check CSRF token
+		if (!SecurityToken::inst()->checkRequest($request)) {
+			return $this->httpError(400);
+		}
+
 		if(isset($this->urlParams['ID'])) {
 			if($post = DataObject::get_by_id('Post', (int) $this->urlParams['ID'])) {
 				if($post->canDelete()) {
