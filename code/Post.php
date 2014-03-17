@@ -191,11 +191,13 @@ class Post extends DataObject {
 	 */
 	function DeleteLink() {
 		if($this->canDelete()) {
-			$url = $this->Link('deletepost');
-			
-			$firstPost = ($this->isFirstPost()) ? 'firstPost' : '';
-			
-			return "<a class=\"deleteLink $firstPost\" href=\"{$url}/{$this->ID}\">" . _t('Post.DELETE','Delete') ."</a>";
+			$link = $this->Link('deletepost') . '/' . $this->ID;
+			$token = SecurityToken::inst();
+			$link = $token->addToUrl($link);
+
+			$firstPost = ($this->isFirstPost()) ? ' firstPost' : '';
+
+			return '<a class="deleteLink' . $firstPost . '" href="' . $link . '">' . _t('Post.DELETE','Delete') . '</a>';
 		}
 		
 		return false;
@@ -234,10 +236,12 @@ class Post extends DataObject {
 		if($this->Thread()->canModerate()) {
 			$member = Member::currentUser();
 		 	if($member->ID != $this->AuthorID) {
-				$link = $this->Forum()->Link('markasspam') .'/'. $this->ID;
-				
-				$firstPost = ($this->isFirstPost()) ? 'firstPost' : '';
-				
+				$link = $this->Forum()->Link('markasspam') . '/' . $this->ID;
+				$token = SecurityToken::inst();
+				$link = $token->addToUrl($link);
+
+				$firstPost = ($this->isFirstPost()) ? ' firstPost' : '';
+
 				return "<a href=\"$link\" class=\"markAsSpamLink $firstPost\" rel=\"$this->ID\">". _t('Post.MARKASSPAM', 'Mark as Spam') ."</a>";
 			}
 		}
