@@ -22,6 +22,7 @@ class ForumHolder extends Page {
 		"DisplaySignatures" => "Boolean",
 		"ShowInCategories" => "Boolean",
 		"AllowGravatars" => "Boolean",
+		"GravatarType" => "Varchar(10)",
 		"ForbiddenWords" => "Text",
 		"CanPostType" => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers, NoOne', 'LoggedInUsers')",
 	);
@@ -74,27 +75,37 @@ class ForumHolder extends Page {
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
 		$fields->addFieldsToTab("Root.Messages", array(
-			new TextField("HolderSubtitle","Forum Holder Subtitle"),
-			new HTMLEditorField("HolderAbstract","Forum Holder Abstract"),
-			new TextField("ProfileSubtitle","Member Profile Subtitle"),
-			new HTMLEditorField("ProfileAbstract","Member Profile Abstract"),
-			new TextField("ForumSubtitle","Create topic Subtitle"),
-			new HTMLEditorField("ForumAbstract","Create topic Abstract"),
-			new HTMLEditorField("ProfileModify","Create message after modifing forum member"),
-			new HTMLEditorField("ProfileAdd","Create message after adding forum member")
+			TextField::create("HolderSubtitle","Forum Holder Subtitle"),
+			HTMLEditorField::create("HolderAbstract","Forum Holder Abstract"),
+			TextField::create("ProfileSubtitle","Member Profile Subtitle"),
+			HTMLEditorField::create("ProfileAbstract","Member Profile Abstract"),
+			TextField::create("ForumSubtitle","Create topic Subtitle"),
+			HTMLEditorField::create("ForumAbstract","Create topic Abstract"),
+			HTMLEditorField::create("ProfileModify","Create message after modifing forum member"),
+			HTMLEditorField::create("ProfileAdd","Create message after adding forum member")
 		));
 		$fields->addFieldsToTab("Root.Settings", array(
-			new CheckboxField("DisplaySignatures", "Display Member Signatures?"),
-			new CheckboxField("ShowInCategories", "Show Forums In Categories?"),
-			new CheckboxField("AllowGravatars", "Allow <a href='http://www.gravatar.com/' target='_blank'>Gravatars</a>?")
+			CheckboxField::create("DisplaySignatures", "Display Member Signatures?"),
+			CheckboxField::create("ShowInCategories", "Show Forums In Categories?"),
+			CheckboxField::create("AllowGravatars", "Allow <a href='http://www.gravatar.com/' target='_blank'>Gravatars</a>?"),
+			DropdownField::create("GravatarType", "Gravatar Type", array(
+ 		  		"standard" => _t('Forum.STANDARD','Standard'),
+ 		  		"identicon" => _t('Forum.IDENTICON','Identicon'),
+		  		"wavatar" => _t('Forum.WAVATAR', 'Wavatar'),
+				"monsterid" => _t('Forum.MONSTERID', 'Monsterid'),
+				"retro" => _t('Forum.RETRO', 'Retro'),
+ 				"mm" => _t('Forum.MM', 'Mystery Man'),
+ 			))->setEmptyString('Use Forum Default')
 		));
+
+
 		$fields->addFieldsToTab("Root.LanguageFilter", array(
-			new TextField("ForbiddenWords", "Forbidden words (comma separated)"),
-			new LiteralField("FWLabel","These words will be replaced by an asterisk")
+			TextField::create("ForbiddenWords", "Forbidden words (comma separated)"),
+			LiteralField::create("FWLabel","These words will be replaced by an asterisk")
 		));
 		
-		$fields->addFieldToTab("Root.Access", new HeaderField(_t('Forum.ACCESSPOST','Who can post to the forum?'), 2));
-		$fields->addFieldToTab("Root.Access", new OptionsetField("CanPostType", "", array(
+		$fields->addFieldToTab("Root.Access", HeaderField::create(_t('Forum.ACCESSPOST','Who can post to the forum?'), 2));
+		$fields->addFieldToTab("Root.Access", OptionsetField::create("CanPostType", "", array(
 		  	"Anyone" => _t('Forum.READANYONE', 'Anyone'),
 		  	"LoggedInUsers" => _t('Forum.READLOGGEDIN', 'Logged-in users'),
 			"NoOne" => _t('Forum.READNOONE', 'Nobody. Make Forum Read Only')
