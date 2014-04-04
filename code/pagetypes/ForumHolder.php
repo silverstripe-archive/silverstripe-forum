@@ -658,6 +658,12 @@ class ForumHolder_Controller extends Page_Controller {
 			$results = false;
 		}
 
+		//Paginate the results
+		$results = PaginatedList::create(
+			$results,
+			$this->request->getVars()
+		);
+
 		
 		// if the user has requested this search as an RSS feed then output the contents as xml
 		// rather than passing it to the template
