@@ -1,13 +1,14 @@
 <% include ForumHeader %>
-
+	
 	<% if SearchResults %>
 		<div id="forum_search" class="forumHolderFeatures">
+			<p>$Abstract</p>
 			<table class="forum-topics">
 				<tr class="rowOne category">
 					<td><% _t('ForumHolder_search_ss.THREAD', 'Thread') %></td>
 					<td><% _t('ForumHolder_search_ss.ORDER', 'Order:') %>
-						<a href="{$URLSegment}/search/?Search={$Query.ATT}" <% if Order = relevance %>class="current"<% end_if %> title="<% _t('ForumHolder_search_ss.ORDERBYRELEVANCE', 'Order by Relevance. Most relevant first') %>"><% _t('ForumHolder_search_ss.RELEVANCE', 'Relevance') %></a> |
-						<a href="{$URLSegment}/search/?Search={$Query.ATT}&amp;order=date" <% if Order = date %>class="current"<% end_if %> title="<% _t('ForumHolder_search_ss.ORDERBYDATE', 'Order by Date. Newest First') %>"><% _t('ForumHolder_search_ss.DATE', 'Date') %></a> |
+						<a href="{$URLSegment}/search/?Search={$Query.ATT}&amp;order=newest" <% if Order = newest %>class="current"<% end_if %> title="<% _t('ForumHolder_search_ss.ORDERBYNEWEST', 'Order by Newest. Most recent posts first') %>"><% _t('ForumHolder_search_ss.NEWEST', 'Newest') %></a> |
+						<a href="{$URLSegment}/search/?Search={$Query.ATT}&amp;order=oldest" <% if Order = oldest %>class="current"<% end_if %> title="<% _t('ForumHolder_search_ss.ORDERBYOLDEST', 'Order by Oldest. Oldest posts First') %>"><% _t('ForumHolder_search_ss.OLDEST', 'Oldest') %></a> |
 						<a href="{$URLSegment}/search/?Search={$Query.ATT}&amp;order=title" <% if Order = title %>class="current"<% end_if %>title="<% _t('ForumHolder_search_ss.ORDERBYTITLE', 'Order by Title') %>"><% _t('ForumHolder_search_ss.TITLE', 'Title') %></a>
 					</td>
 					<td>

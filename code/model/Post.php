@@ -13,17 +13,6 @@ class Post extends DataObject {
 		"Content" => "Text",
 		"Status" => "Enum('Awaiting, Moderated, Rejected, Archived', 'Moderated')",
 	);
-	
-	
-	static $indexes = array(
-		"SearchFields" => array('type'=>'fulltext', 'name'=>'SearchFields', 'value'=>'Content'),
-	);
-	
-/*
-	static $searchable_fields = array(
-      	'Author',
-      	'Content'
-   	);*/
 
 	private static $casting = array(
 		"Updated" => "SS_Datetime",
