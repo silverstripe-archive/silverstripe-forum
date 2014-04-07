@@ -31,6 +31,9 @@ class Post extends DataObject {
 		"Attachments" => "Post_Attachment"
 	);
 
+	/**
+	 * Update all the posts to have a forum ID of their thread ID. 
+	 */
 	function requireDefaultRecords() {
 		$posts = Post::get()->filter(array('ForumID' => 0, 'ThreadID:GreaterThan' => 0));
 

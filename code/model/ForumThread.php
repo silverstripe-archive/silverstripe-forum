@@ -32,6 +32,7 @@ class ForumThread extends DataObject {
 		'IsReadOnly' => false,
 		'IsGlobalSticky' => false
 	);
+		
 	
 	/**
 	 * Check if the user can create new threads and add responses
