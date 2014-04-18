@@ -500,7 +500,7 @@ class ForumHolder_Controller extends Page_Controller {
 		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
 		Requirements::javascript("forum/javascript/forum.js");
 
-		Requirements::themedCSS('forum','forum','all');
+		Requirements::themedCSS('Forum','forum','all');
 
 		RSSFeed::linkToFeed($this->Link("rss"), _t('ForumHolder.POSTSTOALLFORUMS', "Posts to all forums"));
 
