@@ -8,6 +8,25 @@ class PostTest extends FunctionalTest {
 	// without this, SiteTree::canView() would always return false even though CanViewType == Anyone.
 	static $use_draft_site = true;
 
+	public function setUp(){
+		parent::setUp();
+
+		//track the default state of tokens
+		$this->useToken = SecurityToken::is_enabled();
+
+	}
+
+	public function tearDown(){
+		parent::tearDown();
+
+		//if the token is turned on reset it before the next test run
+		if($this->useToken) {
+			SecurityToken::enable();
+		} else {
+			SecurityToken::disable();
+		}
+	}
+
 	function testPermissions() {
 		$member1 = $this->objFromFixture('Member', 'test1');
 		$member2 = $this->objFromFixture('Member', 'test2');
@@ -127,6 +146,9 @@ class PostTest extends FunctionalTest {
 	function testDeleteLink() {
 		$post = $this->objFromFixture('Post', 'Post1');
 
+		//enable token
+		SecurityToken::enable();
+
 		// should be false since we're not logged in.
 		if($member = Member::currentUser()) $member->logOut();
 		
@@ -141,6 +163,7 @@ class PostTest extends FunctionalTest {
 		
 		// because this is the first post test for the class which is used in javascript
 		$this->assertContains("class=\"deleteLink firstPost\"", $post->DeleteLink());
+
 		$member->logOut();
 		
 		// log in as another member who is not in a position to delete this post
@@ -149,10 +172,14 @@ class PostTest extends FunctionalTest {
 		
 		$this->assertFalse($post->DeleteLink());
 		
-		// log in as someone who can moderator this post (and therefore delete it)
+		// log in as someone who can moderate this post (and therefore delete it)
 		$member = $this->objFromFixture('Member', 'moderator');
 		$member->logIn();
-		
+
+
+		//check for the existance of a CSRF token
+		$this->assertContains("SecurityID=", $post->DeleteLink());
+
 		// should be able to edit post since they're moderators
 		$this->assertContains($post->Thread()->URLSegment .'/deletepost/'. $post->ID, $post->DeleteLink());
 		
@@ -160,6 +187,54 @@ class PostTest extends FunctionalTest {
 		$memberOthersPost = $this->objFromFixture('Post', 'Post2');
 		
 		$this->assertFalse(strstr($memberOthersPost->DeleteLink(), "firstPost"));
+
+	}
+
+	function testMarkAsSpamLink() {
+		$post = $this->objFromFixture('Post', 'Post1');
+
+		//enable token
+		SecurityToken::enable();
+
+		// should be false since we're not logged in.
+		if($member = Member::currentUser()) $member->logOut();
+
+		$this->assertFalse($post->EditLink());
+		$this->assertFalse($post->MarkAsSpamLink());
+
+		// logged in as the moderator. Should be able to mark the post as spam.
+		$member = $this->objFromFixture('Member', 'moderator');
+		$member->logIn();
+
+		$this->assertContains($post->Thread()->URLSegment .'/markasspam/'. $post->ID, $post->MarkAsSpamLink());
+
+		// because this is the first post test for the class which is used in javascript
+		$this->assertContains("class=\"markAsSpamLink firstPost\"", $post->MarkAsSpamLink());
+
+		$member->logOut();
+
+		// log in as another member who is not in a position to mark post as spam this post
+		$member = $this->objFromFixture('Member', 'test2');
+		$member->logIn();
+
+		$this->assertFalse($post->MarkAsSpamLink());
+
+		// log in as someone who can moderate this post (and therefore mark as spam)
+		$member = $this->objFromFixture('Member', 'moderator');
+		$member->logIn();
+
+
+		//check for the existance of a CSRF token
+		$this->assertContains("SecurityID=", $post->MarkAsSpamLink());
+
+		// should be able to edit post since they're moderators
+		$this->assertContains($post->Thread()->URLSegment .'/markasspam/'. $post->ID, $post->MarkAsSpamLink());
+
+		// test that a 2nd post doesn't have the first post ID hook
+		$memberOthersPost = $this->objFromFixture('Post', 'Post2');
+
+		$this->assertFalse(strstr($memberOthersPost->MarkAsSpamLink(), "firstPost"));
+
 	}
 	
 	function testGetUpdated() {
