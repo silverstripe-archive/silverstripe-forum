@@ -6,11 +6,11 @@
 
  * Sean Harvey (Nickname: sharvey, halkyon) <sean (at) silverstripe (dot) com>
  * Will Rossiter (Nickname: wrossiter, willr) <will (at) silverstripe (dot) com>
+ * Cam Findlay (Nickname: camfindlay) <cam (at) silverstripe (dot) com>
 
 ## Requirements
 
  * SilverStripe 3.1.0+
- * tagfield for adding moderators (https://github.com/chillu/silverstripe-tagfield)
 
 ## Installation & Documentation
 
