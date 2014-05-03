@@ -262,31 +262,37 @@ class Forum extends Page {
 
 		$fields->addFieldsToTab("Root.Category", array($categoryOptions, $gridField));
 
-		// TagField comes in it's own module.
-		// If it's installed, use it to select moderators for this forum
-		if(class_exists('TagField')) {
-			$fields->addFieldToTab('Root.Moderators',
-				$moderatorsField = new TagField(
-					'Moderators',
-					_t('MODERATORS', 'Moderators for this forum'),
-					null,
-					'Forum',
-					'Email'
-					//need to use emails here because user nicknames are:
-					// (1) not unique
-					// (2) can have spaces (default tag separator is a space)
-				)
+		//GridField Config - only need to attach or detach Moderators with existing Member accounts.
+		$moderatorsConfig = GridFieldConfig::create()
+			->addComponent(new GridFieldButtonRow('before'))
+			->addComponent(new GridFieldAddExistingAutocompleter('buttons-before-right'))
+			->addComponent(new GridFieldToolbarHeader())
+			->addComponent($sort = new GridFieldSortableHeader())
+			->addComponent($columns = new GridFieldDataColumns())
+			->addComponent(new GridFieldDeleteAction(true))
+			->addComponent(new GridFieldPageCount('toolbar-header-right'))
+			->addComponent($pagination = new GridFieldPaginator());
+
+		// Use GridField for Moderator management
+		$moderators = GridField::create(
+			'Moderators',
+			_t('MODERATORS', 'Moderators for this forum'),
+			$this->Moderators(),
+			$moderatorsConfig
 			);
-			$moderatorsField->deleteUnusedTags = false;
-		} else {
-			$fields->addFieldToTab(
-					'Root.Moderators', 
-					new LiteralField(
-							'ModeratorWarning', 
-							'<p>Please install the <a href="http://silverstripe.org/tag-field-module/" target="_blank">TagField module</a> to manage moderators for this forum.</p>'
-						)
-					);
-		}
+
+		$columns->setDisplayFields(array(
+			'Nickname' => 'Nickname',
+			'FirstName' => 'First name',
+			'Surname' => 'Surname',
+			'Email'=> 'Email',
+			'LastVisited.Long' => 'Last Visit'
+		));
+
+		$sort->setThrowExceptionOnBadDataType(false);
+		$pagination->setThrowExceptionOnBadDataType(false);
+
+		$fields->addFieldToTab('Root.Moderators', $moderators);
 
 		return $fields;
 	}
