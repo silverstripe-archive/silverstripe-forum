@@ -5,6 +5,8 @@
  * 
  * These will be editable via the {@link GridField} on the Forum object.
  *
+ * @TODO replace StackableOrder with the SortableGridField module implementation.
+ *
  * @package forum
  */
 
