@@ -35,7 +35,7 @@ Rebuild your database (see below).
 
 ## Rebuild database
 
-Visit http://<yoursite>/dev/build/ in your browser or via the SilverStripe command line tool, [sake](http://doc.silverstripe.org/framework/en/topics/commandline)
+Visit http://www.yoursite.com/dev/build/ in your browser or via the SilverStripe command line tool, [sake](http://doc.silverstripe.org/framework/en/topics/commandline)
 
 ```
 	sake dev/build flush=1
