@@ -233,34 +233,16 @@ class Forum extends Page {
 			)),
 			new TreeDropdownField('UploadsFolderID', _t('Forum.UPLOADSFOLDER', 'Uploads folder'), 'Folder')
 		));
-		
-		// add a grid field to the category tab with all the categories
-		$config = GridFieldConfig::create();
-		$config->addComponents(
-			new GridFieldSortableHeader(),
-			new GridFieldButtonRow(),
-			new GridFieldDataColumns(),
-			new GridFieldEditButton(),
-			new GridFieldViewButton(),
-			new GridFieldDeleteAction(),
-			new GridFieldAddNewButton('buttons-before-left'),
-			new GridFieldPaginator(),
-			new GridFieldDetailForm()
+
+
+		//Dropdown of forum category selection.
+		$categories = ForumCategory::get()->map();
+
+		$fields->addFieldsToTab(
+			"Root.Main",
+			DropdownField::create('CategoryID', _t('Forum.FORUMCATEGORY', 'Forum Category'), $categories),
+			'Content'
 		);
-
-		// need a drop down of forum categories
-		$forumCategoryObj = DataObject::get("ForumCategory",'','Title');
-		$gridField = new GridField('Category', _t('Forum.FORUMCATEGORY', 'Forum Category'), $forumCategoryObj, $config);
-
-		
-		$forumCategories = array();
-		foreach ($forumCategoryObj as $category) {
-			$forumCategories[$category->ID] = $category->Title;	
-		}
-
-		$categoryOptions = new DropdownField('CategoryID', _t('Forum.FORUMCATEGORY', 'Forum Category'), $forumCategories);
-
-		$fields->addFieldsToTab("Root.Category", array($categoryOptions, $gridField));
 
 		//GridField Config - only need to attach or detach Moderators with existing Member accounts.
 		$moderatorsConfig = GridFieldConfig::create()

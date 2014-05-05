@@ -98,6 +98,29 @@ class ForumHolder extends Page {
  			))->setEmptyString('Use Forum Default')
 		));
 
+		// add a grid field to the category tab with all the categories
+		$categoryConfig = GridFieldConfig::create()
+			->addComponents(
+				new GridFieldSortableHeader(),
+				new GridFieldButtonRow(),
+				new GridFieldDataColumns(),
+				new GridFieldEditButton(),
+				new GridFieldViewButton(),
+				new GridFieldDeleteAction(),
+				new GridFieldAddNewButton('buttons-before-left'),
+				new GridFieldPaginator(),
+				new GridFieldDetailForm()
+			);
+
+		$categories = GridField::create(
+			'Category',
+			_t('Forum.FORUMCATEGORY', 'Forum Category'),
+			$this->Categories(),
+			$categoryConfig
+		);
+
+		$fields->addFieldsToTab("Root.Categories", $categories);
+
 
 		$fields->addFieldsToTab("Root.LanguageFilter", array(
 			TextField::create("ForbiddenWords", "Forbidden words (comma separated)"),
