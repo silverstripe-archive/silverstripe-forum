@@ -147,10 +147,14 @@ class ForumThread extends DataObject {
 	 * @return String
 	 */
 	function Link($action = "show", $showID = true) {
-		$baseLink = DataObject::get_by_id("Forum", $this->ForumID)->Link();
-		$extra = ($showID) ? '/'.$this->ID : '';
-		
-		return ($action) ? $baseLink . $action . $extra : $baseLink;
+		$forum = DataObject::get_by_id("Forum", $this->ForumID);
+		if($forum) {
+			$baseLink = $forum->Link();
+			$extra = ($showID) ? '/'.$this->ID : '';
+			return ($action) ? $baseLink . $action . $extra : $baseLink;
+		} else {
+			user_error("Bad ForumID '$this->ForumID'", E_USER_WARNING);
+		}
 	}
 	
 	/**

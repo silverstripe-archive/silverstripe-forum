@@ -211,7 +211,7 @@ class ForumMemberProfile extends Page_Controller {
 		$member->write();
 		$member->login();
 
-		$forumGroup->Members()->add($member);
+		$member->Groups()->add($forumGroup);
 
 		$member->extend('onForumRegister', $this->request);
 
