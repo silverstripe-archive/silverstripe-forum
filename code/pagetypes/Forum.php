@@ -681,8 +681,11 @@ class Forum_Controller extends Page_Controller {
 	function PostMessageForm($addMode = false, $post = false) {
 		$thread = false;
 
-		if($post) $thread = $post->Thread();
-		else if(isset($this->urlParams['ID'])) $thread = DataObject::get_by_id('ForumThread', $this->urlParams['ID']);	
+		if($post) {
+			$thread = $post->Thread();
+		} else if(isset($this->urlParams['ID']) && is_numeric($this->urlParams['ID'])) {
+			$thread = DataObject::get_by_id('ForumThread', $this->urlParams['ID']);
+		}
 
 		// Check permissions
 		$messageSet = array(
@@ -766,6 +769,8 @@ class Forum_Controller extends Page_Controller {
 		$required = $addMode === true ? new RequiredFields("Title", "Content") : new RequiredFields("Content");
 
 		$form = new Form($this, 'PostMessageForm', $fields, $actions, $required);
+
+		$this->extend('updatePostMessageForm', $form, $post);
 
 		if($post) $form->loadDataFrom($post);
 		
