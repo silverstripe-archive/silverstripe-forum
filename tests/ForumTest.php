@@ -266,7 +266,7 @@ class ForumTest extends FunctionalTest {
 		$moderator = $this->objFromFixture('Member', 'moderator'); // moderator for "general" forum
 		
 		// without a logged-in moderator
-		$this->assertNull($spampost->MarkAsSpamLink(), 'Link not present by default');
+		$this->assertFalse($spampost->MarkAsSpamLink(), 'Link not present by default');
 
 		$c = new Forum_Controller($forum);
 		$response = $c->handleRequest(new SS_HTTPRequest('GET', 'markasspam/'. $spampost->ID), DataModel::inst());
@@ -274,7 +274,7 @@ class ForumTest extends FunctionalTest {
 
 		// with logged-in moderator
 		$moderator->logIn();
-		$this->assertNotNull($spampost->MarkAsSpamLink(), 'Link present for moderators on this forum');
+		$this->assertNotEquals(false, $spampost->MarkAsSpamLink(), 'Link present for moderators on this forum');
 
 		$this->assertNull($author->SuspendedUntil);
 
@@ -285,14 +285,14 @@ class ForumTest extends FunctionalTest {
 		$this->assertFalse($response->isError());
 		
 		// removes the post
-		$this->assertFalse(DataObject::get_by_id('Post', $spampost->ID));
+		$this->assertNull(Post::get()->byID($spampost->ID));
 		
 		// suspends the member
-		$author = DataObject::get_by_id('Member', $author->ID);
+		$author = Member::get()->byID($author->ID);
 		$this->assertNotNull($author->SuspendedUntil);
 		
 		// does not effect the thread
-		$thread = DataObject::get_by_id('ForumThread', $spampost->Thread()->ID);
+		$thread = ForumThread::get()->byID($spampost->Thread()->ID);
 		$this->assertEquals('1', $thread->getNumPosts());
 		
 		// mark the first post in that now as spam
@@ -301,7 +301,7 @@ class ForumTest extends FunctionalTest {
 		$response = $c->handleRequest(new SS_HTTPRequest('GET', 'markasspam/'. $spamfirst->ID), DataModel::inst());
 
 		// removes the thread
-		$this->assertFalse(DataObject::get_by_id('ForumThread', $spamfirst->Thread()->ID));
+		$this->assertNull(ForumThread::get()->byID($spamfirst->Thread()->ID));
 	}
 
 	function testNotifyModerators() {

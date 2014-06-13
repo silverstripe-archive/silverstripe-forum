@@ -477,7 +477,7 @@ class Forum_Controller extends Page_Controller {
 		if($this->redirectedTo()) return;
 
 		Requirements::javascript(THIRDPARTY_DIR . "/jquery/jquery.js"); 
-		Requirements::javascript("forum/javascript/forum.js");
+		Requirements::javascript("forum/javascript/Forum.js");
 		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
 
 		Requirements::themedCSS('Forum','forum','all');
@@ -923,25 +923,22 @@ class Forum_Controller extends Page_Controller {
 				$attachment->write();
 			}
 		}
-		
 
 		// Add a topic subscription entry if required
+		$isSubscribed = ForumThread_Subscription::already_subscribed($thread->ID);
 		if(isset($data['TopicSubscription'])) {
-			if(!ForumThread_Subscription::already_subscribed($thread->ID)) {
+			if(!$isSubscribed) {
 				// Create a new topic subscription for this member
 				$obj = new ForumThread_Subscription();
 				$obj->ThreadID = $thread->ID;
 				$obj->MemberID = Member::currentUserID();
 				$obj->write();
 			}
-		} else {
+		} elseif($isSubscribed) {
 			// See if the member wanted to remove themselves
-			if(ForumThread_Subscription::already_subscribed($post->TopicID)) {
-				DB::query("DELETE FROM \"ForumThread_Subscription\" WHERE \"ThreadID\" = '$post->ThreadID' AND \"MemberID\" = '$member->ID'");
-			}
+			DB::query("DELETE FROM \"ForumThread_Subscription\" WHERE \"ThreadID\" = '$post->ThreadID' AND \"MemberID\" = '$member->ID'");
 		}
-		
-		
+
 		// Send any notifications that need to be sent
 		ForumThread_Subscription::notify($post);
 		
