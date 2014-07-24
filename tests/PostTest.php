@@ -234,7 +234,34 @@ class PostTest extends FunctionalTest {
 		$memberOthersPost = $this->objFromFixture('Post', 'Post2');
 
 		$this->assertFalse(strstr($memberOthersPost->MarkAsSpamLink(), "firstPost"));
+	}
 
+	public function testBanAndGhostLink() {
+		$post = $this->objFromFixture('Post', 'Post1');
+
+		// should be false since we're not logged in.
+		if($member = Member::currentUser()) $member->logOut();
+
+		$this->assertFalse($post->EditLink());
+		$this->assertFalse($post->BanLink());
+		$this->assertFalse($post->GhostLink());
+
+		// logged in as the moderator. Should be able to mark the post as spam.
+		$member = $this->objFromFixture('Member', 'moderator');
+		$member->logIn();
+
+		$forum = $post->Thread()->Forum();
+		$this->assertContains($forum->URLSegment . '/ban/' . $post->AuthorID, $post->BanLink());
+		$this->assertContains($forum->URLSegment . '/ghost/' . $post->AuthorID, $post->GhostLink());
+
+		$member->logOut();
+
+		// log in as another member who is not in a position to mark post as spam this post
+		$member = $this->objFromFixture('Member', 'test2');
+		$member->logIn();
+
+		$this->assertFalse($post->BanLink());
+		$this->assertFalse($post->GhostLink());
 	}
 	
 	function testGetUpdated() {

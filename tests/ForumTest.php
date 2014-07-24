@@ -278,8 +278,6 @@ class ForumTest extends FunctionalTest {
 
 		$this->assertNull($author->SuspendedUntil);
 
-		$link = $forum->AbsoluteLink("markasspam") .'/'. $spampost->ID;
-		
 		$c = new Forum_Controller($forum);
 		$response = $c->handleRequest(new SS_HTTPRequest('GET', 'markasspam/'. $spampost->ID), DataModel::inst());
 		$this->assertFalse($response->isError());
@@ -302,6 +300,62 @@ class ForumTest extends FunctionalTest {
 
 		// removes the thread
 		$this->assertNull(ForumThread::get()->byID($spamfirst->Thread()->ID));
+	}
+
+	function testBanLink() {
+		$spampost = $this->objFromFixture('Post', 'SpamSecondPost');
+		$forum = $spampost->Forum();
+		$author = $spampost->Author();
+		$moderator = $this->objFromFixture('Member', 'moderator'); // moderator for "general" forum
+
+		// without a logged-in moderator
+		$this->assertFalse($spampost->BanLink(), 'Link not present by default');
+
+		$c = new Forum_Controller($forum);
+		$response = $c->handleRequest(new SS_HTTPRequest('GET', 'ban/'. $spampost->AuthorID), DataModel::inst());
+		$this->assertEquals(403, $response->getStatusCode());
+
+		// with logged-in moderator
+		$moderator->logIn();
+		$this->assertNotEquals(false, $spampost->BanLink(), 'Link present for moderators on this forum');
+
+		$c = new Forum_Controller($forum);
+		$response = $c->handleRequest(new SS_HTTPRequest('GET', 'ban/'. $spampost->AuthorID), DataModel::inst());
+		$this->assertFalse($response->isError());
+
+		// user is banned
+		$author = Member::get()->byId($author->ID);
+		$this->assertTrue($author->IsBanned());
+	}
+
+	function testGhostLink() {
+		$spampost = $this->objFromFixture('Post', 'SpamSecondPost');
+		$forum = $spampost->Forum();
+		$author = $spampost->Author();
+		$moderator = $this->objFromFixture('Member', 'moderator'); // moderator for "general" forum
+
+		// without a logged-in moderator
+		$this->assertFalse($spampost->GhostLink(), 'Link not present by default');
+
+		$c = new Forum_Controller($forum);
+		$response = $c->handleRequest(new SS_HTTPRequest('GET', 'ghost/'. $spampost->AuthorID), DataModel::inst());
+		$this->assertEquals(403, $response->getStatusCode());
+
+		// with logged-in moderator
+		$moderator->logIn();
+		$this->assertNotEquals(false, $spampost->GhostLink(), 'Link present for moderators on this forum');
+
+		$c = new Forum_Controller($forum);
+		$response = $c->handleRequest(new SS_HTTPRequest('GET', 'ghost/'. $spampost->AuthorID), DataModel::inst());
+		$this->assertFalse($response->isError());
+
+		// post isn't available anymore in normal queries. {@link ForumSpamPostExtension}
+		$post = Post::get()->byId($spampost->ID);
+		$this->assertNull($post);
+
+		// user is banned
+		$author = Member::get()->byId($author->ID);
+		$this->assertTrue($author->IsGhost());
 	}
 
 	function testNotifyModerators() {
