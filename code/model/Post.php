@@ -64,24 +64,6 @@ class Post extends DataObject {
 	}
 
 	/**
-	 * After saving this post, update the {@link ForumThread} with information
-	 * that this is now the most recent post
-	 */
-	function onAfterWrite() {
-		parent::onAfterWrite();
-
-		// Tell the thread this is the most recently added or edited.
-		if ($this->ThreadID) $this->Thread()->updateLastPost($this);
-	}
-
-	function onAfterDelete() {
-		parent::onAfterDelete();
-
-		// Force thread to recalculate it's most recent.
-		if ($this->ThreadID) $this->Thread()->updateLastPost();
-	}
-
-	/**
 	 * Check if user can see the post
 	 */
 	function canView($member = null) {
@@ -239,6 +221,24 @@ class Post extends DataObject {
 				
 				return '<a href="' . $url .'" class="markAsSpamLink' . $firstPost . '" rel="' . $this->ID . '">'. _t('Post.MARKASSPAM', 'Mark as Spam') . '</a>';
 			}
+		}
+		return false;
+	}
+
+	public function BanLink() {
+		$thread = $this->Thread();
+		if($thread->canModerate()) {
+			$link = $thread->Forum()->Link('ban') .'/'. $this->AuthorID;
+			return "<a class='banLink' href=\"$link\" rel=\"$this->AuthorID\">". _t('Post.BANUSER', 'Ban User') ."</a>";
+		}
+		return false;
+	}
+
+	public function GhostLink() {
+		$thread = $this->Thread();
+		if($thread->canModerate()) {
+			$link = $thread->Forum()->Link('ghost') .'/'. $this->AuthorID;
+			return "<a class='ghostLink' href=\"$link\" rel=\"$this->AuthorID\">". _t('Post.GHOSTUSER', 'Ghost User') ."</a>";
 		}
 		return false;
 	}

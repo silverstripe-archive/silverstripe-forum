@@ -43,6 +43,13 @@
 				<% if MarkAsSpamLink %>
 					$MarkAsSpamLink
 				<% end_if %>
+
+				<% if BanLink || GhostLink %>
+					|
+					<% if BanLink %>$BanLink<% end_if %>
+					<% if GhostLink %>$GhostLink<% end_if %>
+				<% end_if %>
+
 			</div>
 		<% end_if %>
 		<div class="post-type">

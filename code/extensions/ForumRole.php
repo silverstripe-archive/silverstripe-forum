@@ -56,6 +56,7 @@ class ForumRole extends DataExtension {
 		'EmailPublic' => 'Boolean',
 		'LastViewed' => 'SS_Datetime',
 		'Signature' => 'Text',
+		'ForumStatus' => 'Enum("Normal, Banned, Ghost", "Normal")',
 		'SuspendedUntil' => 'Date'
 	);
 
@@ -258,10 +259,11 @@ class ForumRole extends DataExtension {
 				"Administrator" => _t('ForumRole.ADMIN','Administrator'),
 				"Moderator" => _t('ForumRole.MOD','Moderator')
 			)));
+			$fields->addFieldToTab('Root.Forum', $this->owner->dbObject('ForumStatus')->scaffoldFormField());
 		}
 	}
 	
-	function IsSuspended(){
+	public function IsSuspended() {
 		if($this->owner->SuspendedUntil) {
 			return strtotime(SS_Datetime::now()->Format('Y-m-d')) < strtotime($this->owner->SuspendedUntil);
 		} else {
@@ -269,6 +271,13 @@ class ForumRole extends DataExtension {
 		}
 	}
 
+	public function IsBanned() {
+		return $this->owner->ForumStatus == 'Banned';
+	}
+
+	public function IsGhost() {
+		return $this->owner->ForumStatus == 'Ghost' && $this->owner->ID !== Member::currentUserID();
+	}
 
 	/**
 	 * Can the current user edit the given member?
