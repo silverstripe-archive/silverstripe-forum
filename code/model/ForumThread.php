@@ -32,7 +32,11 @@ class ForumThread extends DataObject {
 		'IsReadOnly' => false,
 		'IsGlobalSticky' => false
 	);
-		
+
+	/**
+	 * @var null|boolean Per-request cache, whether we should display signatures on a post.
+	 */
+	private static $_cache_displaysignatures = null;
 	
 	/**
 	 * Check if the user can create new threads and add responses
@@ -84,14 +88,21 @@ class ForumThread extends DataObject {
 	}
 	
 	/** 
-	 * Are Forum Signatures on Member profiles allowed
+	 * Are Forum Signatures on Member profiles allowed.
+	 * This only needs to be checked once, so we cache the initial value once per-request.
 	 * 
 	 * @return bool
 	 */
-	 function getDisplaySignatures() {
-	 	return $this->Forum()->Parent()->DisplaySignatures;
+	function getDisplaySignatures() {
+		if(isset(self::$_cache_displaysignatures) && self::$_cache_displaysignatures !== null) {
+			return self::$_cache_displaysignatures;
+		}
+
+		$result = $this->Forum()->Parent()->DisplaySignatures;
+		self::$_cache_displaysignatures = $result;
+		return $result;
 	}
-	
+
 	/**
 	 * Get the latest post from this thread. Nicer way then using an control
 	 * from the template
