@@ -83,6 +83,15 @@ class ForumRole extends DataExtension {
 		'SuspendedUntil' => "Suspend this member from writing on forums until the specified date"
 	);
 
+	public function onBeforeDelete() {
+		parent::onBeforeDelete();
+
+		$avatar = $this->owner->Avatar();
+		if($avatar && $avatar->exists()) {
+			$avatar->delete();
+		}
+	}
+
 	function ForumRank() {
 		$moderatedForums = $this->owner->ModeratedForums();
 		if($moderatedForums && $moderatedForums->Count() > 0) return _t('MODERATOR','Forum Moderator');
