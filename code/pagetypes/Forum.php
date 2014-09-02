@@ -353,7 +353,7 @@ class Forum extends Page {
 	 * @return int Returns the number of topics (threads)
 	 */
 	function getNumTopics() {
-		return ForumThread::get()->filter('ForumID', $this->ID)->count();
+		return DB::query(sprintf('SELECT COUNT("ID") FROM "ForumThread" WHERE "ForumID" = \'%s\'', $this->ID))->value();
 	}
 
 	/**
@@ -362,7 +362,7 @@ class Forum extends Page {
 	 * @return int
 	 */
 	function getNumPosts() {
-		return Post::get()->filter('ForumID', $this->ID)->count();
+		return DB::query(sprintf('SELECT COUNT("ID") FROM "Post" WHERE "ForumID" = \'%s\'', $this->ID))->value();
 	}
 
 	/**
@@ -371,8 +371,7 @@ class Forum extends Page {
 	 * @return int
 	 */
 	function getNumAuthors() {
-		$query = Post::get()->filter('ForumID', $this->ID)->dataQuery()->query();
-		return $query->count('DISTINCT "Post"."AuthorID"');
+		return DB::query(sprintf('SELECT COUNT(DISTINCT "AuthorID") FROM "Post" WHERE "ForumID" = \'%s\'', $this->ID))->value();
 	}
 
 	/**
@@ -398,7 +397,8 @@ class Forum extends Page {
 			->selectField('MAX("Post"."Created")', 'PostCreatedMax')
 			->selectField('MAX("Post"."ID")', 'PostIDMax')
 			->selectField('"ThreadID"')
-			->setGroupBy('"ThreadID"');
+			->setGroupBy('"ThreadID"')
+			->setDistinct(false);
 
 		// Get a list of forum threads inside this forum that aren't sticky
 		$threads = DataList::create('ForumThread')->filter(array("ForumID"=>$this->ID, 'IsGlobalSticky'=>0, 'IsSticky'=>0));
@@ -409,7 +409,8 @@ class Forum extends Page {
 		$threadQuery
 			->addSelect(array('"PostMax"."PostCreatedMax", "PostMax"."PostIDMax"'))
 			->addFrom('INNER JOIN ('.$postQuery->sql().') AS "PostMax" ON ("PostMax"."ThreadID" = "ForumThread"."ID")')
-			->addOrderBy(array('"PostMax"."PostCreatedMax" DESC', '"PostMax"."PostIDMax" DESC'));
+			->addOrderBy(array('"PostMax"."PostCreatedMax" DESC', '"PostMax"."PostIDMax" DESC'))
+			->setDistinct(false);
 
 		// Alter the forum threads list to use the new query
 		$threads = $threads->setDataQuery(new Forum_DataQuery('ForumThread', $threadQuery));
@@ -439,7 +440,8 @@ class Forum extends Page {
 			->addSelect('"PostMax"."PostMax"')
 			// TODO: Confirm this works in non-MySQL DBs
 			->addFrom('LEFT JOIN (SELECT MAX("Created") AS "PostMax", "ThreadID" FROM "Post" GROUP BY "ThreadID") AS "PostMax" ON ("PostMax"."ThreadID" = "ForumThread"."ID")')
-		   ->addOrderBy('"PostMax"."PostMax" DESC');
+			->addOrderBy('"PostMax"."PostMax" DESC')
+			->setDistinct(false);
 
 		// Build result as ArrayList
 		$res = new ArrayList();
