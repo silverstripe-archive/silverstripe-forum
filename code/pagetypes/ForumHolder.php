@@ -276,26 +276,32 @@ class ForumHolder extends Page {
 	}
 	
 	/**
-	 * Get the latest members
+	 * Get the latest members from the forum group.
 	 *
 	 * @param int $limit Number of members to return
 	 * @return ArrayList
 	 */
 	function getLatestMembers($limit = 1) {
-		$groupIDs = array();
-		
-		if($forumGroup = Group::get()->filter('Code', 'forum-members')->first()) {
-			$groupIDs[] = $forumGroup->ID;
+		$groupID = DB::query('SELECT "ID" FROM "Group" WHERE "Code" = \'forum-members\'')->value();
+
+		// if we're only looking for one latest user, do a faster query. This otherwise would be especially
+		// slow on large Member tables. We can avoid the database having to do a temporary table and filesort.
+		if($limit == 1) {
+			$latestMemberId = DB::query(sprintf('SELECT MAX("Member"."ID")
+				FROM "Member"
+				RIGHT JOIN "Group_Members" ON "Member"."ID" = "Group_Members"."MemberID"
+					AND "Group_Members"."GroupID" = \'%s\'',
+				$groupID
+			))->value();
+
+			$latestMembers = Member::get()->byId($latestMemberId);
+		} else {
+			$latestMembers = Member::get()
+				->leftJoin('Group_Members', '"Member"."ID" = "Group_Members"."MemberID"')
+				->filter('GroupID', $groupID)
+				->sort('"Member"."ID" DESC')
+				->limit($limit);
 		}
-		if($adminGroup = Group::get()->filter('Code', array('administrators','Administrators'))->first()) {		
-			$groupIDs[] = $adminGroup->ID;
-		}
-		
-		$latestMembers = Member::get()
-			->leftJoin('Group_Members', '"Member"."ID" = "Group_Members"."MemberID"')
-			->filter('GroupID', $groupIDs)
-			->sort('"Member"."ID" DESC')
-			->limit($limit);
 
 		return $latestMembers;
 	}
