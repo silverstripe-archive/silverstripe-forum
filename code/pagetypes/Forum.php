@@ -15,6 +15,8 @@ class Forum extends Page {
 
 	private static $icon = "forum/images/treeicons/user";
 
+
+
 	/**
 	 * Enable this to automatically notify moderators when a message is posted
 	 * or edited on his forums.
@@ -29,8 +31,7 @@ class Forum extends Page {
 
 	private static $has_one = array(
 		"Moderator" => "Member",
-		"Category" => "ForumCategory",
-		'UploadsFolder' => 'Folder'
+		"Category" => "ForumCategory"
 	);
 	
 	private static $many_many = array(
@@ -231,8 +232,7 @@ class Forum extends Page {
 			new OptionsetField("CanAttachFiles", _t('Forum.ACCESSATTACH','Can users attach files?'), array(
 				"1" => _t('Forum.YES','Yes'),
 				"0" => _t('Forum.NO','No')
-			)),
-			new TreeDropdownField('UploadsFolderID', _t('Forum.UPLOADSFOLDER', 'Uploads folder'), 'Folder')
+			))
 		));
 
 
@@ -789,7 +789,7 @@ class Forum_Controller extends Page_Controller {
 		
 		// Check if we can attach files to this forum's posts
 		if($this->canAttach()) {
-			$fields->push(new FileField("Attachment", _t('Forum.ATTACH', 'Attach file')));
+			$fields->push(FileField::create("Attachment", _t('Forum.ATTACH', 'Attach file')));
 		}
 		
 		// If this is an existing post check for current attachments and generate
@@ -923,21 +923,12 @@ class Forum_Controller extends Page_Controller {
 				$image = $data['Attachment-' . $id];
 					
 				if($image && !empty($image['tmp_name'])) {
-					$file = new Post_Attachment();
+					$file = Post_Attachment::create();
 					$file->OwnerID = Member::currentUserID();
-						
+					$folder = Config::inst()->get('ForumHolder','attachments_folder');	
+					
 					try {
-						$upload = new Upload();
-						
-						if($uploads = $this->UploadsFolder()) {
-							$folder = $uploads->Name;
-						}
-						else {
-							$folder = false;
-						}
-
-						$upload->loadIntoFile($image, $file, $folder);
-						
+						$upload = Upload::create()->loadIntoFile($image, $file, $folder);
 						$file->write();
 						$attachments->push($file);
 					}
