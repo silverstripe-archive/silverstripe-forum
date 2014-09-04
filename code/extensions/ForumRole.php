@@ -164,7 +164,9 @@ class ForumRole extends DataExtension {
 	function getForumFields($showIdentityURL = false, $addmode = false) {
 		$gravatarText = (DataObject::get_one("ForumHolder", "\"AllowGravatars\" = 1")) ? '<small>'. _t('ForumRole.CANGRAVATAR', 'If you use Gravatars then leave this blank') .'</small>' : "";
 
+		//Sets the upload folder to the Configurable one set via the ForumHolder or overridden via Config::inst()->update().
 		$avatarField = new FileField('Avatar', _t('ForumRole.AVATAR','Avatar Image') .' '. $gravatarText);
+		$avatarField->setFolderName(Config::inst()->get('ForumHolder','avatars_folder'));
 		$avatarField->getValidator()->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'));
 
 		$personalDetailsFields = new CompositeField(
@@ -181,7 +183,6 @@ class ForumRole extends DataExtension {
 			new CheckableOption("CountryPublic", new ForumCountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true),
 			new CheckableOption("EmailPublic", new EmailField("Email", _t('ForumRole.EMAIL','Email'))),
 			new ConfirmedPasswordField("Password", _t('ForumRole.PASSWORD','Password')),
-			//new SimpleImageField("Avatar", _t('ForumRole.AVATAR','Upload avatar ') .' '. $gravatarText)
 			$avatarField
 		);
 		// Don't show 'forum rank' at registration

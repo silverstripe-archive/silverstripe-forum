@@ -10,6 +10,10 @@
 
 class ForumHolder extends Page {
 
+	private static $avatars_folder = 'forum/avatars/';
+
+	private static $attachments_folder = 'forum/attachments/';
+
 	private static $db = array(
 		"HolderSubtitle" => "Varchar(200)",
 		"ProfileSubtitle" => "Varchar(200)",
