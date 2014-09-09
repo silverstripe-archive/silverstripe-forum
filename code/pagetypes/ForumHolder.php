@@ -288,13 +288,12 @@ class ForumHolder extends Page {
 	function getLatestMembers($limit = 1) {
 		$groupID = DB::query('SELECT "ID" FROM "Group" WHERE "Code" = \'forum-members\'')->value();
 
-		// if we're only looking for one latest user, do a faster query. This otherwise would be especially
-		// slow on large Member tables. We can avoid the database having to do a temporary table and filesort.
+		// if we're just looking for a single MemberID, do a quicker query on the join table.
 		if($limit == 1) {
-			$latestMemberId = DB::query(sprintf('SELECT MAX("Member"."ID")
-				FROM "Member"
-				RIGHT JOIN "Group_Members" ON "Member"."ID" = "Group_Members"."MemberID"
-					AND "Group_Members"."GroupID" = \'%s\'',
+			$latestMemberId = DB::query(sprintf(
+				'SELECT MAX("MemberID")
+				FROM "Group_Members"
+				WHERE "Group_Members"."GroupID" = \'%s\'',
 				$groupID
 			))->value();
 
