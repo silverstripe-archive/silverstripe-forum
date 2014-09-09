@@ -75,7 +75,13 @@ class ForumHolder extends Page {
 	 * @var bool
 	 */
 	public static $use_honeypot_on_register = false;
-	
+
+	/**
+	 * @var bool If TRUE, each logged in Member who visits a Forum will write the LastViewed field
+	 * which is for the "Currently online" functionality.
+	 */
+	private static $currently_online_enabled = true;
+
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
 		$fields->addFieldsToTab("Root.Messages", array(
@@ -245,14 +251,26 @@ class ForumHolder extends Page {
 			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"Post\".\"ForumID\"=\"ForumPage\".\"ID\"
 			AND \"ForumPage\".\"ParentID\" = '" . $this->ID . "'")->value(); 		
 	}
-	
+
+	/**
+	 * Is the "Currently Online" functionality enabled?
+	 * @return bool
+	 */
+	public function CurrentlyOnlineEnabled() {
+		return $this->config()->currently_online_enabled;
+	}
+
 	/**
 	 * Get a list of currently online users (last 15 minutes)
 	 * that belong to the "forum-members" code {@link Group}.
 	 * 
 	 * @return DataList of {@link Member} objects
 	 */
-	function CurrentlyOnline() {
+	public function CurrentlyOnline() {
+		if(!$this->CurrentlyOnlineEnabled()) {
+			return false;
+		}
+
 		$groupIDs = array();
 
 		if($forumGroup = Group::get()->filter('Code', 'forum-members')->first()) {
