@@ -382,13 +382,6 @@ class Forum extends Page {
 		// Get a list of Posts
 		$posts = Post::get();
 
-		// If we're a moderater, awaiting & approved posts. Otherwise just approved
-		if(Member::currentUser()==$this->Moderator() && is_numeric($this->ID)) {
-			$posts = $posts->filter('Status', array('Moderated', 'Awaiting'));
-		} else {
-			$posts = $posts->filter('Status', 'Moderated');
-		}
-
 		// Get the underlying query and change it to return the ThreadID and Max(Created) and Max(ID) for each thread
 		// of those posts
 		$postQuery = $posts->dataQuery()->query();
