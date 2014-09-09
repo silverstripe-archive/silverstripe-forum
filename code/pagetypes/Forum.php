@@ -15,8 +15,6 @@ class Forum extends Page {
 
 	private static $icon = "forum/images/treeicons/user";
 
-
-
 	/**
 	 * Enable this to automatically notify moderators when a message is posted
 	 * or edited on his forums.
@@ -502,18 +500,18 @@ class Forum_Controller extends Page_Controller {
 			Security::permissionFailure($this, $messageSet);
 			return;
  		}
- 		// Log this visit to the ForumMember if they exist
- 		$member = Member::currentUser();
- 		if($member) {
+
+		// Log this visit to the ForumMember if they exist
+		$member = Member::currentUser();
+		if($member && Config::inst()->get('ForumHolder', 'currently_online_enabled')) {
  			$member->LastViewed = date("Y-m-d H:i:s");
  			$member->write();
  		}
-	 	
+
 		// Set the back url
 		if(isset($_SERVER['REQUEST_URI'])) {
 			Session::set('BackURL', $_SERVER['REQUEST_URI']);
-		}
-		else {
+		} else {
 			Session::set('BackURL', $this->Link());
 		}
 	}
