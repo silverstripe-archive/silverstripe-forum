@@ -383,16 +383,22 @@ class Forum extends Page {
 		// Get the underlying query and change it to return the ThreadID and Max(Created) and Max(ID) for each thread
 		// of those posts
 		$postQuery = $posts->dataQuery()->query();
+
 		$postQuery
 			->setSelect(array())
 			->selectField('MAX("Post"."Created")', 'PostCreatedMax')
 			->selectField('MAX("Post"."ID")', 'PostIDMax')
 			->selectField('"ThreadID"')
 			->setGroupBy('"ThreadID"')
+			->addWhere(sprintf('"ForumID" = \'%s\'', $this->ID))
 			->setDistinct(false);
 
 		// Get a list of forum threads inside this forum that aren't sticky
-		$threads = DataList::create('ForumThread')->filter(array("ForumID"=>$this->ID, 'IsGlobalSticky'=>0, 'IsSticky'=>0));
+		$threads = ForumThread::get()->filter(array(
+			'ForumID' => $this->ID,
+			'IsGlobalSticky' => 0,
+			'IsSticky' => 0
+		));
 
 		// Get the underlying query and change it to inner join on the posts list to just show threads that
 		// have approved (and maybe awaiting) posts, and sort the threads by the most recent post
@@ -430,7 +436,10 @@ class Forum extends Page {
 		$query
 			->addSelect('"PostMax"."PostMax"')
 			// TODO: Confirm this works in non-MySQL DBs
-			->addFrom('LEFT JOIN (SELECT MAX("Created") AS "PostMax", "ThreadID" FROM "Post" GROUP BY "ThreadID") AS "PostMax" ON ("PostMax"."ThreadID" = "ForumThread"."ID")')
+			->addFrom(sprintf(
+				'LEFT JOIN (SELECT MAX("Created") AS "PostMax", "ThreadID" FROM "Post" WHERE "ForumID" = \'%s\' GROUP BY "ThreadID") AS "PostMax" ON ("PostMax"."ThreadID" = "ForumThread"."ID")',
+				$this->ID
+			))
 			->addOrderBy('"PostMax"."PostMax" DESC')
 			->setDistinct(false);
 
