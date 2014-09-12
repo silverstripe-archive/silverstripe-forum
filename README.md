@@ -10,7 +10,7 @@
 
 ## Requirements
 
- * SilverStripe 3.1.0+
+ * SilverStripe 3.2
 
 ## Installation & Documentation
 

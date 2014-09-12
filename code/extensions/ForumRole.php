@@ -10,16 +10,10 @@
 class ForumRole extends DataExtension {
 
 	/**
-	 * Edit the given query object to support queries for this extension
-	 */
-	function augmentSQL(SQLQuery &$query) {}
-
-
-	/**
 	 * Update the database schema as required by this extension
 	 */
-	function augmentDatabase() {
-		$exist = DB::tableList();
+	public function augmentDatabase() {
+		$exist = DB::table_list();
  		if(!empty($exist) && array_search('ForumMember', $exist) !== false) {
 			DB::query( "UPDATE \"Member\", \"ForumMember\" " .
 				"SET \"Member\".\"ClassName\" = 'Member'," .
@@ -128,12 +122,19 @@ class ForumRole extends DataExtension {
 		$locale->setLocale($this->owner->Country);
 		return $locale->getRegion();
 	}
-	function NumPosts() {
-		if(is_numeric($this->owner->ID)) {
-			return (int)DB::query("SELECT count(*) FROM \"Post\" WHERE \"AuthorID\" = '" . $this->owner->ID . "'")->value();
-		} else {
-			return 0;
-		}
+
+	/**
+	 * Number of posts for this person
+	 *
+	 * @return int
+	 */
+	public function NumPosts() {
+		if(!$this->owner->exists()) return 0;
+		
+		return (int)DB::prepared_query(
+			"SELECT count(*) FROM \"Post\" WHERE \"AuthorID\" = ?",
+			array($this->owner->ID)
+		)->value();
 	}
 	
 	/**

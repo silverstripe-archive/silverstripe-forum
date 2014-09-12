@@ -1,7 +1,7 @@
 <?php
 class ForumSpamPostExtension extends DataExtension {
 
-	public function augmentSQL(SQLQuery &$query) {
+	public function augmentSQL(SQLSelect $query) {
 		if (Config::inst()->forClass('Post')->allow_reading_spam) return;
 
 		$member = Member::currentUser();
@@ -21,10 +21,14 @@ class ForumSpamPostExtension extends DataExtension {
 
 		$query->addInnerJoin("Member", "\"AuthorStatusCheck\".\"ID\" = \"Post\".\"AuthorID\"", "AuthorStatusCheck");
 
-		$authorStatusFilter = '"AuthorStatusCheck"."ForumStatus" = \'Normal\'';
-		if ($member && $member->ForumStatus == 'Ghost') $authorStatusFilter .= ' OR "Post"."AuthorID" = '. $member->ID;
+		$authorStatusFilter = array(
+			array('"AuthorStatusCheck"."ForumStatus"' => 'Normal')
+		);
+		if ($member && $member->ForumStatus === 'Ghost') {
+			$authorStatusFilter[] =  array('"Post"."AuthorID" = ?', $member->ID);
+		}
 
-		$query->addWhere($authorStatusFilter);
+		$query->addWhereAny($authorStatusFilter);
 		$query->setDistinct(false);
 	}
 
