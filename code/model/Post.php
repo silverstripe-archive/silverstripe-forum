@@ -141,8 +141,14 @@ class Post extends DataObject {
 	 *
 	 * @return bool
 	 */
-	function isFirstPost() {
-		return (DB::query('SELECT COUNT("ID") FROM "Post" WHERE "ThreadID" = ' . $this->ThreadID . ' AND "ID" < ' . $this->ID)->value() > 0) ? false : true;
+	public function isFirstPost() {
+		if(empty($this->ThreadID) || empty($this->ID)) return false;
+		$earlierPosts = DB::query(sprintf(
+			'SELECT COUNT("ID") FROM "Post" WHERE "ThreadID" = \'%d\' and "ID" < \'%d\'',
+			$this->ThreadID,
+			$this->ID
+		))->value();
+		return empty($earlierPosts);
 	}
 	
 	/**
