@@ -934,7 +934,7 @@ class Forum_Controller extends Page_Controller {
 					}
 					catch(ValidationException $e) {
 						$message = _t('Forum.UPLOADVALIDATIONFAIL', 'Unallowed file uploaded. Please only upload files of the following: ');
-						$message .= implode(', ', File::$allowed_extensions);
+						$message .= implode(', ', Config::inst()->get('File', 'allowed_extensions'));
 						$form->addErrorMessage('Attachment', $message, 'bad');
 						
 						Session::set("FormInfo.Form_PostMessageForm.data", $data);
@@ -1099,7 +1099,7 @@ class Forum_Controller extends Page_Controller {
 				}
 			}
 		}
-		
+
 		return $this->httpError(404);
 	}
 
