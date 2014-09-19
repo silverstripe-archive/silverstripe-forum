@@ -245,11 +245,14 @@ class ForumHolder extends Page {
 	 * @return int Returns the number of distinct authors
 	 */
 	public function getNumAuthors() {
-		return DB::query("
+		$baseTable = ForumHolder::baseForumTable();
+		return (int)DB::prepared_query("
 			SELECT COUNT(DISTINCT \"Post\".\"AuthorID\") 
 			FROM \"Post\" 
-			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"Post\".\"ForumID\"=\"ForumPage\".\"ID\"
-			AND \"ForumPage\".\"ParentID\" = '" . $this->ID . "'")->value(); 		
+			JOIN \"{$baseTable}\" AS \"ForumPage\" ON \"Post\".\"ForumID\" = \"ForumPage\".\"ID\"
+			AND \"ForumPage\".\"ParentID\" = ?",
+			array($this->ID)
+		)->value();
 	}
 
 	/**
@@ -308,12 +311,12 @@ class ForumHolder extends Page {
 
 		// if we're just looking for a single MemberID, do a quicker query on the join table.
 		if($limit == 1) {
-			$latestMemberId = DB::query(sprintf(
+			$latestMemberId = DB::prepared_query(
 				'SELECT MAX("MemberID")
 				FROM "Group_Members"
-				WHERE "Group_Members"."GroupID" = \'%s\'',
-				$groupID
-			))->value();
+				WHERE "Group_Members"."GroupID" = ?',
+				array($groupID)
+			)->value();
 
 			$latestMembers = Member::get()->byId($latestMemberId);
 		} else {
@@ -482,24 +485,26 @@ class ForumHolder extends Page {
 	 *              FALSE.
 	 */
 	public static function new_posts_available($id, &$data = array(), $lastVisit = null, $lastPostID = null, $forumID = null, $threadID = null) {
-		$filter = array();
-		
 		// last post viewed
-		$filter[] = "\"ForumPage\".\"ParentID\" = '". Convert::raw2sql($id) ."'";  
-		if($lastPostID) $filter[] = "\"Post\".\"ID\" > '". Convert::raw2sql($lastPostID) ."'";
-		if($lastVisit) $filter[] = "\"Post\".\"Created\" > '". Convert::raw2sql($lastVisit) ."'"; 
-		if($forumID) $filter[] = "\"Post\".\"ForumID\" = '". Convert::raw2sql($forumID) ."'";
-		if($threadID) $filter[] = "\"ThreadID\" = '". Convert::raw2sql($threadID) ."'";
+		$query = new SQLSelect(
+			array(
+				'LastID' => 'MAX("Post"."ID")',
+				'LastCreated' => 'MAX("Post"."Created")'
+			),
+			'"Post"',
+			array('"ForumPage"."ParentID" = ?' => $id)
+		);
+		$query->addInnerJoin(ForumHolder::baseForumTable(), '"Post"."ForumID" = "ForumPage"."ID"', 'ForumPage');
 		
-		$filter = implode(" AND ", $filter);
-		
-		$version = DB::query("
-			SELECT MAX(\"Post\".\"ID\") AS \"LastID\", MAX(\"Post\".\"Created\") AS \"LastCreated\" 
-			FROM \"Post\"
-			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"Post\".\"ForumID\"=\"ForumPage\".\"ID\"
-			WHERE $filter" )->first();  
-		
-		if($version == false) return false;
+		// Filter by parameters specified
+		if($lastPostID) $query->addWhere(array('"Post"."ID" > ?' => $lastPostID));
+		if($lastVisit) $query->addWhere(array('"Post"."Created" > ?' => $lastVisit));
+		if($forumID) $query->addWhere(array('"Post"."ForumID" = ?' => $forumID));
+		if($threadID) $query->addWhere(array('"Post"."ThreadID" = ?' => $threadID));
+
+		// Run 
+		$version = $query->execute()->first();
+		if(!$version) return false;
 
 		if($data) {
 			$data['last_id'] = (int)$version['LastID'];
