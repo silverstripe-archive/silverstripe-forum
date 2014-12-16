@@ -521,6 +521,8 @@ class ForumMemberProfile extends Page_Controller {
 		if(!$member->inGroup($forumGroup)) {
 			$forumGroup->Members()->add($member);
 		}
+
+		$member->extend('onForumUpdateProfile', $this->request);
 		
 		return $this->redirect('thanks');
 	}
