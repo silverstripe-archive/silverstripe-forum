@@ -802,7 +802,7 @@ class ForumHolder_Controller extends Page_Controller {
 				$data['last_created'], 
 				$data['last_id']
 			);
-			$rss->outputToBrowser();
+			return $rss->outputToBrowser();
     	} else {
 	
 			// Return only new posts, check the request headers!
@@ -833,7 +833,7 @@ class ForumHolder_Controller extends Page_Controller {
 					$data['last_created'],
 					$data['last_id']
 				);
-				$rss->outputToBrowser();
+				return $rss->outputToBrowser();
 			} else {
 				if($data['last_created'])
 					HTTP::register_modification_timestamp($data['last_created']);
