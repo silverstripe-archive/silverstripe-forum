@@ -1078,7 +1078,11 @@ class Forum_Controller extends Page_Controller {
 			
 			//If there is not first post either the thread has been removed or thread if a banned spammer.
 			if(!$thread->getFirstPost()){
-				return $this->httpError(404);
+				// don't hide the post for logged in admins or moderators
+				$member = Member::currentUser();
+				if(!$this->canModerate($member)) {
+					return $this->httpError(404);
+				}
 			}
 
 			$thread->incNumViews();
