@@ -859,6 +859,10 @@ class Forum_Controller extends Page_Controller {
 	 */
 	function doPostMessageForm($data, $form) {
 		$member = Member::currentUser();
+		
+		//Allows interception of a Member posting content to perform some action before the post is made.
+		$this->extend('beforePostMessage', $data, $member);
+		
 		$content = (isset($data['Content'])) ? $this->filterLanguage($data["Content"]) : "";
 		$title = (isset($data['Title'])) ? $this->filterLanguage($data["Title"]) : false;
 
