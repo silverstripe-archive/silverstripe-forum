@@ -64,6 +64,10 @@ class ForumRole extends DataExtension {
 		'Avatar' => 'Image'
 	);
 
+	private static $has_many = array(
+		'ForumPosts' => 'Post'
+	);
+
 	private static $belongs_many_many = array(
 		'ModeratedForums' => 'Forum'
 	);
@@ -130,7 +134,7 @@ class ForumRole extends DataExtension {
 	}
 	function NumPosts() {
 		if(is_numeric($this->owner->ID)) {
-			return (int)DB::query("SELECT count(*) FROM \"Post\" WHERE \"AuthorID\" = '" . $this->owner->ID . "'")->value();
+			return $this->owner->ForumPosts()->Count();
 		} else {
 			return 0;
 		}
