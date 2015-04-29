@@ -1,6 +1,6 @@
 # Forum Module
 
-[![Build Status](https://secure.travis-ci.org/silverstripe/silverstripe-forum.png)](http://travis-ci.org/silverstripe/silverstripe-forum)
+[![Build Status](https://secure.travis-ci.org/silverstripe/silverstripe-forum.png?branch=master)](http://travis-ci.org/silverstripe/silverstripe-forum)
 
 ## Maintainer Contact
 
