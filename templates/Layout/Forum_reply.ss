@@ -1,9 +1,9 @@
 <% include ForumHeader %>
 	$PostMessageForm
-	
+
 	<div id="PreviousPosts">
 		<ul id="Posts">
-			<% loop Posts(DESC) %>
+			<% loop $Posts('DESC') %>
 				<li class="$EvenOdd">
 					<% include SinglePost %>
 				</li>
@@ -11,5 +11,5 @@
 		</ul>
 		<div class="clear"><!-- --></div>
 	</div>
-	
+
 <% include ForumFooter %>

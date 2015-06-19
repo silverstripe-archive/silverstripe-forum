@@ -4,7 +4,7 @@
  * ForumHolder represents the top forum overview page. Its children
  * should be Forums. On this page you can also edit your global settings
  * for the entire forum.
- * 
+ *
  * @package forum
  */
 
@@ -18,10 +18,10 @@ class ForumHolder extends Page {
 		"HolderSubtitle" => "Varchar(200)",
 		"ProfileSubtitle" => "Varchar(200)",
 		"ForumSubtitle" => "Varchar(200)",
-		"HolderAbstract" => "HTMLText", 
-		"ProfileAbstract" => "HTMLText", 
-		"ForumAbstract" => "HTMLText", 
-		"ProfileModify" => "HTMLText", 
+		"HolderAbstract" => "HTMLText",
+		"ProfileAbstract" => "HTMLText",
+		"ForumAbstract" => "HTMLText",
+		"ProfileModify" => "HTMLText",
 		"ProfileAdd" => "HTMLText",
 		"DisplaySignatures" => "Boolean",
 		"ShowInCategories" => "Boolean",
@@ -30,7 +30,7 @@ class ForumHolder extends Page {
 		"ForbiddenWords" => "Text",
 		"CanPostType" => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers, NoOne', 'LoggedInUsers')",
 	);
-	
+
 	private static $has_one = array();
 
 	private static $has_many = array(
@@ -38,7 +38,7 @@ class ForumHolder extends Page {
 	);
 
 	private static $allowed_children = array('Forum');
-	
+
 	private static $defaults = array(
 		"HolderSubtitle" => "Welcome to our forum!",
 		"ProfileSubtitle" => "Edit Your Profile",
@@ -49,21 +49,21 @@ class ForumHolder extends Page {
 		"ProfileModify" => "<p>Thanks, your member profile has been modified.</p>",
 		"ProfileAdd" => "<p>Thanks, you are now signed up to the forum.</p>",
 	);
-	
+
 	/**
 	 * If the user has spam protection enabled and setup then we can provide spam
 	 * prevention for the forum. This stores whether we actually want the registration
 	 * form to have such protection
-	 * 
+	 *
 	 * @var bool
 	 */
 	public static $use_spamprotection_on_register = true;
-	
+
 	/**
 	 * If the user has spam protection enabled and setup then we can provide spam
-	 * prevention for the forum. This stores whether we actually want the posting 
+	 * prevention for the forum. This stores whether we actually want the posting
 	 * form (adding, replying) to have such protection
-	 * 
+	 *
 	 * @var bool
 	 */
 	public static $use_spamprotection_on_posts = false;
@@ -71,7 +71,7 @@ class ForumHolder extends Page {
 	/**
 	 * Add a hidden field to the form which should remain empty
 	 * If its filled out, we can assume that a spam bot is auto-filling fields.
-	 * 
+	 *
 	 * @var bool
 	 */
 	public static $use_honeypot_on_register = false;
@@ -136,7 +136,7 @@ class ForumHolder extends Page {
 			TextField::create("ForbiddenWords", "Forbidden words (comma separated)"),
 			LiteralField::create("FWLabel","These words will be replaced by an asterisk")
 		));
-		
+
 		$fields->addFieldToTab("Root.Access", HeaderField::create(_t('Forum.ACCESSPOST','Who can post to the forum?'), 2));
 		$fields->addFieldToTab("Root.Access", OptionsetField::create("CanPostType", "", array(
 		  	"Anyone" => _t('Forum.READANYONE', 'Anyone'),
@@ -149,11 +149,11 @@ class ForumHolder extends Page {
 
 	function canPost($member = null) {
 		if(!$member) $member = Member::currentUser();
-		
+
 		if($this->CanPostType == "NoOne") return false;
-		
+
 		if($this->CanPostType == "Anyone" || $this->canEdit($member)) return true;
-		
+
 		if($member) {
 			if($member->IsSuspended()) return false;
 			if($member->IsBanned()) return false;
@@ -165,10 +165,10 @@ class ForumHolder extends Page {
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Ensure that any categories that exist with no forum holder are updated to be owned by the first forum holder
 	 * if there is one. This is required now that multiple forum holds are allowed, and categories belong to holders.
@@ -189,7 +189,7 @@ class ForumHolder extends Page {
 			$forumCategory->write();
 		}
 	}
-	
+
 	/**
 	 * If we're on the search action, we need to at least show
 	 * a breadcrumb to get back to the ForumHolder page.
@@ -201,14 +201,14 @@ class ForumHolder extends Page {
 				case 'search':
 					return '<a href="' . $this->Link() . '">' . $this->Title . '</a> &raquo; ' . _t('SEARCHBREADCRUMB', 'Search');
 				case 'memberlist':
-					return '<a href="' . $this->Link() . '">' . $this->Title . '</a> &raquo; ' . _t('MEMBERLIST', 'Member List');				
+					return '<a href="' . $this->Link() . '">' . $this->Title . '</a> &raquo; ' . _t('MEMBERLIST', 'Member List');
 				case 'popularthreads':
 					return '<a href="' . $this->Link() . '">' . $this->Title . '</a> &raquo; ' . _t('MOSTPOPULARTHREADS', 'Most popular threads');
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Get the number of total posts
 	 *
@@ -247,8 +247,8 @@ class ForumHolder extends Page {
 	public function getNumAuthors() {
 		$baseTable = ForumHolder::baseForumTable();
 		return (int)DB::prepared_query("
-			SELECT COUNT(DISTINCT \"Post\".\"AuthorID\") 
-			FROM \"Post\" 
+			SELECT COUNT(DISTINCT \"Post\".\"AuthorID\")
+			FROM \"Post\"
 			JOIN \"{$baseTable}\" AS \"ForumPage\" ON \"Post\".\"ForumID\" = \"ForumPage\".\"ID\"
 			AND \"ForumPage\".\"ParentID\" = ?",
 			array($this->ID)
@@ -266,7 +266,7 @@ class ForumHolder extends Page {
 	/**
 	 * Get a list of currently online users (last 15 minutes)
 	 * that belong to the "forum-members" code {@link Group}.
-	 * 
+	 *
 	 * @return DataList of {@link Member} objects
 	 */
 	public function CurrentlyOnline() {
@@ -290,23 +290,26 @@ class ForumHolder extends Page {
 			->where('"Member"."LastViewed" > ' . DB::getConn()->datetimeIntervalClause('NOW', '-15 MINUTE'))
 			->sort('"Member"."FirstName", "Member"."Surname"');
 	}
-	
+
 	/**
 	 * @deprecated 0.5
 	 */
 	function LatestMember($limit = 1) {
 		user_error('Please use LatestMembers($limit) instead of LatestMember', E_USER_NOTICE);
-		
+
 		return $this->LatestMembers($limit);
 	}
-	
+
 	/**
 	 * Get the latest members from the forum group.
 	 *
 	 * @param int $limit Number of members to return
 	 * @return ArrayList
 	 */
-	function getLatestMembers($limit = 1) {
+	function getLatestMembers($limit = null) {
+		if (!is_null($limit)) {
+			Deprecation::notice('1.0', '$limit parameter is deprecated, please chain the limit clause');
+		}
 		$groupID = DB::query('SELECT "ID" FROM "Group" WHERE "Code" = \'forum-members\'')->value();
 
 		// if we're just looking for a single MemberID, do a quicker query on the join table.
@@ -323,8 +326,10 @@ class ForumHolder extends Page {
 			$latestMembers = Member::get()
 				->leftJoin('Group_Members', '"Member"."ID" = "Group_Members"."MemberID"')
 				->filter('GroupID', $groupID)
-				->sort('"Member"."ID" DESC')
-				->limit($limit);
+				->sort('"Member"."ID" DESC');
+			if ($limit) {
+				$latestMembers = $latestMembers->limit($limit);
+			}
 		}
 
 		return $latestMembers;
@@ -393,7 +398,7 @@ class ForumHolder extends Page {
 	static function baseForumTable() {
 		$stage = (Controller::curr()->getRequest()) ? Controller::curr()->getRequest()->getVar('stage') : false;
 		if (!$stage) $stage = Versioned::get_live_stage();
-		
+
 		if(
 			(class_exists('SapphireTest', false) && SapphireTest::is_running_test())
 			|| $stage == "Stage"
@@ -403,8 +408,8 @@ class ForumHolder extends Page {
 			return "SiteTree_Live";
 		}
 	}
-	
-	
+
+
 	/**
 	 * Is OpenID support available?
 	 *
@@ -419,8 +424,8 @@ class ForumHolder extends Page {
 
 		return Authenticator::is_registered("OpenIDAuthenticator");
 	}
-	
-	
+
+
 	/**
 	 * Get the latest posts
 	 *
@@ -432,14 +437,14 @@ class ForumHolder extends Page {
 	 */
 	function getRecentPosts($limit = 50, $forumID = null, $threadID = null, $lastVisit = null, $lastPostID = null) {
 		$filter = array();
-		
+
 		if($lastVisit) $lastVisit = @date('Y-m-d H:i:s', $lastVisit);
 
 		$lastPostID = (int) $lastPostID;
-		
+
 		// last post viewed
 		if($lastPostID > 0) $filter[] = "\"Post\".\"ID\" > '". Convert::raw2sql($lastPostID) ."'";
-		
+
 		// last time visited
 		if($lastVisit) $filter[] = "\"Post\".\"Created\" > '". Convert::raw2sql($lastVisit) ."'";
 
@@ -495,14 +500,14 @@ class ForumHolder extends Page {
 			array('"ForumPage"."ParentID" = ?' => $id)
 		);
 		$query->addInnerJoin(ForumHolder::baseForumTable(), '"Post"."ForumID" = "ForumPage"."ID"', 'ForumPage');
-		
+
 		// Filter by parameters specified
 		if($lastPostID) $query->addWhere(array('"Post"."ID" > ?' => $lastPostID));
 		if($lastVisit) $query->addWhere(array('"Post"."Created" > ?' => $lastVisit));
 		if($forumID) $query->addWhere(array('"Post"."ForumID" = ?' => $forumID));
 		if($threadID) $query->addWhere(array('"Post"."ThreadID" = ?' => $threadID));
 
-		// Run 
+		// Run
 		$version = $query->execute()->first();
 		if(!$version) return false;
 
@@ -510,24 +515,24 @@ class ForumHolder extends Page {
 			$data['last_id'] = (int)$version['LastID'];
 			$data['last_created'] = strtotime($version['LastCreated']);
 		}
-	
+
 		$lastVisit = (int) $lastVisit;
-		
+
 		if($lastVisit <= 0) $lastVisit = false;
 
 		$lastPostID = (int)$lastPostID;
 		if($lastPostID <= 0) $lastPostID = false;
 
-		if(!$lastVisit && !$lastPostID) return true; 
+		if(!$lastVisit && !$lastPostID) return true;
 		if($lastVisit && (strtotime($version['LastCreated']) > $lastVisit)) return true;
 
 		if($lastPostID && ((int)$version['LastID'] > $lastPostID)) return true;
 
 		return false;
 	}
-	
+
 	/**
-	 * Helper Method from the template includes. Uses $ForumHolder so in order for it work 
+	 * Helper Method from the template includes. Uses $ForumHolder so in order for it work
 	 * it needs to be included on this page
 	 *
 	 * @return ForumHolder
@@ -567,11 +572,11 @@ class ForumHolder_Controller extends Page_Controller {
 			Session::set('BackURL', $this->Link());
 		}
 	}
-	
-	/** 
-	 * Generate a complete list of all the members data. Return a 
+
+	/**
+	 * Generate a complete list of all the members data. Return a
 	 * set of all these members sorted by a GET variable
-	 *  
+	 *
 	 * @todo Sort via AJAX
 	 * @return DataObjectSet A DataObjectSet of all the members which are signed up
 	 */
@@ -579,14 +584,14 @@ class ForumHolder_Controller extends Page_Controller {
 		return $this->httpError(404);
 
 		$forumGroupID = (int) DataObject::get_one('Group', "\"Code\" = 'forum-members'")->ID;
-		
+
 		// If sort has been defined then save it as in the session
 		$order = (isset($_GET['order'])) ? $_GET['order']: "";
-		
+
 		if(!isset($_GET['start']) || !is_numeric($_GET['start']) || (int) $_GET['start'] < 1) {
 			$_GET['start'] = 0;
 		}
-		
+
 		$SQL_start = (int) $_GET['start'];
 
 		switch($order) {
@@ -614,7 +619,7 @@ class ForumHolder_Controller extends Page_Controller {
 						->sort('"Member"."Nickname" ASC')
 						->limit($SQL_start . ',100');
 			break;
-			case "posts": 
+			case "posts":
 				$query = singleton('Member')->extendedSQL('', "\"NumPosts\" DESC", "{$SQL_start},100");
 				$query->select[] = "(SELECT COUNT(*) FROM \"Post\" WHERE \"Post\".\"AuthorID\" = \"Member\".\"ID\") AS \"NumPosts\"";
 				$records = $query->execute();
@@ -630,7 +635,7 @@ class ForumHolder_Controller extends Page_Controller {
 						->limit($SQL_start . ',100');
 			break;
 		}
-		
+
 		return array(
 			'Subtitle' => _t('ForumHolder.MEMBERLIST', 'Forum member List'),
 			'Abstract' => $this->MemberListAbstract,
@@ -638,14 +643,14 @@ class ForumHolder_Controller extends Page_Controller {
 			'Title' => _t('ForumHolder.MEMBERLIST', 'Forum member List')
 		);
 	}
-	
+
 	/**
 	 * Show the 20 most popular threads across all {@link Forum} children.
-	 * 
+	 *
 	 * Two configuration options are available:
 	 * 1. "posts" - most popular threads by posts
 	 * 2. "views" - most popular threads by views
-	 * 
+	 *
 	 * e.g. mysite.com/forums/popularthreads?by=posts
 	 *
 	 * @return array
@@ -655,7 +660,7 @@ class ForumHolder_Controller extends Page_Controller {
 		$limit = 20;
 		$method = isset($_GET['by']) ? $_GET['by'] : null;
 		if(!$method) $method = 'posts';
-		
+
 		if($method == 'posts') {
 			$threadsQuery = singleton('ForumThread')->buildSQL(
 				"\"SiteTree\".\"ParentID\" = '" . $this->ID ."'",
@@ -667,11 +672,11 @@ class ForumHolder_Controller extends Page_Controller {
 			$threadsQuery->groupby[] = "\"ForumThread\".\"ID\"";
 			$threads = singleton('ForumThread')->buildDataObjectSet($threadsQuery->execute());
 			if($threads) $threads->setPageLimits($start, $limit, $threadsQuery->unlimitedRowCount());
-			
+
 		} elseif($method == 'views') {
 			$threads = DataObject::get('ForumThread', '', "\"NumViews\" DESC", '', "$start,$limit");
 		}
-		
+
 		return array(
 			'Title' => _t('ForumHolder.POPULARTHREADS', 'Most popular forum threads'),
 			'Subtitle' => _t('ForumHolder.POPULARTHREADS', 'Most popular forum threads'),
@@ -689,17 +694,17 @@ class ForumHolder_Controller extends Page_Controller {
 		Session::set('Security.Message.message',_t('Forum.CREDENTIALS'));
 		Session::set('Security.Message.type', 'status');
 		Session::set("BackURL", $this->Link());
-		
+
 		$this->redirect('Security/login');
 	}
-	
+
 
 	function logout() {
 		if($member = Member::currentUser()) $member->logOut();
-		
+
 		$this->redirect($this->Link());
 	}
-	
+
 	/**
 	 * The search action
 	 *
@@ -711,10 +716,10 @@ class ForumHolder_Controller extends Page_Controller {
 		$start		= (isset($_REQUEST['start'])) ? (int) $_REQUEST['start'] : 0;
 
 		$abstract = ($keywords) ? "<p>" . sprintf(_t('ForumHolder.SEARCHEDFOR',"You searched for '%s'."),$keywords) . "</p>": null;
-		
+
 		// get the results of the query from the current search engine
-		$search = ForumSearch::get_search_engine();	
-		
+		$search = ForumSearch::get_search_engine();
+
 		if($search) {
 			$engine = new $search();
 
@@ -730,19 +735,19 @@ class ForumHolder_Controller extends Page_Controller {
 			$this->request->getVars()
 		);
 
-		
+
 		// if the user has requested this search as an RSS feed then output the contents as xml
 		// rather than passing it to the template
 		if(isset($_REQUEST['rss'])) {
 			$rss = new RSSFeed($results, $this->Link(), _t('ForumHolder.SEARCHRESULTS','Search results'), "", "Title", "RSSContent", "RSSAuthor");
-			
-			return $rss->outputToBrowser();	
+
+			return $rss->outputToBrowser();
 		}
-		
+
 		// attach a link to a RSS feed version of the search results
 		$rssLink = $this->Link() ."search/?Search=".urlencode($keywords). "&amp;order=".urlencode($order)."&amp;rss";
 		RSSFeed::linkToFeed($rssLink, _t('ForumHolder.SEARCHRESULTS','Search results'));
-		
+
 		return array(
 			"Subtitle"		=> DBField::create_field('Text', _t('ForumHolder.SEARCHRESULTS','Search results')),
 			"Abstract"		=> DBField::create_field('HTMLText', $abstract),
@@ -752,7 +757,7 @@ class ForumHolder_Controller extends Page_Controller {
 			"SearchResults"	=> $results
 		);
 	}
-	
+
 	/**
 	 * Get the RSS feed
 	 *
@@ -761,16 +766,16 @@ class ForumHolder_Controller extends Page_Controller {
 	 */
 	function rss() {
 		HTTP::set_cache_age(3600); // cache for one hour
-		
+
 		$threadID = null;
 		$forumID = null;
-		
+
 		// optionally allow filtering of the forum posts by the url in the format
 		// rss/thread/$ID or rss/forum/$ID
 		if(isset($this->urlParams['ID']) && ($action = $this->urlParams['ID'])) {
 			if(isset($this->urlParams['OtherID']) && ($id = $this->urlParams['OtherID'])) {
 				switch($action) {
-					case 'forum': 
+					case 'forum':
 						$forumID = (int) $id;
 						break;
 					case 'thread':
@@ -783,28 +788,28 @@ class ForumHolder_Controller extends Page_Controller {
 				$forumID = (int) $action;
 			}
 		}
-		
+
 		$data = array('last_created' => null, 'last_id' => null);
 
 		if(!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && !isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
 			// just to get the version data..
 			$available = ForumHolder::new_posts_available($this->ID, $data, null, null, $forumID, $threadID);
-			
+
 			// No information provided by the client, just return the last posts
 			$rss = new RSSFeed(
-				$this->getRecentPosts(50, $forumID, $threadID), 
+				$this->getRecentPosts(50, $forumID, $threadID),
 				$this->Link() . 'rss',
-				sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), 
-				"", 
+				sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title),
+				"",
 				"Title",
-				"RSSContent", 
+				"RSSContent",
 				"RSSAuthor",
-				$data['last_created'], 
+				$data['last_created'],
 				$data['last_id']
 			);
 			return $rss->outputToBrowser();
     	} else {
-	
+
 			// Return only new posts, check the request headers!
 			$since = null;
 			$etag = null;
@@ -825,11 +830,11 @@ class ForumHolder_Controller extends Page_Controller {
 				$rss = new RSSFeed(
 					$this->getRecentPosts(50, $forumID, $threadID, $etag),
 					$this->Link() . 'rss',
-					sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title), 
-					"", 
+					sprintf(_t('Forum.RSSFORUMPOSTSTO'),$this->Title),
+					"",
 					"Title",
-					"RSSContent", 
-					"RSSAuthor", 
+					"RSSContent",
+					"RSSAuthor",
 					$data['last_created'],
 					$data['last_id']
 				);
@@ -848,7 +853,7 @@ class ForumHolder_Controller extends Page_Controller {
 		}
 		exit;
 	}
-	
+
 	/**
 	 * Return the GlobalAnnouncements from the individual forums
 	 *
