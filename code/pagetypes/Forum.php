@@ -210,13 +210,13 @@ class Forum extends Page {
 	 */
 	function getCMSFields() {
 		$self = $this;
-		
+
 		$this->beforeUpdateCMSFields(function($fields) use ($self) {
 			Requirements::javascript("forum/javascript/ForumAccess.js");
 			Requirements::css("forum/css/Forum_CMS.css");
-			
+
 			$fields->addFieldToTab("Root.Access", new HeaderField(_t('Forum.ACCESSPOST','Who can post to the forum?'), 2));
-		
+
 			$fields->addFieldToTab("Root.Access", new HeaderField(_t('Forum.ACCESSPOST','Who can post to the forum?'), 2));
 			$fields->addFieldToTab("Root.Access", $optionSetField = new OptionsetField("CanPostType", "", array(
 				"Inherit" => "Inherit",
@@ -225,27 +225,27 @@ class Forum extends Page {
 				"OnlyTheseUsers" => _t('Forum.READLIST', 'Only these people (choose from list)'),
 				"NoOne" => _t('Forum.READNOONE', 'Nobody. Make Forum Read Only')
 			)));
-	
+
 			$optionSetField->addExtraClass('ForumCanPostTypeSelector');
-	
-			$fields->addFieldsToTab("Root.Access", array( 
+
+			$fields->addFieldsToTab("Root.Access", array(
 				new TreeMultiselectField("PosterGroups", _t('Forum.GROUPS',"Groups")),
 				new OptionsetField("CanAttachFiles", _t('Forum.ACCESSATTACH','Can users attach files?'), array(
 					"1" => _t('Forum.YES','Yes'),
 					"0" => _t('Forum.NO','No')
 				))
 			));
-	
-	
+
+
 			//Dropdown of forum category selection.
 			$categories = ForumCategory::get()->map();
-	
+
 			$fields->addFieldsToTab(
 				"Root.Main",
 				DropdownField::create('CategoryID', _t('Forum.FORUMCATEGORY', 'Forum Category'), $categories),
 				'Content'
 			);
-	
+
 			//GridField Config - only need to attach or detach Moderators with existing Member accounts.
 			$moderatorsConfig = GridFieldConfig::create()
 				->addComponent(new GridFieldButtonRow('before'))
@@ -256,7 +256,7 @@ class Forum extends Page {
 				->addComponent(new GridFieldDeleteAction(true))
 				->addComponent(new GridFieldPageCount('toolbar-header-right'))
 				->addComponent($pagination = new GridFieldPaginator());
-	
+
 			// Use GridField for Moderator management
 			$moderators = GridField::create(
 				'Moderators',
@@ -264,7 +264,7 @@ class Forum extends Page {
 				$self->Moderators(),
 				$moderatorsConfig
 				);
-	
+
 			$columns->setDisplayFields(array(
 				'Nickname' => 'Nickname',
 				'FirstName' => 'First name',
@@ -272,13 +272,13 @@ class Forum extends Page {
 				'Email'=> 'Email',
 				'LastVisited.Long' => 'Last Visit'
 			));
-	
+
 			$sort->setThrowExceptionOnBadDataType(false);
 			$pagination->setThrowExceptionOnBadDataType(false);
-	
+
 			$fields->addFieldToTab('Root.Moderators', $moderators);
 		});
-		
+
 		$fields = parent::getCMSFields();
 
 		return $fields;
@@ -859,10 +859,10 @@ class Forum_Controller extends Page_Controller {
 	 */
 	function doPostMessageForm($data, $form) {
 		$member = Member::currentUser();
-		
+
 		//Allows interception of a Member posting content to perform some action before the post is made.
 		$this->extend('beforePostMessage', $data, $member);
-		
+
 		$content = (isset($data['Content'])) ? $this->filterLanguage($data["Content"]) : "";
 		$title = (isset($data['Title'])) ? $this->filterLanguage($data["Title"]) : false;
 
@@ -1217,6 +1217,7 @@ class Forum_Controller extends Page_Controller {
 
 		return $this->PostMessageForm(false, $post);
 	}
+
 
 	/**
 	 * Delete a post via the url.
