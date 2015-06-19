@@ -1,7 +1,7 @@
 <?php
 class ForumSpamPostExtension extends DataExtension {
 
-	public function augmentSQL(SQLSelect $query) {
+	public function augmentSQL(SQLQuery &$query) {
 		if (Config::inst()->forClass('Post')->allow_reading_spam) return;
 
 		$member = Member::currentUser();
