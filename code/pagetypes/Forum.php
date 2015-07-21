@@ -1231,6 +1231,7 @@ class Forum_Controller extends Page_Controller {
 		return $this->PostMessageForm(false, $post);
 	}
 
+
 	/**
 	 * Delete a post via the url.
 	 *
