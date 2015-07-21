@@ -740,6 +740,10 @@ class Forum_Controller extends Page_Controller {
 	function PostMessageForm($addMode = false, $post = false) {
 		$thread = false;
 
+		if ($addMode && strtolower($addMode) == 'false') {
+			$addMode = false;
+		}
+
 		if($post) {
 			$thread = $post->Thread();
 		} else if(isset($this->urlParams['ID']) && is_numeric($this->urlParams['ID'])) {
@@ -825,7 +829,10 @@ class Forum_Controller extends Page_Controller {
 			new FormAction("doPostMessageForm", _t('Forum.REPLYFORMPOST', 'Post'))
 		);
 
-		$required = $addMode === true ? new RequiredFields("Title", "Content") : new RequiredFields("Content");
+		$required = new RequiredFields('Content');
+		if($addMode) {
+			$required->addRequiredField('Title');
+		}
 
 		$form = new Form($this, 'PostMessageForm', $fields, $actions, $required);
 
@@ -1296,6 +1303,8 @@ class Forum_Controller extends Page_Controller {
 			$thread = ForumThread::get()->byID($id);
 			$form->loadDataFrom($thread);
 		}
+
+		$this->extend('updateAdminFormFeatures', $form);
 
 		return $form;
 	}
