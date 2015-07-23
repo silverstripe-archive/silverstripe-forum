@@ -1,6 +1,6 @@
 <div class="forum-header">
 
-	<% loop $ForumHolder %>
+
 		<div class="forum-header-forms">
 
 			<span class="forum-search-dropdown-icon"></span>
@@ -49,7 +49,7 @@
 			<% end_if %>
 
 		</div><!-- forum-header-forms. -->
-	<% end_loop %>
+
 
 	<h1 class="forum-heading"><a name='Header'>$HolderSubtitle</a></h1>
 	<p class="forum-breadcrumbs">$Breadcrumbs</p>
