@@ -740,10 +740,6 @@ class Forum_Controller extends Page_Controller {
 	function PostMessageForm($addMode = false, $post = false) {
 		$thread = false;
 
-		if ($addMode && strtolower($addMode) == 'false') {
-			$addMode = false;
-		}
-
 		if($post) {
 			$thread = $post->Thread();
 		} else if(isset($this->urlParams['ID']) && is_numeric($this->urlParams['ID'])) {
