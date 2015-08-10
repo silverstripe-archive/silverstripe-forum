@@ -17,6 +17,12 @@ class ForumSpamPostExtension extends DataExtension {
 
 		$query->addWhere($filter);
 
+		// Exclude Ghost member posts, but show Ghost members their own posts
+		$authorStatusFilter = 'AuthorID IN (SELECT ID FROM Member WHERE ForumStatus = \'Normal\')';
+		if ($member && $member->ForumStatus == 'Ghost') $authorStatusFilter .= ' OR AuthorID = ' . $member->ID;
+
+		$query->addWhere($authorStatusFilter);
+
 		$query->setDistinct(false);
 	}
 
