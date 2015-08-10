@@ -463,8 +463,6 @@ class Forum_Controller extends Page_Controller {
 		'AdminFormFeatures',
 		'deleteattachment',
 		'deletepost',
-		'doAdminFormFeatures',
-		'doPostMessageForm',
 		'editpost',
 		'markasspam',
 		'PostMessageForm',
