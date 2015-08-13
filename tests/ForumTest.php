@@ -414,4 +414,29 @@ class ForumTest extends FunctionalTest {
 
 		Forum::$notify_moderators = $notifyModerators;
 	}
+
+	/**
+	 * Confirm that when a post is deleted, Member with corresponding ID still exists
+	 *
+	 * @throws ValidationException
+	 * @throws null
+	 */
+	function testPostDeletionMemberIntegrity()
+	{
+		$checkID = 100012;
+
+		$post = new Post();
+		$post->ID = $checkID;
+		$post->write();
+
+		$user = new Member();
+		$user->ID = $checkID;
+		$user->FirstName = 'TestUser100012';
+		$user->write();
+
+		$post->delete();
+
+		$member = DataObject::get_by_id('Member', $checkID);
+		$this->assertTrue($member->ID == $checkID);
+	}
 }
