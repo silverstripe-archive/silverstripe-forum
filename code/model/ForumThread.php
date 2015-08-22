@@ -133,7 +133,13 @@ class ForumThread extends DataObject {
 	 * @return int
 	 */
 	function getNumPosts() {
-		return (int)DB::query("SELECT count(*) FROM \"Post\" WHERE \"ThreadID\" = $this->ID")->value();
+		$sqlQuery = new SQLQuery();
+		$sqlQuery->setFrom('"Post"');
+		$sqlQuery->setSelect('COUNT("Post"."ID")');
+		$sqlQuery->addInnerJoin('Member', '"Post"."AuthorID" = "Member"."ID"');
+		$sqlQuery->addWhere('"Member"."ForumStatus" = \'Normal\'');
+		$sqlQuery->addWhere('"ThreadID" = ' . $this->ID);
+		return $sqlQuery->execute()->value();
 	}
 
 	/**

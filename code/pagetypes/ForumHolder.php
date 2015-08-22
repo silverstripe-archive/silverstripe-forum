@@ -222,12 +222,14 @@ class ForumHolder extends Page {
 	 * @return int Returns the number of posts
 	 */
 	public function getNumPosts() {
-		return Post::get()
-			->innerJoin(ForumHolder::baseForumTable(),"\"Post\".\"ForumID\" = \"ForumPage\".\"ID\"" , "ForumPage")
-			->filter(array(
-				"ForumPage.ParentID" => $this->ID
-			))
-			->count();
+			$sqlQuery = new SQLQuery();
+			$sqlQuery->setFrom('"Post"');
+			$sqlQuery->setSelect('COUNT("Post"."ID")');
+			$sqlQuery->addInnerJoin('Member', '"Post"."AuthorID" = "Member"."ID"');
+			$sqlQuery->addInnerJoin('SiteTree', '"Post"."ForumID" = "SiteTree"."ID"');
+			$sqlQuery->addWhere('"Member"."ForumStatus" = \'Normal\'');
+			$sqlQuery->addWhere('"SiteTree"."ParentID" = ' . $this->ID);
+			return $sqlQuery->execute()->value();
 	}
 
 
@@ -237,12 +239,14 @@ class ForumHolder extends Page {
 	 * @return int Returns the number of topics (threads)
 	 */
 	function getNumTopics() {
-		return ForumThread::get()
-			->innerJoin(ForumHolder::baseForumTable(),"\"ForumThread\".\"ForumID\" = \"ForumPage\".\"ID\"","ForumPage")
-			->filter(array(
-				"ForumPage.ParentID" => $this->ID
-			))
-			->count();
+		$sqlQuery = new SQLQuery();
+		$sqlQuery->setFrom('"Post"');
+		$sqlQuery->setSelect('COUNT(DISTINCT("ThreadID"))');
+		$sqlQuery->addInnerJoin('Member', '"Post"."AuthorID" = "Member"."ID"');
+		$sqlQuery->addInnerJoin('SiteTree', '"Post"."ForumID" = "SiteTree"."ID"');
+		$sqlQuery->addWhere('"Member"."ForumStatus" = \'Normal\'');
+		$sqlQuery->addWhere('"SiteTree"."ParentID" = ' . $this->ID);
+		return $sqlQuery->execute()->value();
 	}
 
 
@@ -252,11 +256,14 @@ class ForumHolder extends Page {
 	 * @return int Returns the number of distinct authors
 	 */
 	public function getNumAuthors() {
-		return DB::query("
-			SELECT COUNT(DISTINCT \"Post\".\"AuthorID\")
-			FROM \"Post\"
-			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"Post\".\"ForumID\"=\"ForumPage\".\"ID\"
-			AND \"ForumPage\".\"ParentID\" = '" . $this->ID . "'")->value();
+		$sqlQuery = new SQLQuery();
+		$sqlQuery->setFrom('"Post"');
+		$sqlQuery->setSelect('COUNT(DISTINCT("AuthorID"))');
+		$sqlQuery->addInnerJoin('Member', '"Post"."AuthorID" = "Member"."ID"');
+		$sqlQuery->addInnerJoin('SiteTree', '"Post"."ForumID" = "SiteTree"."ID"');
+		$sqlQuery->addWhere('"Member"."ForumStatus" = \'Normal\'');
+		$sqlQuery->addWhere('"SiteTree"."ParentID" = ' . $this->ID);
+		return $sqlQuery->execute()->value();
 	}
 
 	/**

@@ -357,17 +357,30 @@ class Forum extends Page {
 	 * @return int Returns the number of topics (threads)
 	 */
 	function getNumTopics() {
-		return DB::query(sprintf('SELECT COUNT("ID") FROM "ForumThread" WHERE "ForumID" = \'%s\'', $this->ID))->value();
+		$sqlQuery = new SQLQuery();
+		$sqlQuery->setFrom('"Post"');
+		$sqlQuery->setSelect('COUNT(DISTINCT("ThreadID"))');
+		$sqlQuery->addInnerJoin('Member', '"Post"."AuthorID" = "Member"."ID"');
+		$sqlQuery->addWhere('"Member"."ForumStatus" = \'Normal\'');
+		$sqlQuery->addWhere('"ForumID" = ' . $this->ID);
+		return $sqlQuery->execute()->value();
 	}
 
 	/**
 	 * Get the number of total posts
 	 *
-	 * @return int
+	 * @return int Returns the number of posts
 	 */
 	function getNumPosts() {
-		return DB::query(sprintf('SELECT COUNT("ID") FROM "Post" WHERE "ForumID" = \'%s\'', $this->ID))->value();
+		$sqlQuery = new SQLQuery();
+		$sqlQuery->setFrom('"Post"');
+		$sqlQuery->setSelect('COUNT("Post"."ID")');
+		$sqlQuery->addInnerJoin('Member', '"Post"."AuthorID" = "Member"."ID"');
+		$sqlQuery->addWhere('"Member"."ForumStatus" = \'Normal\'');
+		$sqlQuery->addWhere('"ForumID" = ' . $this->ID);
+		return $sqlQuery->execute()->value();
 	}
+
 
 	/**
 	 * Get the number of distinct Authors
@@ -375,7 +388,13 @@ class Forum extends Page {
 	 * @return int
 	 */
 	function getNumAuthors() {
-		return DB::query(sprintf('SELECT COUNT(DISTINCT "AuthorID") FROM "Post" WHERE "ForumID" = \'%s\'', $this->ID))->value();
+		$sqlQuery = new SQLQuery();
+		$sqlQuery->setFrom('"Post"');
+		$sqlQuery->setSelect('COUNT(DISTINCT("AuthorID"))');
+		$sqlQuery->addInnerJoin('Member', '"Post"."AuthorID" = "Member"."ID"');
+		$sqlQuery->addWhere('"Member"."ForumStatus" = \'Normal\'');
+		$sqlQuery->addWhere('"ForumID" = ' . $this->ID);
+		return $sqlQuery->execute()->value();
 	}
 
 	/**
