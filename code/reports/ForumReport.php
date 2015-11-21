@@ -12,35 +12,39 @@
  * Lists the Number of people who have signed up in the past months categorized 
  * by month.
  */
-class ForumReport_MemberSignups extends SS_Report {
-	function title() {
-		return _t('Forum.FORUMSIGNUPS',"Forum Signups by Month");
-	}
-	function records($params = array()) {
-		$members = DB::query("
+class ForumReport_MemberSignups extends SS_Report
+{
+    public function title()
+    {
+        return _t('Forum.FORUMSIGNUPS', "Forum Signups by Month");
+    }
+    public function records($params = array())
+    {
+        $members = DB::query("
 			SELECT DATE_FORMAT(\"Created\", '%Y %M') AS \"Month\", COUNT(\"Created\") AS \"NumberJoined\"
 			FROM \"Member\"
 			GROUP BY DATE_FORMAT(\"Created\", '%M %Y')
 			ORDER BY \"Created\" DESC
 		");
-		$output = array();
-		foreach($members->map() as $record => $value) {
-			$output[$record] = $value;
-		}
-		return $output;
-	
-	}
-	function fieldsToShow() {
-	}
-	function getHTML() {
-		$result = "<ul class=\"$this->class\">\n";
-		foreach($this->records() as $record => $value) {
-			$signups = ($value == 1) ? "Signup" : "Signups";
-			$result .= "<li>". $record . " - ". $value . ' '. $signups ."</li>";
-		}
-		$result .= "</ul>";
-		return $result;
-	}
+        $output = array();
+        foreach ($members->map() as $record => $value) {
+            $output[$record] = $value;
+        }
+        return $output;
+    }
+    public function fieldsToShow()
+    {
+    }
+    public function getHTML()
+    {
+        $result = "<ul class=\"$this->class\">\n";
+        foreach ($this->records() as $record => $value) {
+            $signups = ($value == 1) ? "Signup" : "Signups";
+            $result .= "<li>". $record . " - ". $value . ' '. $signups ."</li>";
+        }
+        $result .= "</ul>";
+        return $result;
+    }
 }
 
 /**
@@ -48,36 +52,40 @@ class ForumReport_MemberSignups extends SS_Report {
  * Lists the Number of Posts made in the forums in the past months categorized 
  * by month.
  */
-class ForumReport_MonthlyPosts extends SS_Report {
-	function title() {
-		return _t('Forum.FORUMMONTHLYPOSTS',"Forum Posts by Month");
-	}
-	
-	function records($params = array()) {
-		$members = DB::query("
+class ForumReport_MonthlyPosts extends SS_Report
+{
+    public function title()
+    {
+        return _t('Forum.FORUMMONTHLYPOSTS', "Forum Posts by Month");
+    }
+    
+    public function records($params = array())
+    {
+        $members = DB::query("
 			SELECT DATE_FORMAT(\"Created\", '%Y %M') AS \"Month\", COUNT(\"Created\") AS \"PostsTotal\"
 			FROM \"Post\"
 			GROUP BY DATE_FORMAT(\"Created\", '%M %Y')
 			ORDER BY \"Created\" DESC
 		");
-		$output = array();
-		foreach($members->map() as $record => $value) {
-			$output[$record] = $value;
-		}
-		return $output;
-
-	}
-	
-	function fieldsToShow() {
-	}
-	
-	function getHTML() {
-		$result = "<ul class=\"$this->class\">\n";
-		foreach($this->records() as $record => $value) {
-			$signups = ($value == 1) ? "Post" : "Posts";
-			$result .= "<li>". $record . " - ". $value . ' '. $signups ."</li>";
-		}
-		$result .= "</ul>";
-		return $result;
-	}
+        $output = array();
+        foreach ($members->map() as $record => $value) {
+            $output[$record] = $value;
+        }
+        return $output;
+    }
+    
+    public function fieldsToShow()
+    {
+    }
+    
+    public function getHTML()
+    {
+        $result = "<ul class=\"$this->class\">\n";
+        foreach ($this->records() as $record => $value) {
+            $signups = ($value == 1) ? "Post" : "Posts";
+            $result .= "<li>". $record . " - ". $value . ' '. $signups ."</li>";
+        }
+        $result .= "</ul>";
+        return $result;
+    }
 }
