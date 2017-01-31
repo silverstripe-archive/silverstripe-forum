@@ -4,7 +4,7 @@ language: php
 
 sudo: false
 
-php: 
+php:
   - 5.4
 
 env:
@@ -13,7 +13,7 @@ env:
   matrix:
     - DB=MYSQL
     - DB=SQLITE
-    - DB=PGSQL 
+    - DB=PGSQL
 
 matrix:
   allow_failures:
@@ -35,5 +35,5 @@ before_script:
  - php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss
  - cd ~/builds/ss
 
-script: 
- - phpunit forum/tests/
+script:
+ - vendor/bin/phpunit forum/tests/
