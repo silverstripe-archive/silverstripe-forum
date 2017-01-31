@@ -11,7 +11,7 @@ env:
   matrix:
     - DB=MYSQL
     - DB=SQLITE
-    - DB=PGSQL 
+    - DB=PGSQL
 
 matrix:
   allow_failures:
@@ -31,4 +31,4 @@ before_script:
  - cd ~/builds/ss
 
 script: 
- - phpunit forum/tests/
+ - vendor/bin/phpunit forum/tests/
