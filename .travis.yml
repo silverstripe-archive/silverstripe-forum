@@ -54,7 +54,7 @@ script:
   # Execute tests with coverage.  Do this for a small
   - "if [ \"$COVERAGE\" = \"1\" ]; then vendor/bin/phpunit --coverage-clover=coverage.clover $MODULE_PATH/tests/; fi"
 
-after_script:
+after_success:
   - "if [ \"$COVERAGE\" = \"1\" ]; then mv coverage.clover ~/build/$TRAVIS_REPO_SLUG/; fi"
   - cd ~/build/$TRAVIS_REPO_SLUG
   - wget https://scrutinizer-ci.com/ocular.phar
