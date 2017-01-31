@@ -559,20 +559,20 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @param int $lastPostID Optional: ID of the last read post
 	 */
 	function RecentPosts($limit = null, $lastVisit = null, $lastPostID = null) {
-		$filter = "TopicID > 0";   
+		$filter = "`Post`.`TopicID` > 0";   
 		
 		if($lastVisit)
 			$lastVisit = @date('Y-m-d H:i:s', $lastVisit);
 
 		$lastPostID = (int)$lastPostID;
 		if($lastPostID > 0)
-			$filter .= " AND ID > $lastPostID";
+			$filter .= " AND `Post`.`ID` > $lastPostID";
 
 		if($lastVisit) {
-			$filter .= " AND Created > '$lastVisit'";
+			$filter .= " AND `Post`.`Created` > '$lastVisit'";
 		}
-
 		$filter .= " AND ForumPage.ParentID='{$this->ID}'";
+
 		return DataObject::get("Post", $filter, "Created DESC", "JOIN " . ForumHolder::baseForumTable() . " ForumPage on Post.ForumID=ForumPage.ID", $limit);
 //		return DataObject::get("Post", $filter, "Created DESC", "", $limit);
 	}
