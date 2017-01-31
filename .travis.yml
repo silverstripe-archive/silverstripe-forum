@@ -14,4 +14,4 @@ before_script:
  - cd ~/builds/ss
 
 script: 
- - phpunit forum/tests/
+ - vendor/bin/phpunit forum/tests/
