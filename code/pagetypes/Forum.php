@@ -639,7 +639,7 @@ class Forum_Controller extends Page_Controller
             $subscribed = true;
         }
 
-        return ($r->isAjax()) ? $subscribed : $this->redirectBack();
+        return ($request->isAjax()) ? $subscribed : $this->redirectBack();
     }
 
     /**
@@ -667,7 +667,7 @@ class Forum_Controller extends Page_Controller
 			$unsubscribed = true;
         }
 
-        return ($r->isAjax()) ? $unsubscribed : $this->redirectBack();
+        return ($request->isAjax()) ? $unsubscribed : $this->redirectBack();
     }
 
     /**
