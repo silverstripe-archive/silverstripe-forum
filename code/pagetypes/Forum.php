@@ -626,6 +626,8 @@ class Forum_Controller extends Page_Controller
         if (!SecurityToken::inst()->checkRequest($request)) {
             return $this->httpError(400);
         }
+		
+		$subscribed = false;
 
         if (Member::currentUser() && !ForumThread_Subscription::already_subscribed($this->urlParams['ID'])) {
             $obj = new ForumThread_Subscription();
@@ -634,10 +636,10 @@ class Forum_Controller extends Page_Controller
             $obj->LastSent = date("Y-m-d H:i:s");
             $obj->write();
 
-            die('1');
+            $subscribed = true;
         }
 
-        return false;
+        return ($request->isAjax()) ? $subscribed : $this->redirectBack();
     }
 
     /**
@@ -650,6 +652,7 @@ class Forum_Controller extends Page_Controller
     public function unsubscribe(SS_HTTPRequest $request)
     {
         $member = Member::currentUser();
+		$unsubscribed = false;
 
         if (!$member) {
             Security::permissionFailure($this, _t('LOGINTOUNSUBSCRIBE', 'To unsubscribe from that thread, please log in first.'));
@@ -660,11 +663,11 @@ class Forum_Controller extends Page_Controller
 				DELETE FROM \"ForumThread_Subscription\"
 				WHERE \"ThreadID\" = '". Convert::raw2sql($this->urlParams['ID']) ."'
 				AND \"MemberID\" = '$member->ID'");
-
-            die('1');
+			
+			$unsubscribed = true;
         }
 
-        return false;
+        return ($request->isAjax()) ? $unsubscribed : $this->redirectBack();
     }
 
     /**
