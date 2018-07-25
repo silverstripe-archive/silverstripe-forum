@@ -3,41 +3,43 @@
 
 		<div class="forum-header-forms">
 
-			<span class="forum-search-dropdown-icon"></span>
-			<div class="forum-search-bar">
-				<form class="forum-search" action="$Link('search')" method="get">
-					<fieldset>
-						<label for="search-text"><% _t('ForumHeader_ss.SEARCHBUTTON','Search') %></label>
-						<input id="search-text" class="text active" type="text" name="Search" value="$Query.ATT" />
-						<input class="submit action" type="submit" value="<% _t('ForumHeader_ss.SEARCHBUTTON','Search') %>"/>
-					</fieldset>
-				</form>
-			</div>
+			<% with $ForumHolder %>
+				<span class="forum-search-dropdown-icon"></span>
+				<div class="forum-search-bar">
+					<form class="forum-search" action="$Link('search')" method="get">
+						<fieldset>
+							<label for="search-text"><% _t('ForumHeader_ss.SEARCHBUTTON','Search') %></label>
+							<input id="search-text" class="text active" type="text" name="Search" value="$Query.ATT" />
+							<input class="submit action" type="submit" value="<% _t('ForumHeader_ss.SEARCHBUTTON','Search') %>"/>
+						</fieldset>
+					</form>
+				</div>
 
-			<form class="forum-jump" action="#">
-				<label for="forum-jump-select"><% _t('ForumHeader_ss.JUMPTO','Jump to:') %></label>
-				<select id="forum-jump-select" onchange="if(this.value) location.href = this.value">
-					<option value=""><% _t('ForumHeader_ss.JUMPTO','Jump to:') %></option>
-					<!-- option value=""><% _t('ForumHeader_ss.SELECT','Select') %></option -->
-					<% if $ShowInCategories %>
-						<% loop $Forums %>
-							<optgroup label="$Title">
-								<% loop $CategoryForums %>
-									<% if $can('view') %>
-										<option value="$Link">$Title</option>
-									<% end_if %>
-								<% end_loop %>
-							</optgroup>
-						<% end_loop %>
-					<% else %>
-						<% loop $Forums %>
-							<% if $can('view') %>
-								<option value="$Link">$Title</option>
-							<% end_if %>
-						<% end_loop %>
-					<% end_if %>
-				</select>
-			</form>
+				<form class="forum-jump" action="#">
+					<label for="forum-jump-select"><% _t('ForumHeader_ss.JUMPTO','Jump to:') %></label>
+					<select id="forum-jump-select" onchange="if(this.value) location.href = this.value">
+						<option value=""><% _t('ForumHeader_ss.JUMPTO','Jump to:') %></option>
+						<!-- option value=""><% _t('ForumHeader_ss.SELECT','Select') %></option -->
+						<% if $ShowInCategories %>
+							<% loop $Forums %>
+								<optgroup label="$Title">
+									<% loop $CategoryForums %>
+										<% if $can('view') %>
+											<option value="$Link">$Title</option>
+										<% end_if %>
+									<% end_loop %>
+								</optgroup>
+							<% end_loop %>
+						<% else %>
+							<% loop $Forums %>
+								<% if $can('view') %>
+									<option value="$Link">$Title</option>
+								<% end_if %>
+							<% end_loop %>
+						<% end_if %>
+					</select>
+				</form>
+			<% end_with %>
 
 			<% if $NumPosts %>
 				<p class="forumStats">
