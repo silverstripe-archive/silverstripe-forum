@@ -18,6 +18,8 @@
 
 [![Build Status](https://secure.travis-ci.org/silverstripe/silverstripe-forum.png?branch=0.8)](http://travis-ci.org/silverstripe/silverstripe-forum)
 
+**Please note: this module is no longer actively maintained.**
+
 ## Maintainer Contact
 
  * Sean Harvey (Nickname: sharvey, halkyon) <sean (at) silverstripe (dot) com>
