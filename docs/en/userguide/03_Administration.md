@@ -1,3 +1,7 @@
+---
+title: Forum Administration
+---
+
 # Forum Administration 
 
 ## Topics
@@ -45,8 +49,8 @@ Click on the "Moderated Forums" tab in the user profile, and place a checkmark n
 
 After you are done, click the "security" link in the breadcrumbs at the top of the screen and it will take you back to the list of users.
 
-<div class="note" markdown="1">
+[note]
 ### Notes:
 
 While this limited information will suffice for forum administration, administrating users across your SilverStripe site is done inside the 'Security' section of the CMS.
-</div>
+[/note]

@@ -1,3 +1,7 @@
+---
+title: Setup
+---
+
 ## Setup
 
 ### Creating a new forum
@@ -16,11 +20,11 @@ If you head back to the pages pane you will also notice it has a yellow "losenge
 
 ![Draft forum](_images/draft-forum.jpg)
 
-<div class="note" markdown="1">
+[note]
 ### Notes:
 
 Don't worry if you create your forum in the "wrong" place. Pages can be moved and re-ordered easily, and we will cover that under "[Managing Your Site](managing-your-site)".
-</div>
+[/note]
  
 ### Naming and editing your forum
 
