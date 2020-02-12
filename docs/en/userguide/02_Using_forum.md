@@ -1,3 +1,7 @@
+---
+title: Using the Forum
+---
+
 # Using the Forum
 
 To create a new topic, head to the front-end of the live website. Either log-in under your username, or, if you do not have one, register a new username.
@@ -14,11 +18,11 @@ If you have an avatar (a small personal photograph or illustration which helps p
 
 To sign in with your username, head to the public-facing website (the "frontend") and browse to the forum. Click on the "Login" link. Enter your user "nickname" and the password you chose during registration.
 
-<div class="note" markdown="1">
+[note]
 ### Notes:
 
 If you have forgotten your password, click on "Forgot Password," and follow the steps to reset or recover your password.
-</div>
+[/note]
  
 ## Starting a new topic (a.k.a. Threads)
 
